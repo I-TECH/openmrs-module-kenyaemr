@@ -50,10 +50,8 @@
 				<ref bean="kenyaemr.mchcs.report.maternityRegister" />
 				<ref bean="kenyaemr.mchms.report.pncRegister"/>
 				<ref bean="kenyaemr.mchms.report.currentlyEnrolledInMCH"/>
-				<ref bean="kenyaemr.mch.report.hiv.cohort.analysis.art.3" />
-				<ref bean="kenyaemr.mch.report.hiv.cohort.analysis.art.6" />
-				<ref bean="kenyaemr.mch.report.hiv.cohort.analysis.art.12" />
-				<ref bean="kenyaemr.mch.report.hiv.cohort.analysis.art.24" />
+				<ref bean="kenyaemr.mch.report.hiv.cohort.analysis.first.review" />
+				<ref bean="kenyaemr.mch.report.hiv.cohort.analysis.second.review" />
 			</set>
 		</property>
 		<property name="fragments">
@@ -278,40 +276,18 @@
 	</bean>
 
 	<!--mch cohort descriptors-->
-	<bean id="kenyaemr.mch.report.hiv.cohort.analysis.art.3" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+	<bean id="kenyaemr.mch.report.hiv.cohort.analysis.first.review" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="683e3bea-3237-4707-8e91-46112ed10257" />
-		<property name="name" value="Maternal_cohort_3months" />
-		<property name="description" value="Cohort based upon shared month and year of MCH Enrollment 3 months" />
+		<property name="name" value="Maternal_cohort_first_review" />
+		<property name="description" value="First review (12 months cohort)" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-		<property name="template" value="kenyaemr:art/artCohortRegister.xls" />
-		<property name="repeatingSection" value="sheet:1,row:18,dataset:artCohortRegister" />
 	</bean>
 
-	<bean id="kenyaemr.mch.report.hiv.cohort.analysis.art.6" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
-	<property name="targetUuid" value="a9b245b8-c50f-46be-b40b-efa029dfed5d" />
-	<property name="name" value="Maternal_cohort_6months" />
-	<property name="description" value="Cohort based upon shared month and year of MCH Enrollment 6 months" />
-	<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-	<property name="template" value="kenyaemr:art/artCohortRegister.xls" />
-	<property name="repeatingSection" value="sheet:1,row:18,dataset:artCohortRegister" />
-   </bean>
-
-	<bean id="kenyaemr.mch.report.hiv.cohort.analysis.art.12" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
-		<property name="targetUuid" value="6b09b030-55e9-4ad1-90a2-0154c9018ec7" />
-		<property name="name" value="Maternal_cohort_12months" />
-		<property name="description" value="Cohort based upon shared month and year of MCH Enrollment 12 months" />
-		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-		<property name="template" value="kenyaemr:art/artCohortRegister.xls" />
-		<property name="repeatingSection" value="sheet:1,row:18,dataset:artCohortRegister" />
-	</bean>
-
-	<bean id="kenyaemr.mch.report.hiv.cohort.analysis.art.24" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
-		<property name="targetUuid" value="076836cd-26f7-4775-ad3d-64eca1061d8f" />
-		<property name="name" value="Maternal_cohort_24months" />
-		<property name="description" value="Cohort based upon shared month and year of MCH Enrollment 24 months" />
-		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-		<property name="template" value="kenyaemr:art/artCohortRegister.xls" />
-		<property name="repeatingSection" value="sheet:1,row:18,dataset:artCohortRegister" />
-	</bean>
+ <!--<bean id="kenyaemr.mch.report.hiv.cohort.analysis.second.review" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">-->
+	<!--<property name="targetUuid" value="a9b245b8-c50f-46be-b40b-efa029dfed5d" />-->
+	<!--<property name="name" value="Maternal_cohort_second_review" />-->
+	<!--<property name="description" value="Second review (24 months cohort)" />-->
+	<!--<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>	-->
+   <!--</bean>-->
 
 </beans>

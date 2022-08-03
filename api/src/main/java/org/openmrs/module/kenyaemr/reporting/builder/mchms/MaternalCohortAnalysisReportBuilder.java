@@ -15,6 +15,7 @@ import org.openmrs.module.kenyacore.report.HybridReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractHybridReportBuilder;
+import org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.IPTStartDateCalculation;
@@ -57,6 +58,7 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.Popul
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.TbStartDateArtDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.WHOStageArtDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.WeightAtArtDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.library.ETLReports.publicHealthActionReport.PublicHealthActionIndicatorLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.SortCriteria;
@@ -72,111 +74,71 @@ import org.openmrs.module.reporting.data.person.definition.ConvertedPersonDataDe
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonAttributeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
+import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Report builder for First review (12 months cohort) report
+ */
 @Component
-@Builds({"kenyaemr.mch.report.hiv.cohort.analysis.art.3","kenyaemr.mch.report.hiv.cohort.analysis.art.6","kenyaemr.mch.report.hiv.cohort.analysis.art.12","kenyaemr.mch.report.hiv.cohort.analysis.art.24"})
-public class MaternalCohortAnalysisReportBuilder extends AbstractHybridReportBuilder {
+@Builds({"kenyaemr.mch.report.hiv.cohort.analysis.first.review"})
+public class MaternalCohortAnalysisReportBuilder extends AbstractReportBuilder {
 
-       public static final String DATE_FORMAT = "dd/MM/yyyy";
 
-    /**
-     *
-     * @see org.openmrs.module.kenyacore.report.builder.AbstractCohortReportBuilder#addColumns(org.openmrs.module.kenyacore.report.CohortReportDescriptor, PatientDataSetDefinition)
-     */
+    @Autowired
+    private PublicHealthActionIndicatorLibrary publicHealthActionIndicatorLibrary;
 
     @Override
-    protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
-        return mchCohortPatients();
-//        Integer period = Integer.parseInt(descriptor.getId().split("\\.")[7]);
-//        CohortDefinition cd = artCohortLibrary.netCohortMonthsBetweenDatesGivenMonths(period);
-//        return ReportUtils.map(cd, "startDate=${startDate},endDate=${endDate}");
-    }
-
-    protected Mapped<CohortDefinition> mchCohortPatients() {
-        CohortDefinition cd = new MaternalAnalysisCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setName("MchCohortPatients");
-        return ReportUtils.map(cd, "startDate=${startDate},endDate=${endDate}");
-    }
-
-     @Override
     protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {
         return Arrays.asList(
                 new Parameter("startDate", "Start Date", Date.class),
-                new Parameter("endDate", "End Date", Date.class)
+                new Parameter("endDate", "End Date", Date.class),
+                new Parameter("dateBasedReporting", "", String.class)
         );
     }
 
-    protected void addColumns(HybridReportDescriptor report, PatientDataSetDefinition dsd) {
-
-        dsd.addSortCriteria("DOBAndAge", SortCriteria.SortDirection.DESC);
-        dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-
-        PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
-        DataDefinition identifierDef_upn = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), new IdentifierConverter());
-        DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
-        DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
-        PersonAttributeType phoneNumber = MetadataUtils.existing(PersonAttributeType.class, CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT);
-
-        dsd.setName("mchCohortRegister");
-        dsd.addColumn("id", new PatientIdDataDefinition(), "");
-        dsd.addColumn("ART Start Date", new CalculationDataDefinition("ART Start Date", new InitialArtStartDateCalculation()), "", new DateArtStartDateConverter());
-        dsd.addColumn("UPN", identifierDef_upn, "");
-        dsd.addColumn("Name", nameDef, "");
-        dsd.addColumn("Sex", new GenderDataDefinition(), "");
-        dsd.addColumn("DOB", new BirthdateDataDefinition(), "", new BirthdateConverter());
-        dsd.addColumn("Age", new AgeDataDefinition(), "");
-        dsd.addColumn("Telephone No", new PersonAttributeDataDefinition(phoneNumber), "");
-        dsd.addColumn("Village_Estate_Landmark", new CalculationDataDefinition("Village/Estate/Landmark", new PersonAddressCalculation()), "", new RDQACalculationResultConverter());
-        dsd.addColumn("Population Type", new PopulationTypeArtDataDefinition(), "");
-        dsd.addColumn("Discordance", new HTSDiscordanceArtDataDefinition(),"");
-        dsd.addColumn("First WHO Stage", new WHOStageArtDataDefinition(), "");
-//        dsd.addColumn("Initial CD4", currentCd4Count(report), "onDate=${endDate}", new CurrentCd4Converter("value"));
-//        dsd.addColumn("Height at Art Start", new CalculationDataDefinition("Height at Art Start", new HeightAtArtStartDateCalculation()), "", new HeightConverter());
-//        dsd.addColumn("Weight at Art Start", new CalculationDataDefinition("Weight at Art Start", new WeightAtArtStartDateCalculation()), "", new WeightConverter());
-//        dsd.addColumn("CTX Start Date", new CalculationDataDefinition("Weight at Art Start", new DateOfFirstCTXCalculation()), "", new ArtCohortStartMonthYearDateConverter());
-//        dsd.addColumn("IPT Start Date", new CalculationDataDefinition("IPT Start Date", new IPTStartDateCalculation()), "", new DateArtStartDateConverter());
-//        dsd.addColumn("TBRx Start Date", new TbStartDateArtDataDefinition(), "", new ObsMonthYearConverter());
-//        dsd.addColumn("Pregnancy_1", new EDCandANCNumberPreg1DataDefinition(),"");
-//        dsd.addColumn("Pregnancy_2", new EDCandANCNumberPreg2DataDefinition(),"");
-//        dsd.addColumn("Pregnancy_3", new EDCandANCNumberPreg3DataDefinition(),"");
-//        dsd.addColumn("Initial ART Regimen", new CalculationDataDefinition("Initial ART Regimen", new InitialArtRegimenCalculation()), "", null);
-//        dsd.addColumn("ART First Sub", new ARTFirstSubstitutionDataDefinition(),"");
-//        dsd.addColumn("ART Second Sub", new ARTSecondSubstitutionDataDefinition(),"");
-//        dsd.addColumn("ART First Switch", new ARTFirstSwitchDataDefinition(),"");
-//        dsd.addColumn("ART Second Switch", new ARTSecondSwitchDataDefinition(),"");
-        dsd.addColumn("Weight", new WeightAtArtDataDefinition(), "");
-        dsd.addColumn("Recent Viral Load Result", new CalculationDataDefinition("Recent Viral Load Result", new ViralLoadResultCalculation("last")), "", new RDQASimpleObjectRegimenConverter("data"));
-        dsd.addColumn("Recent Viral Load Result Date", new CalculationDataDefinition("Recent Viral Load Result Date", new ViralLoadResultCalculation("last")), "", new RDQASimpleObjectRegimenConverter("date"));
-     //   dsd.addColumn("TB screening outcome", new TBScreeningAtLastVisitDataDefinition(), "", new TBScreeningConverter("outcome"));
-        dsd.addColumn("ART Outcomes", patientOutComes(report), "onDate=${endDate}", new CalculationResultConverter());
-
+    @Override
+    protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor reportDescriptor, ReportDefinition reportDefinition) {
+        return Arrays.asList(ReportUtils.map(publicHealthAction(), "startDate=${startDate},endDate=${endDate}")
+        );
     }
 
-     private DataDefinition patientOutComes(HybridReportDescriptor descriptor) {
-        int months = Integer.parseInt(descriptor.getId().split("\\.")[7]);
-        CalculationDataDefinition cd = new CalculationDataDefinition("outcomes", new PatientArtOutComeCalculation());
-        cd.addCalculationParameter("outcomePeriod", months);
-        cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-        return cd;
+    protected DataSetDefinition publicHealthAction() {
+        CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
+        cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cohortDsd.setName("Clinical-Action");
+        cohortDsd.setDescription("Clinical Action Report");
+        cohortDsd.addColumn("Current on ART without valid VL", "", ReportUtils.map(publicHealthActionIndicatorLibrary.invalidVL(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Current on ART with Unsuppressed Valid VL", "", ReportUtils.map(publicHealthActionIndicatorLibrary.unsuppressedWithValidVL(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Current on ART with Unsuppressed invalid VL", "", ReportUtils.map(publicHealthActionIndicatorLibrary.unsuppressedWithoutValidVL(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Current on ART Clients without NUPI", "", ReportUtils.map(publicHealthActionIndicatorLibrary.txCurrclientsWithoutNUPI(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Recent defaulters", " (Missed appointment within 30 days)", ReportUtils.map(publicHealthActionIndicatorLibrary.recentDefaulters(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Undocumented LTFU/IIT", "", ReportUtils.map(publicHealthActionIndicatorLibrary.undocumentedLTFU(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Not Vaccinated for Covid-19", "", ReportUtils.map(publicHealthActionIndicatorLibrary.notVaccinatedForCovid19(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Not Assessed for Covid-19 vaccination", "", ReportUtils.map(publicHealthActionIndicatorLibrary.notAssessedForCovid19(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("CALHIV not on DTG regimen", "", ReportUtils.map(publicHealthActionIndicatorLibrary.calhivNotOnDTGRegimen(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("CALHIV not enrolled in OVC", "", ReportUtils.map(publicHealthActionIndicatorLibrary.calhivNotInOVC(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Adolescents not enrolled in OTZ", "", ReportUtils.map(publicHealthActionIndicatorLibrary.adolescentsNotInOTZ(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("HEI with undocumented HIV status", "", ReportUtils.map(publicHealthActionIndicatorLibrary.undocumentedHEIStatus(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("HEI not Linked to Mothers", "", ReportUtils.map(publicHealthActionIndicatorLibrary.unlinkedHEI(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("HIV+ and NOT Linked", "", ReportUtils.map(publicHealthActionIndicatorLibrary.notLinked(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Children of HIV infected adults with undocumented HIV status", " (Please run Children of HIV infected adults with undocumented HIV status for linelist)", ReportUtils.map(publicHealthActionIndicatorLibrary.childrenContactsUndocumentedHIVStatus(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("PNS Contacts with undocumented HIV status", " (Please run PNS contacts with undocumented HIV status for linelist)", ReportUtils.map(publicHealthActionIndicatorLibrary.contactsUndocumentedHIVStatus(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("SNS Contacts with undocumented HIV status", " (Please run SNS contacts with undocumented HIV status for linelist)", ReportUtils.map(publicHealthActionIndicatorLibrary.snsContactsUndocumentedHIVStatus(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Number of deaths", " (Please run mortality linelist for details)", ReportUtils.map(publicHealthActionIndicatorLibrary.numberOfDeaths(), "startDate=${startDate},endDate=${endDate}"), "");
+
+        return cohortDsd;
 
     }
-
-    private DataDefinition currentCd4Count(HybridReportDescriptor descriptor) {
-        CalculationDataDefinition cd = new CalculationDataDefinition("currentCd4", new LastCd4Calculation());
-        cd.addParameter(new Parameter("onDate", "On Date", Date.class));
-        cd.addCalculationParameter("outcomePeriod", Integer.parseInt(descriptor.getId().split("\\.")[7]));
-        return cd;
-    }
-
 }
