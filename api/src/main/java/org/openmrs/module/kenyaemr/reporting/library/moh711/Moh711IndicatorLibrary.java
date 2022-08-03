@@ -14,6 +14,7 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static org.openmrs.module.kenyacore.report.ReportUtils.map;
 import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.cohortIndicator;
 
 /**
@@ -30,9 +31,9 @@ public class Moh711IndicatorLibrary {
 	 * @return the indicator
 	 */
 	public CohortIndicator noOfNewANCClients() {
-		return cohortIndicator("Number of new ANC clients (First ANC Visit)", ReportUtils.map(moh711Cohorts.noOfANCClients(), "startDate=${startDate},endDate=${endDate}"));
+		return cohortIndicator("Number of new ANC clients (First ANC Visit)", map(moh711Cohorts.noOfANCClients(), "startDate=${startDate},endDate=${endDate}"));
 	}
-		/**
+	/**
 	 * No.of revisiting ANC Clients
 	 * @return the indicator
 	 */
@@ -101,24 +102,6 @@ public class Moh711IndicatorLibrary {
 	public CohortIndicator breastExaminationDone() {
 		return cohortIndicator("Total women done breast examination", ReportUtils.map(moh711Cohorts.breastExaminationDone(), "startDate=${startDate},endDate=${endDate}"));
 	}
-	/**
-	 * No.of adolescents (10-14 years) presenting with pregnancy at 1st ANC Visit
-	 */
-	public CohortIndicator adolescents10To14FirstANC() {
-		return cohortIndicator("No.of adolescents (10-14 years) presenting with pregnancy at 1st ANC Visit", ReportUtils.map(moh711Cohorts.adolescents10To14FirstANC(), "startDate=${startDate},endDate=${endDate}"));
-	}
-	/**
-	 *No.of adolescents (15-19 years) presenting with pregnancy at 1st ANC Visit
-	 */
-	public CohortIndicator adolescents15To19FirstANC() {
-		return cohortIndicator("No.of adolescents (15-19 years) presenting with pregnancy at 1st ANC Visit", ReportUtils.map(moh711Cohorts.adolescents15To19FirstANC(), "startDate=${startDate},endDate=${endDate}"));
-	}
-	/**
-	 *No.of youth (20-24 years) presenting with pregnancy at 1st ANC Visit
-	 */
-	public CohortIndicator youth20To24FirstANC() {
-		return cohortIndicator("No.of youth (20-24 years) presenting with pregnancy at 1st ANC Visit", ReportUtils.map(moh711Cohorts.youth20To24FirstANC(), "startDate=${startDate},endDate=${endDate}"));
-	}
 
 	/**
 	 * No.of Women presenting with pregnancy at 1ST ANC in the First Trimeseter(<= 12 Weeks)
@@ -157,6 +140,38 @@ public class Moh711IndicatorLibrary {
 	 */
 	public CohortIndicator ancClientsWithFGMRelatedComplications() {
 		return cohortIndicator("No.of pregnant women presenting in ANC with complication associated with FGM", ReportUtils.map(moh711Cohorts.ancClientsWithFGMRelatedComplications(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * No.screened for cacx during ANC
+	 */
+	public CohortIndicator cacxScreened() {
+		return cohortIndicator("No.screened for cacx during ANC", map(moh711Cohorts.cacxScreened(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * No.of New PNC Clients (First ANC visit)
+	 * @return the indicator
+	 */
+	public CohortIndicator noOfNewPNCClients() {
+		return cohortIndicator("Number of new ANC clients (First ANC Visit)", map(moh711Cohorts.noOfFirstPNCClients(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * No.of revisiting ANC Clients
+	 * @return the indicator
+	 */
+	public CohortIndicator noOfPNCClientsRevisits() {
+		return cohortIndicator("Number of revisiting ANC clients", ReportUtils.map(moh711Cohorts.noOfRevisitingPNCClients(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 *No.of Fistula cases during PNC
+	 */
+	public CohortIndicator noOfFistulaCasesPNC() {
+		return cohortIndicator("No.of Fistula cases during PNC", map(moh711Cohorts.noOfFistulaCasesPNC(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 *No.referred from Community for PNC services
+	 */
+	public CohortIndicator noReferredFromCommunityForPNC() {
+		return cohortIndicator("No.referred from Community for PNC services", map(moh711Cohorts.noReferredFromCommunityForPNC(), "startDate=${startDate},endDate=${endDate}"));
 	}
 	/*
 	*//**
