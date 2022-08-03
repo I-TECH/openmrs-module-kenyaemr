@@ -1369,6 +1369,9 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
 
             // update NUPI
             jQuery("input[name='nationalUniquePatientNumber']").val(crResponseData.client.clientNumber).trigger('change');
+            jQuery("input[name='CRVerificationStatus']").val("Verified elsewhere").attr('readonly', true);
+            jq('#createPatientBtn').prop('disabled', false);
+            jq('#post-registrations').prop('disabled', true);
 
         }
 
@@ -1471,9 +1474,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                         jQuery("input[name='CRVerificationStatus']").val("Verified").attr('readonly', true);
                         jQuery("#post-msgBox").show();
                     } else if(jQuery("input[name='nationalUniquePatientNumber']").val() == "" ) {
-                        //jQuery("#post-msgBox").text("");
                         jQuery("input[name='CRVerificationStatus']").val("Pending").attr('readonly', true);
-                    // jQuery("#post-msgBox").hide();
                     }
                 } else {
                     if(jQuery("input[name='nationalUniquePatientNumber']").val() != "" ) {
