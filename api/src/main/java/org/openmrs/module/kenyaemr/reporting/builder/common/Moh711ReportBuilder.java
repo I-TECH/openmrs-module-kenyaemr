@@ -71,9 +71,9 @@ public class Moh711ReportBuilder extends AbstractReportBuilder {
                 ReportUtils.map(createANCPMTCTDataSet(), "startDate=${startDate},endDate=${endDate}"),
                 ReportUtils.map(createCacxScreeningDataSet(), "startDate=${startDate},endDate=${endDate}"),
                 ReportUtils.map(createPNCDataSet(), "startDate=${startDate},endDate=${endDate}"),
-                ReportUtils.map(createMaternityNewbornDataSet(), "startDate=${startDate},endDate=${endDate}")
-                //ReportUtils.map(createChildHealthAndNutritionDataSet(), "startDate=${startDate},endDate=${endDate}"),
-                //ReportUtils.map(createTBScreeningDataSet(), "startDate=${startDate},endDate=${endDate}")
+                ReportUtils.map(createMaternityNewbornDataSet(), "startDate=${startDate},endDate=${endDate}"),
+                ReportUtils.map(createChildHealthAndNutritionDataSet(), "startDate=${startDate},endDate=${endDate}"),
+                ReportUtils.map(createTBScreeningDataSet(), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
@@ -190,6 +190,14 @@ public class Moh711ReportBuilder extends AbstractReportBuilder {
 
         dsd.addColumn("New PNC Clients", "", ReportUtils.map(moh711Indicators.noOfNewPNCClients(), indParams), "");
         dsd.addColumn("Revisiting PNC Clients", "", ReportUtils.map(moh711Indicators.noOfPNCClientsRevisits(), indParams), "");
+        dsd.addColumn("Mothers received PostParturm care within 48 hrs", "", ReportUtils.map(moh711Indicators.motherPPCWithin48hrs(), indParams), "");
+        dsd.addColumn("Mothers received PostParturm care btw 3 days and 6 weeks", "", ReportUtils.map(moh711Indicators.motherPPCbtw3And42Days(), indParams), "");
+        dsd.addColumn("Mothers received PostParturm care after 6 weeks", "", ReportUtils.map(moh711Indicators.motherPPCAfter6weeks(), indParams), "");
+
+        dsd.addColumn("Babies received PostParturm care within 48 hrs", "", ReportUtils.map(moh711Indicators.babyPPCWithin48hrs(), indParams), "");
+        dsd.addColumn("Babies received PostParturm care btw 3 days and 6 weeks", "", ReportUtils.map(moh711Indicators.babyPPCbtw3And42Days(), indParams), "");
+        dsd.addColumn("Babies received PostParturm care after 6 weeks", "", ReportUtils.map(moh711Indicators.babyPPCAfter6weeks(), indParams), "");
+
         dsd.addColumn("Number of Cases of Fistula", "", ReportUtils.map(moh711Indicators.noOfFistulaCasesPNC(), indParams), "");
         dsd.addColumn("No Referred from the community unit for PNC", "", ReportUtils.map(moh711Indicators.noReferredFromCommunityForPNC(), indParams), "");
 
@@ -252,7 +260,7 @@ public class Moh711ReportBuilder extends AbstractReportBuilder {
      *F. Child Health and Nutrition Information System
      * @return
      */
-/*    private DataSetDefinition createChildHealthAndNutritionDataSet() {
+    private DataSetDefinition createChildHealthAndNutritionDataSet() {
         CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
         dsd.setName("Child_Health_Nutrition");
         dsd.setDescription("Child Health and Nutrition Information System");
@@ -299,5 +307,5 @@ public class Moh711ReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("Total Number of people not screened", "", ReportUtils.map(moh711Indicators.clientTbNotScreened(), indParams), "");
 
         return dsd;
-    }*/
+    }
 }

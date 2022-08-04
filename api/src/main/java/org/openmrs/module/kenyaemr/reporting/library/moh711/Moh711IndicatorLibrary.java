@@ -191,12 +191,55 @@ public class Moh711IndicatorLibrary {
 		return cohortIndicator("Number of new ANC clients (First ANC Visit)", map(moh711Cohorts.noOfFirstPNCClients(), "startDate=${startDate},endDate=${endDate}"));
 	}
 	/**
+	 * Mothers received PostParturm care within 48 hrs
+	 * @return
+	 */
+	public CohortIndicator motherPPCWithin48hrs() {
+		return cohortIndicator("Mothers received PostParturm care within 48 hrs", ReportUtils.map(moh711Cohorts.motherPPCWithin48hrs(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Mothers received PostParturm care btw 3 days and 6 weeks
+	 * @return
+	 */
+	public CohortIndicator motherPPCbtw3And42Days() {
+		return cohortIndicator("Mothers received PostParturm care btw 3 days and 6 weeks", ReportUtils.map(moh711Cohorts.motherPPCbtw3And42Days(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Mothers received PostParturm care after 6 weeks
+	 * @return
+	 */
+	public CohortIndicator motherPPCAfter6weeks() {
+		return cohortIndicator("Mothers received PostParturm care after 6 weeks", ReportUtils.map(moh711Cohorts.motherPPCAfter6weeks(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Babies received PostParturm care within 48 hrs
+	 * @return
+	 */
+	public CohortIndicator babyPPCWithin48hrs() {
+		return cohortIndicator("Babies received PostParturm care within 48 hrs", ReportUtils.map(moh711Cohorts.babyPPCWithin48hrs(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Babies received PostParturm care btw 3 days and 6 weeks
+	 * @return
+	 */
+	public CohortIndicator babyPPCbtw3And42Days() {
+		return cohortIndicator("Babies received PostParturm care btw 3 days and 6 weeks", ReportUtils.map(moh711Cohorts.babyPPCbtw3And42Days(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Babies received PostParturm care after 6 weeks
+	 * @return
+	 */
+	public CohortIndicator babyPPCAfter6weeks() {
+		return cohortIndicator("Babies received PostParturm care after 6 weeks", ReportUtils.map(moh711Cohorts.babyPPCAfter6weeks(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
 	 * No.of revisiting ANC Clients
 	 * @return the indicator
 	 */
 	public CohortIndicator noOfPNCClientsRevisits() {
 		return cohortIndicator("Number of revisiting ANC clients", ReportUtils.map(moh711Cohorts.noOfRevisitingPNCClients(), "startDate=${startDate},endDate=${endDate}"));
 	}
+
 	/**
 	 *No.of Fistula cases during PNC
 	 */
@@ -409,5 +452,171 @@ public class Moh711IndicatorLibrary {
 	 */
 	public CohortIndicator sepsis(Integer motherCondition) {
 		return cohortIndicator("Sepsis", ReportUtils.map(moh711Cohorts.sepsis(motherCondition), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Normal Weight for Age
+	 * @return
+	 */
+	public CohortIndicator normalWeightForAge() {
+		return cohortIndicator("Normal Weight for Age", ReportUtils.map(moh711Cohorts.normalWeightForAge(), "startDate=${startDate},endDate=${endDate}"));
+	}
+
+	/**
+	 * Underweight
+	 * @return
+	 */
+	public CohortIndicator underWeight() {
+		return cohortIndicator("Underweight", ReportUtils.map(moh711Cohorts.underWeight(), "startDate=${startDate},endDate=${endDate}"));
+	}
+
+
+	/**
+	 * Severe Underweight
+	 * @return
+	 */
+	public CohortIndicator severeUnderWeight() {
+		return cohortIndicator("Severe Underweight", ReportUtils.map(moh711Cohorts.severeUnderWeight(), "startDate=${startDate},endDate=${endDate}"));
+	}
+
+	/**
+	 * Overweight
+	 * @return
+	 */
+	public CohortIndicator overweight() {
+		return cohortIndicator("Overweight", ReportUtils.map(moh711Cohorts.overweight(), "startDate=${startDate},endDate=${endDate}"));
+	}
+
+	/**
+	 * Obese
+	 * @return
+	 */
+	public CohortIndicator obese() {
+		return cohortIndicator("Obese", ReportUtils.map(moh711Cohorts.obese(), "startDate=${startDate},endDate=${endDate}"));
+	}
+
+	/**
+	 * MUAC_Normal(Green)
+	 * @return
+	 */
+	public CohortIndicator normalMUAC() {
+		return cohortIndicator("MUAC_Normal(Green)", ReportUtils.map(moh711Cohorts.normalMUAC(), "startDate=${startDate},endDate=${endDate}"));
+	}
+
+	/**
+	 * MUAC_Moderate(Yellow)
+	 * @return
+	 */
+	public CohortIndicator moderateMUAC() {
+		return cohortIndicator("MUAC_Moderate(Yellow)", ReportUtils.map(moh711Cohorts.moderateMUAC(), "startDate=${startDate},endDate=${endDate}"));
+	}
+
+	/**
+	 * MUAC_Severe(Red)
+	 * @return
+	 */
+	public CohortIndicator severeMUAC() {
+		return cohortIndicator("MUAC_Severe(Red)", ReportUtils.map(moh711Cohorts.severeMUAC(), "startDate=${startDate},endDate=${endDate}"));
+	}
+
+	/**
+	 * Stunted
+	 * @return
+	 */
+	public CohortIndicator stuntedGrowth() {
+		return cohortIndicator("Stunted", ReportUtils.map(moh711Cohorts.stuntedGrowth(), "startDate=${startDate},endDate=${endDate}"));
+	}
+
+	/**
+	 * New_Enrollment
+	 * @return
+	 */
+	public CohortIndicator newlyEnrolledMchs() {
+		return cohortIndicator("New_Enrollment", ReportUtils.map(moh711Cohorts.newlyEnrolledMchs(), "startDate=${startDate},endDate=${endDate}"));
+	}
+
+	/**
+	 * Followup_type_Kwashiorkor
+	 * @return
+	 */
+	public CohortIndicator kwashiorkor() {
+		return cohortIndicator("Followup_type_Kwashiorkor", ReportUtils.map(moh711Cohorts.kwashiorkor(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Followup_type_Marasmus
+	 * @return
+	 */
+	public CohortIndicator marasmus() {
+		return cohortIndicator("Followup_type_Marasmus", ReportUtils.map(moh711Cohorts.marasmus(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Exclusive_breast_feeding
+	 * @return
+	 */
+	public CohortIndicator exclusiveBreastFeeding() {
+		return cohortIndicator("Exclusive_breast_feeding", ReportUtils.map(moh711Cohorts.exclusiveBreastFeeding(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Dewormed
+	 * @return
+	 */
+	public CohortIndicator dewormed() {
+		return cohortIndicator("Dewormed", ReportUtils.map(moh711Cohorts.dewormed(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * MNPs_Supplementation
+	 * @return
+	 */
+	public CohortIndicator mnpsSupplementation() {
+		return cohortIndicator("MNPs_Supplementation", ReportUtils.map(moh711Cohorts.mnpsSupplementation(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Child Mortality
+	 * @return
+	 */
+	public CohortIndicator childrenDiscontinuationReasonDied() {
+		return cohortIndicator("Child Mortality", ReportUtils.map(moh711Cohorts.childrenDiscontinuationReasonDied(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Children_With_Disability_Any_Form
+	 * @return
+	 */
+	public CohortIndicator childrenWithDisability() {
+		return cohortIndicator("Children_With_Disability_Any_Form", ReportUtils.map(moh711Cohorts.childrenWithDisability(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Children_with_delayed_developmental_milestones
+	 * @return
+	 */
+	public CohortIndicator childrenWithDelayedDevelopmentalMilestones() {
+		return cohortIndicator("Children_with_delayed_developmental_milestones", ReportUtils.map(moh711Cohorts.childrenWithDelayedDevelopmentalMilestones(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Total Number of people screened
+	 * @return
+	 */
+	public CohortIndicator clientTbScreening() {
+		return cohortIndicator("Total Number of people screened", ReportUtils.map(moh711Cohorts.clientTbScreening(), "startDate=${startDate},endDate=${endDate}"));
+	}
+
+	/**
+	 * Total Number of presumptive TB cases
+	 * @return
+	 */
+	public CohortIndicator clientWithPresumptiveTb() {
+		return cohortIndicator("Total Number of presumptive TB cases", ReportUtils.map(moh711Cohorts.clientWithPresumptiveTb(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Total Number already on TB treatment
+	 * @return
+	 */
+	public CohortIndicator clientonTbTreatment() {
+		return cohortIndicator("Total Number already on TB treatment", ReportUtils.map(moh711Cohorts.clientOnTbTreatment(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Total Number of people not screened
+	 * @return
+	 */
+	public CohortIndicator clientTbNotScreened() {
+		return cohortIndicator("Total Number of people not screened", ReportUtils.map(moh711Cohorts.clientsNotScreenedForTB(), "startDate=${startDate},endDate=${endDate}"));
 	}
 }

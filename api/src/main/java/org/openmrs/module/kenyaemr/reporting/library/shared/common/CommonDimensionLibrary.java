@@ -258,6 +258,8 @@ public class CommonDimensionLibrary {
  */
 public CohortDefinitionDimension childAgeGroups() {
     CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.setName("age between(0-59 Months)");
+    dim.addParameter(new Parameter("onDate", "Date", Date.class));
     dim.addCohortDefinition("0-5", map(commonCohortLibrary.agedAtLeastAgedAtMostInMonths(0, 5), "effectiveDate=${onDate}"));
     dim.addCohortDefinition("6-23", map(commonCohortLibrary.agedAtLeastAgedAtMostInMonths(6, 23), "effectiveDate=${onDate}"));
     dim.addCohortDefinition("24-59", map(commonCohortLibrary.agedAtLeastAgedAtMostInMonths(24, 59), "effectiveDate=${onDate}"));
