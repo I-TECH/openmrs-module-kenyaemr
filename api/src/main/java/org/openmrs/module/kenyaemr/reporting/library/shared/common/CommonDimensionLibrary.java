@@ -253,5 +253,17 @@ public class CommonDimensionLibrary {
         dim.addCohortDefinition("F", map(commonCohortLibrary.femalePatientContacts()));
         return dim;
     }
-
+/**
+ * MOH711 Child age dimensions
+ */
+public CohortDefinitionDimension childAgeGroups() {
+    CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.addCohortDefinition("0-5", map(commonCohortLibrary.agedAtLeastAgedAtMostInMonths(0, 5), "effectiveDate=${onDate}"));
+    dim.addCohortDefinition("6-23", map(commonCohortLibrary.agedAtLeastAgedAtMostInMonths(6, 23), "effectiveDate=${onDate}"));
+    dim.addCohortDefinition("24-59", map(commonCohortLibrary.agedAtLeastAgedAtMostInMonths(24, 59), "effectiveDate=${onDate}"));
+    dim.addCohortDefinition("6-59", map(commonCohortLibrary.agedAtLeastAgedAtMostInMonths(6, 59), "effectiveDate=${onDate}"));
+    dim.addCohortDefinition("0-59", map(commonCohortLibrary.agedAtLeastAgedAtMostInMonths(0, 59), "effectiveDate=${onDate}"));
+    dim.addCohortDefinition("12-59", map(commonCohortLibrary.agedAtLeastAgedAtMostInMonths(12, 59), "effectiveDate=${onDate}"));
+    return dim;
+}
 }

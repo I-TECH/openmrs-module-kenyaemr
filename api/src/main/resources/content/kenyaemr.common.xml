@@ -755,6 +755,6 @@
 		<property name="name" value="MOH 711" />
 		<property name="description" value="Integrated Programme Summary Report Form: Reproductive and Child Health, Medical and Rehabilitation Services" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
-		<property name="template" value="kenyaemr:moh711_template.xls" />
+		<property name="template" value="kenyaemr:moh711.xls" />
 	</bean>
 </beans>

@@ -148,6 +148,42 @@ public class Moh711IndicatorLibrary {
 		return cohortIndicator("No.screened for cacx during ANC", map(moh711Cohorts.cacxScreened(), "startDate=${startDate},endDate=${endDate}"));
 	}
 	/**
+	 * No.screened for cacx VIA/VILI positive
+	 */
+	public CohortIndicator viaViliPositive() {
+		return cohortIndicator("No.screened for cacx during ANC", map(moh711Cohorts.viaViliPositive(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * No.screened for cacx HPV positive
+	 */
+	public CohortIndicator hpvPositive() {
+		return cohortIndicator("No.screened for cacx during ANC", map(moh711Cohorts.hpvPositive(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * No.screened for cacx has suspicious cancer lessions
+	 */
+	public CohortIndicator suspiciousCancerLessions() {
+		return cohortIndicator("No.screened for cacx during ANC", map(moh711Cohorts.suspiciousCancerLessions(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * No.screened for cacx treated using cryotherapy method
+	 */
+	public CohortIndicator treatedUsingCyrotherapy() {
+		return cohortIndicator("No.screened for cacx during ANC", map(moh711Cohorts.treatedUsingCyrotherapy(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * No.screened for cacx treated using LEEP method
+	 */
+	public CohortIndicator treatedUsingLEEP() {
+		return cohortIndicator("No.screened for cacx during ANC", map(moh711Cohorts.treatedUsingLEEP(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * No. HIV Positive mothers screened for cacx
+	 */
+	public CohortIndicator cacxScreenedAndHIVPositive() {
+		return cohortIndicator("No. HIV Positive mothers screened for cacx", map(moh711Cohorts.cacxScreenedAndHIVPositive(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
 	 * No.of New PNC Clients (First ANC visit)
 	 * @return the indicator
 	 */
@@ -173,117 +209,205 @@ public class Moh711IndicatorLibrary {
 	public CohortIndicator noReferredFromCommunityForPNC() {
 		return cohortIndicator("No.referred from Community for PNC services", map(moh711Cohorts.noReferredFromCommunityForPNC(), "startDate=${startDate},endDate=${endDate}"));
 	}
-	/*
-	*//**
-	 * Number of patients who are ART revisits
+	/**
+	 * No.Screened for Pap smear
 	 * @return the indicator
-	 *//*
-	public CohortIndicator revisitsArt() {
-		return cohortIndicator("Revisits ART", ReportUtils.map(moh711Cohorts.revisitsArt(), "fromDate=${startDate},toDate=${endDate}"));
+	 */
+	public CohortIndicator cacxScreenedWithMethod(String conceptName, Integer conceptId) {
+		return cohortIndicator("No.Screened for Pap smear", map(moh711Cohorts.cacxScreenedWithMethodAtANC(conceptName,conceptId), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Normal Deliveries
+	 * @return the indicator
+	 */
+	public CohortIndicator normalDelivery(Integer mode) {
+		return cohortIndicator("Normal Deliveries", ReportUtils.map(moh711Cohorts.deliveryMethod(mode), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Caesarean Section
+	 * @return the indicator
+	 */
+	public CohortIndicator caesareanSection(Integer mode) {
+		return cohortIndicator("Caesarean Sections", ReportUtils.map(moh711Cohorts.deliveryMethod(mode), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Breech Delivery
+	 * @return the indicator
+	 */
+	public CohortIndicator breechDelivery(Integer mode) {
+		return cohortIndicator("Breech Delivery", ReportUtils.map(moh711Cohorts.deliveryMethod(mode),"startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Assisted Vaginal Deliveries (Vacuum Extraction)
+	 * @return the indicator
+	 */
+	public CohortIndicator assistedVaginalDelivery(Integer mode) {
+		return cohortIndicator("Assisted Vaginal Deliveries (Vacuum Extraction)", ReportUtils.map(moh711Cohorts.deliveryMethod(mode), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Number of Live births
+	 * @return the indicator
+	 */
+	public CohortIndicator liveBirths() {
+		return cohortIndicator("Live Births", ReportUtils.map(moh711Cohorts.liveBirths(), "startDate=${startDate},endDate=${endDate}"));
 	}
 
-	*//**
-	 * Number of patients who are currently on ART
-	 * @return the indicator
-	 *//*
-	public CohortIndicator currentlyOnArt() {
-		return cohortIndicator("Currently on ART", ReportUtils.map(moh711Cohorts.currentlyOnArt(), "fromDate=${startDate},toDate=${endDate}"));
+	/**
+	 * No. of Low birth weight Babies (below 2500 grams)
+	 * @return
+	 */
+	public CohortIndicator lowBirthWeight() {
+		return cohortIndicator("No. of Low birth weight Babies (below 2500 grams)", ReportUtils.map(moh711Cohorts.lowBirthWeight(), "startDate=${startDate},endDate=${endDate}"));
 	}
 
-	*//**
-	 * Cumulative number of patients on ART
-	 * @return the indicator
-	 *//*
-	public CohortIndicator cumulativeOnArt() {
-		return cohortIndicator("Cumulative ever on ART", ReportUtils.map(artCohorts.startedArtExcludingTransferinsOnDate(), "onOrBefore=${endDate}"));
+	/**
+	 * No. of births with deformities
+	 * @return
+	 */
+	public CohortIndicator deformities() {
+		return cohortIndicator("No. of births with deformoties", ReportUtils.map(moh711Cohorts.deformities(), "startDate=${startDate},endDate=${endDate}"));
 	}
 
-	*//**
-	 * Number of patients in the ART 12 month cohort
-	 * @return the indicator
-	 *//*
-	public CohortIndicator art12MonthNetCohort() {
-		//add a hacky way to determine if art start date is at the end of every month then add one day
-		//to avoid reporting twice in the previouse and the following month
-		return cohortIndicator("ART 12 Month Net Cohort", ReportUtils.map(artCohorts.netCohortMonths(12), "onDate=${endDate + 1d}"));
+	/**
+	 * No. of neonates given  Vit "K"
+	 * @return
+	 */
+	public CohortIndicator givenVitaminK() {
+		return cohortIndicator("No. of births with deformoties", ReportUtils.map(moh711Cohorts.givenVitaminK(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * No. of babies applied chlorhexidine for cord care
+	 * @return
+	 */
+	public CohortIndicator chlorhexidineForCordCaregiven() {
+		return cohortIndicator("No.of babies applied chlorhexidine for cord care", ReportUtils.map(moh711Cohorts.chlorhexidineForCordCaregiven(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * No of neonates 0 -28 days put on Continous Positive Airway Pressure(CPAP)
+	 * @return
+	 */
+	public CohortIndicator continousPositiveAirwayPressureAt0To28Days() {
+		return cohortIndicator("No of neonates 0 -28 days put on Continous Positive Airway Pressure(CPAP)", ReportUtils.map(moh711Cohorts.continousPositiveAirwayPressureAt0To28Days(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * No. of babies given tetracycline at birth
+	 * @return
+	 */
+	public CohortIndicator givenTetracyclineAtBirth() {
+		return cohortIndicator("No. of babies given tetracycline at birth", ReportUtils.map(moh711Cohorts.givenTetracyclineAtBirth(), "startDate=${startDate},endDate=${endDate}"));
 	}
 
-	*//**
-	 * Number of patients in the 12 month cohort who are on their original first-line regimen
-	 * @return the indicator
-	 *//*
-	public CohortIndicator onOriginalFirstLineAt12Months() {
-		return cohortIndicator("On original 1st line at 12 months", ReportUtils.map(moh711Cohorts.onOriginalFirstLineAt12Months(), "fromDate=${startDate},toDate=${endDate + 1d}"));
+	/**
+	 * Pre-Term babies
+	 * @return
+	 */
+	public CohortIndicator preTermBabies() {
+		return cohortIndicator("Pre-Term babies", ReportUtils.map(moh711Cohorts.preTermBabies(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * No.of babies discharged alive
+	 * @return
+	 */
+	public CohortIndicator dischargedAlive() {
+		return cohortIndicator("No. of babies discharged alive", ReportUtils.map(moh711Cohorts.dischargedAlive(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * No. of Infants intiatied on breastfeeding within 1 hour after birth
+	 * @return
+	 */
+	public CohortIndicator initiatedBFWithinOneHour() {
+		return cohortIndicator("No. of Infants intiatied on breastfeeding within 1 hour after birth", ReportUtils.map(moh711Cohorts.initiatedBFWithinOneHour(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Total Deliveries from HIV+ mother
+	 * @return
+	 */
+	public CohortIndicator deliveryFromHIVPosMother() {
+		return cohortIndicator("Total Deliveries from HIV+ mother", ReportUtils.map(moh711Cohorts.deliveryFromHIVPosMother(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Perinatal Deaths - Fresh still birth
+	 * @return
+	 */
+	public CohortIndicator perinatalFreshStillBirth() {
+		return cohortIndicator("Perinatal Deaths - Fresh still birth", ReportUtils.map(moh711Cohorts.perinatalFreshStillBirth(), "startDate=${startDate},endDate=${endDate}"));
+	}
+		/**
+	 * Perinatal Deaths - Macerated still birth
+	 * @return
+	 */
+	public CohortIndicator perinatalMaceratedStillBirth() {
+		return cohortIndicator("Perinatal Deaths - Macerated still birth", ReportUtils.map(moh711Cohorts.perinatalMaceratedStillBirth(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Perinatal Deaths - Death 0-7 days
+	 * @return
+	 */
+	public CohortIndicator perinatalDeathWithin0To7Days() {
+		return cohortIndicator("Perinatal Deaths - Death 0-7 days", ReportUtils.map(moh711Cohorts.perinatalDeathWithin0To7Days(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Perinatal Deaths - Death 0-28 days
+	 * @return
+	 */
+	public CohortIndicator perinatalDeathWithin0To28Days() {
+		return cohortIndicator("Perinatal Deaths - Death 0-28 days", ReportUtils.map(moh711Cohorts.perinatalDeathWithin0To28Days(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Maternal Deaths
+	 * @return
+	 */
+	public CohortIndicator maternalDeath() {
+		return cohortIndicator("Maternal Deaths", ReportUtils.map(moh711Cohorts.maternalDeath(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Maternal deaths audited within 7 days
+	 * @return
+	 */
+	public CohortIndicator maternalDeathAuditedWithin7Days() {
+		return cohortIndicator("Maternal deaths audited within 7 days", ReportUtils.map(moh711Cohorts.maternalDeathAuditedWithin7Days(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Ante Partum Haemorrhage(APH)
+	 * @return
+	 */
+	public CohortIndicator antePartumHaemorrhage(Integer motherCondition) {
+		return cohortIndicator("Ante Partum Haemorrhage(APH)", ReportUtils.map(moh711Cohorts.antePartumHaemorrhage(motherCondition), "startDate=${startDate},endDate=${endDate}"));
 	}
 
-	*//**
-	 * Number of patients in the 12 month cohort who are on an alternate first-line regimen
-	 * @return the indicator
-	 *//*
-	public CohortIndicator onAlternateFirstLineAt12Months() {
-		return cohortIndicator("On alternate 1st line at 12 months", ReportUtils.map(moh711Cohorts.onAlternateFirstLineAt12Months(), "fromDate=${startDate},toDate=${endDate + 1d}"));
+	/**
+	 * Post Partum Haemorrhage(PPH)
+	 * @return
+	 */
+	public CohortIndicator postPartumHaemorrhage(Integer motherCondition) {
+		return cohortIndicator("Post Partum Haemorrhage(PPH)", ReportUtils.map(moh711Cohorts.postPartumHaemorrhage(motherCondition), "startDate=${startDate},endDate=${endDate}"));
 	}
-
-	*//**
-	 * Number of patients in the 12 month cohort who are on a second-line regimen
-	 * @return the indicator
-	 *//*
-	public CohortIndicator onSecondLineAt12Months() {
-		return cohortIndicator("On 2nd line at 12 months", ReportUtils.map(moh711Cohorts.onSecondLineAt12Months(), "fromDate=${startDate},toDate=${endDate + 1d}"));
+	/**
+	 * Eclampsia
+	 * @return
+	 */
+	public CohortIndicator eclampsia(Integer motherCondition) {
+		return cohortIndicator("Eclampsia", ReportUtils.map(moh711Cohorts.eclampsia(motherCondition), "startDate=${startDate},endDate=${endDate}"));
 	}
-
-	*//**
-	 * Number of patients in the 12 month cohort who are on ART
-	 * @return the indicator
-	 *//*
-	public CohortIndicator onTherapyAt12Months() {
-		return cohortIndicator("On therapy at 12 months", ReportUtils.map(moh711Cohorts.onTherapyAt12Months(), "fromDate=${startDate},toDate=${endDate + 1d}"));
+	/**
+	 * Ruptured Uterus
+	 * @return
+	 */
+	public CohortIndicator rupturedUterus(Integer motherCondition) {
+		return cohortIndicator("Ruptured Uterus", ReportUtils.map(moh711Cohorts.rupturedUterus(motherCondition), "startDate=${startDate},endDate=${endDate}"));
 	}
-
-	*//**
-	 * Number of HIV care visits for females aged 18 and over
-	 * @return the indicator
-	 *//*
-	public Indicator hivCareVisitsFemale18() {
-		HivCareVisitsIndicator ind = new HivCareVisitsIndicator();
-		ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		ind.addParameter(new Parameter("endDate", "End Date", Date.class));
-		ind.setFilter(HivCareVisitsIndicator.Filter.FEMALES_18_AND_OVER);
-		return ind;
+	/**
+	 * Obstructed Labour
+	 * @return
+	 */
+	public CohortIndicator obstructedLabour(Integer motherCondition) {
+		return cohortIndicator("Obstructed Labour", ReportUtils.map(moh711Cohorts.obstructedLabour(motherCondition), "startDate=${startDate},endDate=${endDate}"));
 	}
-
-	*//**
-	 * Number of scheduled HIV care visits
-	 * @return the indicator
-	 *//*
-	public Indicator hivCareVisitsScheduled() {
-		HivCareVisitsIndicator ind = new HivCareVisitsIndicator();
-		ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		ind.addParameter(new Parameter("endDate", "End Date", Date.class));
-		ind.setFilter(HivCareVisitsIndicator.Filter.SCHEDULED);
-		return ind;
+	/**
+	 * Sepsis
+	 * @return
+	 */
+	public CohortIndicator sepsis(Integer motherCondition) {
+		return cohortIndicator("Sepsis", ReportUtils.map(moh711Cohorts.sepsis(motherCondition), "startDate=${startDate},endDate=${endDate}"));
 	}
-
-	*//**
-	 * Number of unscheduled HIV care visits
-	 * @return the indicator
-	 *//*
-	public Indicator hivCareVisitsUnscheduled() {
-		HivCareVisitsIndicator ind = new HivCareVisitsIndicator();
-		ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		ind.addParameter(new Parameter("endDate", "End Date", Date.class));
-		ind.setFilter(HivCareVisitsIndicator.Filter.UNSCHEDULED);
-		return ind;
-	}
-
-	*//**
-	 * Total number of HIV care visits
-	 * @return the indicator
-	 *//*
-	public Indicator hivCareVisitsTotal() {
-		HivCareVisitsIndicator ind = new HivCareVisitsIndicator();
-		ind.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		ind.addParameter(new Parameter("endDate", "End Date", Date.class));
-		return ind;
-	}*/
 }
