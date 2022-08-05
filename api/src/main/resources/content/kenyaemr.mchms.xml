@@ -50,8 +50,8 @@
 				<ref bean="kenyaemr.mchcs.report.maternityRegister" />
 				<ref bean="kenyaemr.mchms.report.pncRegister"/>
 				<ref bean="kenyaemr.mchms.report.currentlyEnrolledInMCH"/>
-				<ref bean="kenyaemr.mch.report.hiv.cohort.analysis.first.review" />
-				<ref bean="kenyaemr.mch.report.hiv.cohort.analysis.second.review" />
+				<ref bean="kenyaemr.mchms.report.cohort.analysis" />
+
 			</set>
 		</property>
 		<property name="fragments">
@@ -276,18 +276,11 @@
 	</bean>
 
 	<!--mch cohort descriptors-->
-	<bean id="kenyaemr.mch.report.hiv.cohort.analysis.first.review" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+	<bean id="kenyaemr.mchms.report.cohort.analysis" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="683e3bea-3237-4707-8e91-46112ed10257" />
-		<property name="name" value="Maternal_cohort_first_review" />
-		<property name="description" value="First review (12 months cohort)" />
+		<property name="name" value="Maternal_cohort_analysis" />
+		<property name="description" value="Maternal Cohort Analysis Report" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
-
- <!--<bean id="kenyaemr.mch.report.hiv.cohort.analysis.second.review" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">-->
-	<!--<property name="targetUuid" value="a9b245b8-c50f-46be-b40b-efa029dfed5d" />-->
-	<!--<property name="name" value="Maternal_cohort_second_review" />-->
-	<!--<property name="description" value="Second review (24 months cohort)" />-->
-	<!--<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>	-->
-   <!--</bean>-->
 
 </beans>

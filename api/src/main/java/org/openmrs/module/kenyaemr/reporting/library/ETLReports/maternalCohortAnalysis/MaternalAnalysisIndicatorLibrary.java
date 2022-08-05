@@ -26,148 +26,284 @@ public class MaternalAnalysisIndicatorLibrary {
     private MaternalAnalysisCohortLibrary cohortLibrary;
 
     /**
-     * Number of HIV+ patients not linked to care
+     * Number in Maternal Cohort 12 months KP
      * @return the indicator
      */
-    public CohortIndicator notLinked() {
-        return cohortIndicator("HIV+ patients not linked to care", ReportUtils.map(cohortLibrary.notLinked(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator originaCohortKp12Months() {
+        return cohortIndicator("Original cohort-KP (12 months)", ReportUtils.map(cohortLibrary.originalMaternalKpCohort(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
-     * Number of HEIs with undocumented status
-     * @return
+     * Number in Maternal Cohort 12 months NP
+     * @return the indicator
      */
-    public CohortIndicator undocumentedHEIStatus() {
-        return cohortIndicator("HEIs with undocumented status", ReportUtils.map(cohortLibrary.undocumentedHEIStatus(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator originaCohortNp12Months() {
+        return cohortIndicator("Original cohort-NP (12 months)", ReportUtils.map(cohortLibrary.originalMaternalNpCohort(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number in Maternal Cohort TI 3 months KP
+     * @return the indicator
+     */
+    public CohortIndicator transferInMaternalKp3MonthsCohort() {
+        return cohortIndicator("Transfer In Maternal Kp 3 Months Cohort", ReportUtils.map(cohortLibrary.transferInMaternalKp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number in Maternal Cohort TI 3 months NP
+     * @return the indicator
+     */
+    public CohortIndicator transferInMaternalNp3MonthsCohort() {
+        return cohortIndicator("Transfer In Maternal Np 3 Months Cohort", ReportUtils.map(cohortLibrary.transferInMaternalNp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number in Maternal Cohort TO 3 months KP
+     * @return the indicator
+     */
+    public CohortIndicator transferOutMaternalKp3MonthsCohort() {
+        return cohortIndicator("Transfer Out Maternal Kp 3 Months Cohort", ReportUtils.map(cohortLibrary.transferOutMaternalKp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number in Maternal Cohort TO 3 months NP
+     * @return the indicator
+     */
+    public CohortIndicator transferOutMaternalNp3MonthsCohort() {
+        return cohortIndicator("Transfer Out Maternal Np 3 Months Cohort", ReportUtils.map(cohortLibrary.transferOutMaternalNp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number in Maternal Cohort Discharge to CCC 3 months KP
+     * @return the indicator
+     */
+    public CohortIndicator dischargedToCCCMaternalKp3MonthsCohort() {
+        return cohortIndicator("Discharged to CCC Maternal Kp 3 Months Cohort", ReportUtils.map(cohortLibrary.dischargedToCCCMaternalKp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number in Maternal Cohort Discharged to CCC 3 months NP
+     * @return the indicator
+     */
+    public CohortIndicator dischargedToCCCMaternalNp3MonthsCohort() {
+        return cohortIndicator("Discharged to CCC Maternal Np 3 Months Cohort", ReportUtils.map(cohortLibrary.dischargedToCCCMaternalNp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number in Maternal Net Cohort  3 months KP
+     * @return the indicator
+     */
+    public CohortIndicator netCohortMaternalKp3MonthsCohort() {
+        return cohortIndicator("Net Cohort Maternal Kp 3 Months Cohort", ReportUtils.map(cohortLibrary.netCohortMaternalKp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number in Maternal Net Cohort 3 months NP
+     * @return the indicator
+     */
+    public CohortIndicator netCohortMaternalNp3MonthsCohort() {
+        return cohortIndicator("Net Cohort Maternal Np 3 Months Cohort", ReportUtils.map(cohortLibrary.netCohortMaternalNp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number in Maternal Cohort LTFU  3 months KP
+     * @return the indicator
+     */
+    public CohortIndicator ltfuMaternalKp3MonthsCohort() {
+        return cohortIndicator("Interruption In treatment (LTFU) Maternal Kp 3 Months Cohort", ReportUtils.map(cohortLibrary.ltfuMaternalKp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number in Maternal Cohort LTFU 3 months NP
+     * @return the indicator
+     */
+    public CohortIndicator ltfuMaternalNp3MonthsCohort() {
+        return cohortIndicator("Interruption In treatment (LTFU) Maternal Np 3 Months Cohort", ReportUtils.map(cohortLibrary.ltfuMaternalNp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number in Maternal Cohort reported deceased  3 months KP
+     * @return the indicator
+     */
+    public CohortIndicator deceasedMaternalKp3MonthsCohort() {
+        return cohortIndicator("Reported dead Maternal Kp 3 Months Cohort", ReportUtils.map(cohortLibrary.deceasedMaternalKp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number in Maternal Cohort deceased 3 months NP
+     * @return the indicator
+     */
+    public CohortIndicator deceasedMaternalNp3MonthsCohort() {
+        return cohortIndicator("Reported dead Maternal Np 3 Months Cohort", ReportUtils.map(cohortLibrary.deceasedMaternalNp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number in Maternal Cohort Stopped treatment  3 months KP
+     * @return the indicator
+     */
+    public CohortIndicator stoppedTreatmentMaternalKp3MonthsCohort() {
+        return cohortIndicator("Stopped treatment Maternal Kp 3 Months Cohort", ReportUtils.map(cohortLibrary.stoppedTreatmentMaternalKp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number in Maternal Cohort Stopped treatment 3 months NP
+     * @return the indicator
+     */
+    public CohortIndicator stoppedTreatmentMaternalNp3MonthsCohort() {
+        return cohortIndicator("Stopped treatment Maternal Np 3 Months Cohort", ReportUtils.map(cohortLibrary.stoppedTreatmentMaternalNp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number in Maternal Cohort Alive and Active treatment  3 months KP
+     * @return the indicator
+     */
+    public CohortIndicator aliveAndActiveOnTreatmentMaternalKp3MonthsCohort() {
+        return cohortIndicator("Alive and Active on treatment Maternal Kp 3 Months Cohort", ReportUtils.map(cohortLibrary.aliveAndActiveOnTreatmentMaternalKp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number in Maternal Cohort Alive and Active treatment 3 months NP
+     * @return the indicator
+     */
+    public CohortIndicator aliveAndActiveOnTreatmentMaternalNp3MonthsCohort() {
+        return cohortIndicator("Alive and Active on treatment Maternal Np 3 Months Cohort", ReportUtils.map(cohortLibrary.aliveAndActiveOnTreatmentMaternalNp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
-     * Number of patients with no current vl result
-     * Valid means VL was taken <= 12 months ago and invalid means VL was taken > 12 months ago
+     * Number in Maternal Cohort Vl samples taken 3 months KP
      * @return the indicator
      */
-    public CohortIndicator invalidVL() {
-        return cohortIndicator("No Current VL Results", ReportUtils.map(cohortLibrary.invalidVL(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator maternalCohortWithViralLoadSamplesCollectedKp3Months() {
+        return cohortIndicator("Vl samples collected Maternal Kp 3 Months Cohort", ReportUtils.map(cohortLibrary.maternalCohortWithViralLoadSamplesCollectedKp3Months(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number in Maternal Cohort Vl samples taken 3 months NP
+     * @return the indicator
+     */
+    public CohortIndicator maternalCohortWithViralLoadSamplesCollectedNp3Months() {
+        return cohortIndicator("Vl samples collected Maternal Np 3 Months Cohort", ReportUtils.map(cohortLibrary.maternalCohortWithViralLoadSamplesCollectedNp3Months(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
-     * Number of patients with unsuppressed VL result in their last VL. Indicated if valid or invalid vl.
-     * Valid means VL was taken <= 12 months and invalid means VL was taken > 12 months ago
+     * Number in Maternal Cohort Vl results received 3 months KP
      * @return the indicator
      */
-    public CohortIndicator unsuppressedWithValidVL() {
-        return cohortIndicator("Unsuppressed VL result", ReportUtils.map(cohortLibrary.unsuppressedWithValidVL(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator maternalCohortWithViralLoadResultsReceivedKp3Months() {
+        return cohortIndicator("Vl results received Maternal Kp 3 Months Cohort", ReportUtils.map(cohortLibrary.maternalCohortWithViralLoadResultsReceivedKp3Months(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number in Maternal Cohort Vl results received 3 months NP
+     * @return the indicator
+     */
+    public CohortIndicator maternalCohortWithViralLoadResultsReceivedNp3Months() {
+        return cohortIndicator("Vl results received Maternal Np 3 Months Cohort", ReportUtils.map(cohortLibrary.maternalCohortWithViralLoadResultsReceivedNp3Months(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
-     * Number of patients with unsuppressed VL result in their last VL. Indicated if valid or invalid vl.
-     * Valid means VL was taken <= 12 months and invalid means VL was taken > 12 months ago
+     * Number in Maternal Cohort VL results < 1000 3 months KP
      * @return the indicator
      */
-    public CohortIndicator unsuppressedWithoutValidVL() {
-        return cohortIndicator("Unsuppressed VL result", ReportUtils.map(cohortLibrary.unsuppressedWithoutValidVL(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator viralLoadResultsLessThan1000Kp3Months() {
+        return cohortIndicator("Viral Load results  <1000 copies/ml Kp (3 months)", ReportUtils.map(cohortLibrary.maternalCohortWithvlResultsLessThan10003Kp3Months(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number in Maternal Cohort VL results < 1000 3 months NP
+     * @return the indicator
+     */
+    public CohortIndicator viralLoadResultsLessThan1000Np3Months() {
+        return cohortIndicator("Viral Load results  <1000 copies/ml Np (3 months)", ReportUtils.map(cohortLibrary.maternalCohortWithvlResultsLessThan10003Np3Months(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
-     * Number of undocumented LTFU patients
+     * Number in Maternal Cohort VL results < 400 3 months KP
      * @return the indicator
      */
-    public CohortIndicator undocumentedLTFU() {
-        return cohortIndicator("Undocumented LTFU patients", ReportUtils.map(cohortLibrary.undocumentedLTFU(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator viralLoadResultsLessThan400Kp3Months() {
+        return cohortIndicator("Viral Load results  <400 copies/ml Kp (3 months)", ReportUtils.map(cohortLibrary.maternalCohortWithvlResultsLessThan400Kp3Months(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number in Maternal Cohort VL results < 400 3 months NP
+     * @return the indicator
+     */
+    public CohortIndicator viralLoadResultsLessThan400Np3Months() {
+        return cohortIndicator("Viral Load results  <400 copies/ml Np (3 months)", ReportUtils.map(cohortLibrary.maternalCohortWithvlResultsLessThan400Np3Months(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
-     * Number of patients who missed HIV appointments
+     * Number in Maternal Cohort VL results < 50 3 months KP
      * @return the indicator
      */
-    public CohortIndicator recentDefaulters() {
-        return cohortIndicator("Missed appointments", ReportUtils.map(cohortLibrary.recentDefaulters(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator viralLoadResultsLessThan50Kp3Months() {
+        return cohortIndicator("Viral Load results  <50 copies/ml Kp (3 months)", ReportUtils.map(cohortLibrary.maternalCohortWithvlResultsLessThan50Kp3Months(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number in Maternal Cohort VL results < 50 3 months NP
+     * @return the indicator
+     */
+    public CohortIndicator viralLoadResultsLessThan50Np3Months() {
+        return cohortIndicator("Viral Load results  <50 copies/ml Np (3 months)", ReportUtils.map(cohortLibrary.maternalCohortWithvlResultsLessThan50Np3Months(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
-     * Number of HEIs not linked to Mothers
+     * Number in Maternal Cohort VL results >= 1000 3 months KP
      * @return the indicator
      */
-    public CohortIndicator unlinkedHEI() {
-        return cohortIndicator("HEIs not linked to Mothers", ReportUtils.map(cohortLibrary.unlinkedHEI(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator viralLoadResultsMoreThan1000Kp3Months() {
+        return cohortIndicator("Viral Load results  >=1000 copies/ml Kp (3 months)", ReportUtils.map(cohortLibrary.maternalCohortWithvlResultsMoreThan1000Kp3Months(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number in Maternal Cohort VL results >= 1000 3 months NP
+     * @return the indicator
+     */
+    public CohortIndicator viralLoadResultsMoreThan1000Np3Months() {
+        return cohortIndicator("Viral Load results  >=1000 copies/ml Np (3 months)", ReportUtils.map(cohortLibrary.maternalCohortWithvlResultsMoreThan1000Np3Months(), "startDate=${startDate},endDate=${endDate}"));
     }
 
-    /**
-     * Number of adolescents not in OTZ
-     * @return the indicator
-     */
-    public CohortIndicator adolescentsNotInOTZ() {
-        return cohortIndicator("Adolescents not in OTZ", ReportUtils.map(cohortLibrary.adolescentsNotInOTZ(), "startDate=${startDate},endDate=${endDate}"));
-    }
 
     /**
-     * Number of children and adolescents living with HIV not in OVC
+     * Number in Maternal Cohort VL results >= 400 3 months KP
      * @return the indicator
      */
-    public CohortIndicator calhivNotInOVC() {
-        return cohortIndicator("Children not in OVC", ReportUtils.map(cohortLibrary.calhivNotInOVC(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator maternalCohortWithvlResultsMoreThan400WithEACsKp3Months() {
+        return cohortIndicator("Viral Load results  >=400 copies/ml with EACs Kp (3 months)", ReportUtils.map(cohortLibrary.maternalCohortWithvlResultsMoreThan400WithEACsKp3Months(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number in Maternal Cohort VL results >= 400 3 months NP
+     * @return the indicator
+     */
+    public CohortIndicator maternalCohortWithvlResultsMoreThan400WithEACsNp3Months() {
+        return cohortIndicator("Viral Load results  >=400 copies/ml with EACs Np (3 months)", ReportUtils.map(cohortLibrary.maternalCohortWithvlResultsMoreThan400WithEACsNp3Months(), "startDate=${startDate},endDate=${endDate}"));
     }
 
-    /**
-     * Number of children and adolescents living with HIV not on DTG regimen
-     * @return the indicator
-     */
-    public CohortIndicator calhivNotOnDTGRegimen() {
-        return cohortIndicator("Number of CALHIV not on DTG regimen", ReportUtils.map(cohortLibrary.calhivNotOnDTGRegimen(), "startDate=${startDate},endDate=${endDate}"));
-    }
-    /**
-     * Number of contacts with undocumented HIV status
-     * @return the indicator
-     */
-    public CohortIndicator contactsUndocumentedHIVStatus() {
-        return cohortIndicator("Contacts with undocumented HIV status", ReportUtils.map(cohortLibrary.contactsUndocumentedHIVStatus(), "startDate=${startDate},endDate=${endDate}"));
-    }
-    /**
-     * Number of children contacts with undocumented HIV status
-     * @return the indicator
-     */
-    public CohortIndicator childrenContactsUndocumentedHIVStatus() {
-        return cohortIndicator("Children Contacts with undocumented HIV status", ReportUtils.map(cohortLibrary.childrenContactsUndocumentedHIVStatus(), "startDate=${startDate},endDate=${endDate}"));
-    }
 
     /**
-     * Number of SNS Contacts with undocumented HIV status
+     * Number in Maternal Cohort VL results >=1000 with STF 3 months KP
      * @return the indicator
      */
-    public CohortIndicator snsContactsUndocumentedHIVStatus() {
-        return cohortIndicator("SNS Contacts with undocumented HIV status", ReportUtils.map(cohortLibrary.snsContactsUndocumentedHIVStatus(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator maternalCohortWithvlResultsMoreThan1000WithSTFKp3Months() {
+        return cohortIndicator("Viral Load results >=1000 copies/ml with STF Kp (3 months)", ReportUtils.map(cohortLibrary.maternalCohortWithvlResultsMoreThan1000WithSTFKp3Months(), "startDate=${startDate},endDate=${endDate}"));
     }
+    /**
+     * Number in Maternal Cohort VL results >=1000 with STF 3 months NP
+     * @return the indicator
+     */
+    public CohortIndicator maternalCohortWithvlResultsMoreThan1000WithSTFNp3Months() {
+        return cohortIndicator("Viral Load results >=1000 copies/ml with STF Np (3 months)", ReportUtils.map(cohortLibrary.maternalCohortWithvlResultsMoreThan1000WithSTFNp3Months(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
 
     /**
-     * Number of TX_CURR clients without NUPI
+     * Number in Maternal Cohort VL results >=1000 with STF and Repeat Vl 3 months KP
      * @return the indicator
      */
-    public CohortIndicator txCurrclientsWithoutNUPI() {
-        return cohortIndicator("TX_Curr Clients without NUPI", ReportUtils.map(cohortLibrary.txCurrclientsWithoutNUPI(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator maternalCohortWithvlResultsMoreThan1000WithSTFAndRepeatVlKp3Months() {
+        return cohortIndicator("Viral Load results >=1000 copies/ml with STF and Repeat VL Kp (3 months)", ReportUtils.map(cohortLibrary.maternalCohortWithvlResultsMoreThan1000WithSTFAndRepeatVlKp3Months(), "startDate=${startDate},endDate=${endDate}"));
     }
+    /**
+     * Number in Maternal Cohort VL results >=1000 with STF and Repeat Vl 3 months NP
+     * @return the indicator
+     */
+    public CohortIndicator maternalCohortWithvlResultsMoreThan1000WithSTFAndRepeatVlNp3Months() {
+        return cohortIndicator("Viral Load results >=1000 copies/ml with STF and Repeat VL Np (3 months)", ReportUtils.map(cohortLibrary.maternalCohortWithvlResultsMoreThan1000WithSTFAndRepeatVlNp3Months(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
 
     /**
-     * Number of patients died
+     * Number switched regimen line after confirmed treatment failure 3 months KP
      * @return the indicator
      */
-    public CohortIndicator numberOfDeaths() {
-        return cohortIndicator("Number of deaths", ReportUtils.map(cohortLibrary.numberOfDeaths(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator maternalCohortSwitchedRegimenLineAfterConfirmedSTFKp3Months() {
+        return cohortIndicator("Number Switched Regimen Line after Confirmed Treatment Failure Kp (3 months)", ReportUtils.map(cohortLibrary.maternalCohortSwitchedRegimenLineAfterConfirmedSTFKp3Months(), "startDate=${startDate},endDate=${endDate}"));
     }
-
     /**
-     * Number of patients not vaccinated for Covid-19
+     * Number switched regimen line after confirmed treatment failure 3 months NP
      * @return the indicator
      */
-    public CohortIndicator notVaccinatedForCovid19() {
-        return cohortIndicator("Number of patients not vaccinated for Covid-19", ReportUtils.map(cohortLibrary.notVaccinatedForCovid19(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator maternalCohortSwitchedRegimenLineAfterConfirmedSTFNp3Months() {
+        return cohortIndicator("Number Switched Regimen Line after Confirmed Treatment Failure Np (3 months)", ReportUtils.map(cohortLibrary.maternalCohortSwitchedRegimenLineAfterConfirmedSTFNp3Months(), "startDate=${startDate},endDate=${endDate}"));
     }
-
-    /**
-     * Number of patients not assessed for Covid-19
-     * @return the indicator
-     */
-    public CohortIndicator notAssessedForCovid19() {
-        return cohortIndicator("Number of patients not assessed for Covid-19", ReportUtils.map(cohortLibrary.notAssessedForCovid19(), "startDate=${startDate},endDate=${endDate}"));
-    }
-
 }

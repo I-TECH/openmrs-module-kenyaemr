@@ -39,6 +39,7 @@ import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQACalculati
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQASimpleObjectRegimenConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.WeightConverter;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ARTRegisterCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.MortalityLineListCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.pmtct.MaternalAnalysisCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
@@ -58,6 +59,7 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.Popul
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.TbStartDateArtDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.WHOStageArtDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.WeightAtArtDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.library.ETLReports.maternalCohortAnalysis.MaternalAnalysisIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.publicHealthActionReport.PublicHealthActionIndicatorLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -88,56 +90,89 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Report builder for First review (12 months cohort) report
+ * Report builder for Maternal Cohort review report
  */
 @Component
-@Builds({"kenyaemr.mch.report.hiv.cohort.analysis.first.review"})
+@Builds({"kenyaemr.mchms.report.cohort.analysis"})
 public class MaternalCohortAnalysisReportBuilder extends AbstractReportBuilder {
 
-
     @Autowired
-    private PublicHealthActionIndicatorLibrary publicHealthActionIndicatorLibrary;
+    private MaternalAnalysisIndicatorLibrary maternalAnalysisIndicatorLibrary;
 
     @Override
     protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {
         return Arrays.asList(
                 new Parameter("startDate", "Start Date", Date.class),
-                new Parameter("endDate", "End Date", Date.class),
-                new Parameter("dateBasedReporting", "", String.class)
+                new Parameter("endDate", "End Date", Date.class)
         );
     }
 
     @Override
     protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor reportDescriptor, ReportDefinition reportDefinition) {
-        return Arrays.asList(ReportUtils.map(publicHealthAction(), "startDate=${startDate},endDate=${endDate}")
+        return Arrays.asList(ReportUtils.map(maternalCohortFirstReview(), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
-    protected DataSetDefinition publicHealthAction() {
+    protected DataSetDefinition maternalCohortFirstReview() {
         CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
         cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cohortDsd.setName("Clinical-Action");
-        cohortDsd.setDescription("Clinical Action Report");
-        cohortDsd.addColumn("Current on ART without valid VL", "", ReportUtils.map(publicHealthActionIndicatorLibrary.invalidVL(), "startDate=${startDate},endDate=${endDate}"), "");
-        cohortDsd.addColumn("Current on ART with Unsuppressed Valid VL", "", ReportUtils.map(publicHealthActionIndicatorLibrary.unsuppressedWithValidVL(), "startDate=${startDate},endDate=${endDate}"), "");
-        cohortDsd.addColumn("Current on ART with Unsuppressed invalid VL", "", ReportUtils.map(publicHealthActionIndicatorLibrary.unsuppressedWithoutValidVL(), "startDate=${startDate},endDate=${endDate}"), "");
-        cohortDsd.addColumn("Current on ART Clients without NUPI", "", ReportUtils.map(publicHealthActionIndicatorLibrary.txCurrclientsWithoutNUPI(), "startDate=${startDate},endDate=${endDate}"), "");
-        cohortDsd.addColumn("Recent defaulters", " (Missed appointment within 30 days)", ReportUtils.map(publicHealthActionIndicatorLibrary.recentDefaulters(), "startDate=${startDate},endDate=${endDate}"), "");
-        cohortDsd.addColumn("Undocumented LTFU/IIT", "", ReportUtils.map(publicHealthActionIndicatorLibrary.undocumentedLTFU(), "startDate=${startDate},endDate=${endDate}"), "");
-        cohortDsd.addColumn("Not Vaccinated for Covid-19", "", ReportUtils.map(publicHealthActionIndicatorLibrary.notVaccinatedForCovid19(), "startDate=${startDate},endDate=${endDate}"), "");
-        cohortDsd.addColumn("Not Assessed for Covid-19 vaccination", "", ReportUtils.map(publicHealthActionIndicatorLibrary.notAssessedForCovid19(), "startDate=${startDate},endDate=${endDate}"), "");
-        cohortDsd.addColumn("CALHIV not on DTG regimen", "", ReportUtils.map(publicHealthActionIndicatorLibrary.calhivNotOnDTGRegimen(), "startDate=${startDate},endDate=${endDate}"), "");
-        cohortDsd.addColumn("CALHIV not enrolled in OVC", "", ReportUtils.map(publicHealthActionIndicatorLibrary.calhivNotInOVC(), "startDate=${startDate},endDate=${endDate}"), "");
-        cohortDsd.addColumn("Adolescents not enrolled in OTZ", "", ReportUtils.map(publicHealthActionIndicatorLibrary.adolescentsNotInOTZ(), "startDate=${startDate},endDate=${endDate}"), "");
-        cohortDsd.addColumn("HEI with undocumented HIV status", "", ReportUtils.map(publicHealthActionIndicatorLibrary.undocumentedHEIStatus(), "startDate=${startDate},endDate=${endDate}"), "");
-        cohortDsd.addColumn("HEI not Linked to Mothers", "", ReportUtils.map(publicHealthActionIndicatorLibrary.unlinkedHEI(), "startDate=${startDate},endDate=${endDate}"), "");
-        cohortDsd.addColumn("HIV+ and NOT Linked", "", ReportUtils.map(publicHealthActionIndicatorLibrary.notLinked(), "startDate=${startDate},endDate=${endDate}"), "");
-        cohortDsd.addColumn("Children of HIV infected adults with undocumented HIV status", " (Please run Children of HIV infected adults with undocumented HIV status for linelist)", ReportUtils.map(publicHealthActionIndicatorLibrary.childrenContactsUndocumentedHIVStatus(), "startDate=${startDate},endDate=${endDate}"), "");
-        cohortDsd.addColumn("PNS Contacts with undocumented HIV status", " (Please run PNS contacts with undocumented HIV status for linelist)", ReportUtils.map(publicHealthActionIndicatorLibrary.contactsUndocumentedHIVStatus(), "startDate=${startDate},endDate=${endDate}"), "");
-        cohortDsd.addColumn("SNS Contacts with undocumented HIV status", " (Please run SNS contacts with undocumented HIV status for linelist)", ReportUtils.map(publicHealthActionIndicatorLibrary.snsContactsUndocumentedHIVStatus(), "startDate=${startDate},endDate=${endDate}"), "");
-        cohortDsd.addColumn("Number of deaths", " (Please run mortality linelist for details)", ReportUtils.map(publicHealthActionIndicatorLibrary.numberOfDeaths(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.setName("Maternal-Cohort-Analysis");
+        cohortDsd.setDescription("First review (12 months cohort)");
+        cohortDsd.addColumn("Original cohort-KP (12 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.originaCohortKp12Months(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Original cohort-NP (12 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.originaCohortNp12Months(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Transfer-in(TI) KP (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.transferInMaternalKp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Transfer-in(TI) NP (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.transferInMaternalNp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Transfer-out(TO) KP (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.transferOutMaternalKp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Transfer-out(TO) NP (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.transferOutMaternalNp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Discharged to CCC KP (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.dischargedToCCCMaternalKp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Discharged to CCC NP (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.dischargedToCCCMaternalNp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Net Cohort KP (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.netCohortMaternalKp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Net Cohort NP (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.netCohortMaternalNp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Interruption In treatment (LTFU) KP (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.ltfuMaternalKp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Interruption In treatment (LTFU) NP (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.ltfuMaternalNp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Reported Dead KP (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.deceasedMaternalKp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Reported Dead NP (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.deceasedMaternalNp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Stopped treatment KP (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.stoppedTreatmentMaternalKp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Stopped treatment NP (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.stoppedTreatmentMaternalNp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Stopped treatment KP (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.stoppedTreatmentMaternalKp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Stopped treatment NP (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.stoppedTreatmentMaternalNp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Alive and active on treatment KP (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.aliveAndActiveOnTreatmentMaternalKp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Alive and active on treatment NP (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.aliveAndActiveOnTreatmentMaternalNp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Viral Load samples collected maternal Kp (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.maternalCohortWithViralLoadSamplesCollectedKp3Months(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Viral Load samples collected maternal Np (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.maternalCohortWithViralLoadSamplesCollectedNp3Months(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Viral Load results received maternal Kp (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.maternalCohortWithViralLoadResultsReceivedKp3Months(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Viral Load results received maternal Np (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.maternalCohortWithViralLoadResultsReceivedNp3Months(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Viral Load results  <1000 copies/ml Kp (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.viralLoadResultsLessThan1000Kp3Months(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Viral Load results  <1000 copies/ml Np (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.viralLoadResultsLessThan1000Np3Months(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Viral Load results  <400 copies/ml Kp (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.viralLoadResultsLessThan400Kp3Months(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Viral Load results  <400 copies/ml Np (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.viralLoadResultsLessThan400Np3Months(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Viral Load results  <50 copies/ml Kp (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.viralLoadResultsLessThan50Kp3Months(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Viral Load results  <50 copies/ml Np (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.viralLoadResultsLessThan50Np3Months(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Viral Load results  >=1000 copies/ml Kp (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.viralLoadResultsMoreThan1000Kp3Months(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Viral Load results  >=1000 copies/ml Np (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.viralLoadResultsMoreThan1000Np3Months(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Viral Load reviewed (EAC) >=400 copies/ml Kp (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.maternalCohortWithvlResultsMoreThan400WithEACsKp3Months(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Viral Load reviewed (EAC)  >=400 copies/ml Np (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.maternalCohortWithvlResultsMoreThan400WithEACsNp3Months(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Viral Load collected after STF >=1000 copies/ml Kp (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.maternalCohortWithvlResultsMoreThan1000WithSTFKp3Months(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Viral Load collected after STF >=1000 copies/ml Np (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.maternalCohortWithvlResultsMoreThan1000WithSTFNp3Months(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Viral Load collected after STF and Repeat Vl >=1000 copies/ml Kp (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.maternalCohortWithvlResultsMoreThan1000WithSTFAndRepeatVlKp3Months(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Viral Load collected after STF and Repeat VL >=1000 copies/ml Np (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.maternalCohortWithvlResultsMoreThan1000WithSTFAndRepeatVlNp3Months(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Number Switched Regimen Line after Confirmed Treatment Failure Kp (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.maternalCohortSwitchedRegimenLineAfterConfirmedSTFKp3Months(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Number Switched Regimen Line after Confirmed Treatment Failure Np (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.maternalCohortSwitchedRegimenLineAfterConfirmedSTFNp3Months(), "startDate=${startDate},endDate=${endDate}"), "");
 
+
+
+
+        return cohortDsd;
+
+    }
+    protected DataSetDefinition maternalCohortSecondReview() {
+        CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
+        cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cohortDsd.setName("Maternal-Cohort-Analysis");
+        cohortDsd.setDescription("Second review (24 months cohort)");
+        cohortDsd.addColumn("Original cohort-KP (24 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.originaCohortKp12Months(), "startDate=${startDate},endDate=${endDate}"), "");
         return cohortDsd;
 
     }

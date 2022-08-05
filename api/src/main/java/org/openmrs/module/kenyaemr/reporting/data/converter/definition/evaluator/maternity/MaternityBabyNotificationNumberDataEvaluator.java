@@ -34,10 +34,7 @@ public class MaternityBabyNotificationNumberDataEvaluator implements PersonDataE
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select\n" +
-                "  patient_id,\n" +
-                "  birth_notification_number\n" +
-                "from kenyaemr_etl.etl_mchs_discharge;";
+        String qry = "select patient_id,birth_notification_number from kenyaemr_etl.etl_hei_enrollment;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

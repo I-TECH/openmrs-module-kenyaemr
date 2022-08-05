@@ -38,7 +38,8 @@ public class HEICWCHeightDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select encounter_id,height from kenyaemr_etl.etl_hei_follow_up_visit;";
+        String qry = "select hf.encounter_id,tr.height from kenyaemr_etl.etl_patient_triage tr\n" +
+                "  inner join kenyaemr_etl.etl_hei_follow_up_visit hf on tr.patient_id = hf.patient_id and tr.visit_date = hf.visit_date;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
