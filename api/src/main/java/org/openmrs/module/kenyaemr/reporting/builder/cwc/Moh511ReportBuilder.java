@@ -32,6 +32,7 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEICW
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEICWCVitaminASupplementationDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEICWCWeightCategoriesDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEICWCWeightDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEICWMNPSupplimentationDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.maternity.MaternityBirthNotificationNumberDataDefinition;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -66,7 +67,7 @@ public class Moh511ReportBuilder extends AbstractReportBuilder {
 	@Override
     protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor descriptor, ReportDefinition report) {
         return Arrays.asList(
-                ReportUtils.map(moh511DataSetDefinition("cwcRegister"), "startDate=${startDate},endDate=${endDate}")
+                ReportUtils.map(moh511DataSetDefinition(), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
@@ -79,9 +80,9 @@ public class Moh511ReportBuilder extends AbstractReportBuilder {
 		);
 	}
 	
-	protected DataSetDefinition moh511DataSetDefinition(String datasetName) {
+	protected DataSetDefinition moh511DataSetDefinition() {
 
-        EncounterDataSetDefinition dsd = new EncounterDataSetDefinition(datasetName);
+        EncounterDataSetDefinition dsd = new EncounterDataSetDefinition("CWCRegister");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
         String paramMapping = "startDate=${startDate},endDate=${endDate}";
@@ -109,15 +110,15 @@ public class Moh511ReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("Weight category", new HEICWCWeightCategoriesDataDefinition(), "");
         dsd.addColumn("Height", new HEICWCHeightDataDefinition(), "");
         dsd.addColumn("Muac", new HEICWCMuacDataDefinition(), "");
-        dsd.addColumn("Exclusive Breast feeding  (less than 6 months)", new HEICWCExclusiveBreastfeeding6MonthsDataDefinition(), "");
-        dsd.addColumn("Vit A supplementation 6-59m", new HEICWCVitaminASupplementationDataDefinition(), "");
+        dsd.addColumn("Exclusive Breast feeding", new HEICWCExclusiveBreastfeeding6MonthsDataDefinition(), "");
+        dsd.addColumn("Vit A supplementation", new HEICWCVitaminASupplementationDataDefinition(), "");
         dsd.addColumn("Dewormed", new HEICWCDewormedDataDefinition(), "");
-        dsd.addColumn("MNPs Supplementation(6-23 children)", new HEICWCDewormedDataDefinition(), "");
+        dsd.addColumn("MNPs Supplementation", new HEICWMNPSupplimentationDataDefinition(), "");
         dsd.addColumn("Assessed for Developmental milestones", new HEICWCAssessedDevelopmentalMilestonesDataDefinition(), "");
        // dsd.addColumn("Danger signs", "", ""); TODO: updates on new mockups
         dsd.addColumn("Disability", new HEICWCDisabilityDataDefinition(), "");
         // dsd.addColumn("Immunization Status Up to Date",  ""); TODO:
-        //dsd.addColumn("Follow up", new HEICWCFollowupDataDefinition(), "");      TODO: To be ETLed
+        dsd.addColumn("Follow up", new HEICWCFollowupDataDefinition(), "");      TODO:
         dsd.addColumn("Referred to", new HEICWCReferredToDataDefinition(), "");
         //dsd.addColumn("Reasons for referral", , ""); TODO: updates on new mockups
         dsd.addColumn("Remarks", new HEICWCRemarksDataDefinition(), "");

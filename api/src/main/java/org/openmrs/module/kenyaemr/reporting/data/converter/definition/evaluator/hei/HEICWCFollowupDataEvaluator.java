@@ -35,7 +35,9 @@ public class HEICWCFollowupDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "";
+        String qry = "select encounter_id,\n" +
+                " (case followup_type when 132636 then 'Marasmus' when 116474 then 'Kwashiorkor' when 115122 then 'Mulnutrition' when 5622 then 'Other' else \"\" end) as followup_type\n" +
+                " from kenyaemr_etl.etl_hei_follow_up_visit;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
