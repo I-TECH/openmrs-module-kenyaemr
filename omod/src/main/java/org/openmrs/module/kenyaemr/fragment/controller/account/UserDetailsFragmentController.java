@@ -1,17 +1,12 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.fragment.controller.account;
 
 import org.apache.commons.lang.StringUtils;
@@ -80,10 +75,10 @@ public class UserDetailsFragmentController {
 
 		if (user.getUserId() == null) {
 			// New users can be saved with a password
-			Context.getUserService().saveUser(user, newPassword);
+			Context.getUserService().createUser(user, newPassword);
 		}
 		else {
-			Context.getUserService().saveUser(user, null);
+			Context.getUserService().saveUser(user);
 
 			// To save a password for an original user, have to call changePassword
 			if (newPassword != null) {
@@ -137,7 +132,7 @@ public class UserDetailsFragmentController {
 				this.username = original.getUsername();
 				this.password = PLACEHOLDER;
 				this.confirmPassword = PLACEHOLDER;
-				this.secretQuestion = original.getSecretQuestion();
+				this.secretQuestion = Context.getUserService().getSecretQuestion(original);
 				this.secretAnswer = PLACEHOLDER;
 				this.roles = original.getRoles();
 			}
@@ -192,8 +187,8 @@ public class UserDetailsFragmentController {
 
 			// Check if user changed secret question but not the answer as well - not allowed
 			if (original != null
-					&& !(command.getSecretQuestion().equals("") && original.getSecretQuestion() == null)
-					&& !command.getSecretQuestion().equals(original.getSecretQuestion())
+					&& !(command.getSecretQuestion().equals("") && Context.getUserService().getSecretQuestion(original) == null)
+					&& !command.getSecretQuestion().equals(Context.getUserService().getSecretQuestion(original))
 					&& PLACEHOLDER.equals(command.getSecretAnswer())) {
 				errors.rejectValue("secretAnswer", "kenyaemr.error.secretAnswerNotChangedWithQuestion");
 			}

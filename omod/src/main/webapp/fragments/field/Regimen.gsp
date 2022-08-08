@@ -1,84 +1,105 @@
 <%
-	def units = [ "mg", "g", "ml", "tab" ]
-
-	def frequencies = [
-			OD: "Once daily",
-			NOCTE: "Once daily, at bedtime",
-			qPM: "Once daily, in the evening",
-			qAM: "Once daily, in the morning",
-			BD: "Twice daily",
-			TDS: "Thrice daily"
-	]
-
-	def refDefIndex = 0;
 
 	def groupOptions = {
-		it.regimens.collect( { reg -> """<option value="${ refDefIndex++ }">${ reg.name }</option>""" } ).join()
+		it.regimens.collect( { reg -> """<option value="${ reg.conceptRef }">${ reg.name }</option>""" } ).join()
 	}
-
-	def drugOptions = drugs.collect( { """<option value="${ it }">${ kenyaEmrUi.formatDrug(it, ui) }</option>""" } ).join()
-	def unitsOptions = units.collect( { """<option value="${ it }">${ it }</option>""" } ).join()
-	def frequencyOptions = frequencies.collect( { """<option value="${ it.key }">${ it.value }</option>""" } ).join()
 %>
 <script type="text/javascript">
-	// Create variable to hold regimen presets
-	if (typeof regimen_presets === 'undefined') {
-		regimen_presets = new Array();
-	}
-	regimen_presets['${ config.id }'] = ${ ui.toJson(regimenDefinitions) };
 
-	jq(function() {
-		jq('#${ config.id }-container .standard-regimen-select').change(function () {
-			// Get selected regimen definition
-			var stdRegIndex = parseInt(jq(this).val());
-			var stdReg = regimen_presets['${ config.id }'][stdRegIndex];
-			var components = stdReg.components;
+	jq(function () {
+		//On Ready
+		jq('#drugs-select').hide();
+		var nonStandardRegimenCkbox = jq('input[name="nonstandardregimen"]');
 
-			// Get container div and component fields
-			var container = jq(this).parent();
-			var drugFields = container.find('.regimen-component-drug');
-			var doseFields = container.find('.regimen-component-dose');
-			var unitsFields = container.find('.regimen-component-units');
-			var frequencyFields = container.find('.regimen-component-frequency');
-
-			// Clear all inputs
-			container.find('input, select').val('');
-
-			// Set component controls for each component of selected regimen
-			for (var c = 0; c < components.length; c++) {
-				var component = components[c];
-				jq(drugFields[c]).val(component.drugRef);
-				jq(doseFields[c]).val(component.dose);
-				jq(unitsFields[c]).val(component.units);
-				jq(frequencyFields[c]).val(component.frequency);
+		nonStandardRegimenCkbox.on('click', function(){
+			if ( jq(this).is(':checked') ) {
+				jq('#drugs-select').show();
+				jq('#standard').val('')
+				jq('#standard').prop('disabled', 'disabled');
+			}else {
+				jq('#drugs-select').hide();
+				jq('#non-standard').val('')
+				jq('#standard').prop('disabled', false);
 			}
-
-			kenyaemr.updateRegimenFromDisplay('${ config.id }');
 		});
 
-		jq('#${ config.id }-container .regimen-component-drug, #${ config.id }-container .regimen-component-dose, #${ config.id }-container .regimen-component-units, #${ config.id }-container .regimen-component-frequency').blur(function() {
-			kenyaemr.updateRegimenFromDisplay('${ config.id }');
-		});
+
 	});
+
 </script>
 
 <div id="${ config.id }-container">
 	<input type="hidden" id="${ config.id }" name="${ config.formFieldName }" />
-	<i>Use standard:</i> <select class="standard-regimen-select">
+	<i>Use standard:</i> <select class="standard-regimen-select" name="regimenConceptRef" id="standard">
 		<option label="Select..." value="" />
+	<option value="">Select...</option>
 		<% regimenGroups.each { group -> %>
 			<optgroup label="${ group.name }">${ groupOptions(group) }</optgroup>
-		<% } %>
-	</select><br />
+	<% } %>
+	</select>
+	<%if (config.category =="ARV") { %>
+	<span id="others-checked">
+		<input type="checkbox" name="nonstandardregimen" value="nonstandardregimen" id="other">Use none standard<br>
+	</span>
+	<% } %>
+	<br />
+
+	<%if (config.category =="ARV") { %>
+	<span id="reg-line">
+	<i>Regimen line:</i> <select   name="regimenLine" id="regimenLine">
+		<option value="" >Select regimen line ... </option>
+		<option value="AF">Adult First line</option>
+		<option  value="AS">Adult Second line</option>
+		<option  value="AT" >Adult Third line</option>
+		<option  value="CF" >Child First line</option>
+		<option  value="CS" >Child Second line</option>
+		<option  value="CT">Child Third line</option>
+	</select>
+	</span>
+	<% } %>
 	<br />
 	<span id="${ config.id }-error" class="error" style="display: none"></span>
-	<% for (def c = 0; c < maxComponents; ++c) { %>
-	<div class="regimen-component">
-		Drug: <select class="regimen-component-drug"><option value="" />${ drugOptions }</select>
-		Dosage: <input class="regimen-component-dose" type="text" size="5" /><select class="regimen-component-units">${ unitsOptions }</select>
-		Frequency: <select class="regimen-component-frequency">${ frequencyOptions }</select>
+
+
+	<div id="drugs-select">
+
+		<i>Drug:</i>
+		<select class="standard-regimen-select" id="non-standard" name="regimenConceptNonStandardRef">
+		<option label="Select..." value="" />
+			<% arvDrugs.each { drug -> %>
+			<option value="${ drug.drugUuid }">${ drug.name }</option>
+		<% } %>
+	</select><br />
+		<i>Drug:</i>
+		<select class="standard-regimen-select" name="regimenConceptNonStandardRefOne">
+		<option label="Select..." value="" />
+			<% arvDrugs.each { drug -> %>
+			<option value="${ drug.drugUuid }">${ drug.name }</option>
+		<% } %>
+	</select><br />
+		<i>Drug:</i>
+		<select class="standard-regimen-select" name="regimenConceptNonStandardRefTwo">
+		<option label="Select..." value="" />
+			<% arvDrugs.each { drug -> %>
+			<option value="${ drug.drugUuid }">${ drug.name }</option>
+		<% } %>
+	</select><br />
+		<i>Drug:</i>
+		<select class="standard-regimen-select" name="regimenConceptNonStandardRefThree">
+		<option label="Select..." value="" />
+		<% arvDrugs.each { drug -> %>
+		<option value="${ drug.drugUuid }">${ drug.name }</option>
+		<% } %>
+	</select><br />
+		<i>Drug:</i>
+		<select class="standard-regimen-select" name="regimenConceptNonStandardRefFour">
+		<option label="Select..." value="" />
+			<% arvDrugs.each { drug -> %>
+			<option value="${ drug.drugUuid }">${ drug.name }</option>
+		<% } %>
+	</select><br />
 	</div>
-	<% } %>
+
 </div>
 
 <% if (config.parentFormId) { %>

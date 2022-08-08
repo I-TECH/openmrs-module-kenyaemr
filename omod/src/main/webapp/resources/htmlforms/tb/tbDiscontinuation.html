@@ -20,6 +20,9 @@
 	</style>
 
 	<script type="text/javascript">
+		var tbDiscontinuation_VELOCITY = "<lookup expression="kenyaemr.TbDiscontinuationVelocityCalculation()" />";
+		var tbStartDate = tbDiscontinuation_VELOCITY.split(",")[0].split(":")[1];
+		var enrollmentDate = tbDiscontinuation_VELOCITY.split(",")[1].split(":")[1];
 
 			function treatmentoutcomes(){
 				if (getValue('treatment_outcome.value') == "") {
@@ -43,22 +46,37 @@
 			jq(function() {
 				treatmentoutcomes();
 				jq('#treatment_outcome').click(treatmentoutcomes);
+				var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
+				var discontinueDate;
 
 				beforeSubmit.push(function() {
 					if (getValue('treatment_outcome.value') == "") {
 						getField('treatment_outcome.error').html('Missing treatment outcome').show();
 						return false;
 					}
-					/*if ((getValue('treatmentoutcomedate.value') == "")){
-						getField('treatmentoutcomedate.error').html('Missing treatment outcome date').show();
-						return false;
-
-					}*/
 					if (getValue('treatment_outcome.value') == 159492){
 						if(getValue('transferredoutto.value') == ""){
 							getField('transferredoutto.error').html('Missing transfer to facility').show();
 							return false;
 						}
+					}
+
+					discontinueDate = new Date(getValue('encounter-date.value')).getTime();
+
+					if(discontinueDate &lt; pbirthdate){
+						getField('encounter-date.error').html('Discontinue date, should not be earlier than Birth date').show();
+						return false;
+					}
+					if(discontinueDate &lt; tbStartDate){
+						getField('encounter-date.error').html('Discontinue date, should not be earlier than tb start date').show();
+						return false;
+					}
+					if(discontinueDate &lt; enrollmentDate){
+						getField('encounter-date.error').html('Discontinue date, should not be earlier than Enrollment date').show();
+						return false;
+					}else {
+						getField('encounter-date.error').html('Discontinue date, should not be earlier than Enrollment').hide();
+
 					}
 					return true;
 				});

@@ -1,15 +1,11 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
 package org.openmrs.module.kenyaemr.reporting.library.shared.hiv;
 
@@ -17,7 +13,7 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
 import org.openmrs.Program;
-import org.openmrs.api.PatientSetService;
+import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.kenyacore.report.cohort.definition.DateCalculationCohortDefinition;
@@ -51,7 +47,6 @@ import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.openmrs.reporting.Report;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -107,7 +102,7 @@ public class QiEmtctCohortLibrary {
 		cd.setName("Women delivered in a facility");
 		cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-		cd.setTimeModifier(PatientSetService.TimeModifier.ANY);
+		cd.setTimeModifier(TimeModifier.ANY);
 		cd.setQuestion(placeOfBirth);
 		cd.setValueList(Arrays.asList(home, other, unknown, enrouteToHealthFacility));
 		cd.setOperator(SetComparator.NOT_IN);
@@ -243,7 +238,7 @@ public class QiEmtctCohortLibrary {
 		cdVl.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cdVl.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cdVl.setQuestion(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD));
-		cdVl.setTimeModifier(PatientSetService.TimeModifier.LAST);
+		cdVl.setTimeModifier(TimeModifier.LAST);
 
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("Hiv infected, pregnant women or lactating on ART and VL in the last 6 months");
@@ -316,7 +311,7 @@ public class QiEmtctCohortLibrary {
 		cdVlLess1000.setQuestion(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD));
 		cdVlLess1000.setOperator1(RangeComparator.LESS_THAN);
 		cdVlLess1000.setValue1(1000.0);
-		cdVlLess1000.setTimeModifier(PatientSetService.TimeModifier.LAST);
+		cdVlLess1000.setTimeModifier(TimeModifier.LAST);
 
 
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -341,7 +336,7 @@ public class QiEmtctCohortLibrary {
 		cdVlLess1000.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
 		cdVlLess1000.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 		cdVlLess1000.setQuestion(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD));
-		cdVlLess1000.setTimeModifier(PatientSetService.TimeModifier.LAST);
+		cdVlLess1000.setTimeModifier(TimeModifier.LAST);
 
 		CompositionCohortDefinition cd = new CompositionCohortDefinition();
 		cd.setName("pregnant and on art 6 months ago");

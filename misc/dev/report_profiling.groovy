@@ -15,8 +15,8 @@
 /**
  * Configures logging for profiling of reports
  */
-
-import org.apache.log4j.*;
+import org.apache.log4j.Level
+import org.apache.log4j.LogManager;
 LogManager.getLogger("org.openmrs.module.reporting.evaluation.EvaluationProfiler").setLevel(Level.TRACE);
 LogManager.getLogger("org.openmrs.api").setLevel(Level.WARN); // Switch off general service call logging
 

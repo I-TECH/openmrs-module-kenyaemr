@@ -21,7 +21,6 @@
 			heading: "My Profile",
 			items: [
 					[ label: "Change Password", iconProvider: "kenyaui", icon: "buttons/profile_password.png", onClick: "showChangePasswordDialog()" ],
-					[ label: "Change Secret Question", iconProvider: "kenyaui", icon: "buttons/profile_secret_question.png", onClick: "showSecretQuestionDialog()" ]
 			]
 	]) }
 </div>

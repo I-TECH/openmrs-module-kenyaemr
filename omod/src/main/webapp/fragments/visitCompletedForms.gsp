@@ -2,7 +2,8 @@
 	ui.decorateWith("kenyaui", "panel", [ heading: "Completed Visit Forms" ])
 
 	def onEncounterClick = { encounter ->
-		"""kenyaemr.openEncounterDialog('${ currentApp.id }', ${ encounter.id });"""
+		def title = ui.format(encounter.form ?: encounter.encounterType)
+		"""kenyaemr.openEncounterDialog('${ currentApp.id }', ${ encounter.id },'${ title }');"""
 	}
 %>
 

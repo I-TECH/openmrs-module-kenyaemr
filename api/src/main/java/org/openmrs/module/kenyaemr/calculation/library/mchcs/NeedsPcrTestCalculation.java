@@ -1,19 +1,16 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.calculation.library.mchcs;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.joda.time.Months;
 import org.joda.time.Weeks;
@@ -29,10 +26,10 @@ import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 
 import java.util.Collection;
 import java.util.Date;
@@ -43,7 +40,7 @@ import java.util.Set;
  * Determines whether a child at 6 week and above has had PCR test
  */
 public class NeedsPcrTestCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
-
+	protected static final Log log = LogFactory.getLog(NeedsPcrTestCalculation.class);
 	/**
 	 * @see org.openmrs.module.kenyacore.calculation.PatientFlagCalculation#getFlagMessage()
 	 */
@@ -82,13 +79,14 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
 
 				Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, ptId);
 				Obs pcrTestObs =  EmrCalculationUtils.obsResultForPatient(lastPcrTestReaction, ptId);
-				Obs pcrTestObsQual =  EmrCalculationUtils.obsResultForPatient(lastPcrTestReaction, ptId);
+				Obs pcrTestObsQual =  EmrCalculationUtils.obsResultForPatient(lastPcrTestQualitative, ptId);
 
 				//get birth date of this patient
 				Person person = Context.getPersonService().getPerson(ptId);
 
-				if (hivStatusObs != null && pcrTestObs == null &&  pcrTestObsQual == null && (hivStatusObs.getValueCoded().equals(hivExposed)) && getAgeInWeeks(person.getBirthdate(), context.getNow()) >= 6 && getAgeInMonts(person.getBirthdate(), context.getNow()) <= 9) {
+				if (hivStatusObs != null && pcrTestObs == null &&  pcrTestObsQual == null && (hivStatusObs.getValueCoded().equals(hivExposed)) && getAgeInWeeks(person.getBirthdate(), context.getNow()) >= 6 && getAgeInMonths(person.getBirthdate(), context.getNow()) <= 12) {
 					needsPcr = true;
+
 				}
 
 			}
@@ -104,7 +102,7 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
 		return Weeks.weeksBetween(d1, d2).getWeeks();
 	}
 
-	Integer getAgeInMonts(Date birtDate, Date context) {
+	Integer getAgeInMonths(Date birtDate, Date context) {
 		DateTime d1 = new DateTime(birtDate.getTime());
 		DateTime d2 = new DateTime(context.getTime());
 		return Months.monthsBetween(d1, d2).getMonths();

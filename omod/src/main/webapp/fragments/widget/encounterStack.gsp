@@ -7,7 +7,7 @@
 
 			title += " (" + kenyaui.formatDateAuto(encounter.encounterDatetime) + ")"
 
-			def providers = encounter.providersByRoles.values().collectAll { ui.format(it) }.flatten().join(", ")
+			def providers = encounter.providersByRoles.values().collectNested { ui.format(it) }.flatten().join(", ")
 
 			def form = encounter.form ? ui.simplifyObject(encounter.form) : [ iconProvider : "kenyaemr", icon : "forms/generic.png" ]
 

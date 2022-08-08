@@ -1,17 +1,12 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.page.controller;
 
 import org.apache.commons.lang.StringUtils;
@@ -72,7 +67,7 @@ public class ForgotPasswordPageController {
 				User user = null;
 
 				try {
-					Context.addProxyPrivilege(PrivilegeConstants.VIEW_USERS);
+					Context.addProxyPrivilege(PrivilegeConstants.GET_USERS);
 
 					// Only search if they actually put in a username
 					if (!StringUtils.isEmpty(username)) {
@@ -80,17 +75,17 @@ public class ForgotPasswordPageController {
 					}
 				}
 				finally {
-					Context.removeProxyPrivilege(PrivilegeConstants.VIEW_USERS);
+					Context.removeProxyPrivilege(PrivilegeConstants.GET_USERS);
 				}
 
 				if (user == null) {
 					// Client might be trying to guess a username
 					IPAccessSecurity.registerFailedAccess(ipAddress);
 					kenyaUi.notifyError(httpSession, "auth.question.empty");
-				} else if (StringUtils.isEmpty(user.getSecretQuestion())) {
+				} else if (StringUtils.isEmpty(Context.getUserService().getSecretQuestion(user))) {
 					kenyaUi.notifyError(httpSession, "auth.question.empty");
 				} else {
-					model.addAttribute("secretQuestion", user.getSecretQuestion());
+					model.addAttribute("secretQuestion", Context.getUserService().getSecretQuestion(user));
 				}
 
 			} else {
@@ -99,17 +94,17 @@ public class ForgotPasswordPageController {
 				User user = null;
 
 				try {
-					Context.addProxyPrivilege(PrivilegeConstants.VIEW_USERS);
+					Context.addProxyPrivilege(PrivilegeConstants.GET_USERS);
 					user = Context.getUserService().getUserByUsername(username);
 				}
 				finally {
-					Context.removeProxyPrivilege(PrivilegeConstants.VIEW_USERS);
+					Context.removeProxyPrivilege(PrivilegeConstants.GET_USERS);
 				}
 
 				// Check the secret question again in case the user got here "illegally"
-				if (user == null || StringUtils.isEmpty(user.getSecretQuestion())) {
+				if (user == null || StringUtils.isEmpty(Context.getUserService().getSecretQuestion(user))) {
 					kenyaUi.notifyError(httpSession, "auth.question.empty");
-				} else if (user.getSecretQuestion() != null && Context.getUserService().isSecretAnswer(user, secretAnswer)) {
+				} else if (Context.getUserService().getSecretQuestion(user) != null && Context.getUserService().isSecretAnswer(user, secretAnswer)) {
 
 					String randomPassword = randomPassword();
 
@@ -130,7 +125,7 @@ public class ForgotPasswordPageController {
 					return "redirect:/" + EmrConstants.MODULE_ID + "/profile.page";
 				} else {
 					kenyaUi.notifyError(httpSession, "auth.answer.invalid");
-					model.addAttribute("secretQuestion", user.getSecretQuestion());
+					model.addAttribute("secretQuestion", Context.getUserService().getSecretQuestion(user));
 					IPAccessSecurity.registerFailedAccess(ipAddress);
 				}
 			}

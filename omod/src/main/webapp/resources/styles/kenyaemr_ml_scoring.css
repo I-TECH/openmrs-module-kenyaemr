@@ -1,0 +1,46 @@
+.ke-ml-high-risk {
+    padding: 10px 20px;
+    background-color: orange;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+   .ke-ml-low-risk {
+    padding: 10px 20px;
+    background-color: green;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+   .ke-ml-medium-risk {
+    padding: 10px 20px;
+    background-color: yellowgreen;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+   .ke-ml-very-high-risk {
+    padding: 10px 20px;
+    background-color: darkred;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.ke-getscore-button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #155cd2;
+    color: #ffffff;
+    /*font-family: Montserrat;*/
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.ke-getscore-button:hover {
+    background-color:#002ead;
+      transition: 0.7s;
+}
