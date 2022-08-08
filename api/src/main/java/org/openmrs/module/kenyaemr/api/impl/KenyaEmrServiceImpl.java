@@ -1,17 +1,12 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.api.impl;
 
 import org.apache.commons.logging.Log;
@@ -31,15 +26,15 @@ import org.openmrs.module.idgen.IdentifierSource;
 import org.openmrs.module.idgen.SequentialIdentifierGenerator;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
 import org.openmrs.module.idgen.validator.LuhnModNIdentifierValidator;
-import org.openmrs.module.kenyaemr.metadata.FacilityMetadata;
-import org.openmrs.module.kenyaemr.wrapper.Facility;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.kenyacore.identifier.IdentifierManager;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.api.db.KenyaEmrDAO;
-import org.openmrs.module.kenyacore.identifier.IdentifierManager;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.FacilityMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.wrapper.Facility;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.util.OpenmrsUtil;
 import org.openmrs.util.PrivilegeConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,15 +108,15 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	@Override
 	public Location getDefaultLocation() {
 		try {
-			Context.addProxyPrivilege(PrivilegeConstants.VIEW_LOCATIONS);
-			Context.addProxyPrivilege(PrivilegeConstants.VIEW_GLOBAL_PROPERTIES);
+			Context.addProxyPrivilege(PrivilegeConstants.GET_LOCATIONS);
+			Context.addProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
 
 			GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(EmrConstants.GP_DEFAULT_LOCATION);
 			return gp != null ? ((Location) gp.getValue()) : null;
 		}
 		finally {
-			Context.removeProxyPrivilege(PrivilegeConstants.VIEW_LOCATIONS);
-			Context.removeProxyPrivilege(PrivilegeConstants.VIEW_GLOBAL_PROPERTIES);
+			Context.removeProxyPrivilege(PrivilegeConstants.GET_LOCATIONS);
+			Context.removeProxyPrivilege(PrivilegeConstants.GET_GLOBAL_PROPERTIES);
 		}
 	}
 	
@@ -131,13 +126,13 @@ public class KenyaEmrServiceImpl extends BaseOpenmrsService implements KenyaEmrS
 	@Override
 	public String getDefaultLocationMflCode() {
 		try {
-			Context.addProxyPrivilege(PrivilegeConstants.VIEW_LOCATION_ATTRIBUTE_TYPES);
+			Context.addProxyPrivilege(PrivilegeConstants.GET_LOCATION_ATTRIBUTE_TYPES);
 
 			Location location = getDefaultLocation();
 			return (location != null) ? new Facility(location).getMflCode() : null;
 		}
 		finally {
-			Context.removeProxyPrivilege(PrivilegeConstants.VIEW_LOCATION_ATTRIBUTE_TYPES);
+			Context.removeProxyPrivilege(PrivilegeConstants.GET_LOCATION_ATTRIBUTE_TYPES);
 		}
 	}
 

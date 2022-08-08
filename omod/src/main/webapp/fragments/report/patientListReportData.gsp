@@ -34,7 +34,7 @@
 			dataSet.rows.each { row ->
 				def patientId = row.getColumnValue("id")
 				def personName = row.getColumnValue("Name")
-				def personGender = row.getColumnValue("Sex").toLowerCase()
+				def personGender = row.getColumnValue("Sex") != null ? row.getColumnValue("Sex").toLowerCase() : ""
 		%>
 			<tr>
 				<td>

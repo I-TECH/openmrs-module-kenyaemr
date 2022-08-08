@@ -15,7 +15,7 @@
 		<div class="ke-panel-heading">Help</div>
 		<div class="ke-panel-content">
 			<div id="new">
-				<h3><u>Register new Patient</u></h3>
+				<h3><u>Register new Client</u></h3>
 				Use this option if you are registering the patient for the first time in the system.
 
 			</div>

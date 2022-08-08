@@ -1,17 +1,12 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.fragment.controller.patient;
 
 import org.openmrs.Patient;
@@ -23,6 +18,7 @@ import org.openmrs.module.appframework.domain.AppDescriptor;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.form.FormManager;
+import org.openmrs.module.kenyaemr.calculation.library.MissingAllRegistrationIdentifiersCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.RecordedDeceasedCalculation;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.ui.framework.SimpleObject;
@@ -57,6 +53,7 @@ public class PatientSummaryFragmentController {
 
 		model.addAttribute("patient", patient);
 		model.addAttribute("recordedAsDeceased", hasBeenRecordedAsDeceased(patient));
+		model.addAttribute("missingIdentifiers", hasNoRequiredRegistrationIdentifiers(patient));
 		model.addAttribute("forms", forms);
 	}
 
@@ -67,6 +64,21 @@ public class PatientSummaryFragmentController {
 	 */
 	protected boolean hasBeenRecordedAsDeceased(Patient patient) {
 		PatientCalculation calc = CalculationUtils.instantiateCalculation(RecordedDeceasedCalculation.class, null);
+		return ResultUtil.isTrue(Context.getService(PatientCalculationService.class).evaluate(patient.getId(), calc));
+	}
+	/**
+	 * Checks if a patient has been recorded required patient registration identifiers
+	 * Patient Clinic Number
+	 * National ID Number
+	 * Passport Number
+	 * Huduma Number
+	 * Birth Certificate Number
+	 *
+	 * @param patient the patient
+	 * @return true if patient has no recorded registration identifiers
+	 */
+	protected boolean hasNoRequiredRegistrationIdentifiers(Patient patient) {
+		PatientCalculation calc = CalculationUtils.instantiateCalculation(MissingAllRegistrationIdentifiersCalculation.class, null);
 		return ResultUtil.isTrue(Context.getService(PatientCalculationService.class).evaluate(patient.getId(), calc));
 	}
 }

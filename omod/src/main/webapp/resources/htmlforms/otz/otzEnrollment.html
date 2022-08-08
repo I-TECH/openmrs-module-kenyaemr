@@ -1,0 +1,229 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+	
+	<script type="text/javascript">
+		var transfer = "<lookup expression="fn.latestObs(160563).getValueCoded()"/>"
+		var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
+		var enrollmentDate;
+		beforeSubmit.push(function() {
+			enrollmentDate = new Date(getValue('encounter-date.value')).getTime();
+
+			if(enrollmentDate &lt; pbirthdate){
+				getField('encounter-date.error').html('Enrollment date, should not be earlier than Birth date').show();
+				return false;
+			}
+			return true;
+		});
+
+
+		jQuery(function($){
+			jq('#previous-module').hide();
+			jq('#yes-label').hide();
+			jq('#yes-field').hide();
+			if(transfer ==1065 &amp;&amp; jq('#transfer-in-status input[value=1065]:checked').length > 0) {
+				jq('#yes-label').show();
+				jq('#yes-field').show();
+				jq('#previous-module').show();
+			}
+
+			jq('#transfer-in-status :input[type=radio]').click(isTransferIn);
+
+		});
+		function isTransferIn() {
+			var val = jq(this).val();
+			if(val ==1065) {
+				jq('#yes-label').show();
+				jq('#yes-field').show();
+				jq('#previous-module').show();
+
+			}else {
+				jq('#yes-label').hide();
+				jq('#yes-field').hide();
+				jq('#previous-module').hide();
+				jq('#date-initially-enrolled :input').val('');
+				jq('#orientation input[type=radio]').attr('checked',false);
+				jq('#participation input[type=radio]').attr('checked',false);
+				jq('#leadership input[type=radio]').attr('checked',false);
+				jq('#future-decision input[type=radio]').attr('checked',false);
+				jq('#transition-adult-care input[type=radio]').attr('checked',false);
+				jq('#treatment-literacy input[type=radio]').attr('checked',false);
+				jq('#srh input[type=radio]').attr('checked',false);
+				jq('#beyond-third-90 input[type=radio]').attr('checked',false);
+			}
+
+		}
+	</script>
+	<style>
+		.simple-table {
+			border: solid 1px #DDEEEE;
+			border-collapse: collapse;
+			border-spacing: 0;
+			font: normal 13px Arial, sans-serif;
+		}
+
+		.simple-table thead th {
+			background-color: #DDEFEF;
+			border: solid 1px #DDEEEE;
+			color: #336B6B;
+			padding: 10px;
+			text-align: left;
+			text-shadow: 1px 1px 1px #fff;
+		}
+
+		.simple-table td {
+			border: solid 1px #DDEEEE;
+			color: #333;
+			padding: 10px;
+			text-shadow: 1px 1px 1px #fff;
+		}
+	</style>
+
+	<div class="ke-form-header">
+		<table width="100%">
+		  <tr>
+				<ifMode mode="ENTER">
+
+				</ifMode>
+				<td>Enrollment Date: <encounterDate id="encounter-date" showTime="true" /></td>
+				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
+		  </tr>
+		</table>
+	</div>
+
+	<div class="ke-form-content">
+		<fieldset>
+			<legend>Transfer In</legend>
+			<table class="simple-table">
+				<tr>
+					<td>Is client transfer in?</td>
+					<td>
+						<obs
+								id="transfer-in-status" conceptId="160563" style="radio"
+								answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								answerLabels="Yes,No"
+								required="true"
+						/>
+					</td>
+					<td id="yes-label">If Yes,date initially enrolled to OTZ</td>
+					<td id="yes-field"><obs conceptId="160534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="date-initially-enrolled" allowFutureDates="false"/></td>
+				</tr>
+			</table>
+
+		</fieldset>
+	</div>
+
+	<div class="ke-form-content" id="previous-module">
+		<fieldset>
+			<legend>Modules previously covered</legend>
+		<table class="simple-table" id="assessment-questions">
+			<tr>
+				<td id="modules-previously-covered-label">Modules previously covered?</td>
+				<td id="modules-previously-covered">
+
+					<table class="simple-table">
+						<tr>
+							<th align="left"></th>
+							<th align="left"></th>
+							<th align="left">Date Completed</th>
+						</tr>
+						<tr>
+							<td>OTZ Orientation</td>
+							<td>
+								<obs
+										id="orientation" conceptId="165359" style="radio"
+										answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerLabels="Yes" dateLabel="&lt;/td&gt;&lt;td&gt;" />
+							</td>
+						</tr>
+						<tr>
+							<td>OTZ Participation</td>
+							<td>
+								<obs
+										id="participation" conceptId="165360" style="radio"
+										answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerLabels="Yes" dateLabel="&lt;/td&gt;&lt;td&gt;" />
+							</td>
+						</tr>
+						<tr>
+							<td>OTZ Leadership</td>
+							<td>
+								<obs
+										id="leadership" conceptId="165361" style="radio"
+										answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerLabels="Yes" dateLabel="&lt;/td&gt;&lt;td&gt;"/>
+							</td>
+						</tr>
+						<tr>
+							<td>OTZ Making decision for the future</td>
+							<td>
+								<obs
+										id="future-decision" conceptId="165362" style="radio"
+										answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerLabels="Yes" dateLabel="&lt;/td&gt;&lt;td&gt;"/>
+							</td>
+						</tr>
+						<tr>
+							<td>OTZ Transition to Adult care</td>
+							<td>
+								<obs
+										id="transition-adult-care" conceptId="165363" style="radio"
+										answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerLabels="Yes" dateLabel="&lt;/td&gt;&lt;td&gt;"/>
+							</td>
+						</tr>
+						<tr>
+							<td>OTZ Treatment literacy</td>
+							<td>
+								<obs
+										id="treatment-literacy" conceptId="165364" style="radio"
+										answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerLabels="Yes" dateLabel="&lt;/td&gt;&lt;td&gt;"/>
+							</td>
+						</tr>
+						<tr>
+							<td>OTZ SRH</td>
+							<td>
+								<obs
+										id="srh" conceptId="165365" style="radio"
+										answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerLabels="Yes" dateLabel="&lt;/td&gt;&lt;td&gt;"/>
+							</td>
+						</tr>
+						<tr>
+							<td>OTZ Beyond the 3rd 90</td>
+							<td>
+								<obs
+										id="beyond-third-90" conceptId="165366" style="radio"
+										answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerLabels="Yes" dateLabel="&lt;/td&gt;&lt;td&gt;"/>
+							</td>
+						</tr>
+
+					</table>
+
+				</td>
+			</tr>
+		</table>
+		</fieldset>
+
+	</div>
+
+	<enrollInProgram programId="24d05d30-0488-11ea-8d71-362b9e155667" />
+
+	<div class="ke-form-footer">
+		<submit />
+	</div>
+
+</htmlform>

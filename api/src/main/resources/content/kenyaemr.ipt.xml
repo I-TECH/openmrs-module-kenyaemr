@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    This Source Code Form is subject to the terms of the Mozilla Public License,
+    v. 2.0. If a copy of the MPL was not distributed with this file, You can
+    obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+    the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+
+    Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+    graphic logo is a trademark of OpenMRS Inc.
+
+-->
 <beans xmlns="http://www.springframework.org/schema/beans"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
@@ -13,7 +24,6 @@
 		<property name="visitForms" >
 			<set>
 				<ref bean="kenyaemr.ipt.form.followup" />
-				<ref bean="kenyaemr.common.form.geneXpert" />
 			</set>
 		</property>
 	
@@ -21,6 +31,7 @@
 			<set>
 				<ref bean="kenyaemr.ipt.report.onIpt" />
 				<ref bean="kenyaemr.ipt.report.not.on.ipt.not.in.tb.program" />
+				<ref bean="kenyaemr.ipt.report.iptRegister" />
 			</set>
 		</property>
 		<property name="fragments">
@@ -43,7 +54,7 @@
 
 	<!-- ===================== Forms ===================== -->
 
-	<!--IPT Initiation-->
+	<!--TPT Initiation-->
 	<bean id="kenyaemr.ipt.form.enrollment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="61ea2a72-b0f9-47cf-ae86-443f88656acc" />
 		<property name="apps">
@@ -90,17 +101,27 @@
 
 	<bean id="kenyaemr.ipt.report.onIpt" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
 		<property name="targetUuid" value="1303cda9-742c-41f1-a4f2-4adadf2b24e9" />
-		<property name="name" value="Patients on IPT" />
+		<property name="name" value="Patients on TPT" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.ipt.OnIptProgramCalculation" />
 <!-- 		<property name="displayIdentifier" ref="kenyaemr.tb.identifier.districtRegistration" /> -->
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 	<bean id="kenyaemr.ipt.report.not.on.ipt.not.in.tb.program" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
 		<property name="targetUuid" value="b31d4acb-0db6-4dc5-adc5-7f07da76f142" />
-		<property name="name" value="Patients not on IPT and not on TB Treatment" />
+		<property name="name" value="Patients not on TPT and not on TB Treatment" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.ipt.NotOnIptNotInTbProgramCalculation" />
 <!-- 		<property name="displayIdentifier" ref="kenyaemr.tb.identifier.districtRegistration" /> -->
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
-
+	<bean id="kenyaemr.ipt.report.iptRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="e36d4a1e-b3ff-4c59-9d07-dbb61800c80f" />
+		<property name="name" value="TPT Register" />
+		<property name="description" value="Register for Patients on TPT" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:IPTRegisterTemplate.xls" />
+		<property name="repeatingSection" value="sheet:1,row:7,dataset:IPTRegister" />
+	</bean>
 </beans>

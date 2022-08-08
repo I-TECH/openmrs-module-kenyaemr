@@ -15,8 +15,26 @@
 
 	<script type="text/javascript">
 		var pAge;
+        function onEncounterDateChange() {
+            var patientId = <lookup expression="patient.patientId"/>;
+            var encDate = getValue('encounter-date.value');
+            if(encDate == null) {
+                encDate = new Date();
+            }
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/durationSinceStartArt.action', { patientId: patientId, now: encDate })
+                .done(function(data) {
+                    var msg = data.duration ? data.duration : 'Not started';
+                    jq('#calculated-duration-start-art').html(msg);
+                });
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/currentArvRegimen.action', { patientId: patientId, now: encDate })
+                .done(function(data) {
+                    var msg = data.duration ? (data.regimen ) : 'None';
+                    jq('#calculated-duration-current-regimen').html(msg);
+                });
+        }
 		jq(document).ready(function(){
 			pAge = parseInt('<lookup expression="patient.age"/>');
+            onEncounterDateChange();
 			if (pAge &gt; 15) {
 				whoChild.style.display='none';
 			}
@@ -32,11 +50,7 @@
 					getField('returnVisitDate.error').html('Return Visit date should be after encounter date').show();
 					return false;
 				}
-
-				if (returnDate &gt; fourMonthsFromEncounterDate) {
-					alert('Return Visit date is more than four months from Encounter Date');
-				}
-				return true;
+		return true;
 			});
 		});
 	</script>
@@ -180,6 +194,10 @@
 				<tr>
 					<td>
 						<table cellpadding="0" border="0" cellspacing="5">
+							<tr>
+								<td>Current Regimen:</td>
+								<td colspan="2"><span id="calculated-duration-current-regimen" class="value"></span></td>
+							</tr>
 							<tr>
 								<td>Adherence</td>
 								<td>

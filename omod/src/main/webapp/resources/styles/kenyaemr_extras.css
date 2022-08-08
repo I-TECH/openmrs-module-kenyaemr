@@ -1,0 +1,65 @@
+.ke-program-followup-button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #155cd2;
+    color: #ffffff;
+    /*font-family: Montserrat;*/
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.ke-program-outcome-button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    background-color: #2e8b57;
+    color: #ffffff;
+    /*font-family: Montserrat;*/
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.ke-program-outcome-button:hover {
+    background-color: #d7d7d7;
+    color: #817e7e;
+}
+
+.ke-program-followup-button:hover {
+    background-color: #d7d7d7;
+    color: #817e7e;
+}
+.ke-error-label {
+    height: 11px;
+    color: #f20a08;
+    /*font-family: "Montserrat Medium";*/
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.ke-success-label {
+    height: 11px;
+    color: #18b521;
+    /*font-family: "Montserrat Medium";*/
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.simple-table {
+    border: solid 1px #06031b;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font: normal 15px Arial, sans-serif;
+}
+.simple-table th {
+    background-color: #DDEFEF;
+    border: solid 1px #DDEEEE;
+    color: #336B6B;
+    padding: 10px;
+    text-align: left;
+    text-shadow: 1px 1px 1px #fff;
+}
+.simple-table td {
+    border: solid 1px #DDEEEE;
+    color: #333;
+    padding: 8px;
+    text-shadow: 1px 1px 1px #fff;
+}
