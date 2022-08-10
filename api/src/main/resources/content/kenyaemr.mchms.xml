@@ -278,7 +278,7 @@
 	<!--mch cohort descriptors-->
 	<bean id="kenyaemr.mchms.report.cohort.analysis" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="683e3bea-3237-4707-8e91-46112ed10257" />
-		<property name="name" value="Maternal_cohort_analysis" />
+		<property name="name" value="Maternal Cohort Analysis" />
 		<property name="description" value="Maternal Cohort Analysis Report" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
