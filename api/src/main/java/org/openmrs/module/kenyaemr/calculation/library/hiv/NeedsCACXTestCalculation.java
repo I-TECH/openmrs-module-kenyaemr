@@ -53,7 +53,7 @@ import static org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils.daysSi
  * Created by codehub on 05/06/15.
  */
 public class NeedsCACXTestCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
-    protected static final Log log = LogFactory.getLog(StablePatientsCalculation.class);
+    protected static final Log log = LogFactory.getLog(NeedsCACXTestCalculation.class);
 
     public static final EncounterType cacxEncType = MetadataUtils.existing(EncounterType.class, CommonMetadata._EncounterType.CACX_SCREENING);
     public static final Form cacxScreeningForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.CACX_SCREENING_FORM);
@@ -65,8 +65,8 @@ public class NeedsCACXTestCalculation extends AbstractPatientCalculation impleme
     @Override
     public String getFlagMessage() { return "Due for CACX Screening";}
     Integer SCREENING_RESULT = 164934;
-    Integer POSITIVE = 1065;
-    Integer NEGATIVE = 1066;
+    Integer POSITIVE = 703;
+    Integer NEGATIVE = 664;
     Integer NORMAL = 1115;
     Integer SUSPICIOUS_FOR_CANCER = 159008;
     Integer OTHER = 5622;
@@ -135,7 +135,7 @@ public class NeedsCACXTestCalculation extends AbstractPatientCalculation impleme
             boolean patientHasPresumedCancerTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxPresumedCancerResult) : false;
 
             // Newly initiated and without cervical cancer test
-            if(inHivProgram.contains(ptId) && patient.getAge() >= 15){
+            if(patient.getAge() >= 15){
 
                 // no cervical cancer screening done
                 if(lastCacxScreeningEnc == null) {
