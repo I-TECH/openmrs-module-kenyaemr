@@ -126,8 +126,8 @@ public class NeedsCACXTestCalculation extends AbstractPatientCalculation impleme
             boolean patientHasPositiveTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxPositiveResult) : false;
             boolean patientHasNegativeTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxNegativeResult) : false;
             boolean patientHasNormalTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxNormalResult) : false;
-            boolean patientHasSuspiciousTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxNormalResult) : false;
-            boolean patientHasOtherTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxSuspiciousForCancerResult) : false;
+            boolean patientHasSuspiciousTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxSuspiciousForCancerResult) : false;
+            boolean patientHasOtherTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxOtherResult) : false;
             boolean patientHasAbnormalTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxAbnormalResult) : false;
             boolean patientHasLowGradeLesionTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxLowGradeLesionResult) : false;
             boolean patientHasHighGradeLesionTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxHighGradeLesionResult) : false;
@@ -153,7 +153,7 @@ public class NeedsCACXTestCalculation extends AbstractPatientCalculation impleme
                 }
 
                 // cacx flag should remain if there is any suspicion
-                if(lastCacxScreeningEnc != null && (patientHasSuspiciousTestResult || patientHasOtherTestResult || patientHasLowGradeLesionTestResult || patientHasHighGradeLesionTestResult|| patientHasInvasiveCancerTestResult || patientHasPresumedCancerTestResult)) {
+                if(lastCacxScreeningEnc != null && (patientHasSuspiciousTestResult || patientHasOtherTestResult || patientHasLowGradeLesionTestResult || patientHasHighGradeLesionTestResult|| patientHasInvasiveCancerTestResult || patientHasPresumedCancerTestResult || patientHasAbnormalTestResult)) {
                     needsCacxTest = true;
                 }
 
