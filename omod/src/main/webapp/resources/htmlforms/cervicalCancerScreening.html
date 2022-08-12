@@ -216,10 +216,12 @@
 			jq('#screening_method select').change(screeningMethodSelected);
 			jq('#referred_out :input[type=radio]').change(referredOutChange);
 
-			var SCREENING_RESULT_CONCEPT = "<lookup expression="fn.latestObs(164934).valueCoded" />"
-			var SCREENING_RESULT = SCREENING_RESULT_CONCEPT.replace(/[^\d]/g, '');
+			var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
+			var CACx_Result = GREENCARD_VELOCITY.split(",")[14].split(":")[1];
+			var SCREENING_RESULT = CACx_Result.replace(/[^\d]/g, '');
 
-			   var val = getValue("screening_method.value");
+				var val = getValue("screening_method.value");
+
 				if(val == 164805){
 					jq("#tr_via_screening_result").show();
 					jq("#tr_vili_screening_result").hide();
