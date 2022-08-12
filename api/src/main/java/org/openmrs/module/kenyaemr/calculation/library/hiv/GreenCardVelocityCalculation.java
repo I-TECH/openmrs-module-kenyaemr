@@ -47,6 +47,7 @@ import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.patient.definition.ProgramEnrollmentsForPatientDataDefinition;
 import org.openmrs.ui.framework.SimpleObject;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -90,7 +91,7 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
         CalculationResultMap tbCurrent = Calculations.lastObs(OnAntiTbQuestion, cohort, context);
         CalculationResultMap tbStarted = Calculations.lastObs(StartAntiTbQuestion, cohort, context);
 
-         //Viral load
+        //Viral load
         Concept latestVL = Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD);
         Concept LDLQuestion = Context.getConceptService().getConcept(1305);
         Concept LDLAnswer = Context.getConceptService().getConcept(1302);
@@ -106,7 +107,7 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
         //find pregnant women
         Set<Integer> pregnantWomen = CalculationUtils.patientsThatPass(calculate(new IsPregnantCalculation(), cohort, context));
         //find breastfeeding women
-       Set<Integer> breastFeeding = CalculationUtils.patientsThatPass(calculate(new IsBreastFeedingCalculation(), cohort, context));
+        Set<Integer> breastFeeding = CalculationUtils.patientsThatPass(calculate(new IsBreastFeedingCalculation(), cohort, context));
 
         CalculationResultMap ret = new CalculationResultMap();
         StringBuilder sb = new StringBuilder();
@@ -138,7 +139,8 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             Obs lastVLObsResult = null;
             String ldlResult = null;
             Double vlResult = 0.0;
-                //Patient with current on anti tb drugs and/or anti tb start dates
+            Concept cacxResult = null;
+            //Patient with current on anti tb drugs and/or anti tb start dates
             Obs tbCurrentObs = EmrCalculationUtils.obsResultForPatient(tbCurrent, ptId);
             Obs tbStartObs = EmrCalculationUtils.obsResultForPatient(tbStarted, ptId);
 
@@ -156,10 +158,10 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
                 if (lastVLObsResult != null && lastVLObsResult.getConcept() == latestVL){
                     vlResult = lastVLObsResult.getValueNumeric();
                     ldlResult = null;
-                  }
-                 else if (lastVLObsResult != null && (lastVLObsResult.getConcept() == LDLQuestion && lastVLObsResult.getValueCoded() == LDLAnswer)){
+                }
+                else if (lastVLObsResult != null && (lastVLObsResult.getConcept() == LDLQuestion && lastVLObsResult.getValueCoded() == LDLAnswer)){
                     ldlResult = "LDL";
-                     vlResult = 0.0;
+                    vlResult = 0.0;
                 }
             } else if (ldl != null && vl == null) {
                 lastVLObsResult = EmrCalculationUtils.obsResultForPatient(lastLDLObs, ptId);
@@ -177,15 +179,15 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
                 vlResult = 0.0;
                 ldlResult = null;
             }
-               // Good adherence in the last 6 months
+            // Good adherence in the last 6 months
             if (adherenceResults != null) {
                 if (adherenceResults != null && adherenceResults.getConceptId().equals(goodAdherenceAnswer) ) {
                     Obs adherenceObsResults = EmrCalculationUtils.obsResultForPatient(lastAdherenceObs, ptId);
                     adherenceObsDate = adherenceObsResults.getObsDatetime();
                     adherenceDiffDays = daysBetween(currentDate, adherenceObsDate);
-                     if (adherenceDiffDays >= 0 && adherenceDiffDays <= 182) {
-                         goodAdherence6Months = true;
-                     }
+                    if (adherenceDiffDays >= 0 && adherenceDiffDays <= 182) {
+                        goodAdherence6Months = true;
+                    }
                 }
             }
             //Enrolled in tb program
@@ -214,7 +216,7 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             Patient pt = patientService.getPatient(ptId);
             Encounter lastHivEnrollmentEncounter = EmrUtils.lastEncounter(pt, et);
             if (lastHivEnrollmentEncounter != null ) {
-                    patientEverInHivProgram = true;
+                patientEverInHivProgram = true;
             }
 
             //Completed IPT 6 months cycle
@@ -227,6 +229,16 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
 
             if(patientHasCompletedIPTOutcome) {
                 completed6MonthsIPT = true;
+            }
+
+            // Cacx screening result
+            Encounter lastScreeningResultEnc = EmrUtils.lastEncounter(patientService.getPatient(ptId), encounterService.getEncounterTypeByUuid(CommonMetadata._EncounterType.CACX_SCREENING), MetadataUtils.existing(Form.class, CommonMetadata._Form.CACX_SCREENING_FORM));
+            if (lastScreeningResultEnc != null ) {
+                for (Obs obs : lastScreeningResultEnc.getObs()) {
+                    if (obs.getConcept().getConceptId().equals(164934)) {
+                        cacxResult = obs.getValueCoded();
+                    }
+                }
             }
 
 
@@ -278,8 +290,9 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             sb.append("isPregnant:").append(isPregnant).append(",");
             sb.append("isBreastFeeding:").append(isBreastFeeding).append(",");
             sb.append("isEnrolledInHIV:").append(patientEverInHivProgram).append(",");
-            sb.append("artStartDate:").append(artStartDate);
+            sb.append("artStartDate:").append(artStartDate).append(",");
             // sb.append("dueTB:").append(patientDueForTBEnrollment).append(",");
+            sb.append("CacXResult:").append(cacxResult);
 
             ret.put(ptId, new SimpleResult(sb.toString(), this, context));
         }
