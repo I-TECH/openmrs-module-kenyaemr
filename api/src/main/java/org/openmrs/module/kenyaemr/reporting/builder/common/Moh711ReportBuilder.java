@@ -11,19 +11,14 @@ package org.openmrs.module.kenyaemr.reporting.builder.common;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.Concept;
 import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
-import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
-import org.openmrs.module.kenyaemr.reporting.library.moh731.Moh731IndicatorLibrary;
+import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
+import org.openmrs.module.kenyaemr.reporting.library.moh711.Moh711IndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonDimensionLibrary;
-import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.HivIndicatorLibrary;
-import org.openmrs.module.kenyaemr.reporting.library.shared.hiv.art.ArtIndicatorLibrary;
-import org.openmrs.module.kenyaemr.reporting.library.shared.tb.TbIndicatorLibrary;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -32,7 +27,6 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -46,142 +40,272 @@ import static org.openmrs.module.kenyacore.report.ReportUtils.map;
 @Builds({"kenyaemr.common.report.moh711"})
 public class Moh711ReportBuilder extends AbstractReportBuilder {
 
-	protected static final Log log = LogFactory.getLog(Moh711ReportBuilder.class);
+    protected static final Log log = LogFactory.getLog(Moh711ReportBuilder.class);
 
-	@Autowired
-	private CommonDimensionLibrary commonDimensions;
+    @Autowired
+    private CommonDimensionLibrary commonDimensions;
 
-	@Autowired
-	private HivIndicatorLibrary hivIndicators;
+    @Autowired
+    private Moh711IndicatorLibrary moh711Indicators;
 
-	@Autowired
-	private ArtIndicatorLibrary artIndicators;
+    /**
+     * @see org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder#getParameters(org.openmrs.module.kenyacore.report.ReportDescriptor)
+     */
+    @Override
+    protected List<Parameter> getParameters(ReportDescriptor descriptor) {
+        return Arrays.asList(
+                new Parameter("startDate", "Start Date", Date.class),
+                new Parameter("endDate", "End Date", Date.class),
+                new Parameter("dateBasedReporting", "", String.class)
+        );
+    }
 
-	@Autowired
-	private TbIndicatorLibrary tbIndicators;
+    String indParams = "startDate=${startDate},endDate=${endDate}";
 
-	@Autowired
-	private Moh731IndicatorLibrary moh731Indicators;
+    /**
+     * @see org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder#buildDataSets(org.openmrs.module.kenyacore.report.ReportDescriptor, org.openmrs.module.reporting.report.definition.ReportDefinition)
+     */
+    @Override
+    protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor descriptor, ReportDefinition report) {
+        return Arrays.asList(
+                ReportUtils.map(createANCPMTCTDataSet(), "startDate=${startDate},endDate=${endDate}"),
+                ReportUtils.map(createCacxScreeningDataSet(), "startDate=${startDate},endDate=${endDate}"),
+                ReportUtils.map(createPNCDataSet(), "startDate=${startDate},endDate=${endDate}"),
+                ReportUtils.map(createMaternityNewbornDataSet(), "startDate=${startDate},endDate=${endDate}"),
+                ReportUtils.map(createChildHealthAndNutritionDataSet(), "startDate=${startDate},endDate=${endDate}"),
+                ReportUtils.map(createTBScreeningDataSet(), "startDate=${startDate},endDate=${endDate}")
+        );
+    }
 
-	/**
-	 * @see org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder#getParameters(org.openmrs.module.kenyacore.report.ReportDescriptor)
-	 */
-	@Override
-	protected List<Parameter> getParameters(ReportDescriptor descriptor) {
-		return Arrays.asList(
-				new Parameter("startDate", "Start Date", Date.class),
-				new Parameter("endDate", "End Date", Date.class)
-		);
-	}
+    ColumnParameters f10_14 = new ColumnParameters(null, "10-14 years", "gender=F|age=10-14");
+    ColumnParameters f15_19 = new ColumnParameters(null, "15-19 years", "gender=F|age=15-19");
+    ColumnParameters f20_24 = new ColumnParameters(null, "20-24 years", "gender=F|age=20-24");
+    ColumnParameters f25AndAbove = new ColumnParameters(null, "25+ years", "gender=F|age=25+");
 
-	/**
-	 * @see org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder#buildDataSets(org.openmrs.module.kenyacore.report.ReportDescriptor, org.openmrs.module.reporting.report.definition.ReportDefinition)
-	 */
-	@Override
-	protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor descriptor, ReportDefinition report) {
-		return Arrays.asList(
-				ReportUtils.map(createTbDataSet(), "startDate=${startDate},endDate=${endDate}"),
-				ReportUtils.map(createArtDataSet(), "startDate=${startDate},endDate=${endDate}")
-		);
-	}
+    ColumnParameters fUnder25 = new ColumnParameters(null, "<25 years", "gender=F|age=<25");
+    ColumnParameters f25_49 = new ColumnParameters(null, "25-49 years", "gender=F|age=25-49");
+    ColumnParameters f50AndAbove = new ColumnParameters(null, "50+ years", "gender=F|age=>=50");
 
-	/**
-	 * Creates the ART data set
-	 * @return the data set
-	 */
-	private DataSetDefinition createTbDataSet() {
-		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
-		dsd.setName("G");
-		dsd.setDescription("TB");
-		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		dsd.addDimension("age", map(commonDimensions.standardAgeGroups(), "onDate=${endDate}"));
-		dsd.addDimension("gender", map(commonDimensions.gender()));
+    ColumnParameters f0To5Months = new ColumnParameters(null, "0-5 months, Female", "gender=F|age=0-5");
+    ColumnParameters m0To5Months = new ColumnParameters(null, "0-5 months, Male", "gender=M|age=0-5");
+    ColumnParameters f6To23Months = new ColumnParameters(null, "6-23 months, Female", "gender=F|age=6-23");
+    ColumnParameters m6To23Months = new ColumnParameters(null, "6-23 months, Male", "gender=M|age=6-23");
+    ColumnParameters f24To59Months = new ColumnParameters(null, "24-59 months, Female", "gender=F|age=24-59");
+    ColumnParameters m24To59Months = new ColumnParameters(null, "24-59 months, Male", "gender=M|age=24-59");
+    ColumnParameters f6To59Months = new ColumnParameters(null, "6-59 months, Female", "gender=F|age=6-59");
+    ColumnParameters m6To59Months = new ColumnParameters(null, "6-59 months, Male", "gender=M|age=6-59");
+    ColumnParameters f0To59Months = new ColumnParameters(null, "0-59 months, Female", "gender=F|age=0-59");
+    ColumnParameters m0To59Months = new ColumnParameters(null, "0-59 months, Male", "gender=M|age=0-59");
+    ColumnParameters f12To59Months = new ColumnParameters(null, "12-59 months, Female", "gender=F|age=12-59");
+    ColumnParameters m12To59Months = new ColumnParameters(null, "12-59 months, Male", "gender=M|age=12-59");
+    ColumnParameters all0To59Months = new ColumnParameters(null, "0-59 months", "age=0-59");
+    ColumnParameters colTotal = new ColumnParameters(null, "Total", "");
 
-		List<ColumnParameters> columns = new ArrayList<ColumnParameters>();
-		columns.add(new ColumnParameters("FP", "0-14 years, female", "gender=F|age=<15"));
-		columns.add(new ColumnParameters("MP", "0-14 years, male", "gender=M|age=<15"));
-		columns.add(new ColumnParameters("FA", ">14 years, female", "gender=F|age=15+"));
-		columns.add(new ColumnParameters("MA", ">14 years, male", "gender=M|age=15+"));
-		columns.add(new ColumnParameters("T", "total", ""));
+    List<ColumnParameters> ancAgeDisaggregations = Arrays.asList(f10_14, f15_19, f20_24);
+    List<ColumnParameters> cacxScreeningAgeDisaggregations = Arrays.asList(fUnder25, f25_49, f50AndAbove);
+    List<ColumnParameters> maternalAgeDisaggregations = Arrays.asList(f10_14, f15_19, f20_24, f25AndAbove);
+    List<ColumnParameters> childWeightAgeDisaggregations = Arrays.asList(f0To5Months,m0To5Months,f6To23Months,
+            m6To23Months,f24To59Months,m24To59Months,colTotal);
+    List<ColumnParameters> childGrowthAgeDisaggregations = Arrays.asList(f24To59Months, m24To59Months,colTotal);
+    List<ColumnParameters> childFollowupTypeAgeDisaggregations = Arrays.asList(f0To59Months, m0To59Months,colTotal);
+    List<ColumnParameters> childExclusiveBFAgeDisaggregations = Arrays.asList(f0To5Months, m0To5Months,colTotal);
+    List<ColumnParameters> childMUACAgeDisaggregations = Arrays.asList(f6To59Months, m6To59Months,colTotal);
+    List<ColumnParameters> childMNPsAgeDisaggregations = Arrays.asList(f6To23Months, m6To23Months,colTotal);
+    List<ColumnParameters> childDewormingAgeDisaggregations = Arrays.asList(f12To59Months, m12To59Months,colTotal);
+    List<ColumnParameters> childDelayedGrowthAgeDisaggregations = Arrays.asList(all0To59Months);
 
-		String indParams = "startDate=${startDate},endDate=${endDate}";
 
-		EmrReportingUtils.addRow(dsd, "G1", "No. of detected cases (who have new Tb detected cases)", ReportUtils.map(tbIndicators.tbNewDetectedCases(), indParams), columns);
-		EmrReportingUtils.addRow(dsd, "G2", "No. of Pulmonary smear positive (who have pulmonary TB and smear positive)", ReportUtils.map(tbIndicators.pulmonaryTbSmearPositive(), indParams), columns);
-		EmrReportingUtils.addRow(dsd, "G3", "No. of Pulmonary smear negative (who have pulmonary TB and smear negative)", ReportUtils.map(tbIndicators.pulmonaryTbSmearNegative(), indParams), columns);
-		EmrReportingUtils.addRow(dsd, "G4", "No. of Extra pulmonary TB (who have extra pulmonary TB)", ReportUtils.map(tbIndicators.extraPulmonaryTbPatients(), indParams), columns);
-		EmrReportingUtils.addRow(dsd, "G5", "No. of TB Re-treatments (who are in Tb re-treatments)", ReportUtils.map(tbIndicators.tbRetreatmentsPatients(), indParams), columns);
-		EmrReportingUtils.addRow(dsd, "G6", "No. of TB and Tested for HIV (who are in Tb program and tested for HIV)", ReportUtils.map(tbIndicators.inTbAndTestedForHiv(), indParams), columns);
-		EmrReportingUtils.addRow(dsd, "G7", "No. of TB and Tested for HIV (whose HIV result is positive)", ReportUtils.map(tbIndicators.inTbAndTestedForHivPositive(), indParams), columns);
-		EmrReportingUtils.addRow(dsd, "G8", "No. of TB and HIV (who are both in TB and HIV and are on CPT)", ReportUtils.map(tbIndicators.inTbAndHivProgramsAndOnCtxProphylaxis(), indParams), columns);
-		EmrReportingUtils.addRow(dsd, "G9", "No. of TB defaulters (who defaulted or missed appointments)", ReportUtils.map(tbIndicators.defaulted(), indParams), columns);
-		EmrReportingUtils.addRow(dsd, "G10", "No. of TB completes (who Completed Tb Treatment)", ReportUtils.map(tbIndicators.completedTbTreatment(), indParams), columns);
-		EmrReportingUtils.addRow(dsd, "G11", "No. of TB deaths (who started tx this month last year)", ReportUtils.map(tbIndicators.diedAndStarted12MonthsAgo(), indParams), columns);
+    /**
+     * A. ANC / PMCT
+     * Creates ANC/PMTCT dataset
+     */
+    private DataSetDefinition createANCPMTCTDataSet() {
+        CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
+        dsd.setName("ANC_PMTCT");
+        dsd.setDescription("ANC PMTCT");
+        dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        dsd.addDimension("age", map(commonDimensions.datimFineAgeGroups(), "onDate=${endDate}"));
+        dsd.addDimension("gender", map(commonDimensions.gender()));
 
-		return dsd;
-	}
+        dsd.addColumn("New ANC Clients", "", ReportUtils.map(moh711Indicators.noOfNewANCClients(), indParams), "");
+        dsd.addColumn("Revisiting ANC Clients", "", ReportUtils.map(moh711Indicators.noOfANCClientsRevisits(), indParams), "");
+	/*dsd.addColumn("Clients given IPT (1st dose)", "", ReportUtils.map(moh711Indicators.noOfANCClientsGivenIPT1stDose(), indParams), "");
+	dsd.addColumn("Clients given IPT (2nd dose)", "", ReportUtils.map(moh711Indicators.noOfANCClientsGivenIPT2ndDose(), indParams), "");
+	dsd.addColumn("Clients given IPT (3rd dose)", "", ReportUtils.map(moh711Indicators.noOfANCClientsGivenIPT3rdDose(), indParams), "");*/
+        dsd.addColumn("Clients with Hb less than 11 g per dl", "", ReportUtils.map(moh711Indicators.noOfANCClientsLowHB(), indParams), "");
+        dsd.addColumn("Clients completed 4 Antenatal Visits", "", ReportUtils.map(moh711Indicators.ancClientsCompleted4Visits(), indParams), "");
+        //dsd.addColumn("LLINs distributed to under 1 year", "", ReportUtils.map(moh711Indicators.distributedLLINsUnder1Year(), indParams), "");
+        dsd.addColumn("LLINs distributed to ANC clients", "", ReportUtils.map(moh711Indicators.distributedLLINsToANCClients(), indParams), "");
 
-	/**
-	 * Creates the ART data set
-	 * @return the data set
-	 */
-	private DataSetDefinition createArtDataSet() {
-		CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
-		dsd.setName("K");
-		dsd.setDescription("ART");
-		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		dsd.addDimension("age", ReportUtils.map(commonDimensions.standardAgeGroups(), "onDate=${endDate}"));
-		dsd.addDimension("gender", ReportUtils.map(commonDimensions.gender()));
+        dsd.addColumn("Clients tested for Syphilis", "", ReportUtils.map(moh711Indicators.ancClientsTestedForSyphillis(), indParams), "");
+        dsd.addColumn("Clients tested Positive for Syphilis", "", ReportUtils.map(moh711Indicators.ancClientsTestedSyphillisPositive(), indParams), "");
+        dsd.addColumn("Total women done breast examination", "", ReportUtils.map(moh711Indicators.breastExaminationDone(), indParams), "");
+        EmrReportingUtils.addRow(dsd, "ANC1", "Presenting with pregnancy at 1st ANC Visit", ReportUtils.map(moh711Indicators.noOfNewANCClients(), indParams), ancAgeDisaggregations, Arrays.asList("01", "02", "03"));
+        dsd.addColumn("Women presenting with pregnancy at 1ST ANC in the First Trimeseter(<= 12 Weeks)", "", ReportUtils.map(moh711Indicators.presentingPregnancy1stANC1stTrimester(), indParams), "");
+        dsd.addColumn("Clients issued with Iron", "", ReportUtils.map(moh711Indicators.ancClientsIssuedWithIron(), indParams), "");
+        dsd.addColumn("Clients issued with Folic", "", ReportUtils.map(moh711Indicators.ancClientsIssuedWithFolic(), indParams), "");
+        dsd.addColumn("Clients issued with Combined Ferrous Folate", "", ReportUtils.map(moh711Indicators.ancClientsIssuedWithFerrousFolic(), indParams), "");
+        //dsd.addColumn("Pregnant women presenting in ANC with complication associated with FGM", "", ReportUtils.map(moh711Indicators.ancClientsWithFGMRelatedComplications(), indParams), "");
 
-		ColumnParameters colFPeds = new ColumnParameters("FP", "0-14 years, female", "gender=F|age=<15");
-		ColumnParameters colMPeds = new ColumnParameters("MP", "0-14 years, male", "gender=M|age=<15");
-		ColumnParameters colFAdults = new ColumnParameters("FA", ">14 years, female", "gender=F|age=15+");
-		ColumnParameters colMAdults = new ColumnParameters("MA", ">14 years, male", "gender=M|age=15+");
-		ColumnParameters colFTotal = new ColumnParameters("F", "totals, female", "gender=F");
-		ColumnParameters colMTotal = new ColumnParameters("M", "totals, male", "gender=M");
-		ColumnParameters colTotal = new ColumnParameters("T", "grand total", "");
+        return dsd;
+    }
 
-		Concept pmtct = Dictionary.getConcept(Dictionary.PMTCT_PROGRAM);
-		Concept vct = Dictionary.getConcept(Dictionary.VCT_PROGRAM);
-		Concept tb = Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_PROGRAM);
-		Concept[] inpatient = { Dictionary.getConcept(Dictionary.PEDIATRIC_INPATIENT_SERVICE), Dictionary.getConcept(Dictionary.ADULT_INPATIENT_SERVICE) };
-		Concept cwc = Dictionary.getConcept(Dictionary.UNDER_FIVE_CLINIC);
-		Concept[] all = { pmtct, vct, tb, inpatient[0], inpatient[1], cwc };
+    /**
+     * G. Cervical Cancer Screening Dataset
+     * @return the data set
+     */
+    private DataSetDefinition createCacxScreeningDataSet() {
+        CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
+        dsd.setName("CACX-SCREENING");
+        dsd.setDescription("CACX Screening");
+        dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        dsd.addDimension("age", ReportUtils.map(commonDimensions.moh745AgeGroups(), "onDate=${endDate}"));
+        dsd.addDimension("gender", ReportUtils.map(commonDimensions.gender()));
+        EmrReportingUtils.addRow(dsd, "ANC_CACX", "No.of Client receiving VIA /VILI /HPV VILI / HPV", ReportUtils.map(moh711Indicators.cacxScreened(), indParams), cacxScreeningAgeDisaggregations, Arrays.asList("01", "02", "03"));
+        EmrReportingUtils.addRow(dsd, "CACX_Pap_Smear", "No.Screened for Pap smear", ReportUtils.map(moh711Indicators.cacxScreenedWithMethod("Pap Smear",885), indParams), cacxScreeningAgeDisaggregations, Arrays.asList("01", "02", "03"));
+        EmrReportingUtils.addRow(dsd, "CACX_HPV", "No.Screened for HPV test", ReportUtils.map(moh711Indicators.cacxScreenedWithMethod("HPV Test",159895), indParams), cacxScreeningAgeDisaggregations, Arrays.asList("01", "02", "03"));
+        EmrReportingUtils.addRow(dsd, "VIA_VILI", "Number of clients with Positive VIA/VILI result", ReportUtils.map(moh711Indicators.viaViliPositive(), indParams), cacxScreeningAgeDisaggregations, Arrays.asList("01", "02", "03"));
+        EmrReportingUtils.addRow(dsd, "HPV", "Number of clients with Positive HPV result", ReportUtils.map(moh711Indicators.hpvPositive(), indParams), cacxScreeningAgeDisaggregations, Arrays.asList("01", "02", "03"));
+        EmrReportingUtils.addRow(dsd, "Suspicious_CACX_Lessions", "Number of clients with suspicious cancer lesions", ReportUtils.map(moh711Indicators.suspiciousCancerLessions(), indParams), cacxScreeningAgeDisaggregations, Arrays.asList("01", "02", "03"));
+        EmrReportingUtils.addRow(dsd, "Cryotherapy", "Number of clients treated using Cryotherapy", ReportUtils.map(moh711Indicators.treatedUsingCyrotherapy(), indParams), cacxScreeningAgeDisaggregations, Arrays.asList("01", "02", "03"));
+        EmrReportingUtils.addRow(dsd, "LEEP", "Number of clients treated using LEEP", ReportUtils.map(moh711Indicators.treatedUsingLEEP(), indParams), cacxScreeningAgeDisaggregations, Arrays.asList("01", "02", "03"));
+        EmrReportingUtils.addRow(dsd, "HIV+_CACX_Screened", "Number of HIV positive clients screened", ReportUtils.map(moh711Indicators.cacxScreenedAndHIVPositive(), indParams), cacxScreeningAgeDisaggregations, Arrays.asList("01", "02", "03"));
+        return dsd;
+    }
 
-		List<ColumnParameters> allColumns = Arrays.asList(colFPeds, colMPeds, colFAdults, colMAdults, colFTotal, colMTotal, colTotal);
-		List<ColumnParameters> femaleColumns = Arrays.asList(colFPeds, colFAdults, colFTotal);
-		List<ColumnParameters> pedsColumns = Arrays.asList(colFPeds, colMPeds, colFTotal, colMTotal, colTotal);
+    /**
+     *  H. Post Natal Care (PNC) Dataset
+     * @return
+     */
+    private DataSetDefinition createPNCDataSet() {
+        CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
+        dsd.setName("PNC");
+        dsd.setDescription("Post Natal Care (PNC)");
+        dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        dsd.addDimension("age", ReportUtils.map(commonDimensions.moh745AgeGroups(), "onDate=${endDate}"));
+        dsd.addDimension("gender", ReportUtils.map(commonDimensions.gender()));
 
-		String indParams = "startDate=${startDate},endDate=${endDate}";
+        dsd.addColumn("New PNC Clients", "", ReportUtils.map(moh711Indicators.noOfNewPNCClients(), indParams), "");
+        dsd.addColumn("Revisiting PNC Clients", "", ReportUtils.map(moh711Indicators.noOfPNCClientsRevisits(), indParams), "");
+        dsd.addColumn("Mothers received PostParturm care within 48 hrs", "", ReportUtils.map(moh711Indicators.motherPPCWithin48hrs(), indParams), "");
+        dsd.addColumn("Mothers received PostParturm care btw 3 days and 6 weeks", "", ReportUtils.map(moh711Indicators.motherPPCbtw3And42Days(), indParams), "");
+        dsd.addColumn("Mothers received PostParturm care after 6 weeks", "", ReportUtils.map(moh711Indicators.motherPPCAfter6weeks(), indParams), "");
 
-		EmrReportingUtils.addRow(dsd, "K1-1", "New enrollments - PMTCT", ReportUtils.map(hivIndicators.enrolledExcludingTransfersAndReferredFrom(pmtct), indParams), femaleColumns);
-		EmrReportingUtils.addRow(dsd, "K1-2", "New enrollments - VCT", ReportUtils.map(hivIndicators.enrolledExcludingTransfersAndReferredFrom(vct), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K1-3", "New enrollments - TB", ReportUtils.map(hivIndicators.enrolledExcludingTransfersAndReferredFrom(tb), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K1-4", "New enrollments - In Patient", ReportUtils.map(hivIndicators.enrolledExcludingTransfersAndReferredFrom(inpatient), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K1-5", "New enrollments - CWC", ReportUtils.map(hivIndicators.enrolledExcludingTransfersAndReferredFrom(cwc), indParams), pedsColumns);
-		EmrReportingUtils.addRow(dsd, "K1-6", "New enrollments - All others", ReportUtils.map(hivIndicators.enrolledExcludingTransfersAndNotReferredFrom(all), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K1-7", "New enrollments - Sub-total", ReportUtils.map(hivIndicators.enrolledExcludingTransfers(), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K2", "Cumulative enrolled", ReportUtils.map(hivIndicators.enrolledCumulative(), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K3-1", "Starting ARVs - WHO stage 1", ReportUtils.map(artIndicators.startedArtWithWhoStage(1), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K3-2", "Starting ARVs - WHO stage 2", ReportUtils.map(artIndicators.startedArtWithWhoStage(2), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K3-3", "Starting ARVs - WHO stage 3", ReportUtils.map(artIndicators.startedArtWithWhoStage(3), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K3-4", "Starting ARVs - WHO stage 4", ReportUtils.map(artIndicators.startedArtWithWhoStage(4), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K3-5", "Starting ARVs - Sub-total", ReportUtils.map(artIndicators.startedArt(), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K4", "Cumulative started ARV", ReportUtils.map(artIndicators.startedArtCumulative(), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K5-1", "Currently on ARVs - Pregnant women", ReportUtils.map(artIndicators.onArtAndPregnant(), indParams), femaleColumns);
-		EmrReportingUtils.addRow(dsd, "K5-2", "Currently on ARVs - All others", ReportUtils.map(artIndicators.onArtAndNotPregnant(), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K5-3", "Currently on ARVs - Sub-total", ReportUtils.map(moh731Indicators.currentlyOnArt(), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K6", "Eligible for ART", ReportUtils.map(artIndicators.eligibleForArt(), indParams), allColumns);
-		//EmrReportingUtils.addRow(dsd, "K7-1", "Post-exposure prophylaxis..", map(???, indParams), allColumns);
-		//EmrReportingUtils.addRow(dsd, "K7-2", "Post-exposure prophylaxis..", map(???, indParams), allColumns);
-		//EmrReportingUtils.addRow(dsd, "K7-3", "Post-exposure prophylaxis..", map(???, indParams), allColumns);
-		//EmrReportingUtils.addRow(dsd, "K7-4", "Post-exposure prophylaxis..", map(???, indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K8-1", "On prophylaxis - Cotrimoxazole", ReportUtils.map(hivIndicators.onCotrimoxazoleProphylaxis(), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K8-2", "On prophylaxis - Fluconazole", ReportUtils.map(hivIndicators.onFluconazoleProphylaxis(), indParams), allColumns);
-		EmrReportingUtils.addRow(dsd, "K8-3", "On prophylaxis - Sub-total", ReportUtils.map(hivIndicators.onProphylaxis(), indParams), allColumns);
+        dsd.addColumn("Babies received PostParturm care within 48 hrs", "", ReportUtils.map(moh711Indicators.babyPPCWithin48hrs(), indParams), "");
+        dsd.addColumn("Babies received PostParturm care btw 3 days and 6 weeks", "", ReportUtils.map(moh711Indicators.babyPPCbtw3And42Days(), indParams), "");
+        dsd.addColumn("Babies received PostParturm care after 6 weeks", "", ReportUtils.map(moh711Indicators.babyPPCAfter6weeks(), indParams), "");
 
-		return dsd;
-	}
+        dsd.addColumn("Number of Cases of Fistula", "", ReportUtils.map(moh711Indicators.noOfFistulaCasesPNC(), indParams), "");
+        dsd.addColumn("No Referred from the community unit for PNC", "", ReportUtils.map(moh711Indicators.noReferredFromCommunityForPNC(), indParams), "");
+
+        return dsd;
+    }
+
+    /**
+     * B. Maternity and newborn
+     * @return
+     */
+    private DataSetDefinition createMaternityNewbornDataSet() {
+        CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
+        dsd.setName("Maternity_Newborn");
+        dsd.setDescription("Maternity and Newborn");
+        dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        dsd.addDimension("age", ReportUtils.map(commonDimensions.datimFineAgeGroups(), "onDate=${endDate}"));
+        dsd.addDimension("gender", ReportUtils.map(commonDimensions.gender()));
+
+        dsd.addColumn("Normal Deliveries", "", ReportUtils.map(moh711Indicators.normalDelivery(1170), indParams), "");
+        dsd.addColumn("Caesarean Sections", "", ReportUtils.map(moh711Indicators.caesareanSection(1171), indParams), "");
+        dsd.addColumn("Breech Delivery", "", ReportUtils.map(moh711Indicators.breechDelivery(1172), indParams), "");
+        dsd.addColumn("Assisted Vaginal Deliveries (Vacuum Extraction)", "", ReportUtils.map(moh711Indicators.assistedVaginalDelivery(118159), indParams), "");
+        dsd.addColumn("Live Births", "", ReportUtils.map(moh711Indicators.liveBirths(), indParams), "");
+        dsd.addColumn("Low birth weight Babies (below 2500 grams)", "", ReportUtils.map(moh711Indicators.lowBirthWeight(), indParams), "");
+        dsd.addColumn("Births with deformities", "", ReportUtils.map(moh711Indicators.deformities(), indParams), "");
+        //dsd.addColumn("Neonates given Vit K", "", ReportUtils.map(moh711Indicators.givenVitaminK(), indParams), "");
+        //dsd.addColumn("Babies applied chlorhexidine for cord care", "", ReportUtils.map(moh711Indicators.chlorhexidineForCordCaregiven(), indParams), "");
+        //dsd.addColumn("Neonates 0-28 days put on Continous Positive Airway Pressure(CPAP)", "", ReportUtils.map(moh711Indicators.continousPositiveAirwayPressureAt0To28Days(), indParams), "");
+        dsd.addColumn("Babies given tetracycline at birth", "", ReportUtils.map(moh711Indicators.givenTetracyclineAtBirth(), indParams), "");
+        dsd.addColumn("Pre-Term babies", "", ReportUtils.map(moh711Indicators.preTermBabies(), indParams), "");
+        dsd.addColumn("Babies discharged alive", "", ReportUtils.map(moh711Indicators.dischargedAlive(), indParams), "");
+        dsd.addColumn("Infants initiated on breastfeeding within 1 hour after birth", "", ReportUtils.map(moh711Indicators.initiatedBFWithinOneHour(), indParams), "");
+        dsd.addColumn("Total Deliveries from HIV+ mother", "", ReportUtils.map(moh711Indicators.deliveryFromHIVPosMother(), indParams), "");
+        dsd.addColumn("Perinatal Deaths (Fresh still birth)", "", ReportUtils.map(moh711Indicators.perinatalFreshStillBirth(), indParams), "");
+        dsd.addColumn("Perinatal Deaths(Macerated still birth)", "", ReportUtils.map(moh711Indicators.perinatalMaceratedStillBirth(), indParams), "");
+        dsd.addColumn("Perinatal Deaths 0 to 7 days", "", ReportUtils.map(moh711Indicators.perinatalDeathWithin0To7Days(), indParams), "");
+        dsd.addColumn("Neonatal Deaths", "Death 0-28 days", ReportUtils.map(moh711Indicators.perinatalDeathWithin0To28Days(), indParams), "");
+        EmrReportingUtils.addRow(dsd, "Maternal deaths", "", ReportUtils.map(moh711Indicators.maternalDeath(), indParams), maternalAgeDisaggregations, Arrays.asList("01", "02", "03", "04"));
+        dsd.addColumn("Maternal deaths audited within 7 days", "", ReportUtils.map(moh711Indicators.maternalDeathAuditedWithin7Days(), indParams), "");
+        dsd.addColumn("Ante Partum Haemorrhage(APH) Alive", "", ReportUtils.map(moh711Indicators.antePartumHaemorrhage(160429), indParams), "");
+        dsd.addColumn("Ante Partum Haemorrhage(APH) Dead", "", ReportUtils.map(moh711Indicators.antePartumHaemorrhage(134612), indParams), "");
+        dsd.addColumn("Post Partum Haemorrhage(PPH) Alive", "", ReportUtils.map(moh711Indicators.postPartumHaemorrhage(160429), indParams), "");
+        dsd.addColumn("Post Partum Haemorrhage(PPH) Dead", "", ReportUtils.map(moh711Indicators.postPartumHaemorrhage(134612), indParams), "");
+        dsd.addColumn("Eclampsia Alive", "", ReportUtils.map(moh711Indicators.eclampsia(160429), indParams), "");
+        dsd.addColumn("Eclampsia Dead", "", ReportUtils.map(moh711Indicators.eclampsia(134612), indParams), "");
+        dsd.addColumn("Ruptured Uterus Alive", "", ReportUtils.map(moh711Indicators.rupturedUterus(160429), indParams), "");
+        dsd.addColumn("Ruptured Uterus Dead", "", ReportUtils.map(moh711Indicators.rupturedUterus(134612), indParams), "");
+        dsd.addColumn("Obstructed Labour Alive", "", ReportUtils.map(moh711Indicators.obstructedLabour(160429), indParams), "");
+        dsd.addColumn("Obstructed Labour Dead", "", ReportUtils.map(moh711Indicators.obstructedLabour(134612), indParams), "");
+        dsd.addColumn("Sepsis Alive", "", ReportUtils.map(moh711Indicators.sepsis(160429), indParams), "");
+        dsd.addColumn("Sepsis Dead", "", ReportUtils.map(moh711Indicators.sepsis(134612), indParams), "");
+        //dsd.addColumn("Number of Mothers with delivery complications associated with FGM", "Alive", ReportUtils.map(moh711Indicators.fgmRelatedComplicatiobs(), indParams), "");
+        //dsd.addColumn("Number of Mothers with delivery complications associated with FGM", "Dead", ReportUtils.map(moh711Indicators.fgmRelatedComplicatiobs(), indParams), "");
+
+        return dsd;
+    }
+
+    /**
+     *F. Child Health and Nutrition Information System
+     * @return
+     */
+    private DataSetDefinition createChildHealthAndNutritionDataSet() {
+        CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
+        dsd.setName("Child_Health_Nutrition");
+        dsd.setDescription("Child Health and Nutrition Information System");
+        dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        dsd.addDimension("age", ReportUtils.map(commonDimensions.childAgeGroups(), "onDate=${endDate}"));
+        dsd.addDimension("gender", ReportUtils.map(commonDimensions.gender()));
+
+        EmrReportingUtils.addRow(dsd, "Normal_Weight_for_Age", "", ReportUtils.map(moh711Indicators.normalWeightForAge(), indParams), childWeightAgeDisaggregations, Arrays.asList("01", "02", "03", "04","05","06","07"));
+        EmrReportingUtils.addRow(dsd, "Underweight", "", ReportUtils.map(moh711Indicators.underWeight(), indParams), childWeightAgeDisaggregations, Arrays.asList("01", "02", "03", "04","05","06","07"));
+        EmrReportingUtils.addRow(dsd, "Severe_Underweight", "", ReportUtils.map(moh711Indicators.severeUnderWeight(), indParams), childWeightAgeDisaggregations, Arrays.asList("01", "02", "03", "04","05","06","07"));
+        EmrReportingUtils.addRow(dsd, "Overweight", "", ReportUtils.map(moh711Indicators.overweight(), indParams), childWeightAgeDisaggregations, Arrays.asList("01", "02", "03", "04","05","06","07"));
+        EmrReportingUtils.addRow(dsd, "Obese", "", ReportUtils.map(moh711Indicators.obese(), indParams), childWeightAgeDisaggregations, Arrays.asList("01", "02", "03", "04","05","06","07"));
+       // EmrReportingUtils.addRow(dsd, "Total_Weighed ", "", ReportUtils.map(moh711Indicators.totalWeighed(), indParams), childAgeDisaggregations, Arrays.asList("01", "02", "03", "04","05","06","07","08","09","10","11","12","13"));
+        EmrReportingUtils.addRow(dsd, "MUAC_Normal(Green)", "", ReportUtils.map(moh711Indicators.normalMUAC(), indParams), childMUACAgeDisaggregations, Arrays.asList("01", "02","03"));
+        EmrReportingUtils.addRow(dsd, "MUAC_Moderate(Yellow)", "", ReportUtils.map(moh711Indicators.moderateMUAC(), indParams), childMUACAgeDisaggregations, Arrays.asList("01", "02","03"));
+        EmrReportingUtils.addRow(dsd, "MUAC_Severe(Red)", "", ReportUtils.map(moh711Indicators.severeMUAC(), indParams), childMUACAgeDisaggregations, Arrays.asList("01", "02","03"));
+        EmrReportingUtils.addRow(dsd, "Stunted", "", ReportUtils.map(moh711Indicators.stuntedGrowth(), indParams), childGrowthAgeDisaggregations, Arrays.asList("01", "02","03"));
+        //EmrReportingUtils.addRow(dsd, "Total_Measured", "", ReportUtils.map(moh711Indicators.totalMeasured(), indParams), childAgeDisaggregations, Arrays.asList("01", "02", "03","04"));
+        EmrReportingUtils.addRow(dsd, "New_Enrollment", "", ReportUtils.map(moh711Indicators.newlyEnrolledMchs(), indParams), childFollowupTypeAgeDisaggregations, Arrays.asList("01", "02","03"));
+        EmrReportingUtils.addRow(dsd, "Followup_type_Kwashiorkor", "", ReportUtils.map(moh711Indicators.kwashiorkor(), indParams), childFollowupTypeAgeDisaggregations, Arrays.asList("01", "02","03"));
+        EmrReportingUtils.addRow(dsd, "Followup_type_Marasmus", "", ReportUtils.map(moh711Indicators.marasmus(), indParams), childFollowupTypeAgeDisaggregations, Arrays.asList("01", "02","03"));
+        EmrReportingUtils.addRow(dsd, "Exclusive_breast_feeding", "", ReportUtils.map(moh711Indicators.exclusiveBreastFeeding(), indParams), childExclusiveBFAgeDisaggregations, Arrays.asList("01", "02","03"));
+        EmrReportingUtils.addRow(dsd, "Dewormed", "", ReportUtils.map(moh711Indicators.dewormed(), indParams), childDewormingAgeDisaggregations, Arrays.asList("01", "02","03"));
+        EmrReportingUtils.addRow(dsd, "MNPs_Supplementation", "", ReportUtils.map(moh711Indicators.mnpsSupplementation(), indParams), childMNPsAgeDisaggregations, Arrays.asList("01", "02","03"));
+        EmrReportingUtils.addRow(dsd, "Child Mortality", "", ReportUtils.map(moh711Indicators.childrenDiscontinuationReasonDied(), indParams), childDelayedGrowthAgeDisaggregations, Arrays.asList("01"));
+        EmrReportingUtils.addRow(dsd, "Children_With_Disability_Any_Form", "", ReportUtils.map(moh711Indicators.childrenWithDisability(), indParams), childDelayedGrowthAgeDisaggregations, Arrays.asList("01"));
+        EmrReportingUtils.addRow(dsd, "Children_with_delayed_developmental_milestones", "", ReportUtils.map(moh711Indicators.childrenWithDelayedDevelopmentalMilestones(), indParams), childDelayedGrowthAgeDisaggregations, Arrays.asList("01"));
+        return dsd;
+    }
+
+    private DataSetDefinition createTBScreeningDataSet() {
+        CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
+        dsd.setName("TB_Screening");
+        dsd.setDescription("TB Screening");
+        dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        dsd.addDimension("age", ReportUtils.map(commonDimensions.childAgeGroups(), "onDate=${endDate}"));
+        dsd.addDimension("gender", ReportUtils.map(commonDimensions.gender()));
+
+        dsd.addColumn("Total Number of people screened", "", ReportUtils.map(moh711Indicators.clientTbScreening(), indParams), "");
+        dsd.addColumn("Total Number of presumptive TB cases", "", ReportUtils.map(moh711Indicators.clientWithPresumptiveTb(), indParams), "");
+        dsd.addColumn("Total Number already on TB treatment", "", ReportUtils.map(moh711Indicators.clientonTbTreatment(), indParams), "");
+        dsd.addColumn("Total Number of people not screened", "", ReportUtils.map(moh711Indicators.clientTbNotScreened(), indParams), "");
+
+        return dsd;
+    }
 }

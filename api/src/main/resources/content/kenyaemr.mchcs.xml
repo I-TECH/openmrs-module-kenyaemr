@@ -45,8 +45,9 @@
 				<ref bean="kenyaemr.mchcs.report.heiRegister" />
 				<ref bean="kenyaemr.mchcs.report.moh510" />
 				<ref bean="kenyaemr.mchcs.report.moh710" />
-				<!--<ref bean="kenyaemr.mchcs.report.moh510" />
 				<ref bean="kenyaemr.mchcs.report.moh511" />
+				<!--<ref bean="kenyaemr.mchcs.report/>
+				 />
 				<ref bean="kenyaemr.mchcs.report.vaccinationAppointments" />
 				<ref bean="kenyaemr.mchcs.report.defaulter" />-->
 			</set>
@@ -214,6 +215,7 @@
 		<property name="description" value="CWC Register(MOH 511)" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 		<property name="template" value="kenyaemr:moh511.xls" />
+		<property name="repeatingSection" value="sheet:1,row:6,dataset:CWCRegister" />
 	</bean>
 	
 	<bean id="kenyaemr.mchcs.report.vaccinationAppointments" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">

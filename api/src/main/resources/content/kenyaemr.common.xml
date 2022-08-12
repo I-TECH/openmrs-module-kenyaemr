@@ -78,6 +78,7 @@
 				<ref bean="kenyaemr.common.report.missedAppointmentsDueToCovid19"/>
 				<ref bean="kenyaemr.etl.common.report.publicHealthAction"/>
 				<ref bean="kenyaemr.common.report.mortalityLineList"/>
+				<ref bean="kenyaemr.common.report.moh711"/>
 			</set>
 		</property>
 	</bean>
@@ -749,5 +750,11 @@
 		<property name="template" value="kenyaemr:deceased_patients_linelist.xls" />
 		<property name="repeatingSection" value="sheet:1,row:6,dataset:deceasedPatients" />
 	</bean>
-
+	<bean id="kenyaemr.common.report.moh711" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="3a5e754c-4e81-4450-8694-e79beb1844f0" />
+		<property name="name" value="MOH 711" />
+		<property name="description" value="Integrated Programme Summary Report Form: Reproductive and Child Health, Medical and Rehabilitation Services" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:moh711.xls" />
+	</bean>
 </beans>
