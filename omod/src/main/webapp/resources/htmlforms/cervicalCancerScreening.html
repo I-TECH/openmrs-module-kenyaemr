@@ -513,7 +513,8 @@
 							 answerLabels="VIA,VIA/VILI,Colposcopy,PAP Smear,HPV Test" style="dropdown" />
 					</td>
 					<td>
-						<table class="simple-table" style="width: 100%">
+						<ifMode mode="VIEW" include="false">
+							<table class="simple-table" style="width: 100%">
 							<tr id="tr_via_screening_result">
 								<td>VIA Screening result</td>
 								<td>
@@ -560,6 +561,22 @@
 								</td>
 							</tr>
 						</table>
+						</ifMode>
+						<ifMode mode="VIEW" include="true">
+							<table class="simple-table" style="width: 100%">
+								<tr>
+									<td>Screening result</td>
+									<td>
+									<td>
+										<obs id="via_screening_result" conceptId="164934"
+											 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159008AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145808AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145805AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,155424AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159393AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Negative,Positive,Suspicious for cancer,Normal,Low grade lesion,High grade lesion,Invasive Cancer,Presumed Cancer,Other"
+											 style="dropdown" />
+									</td>
+									</td>
+								</tr>
+							</table>
+						</ifMode>
 					</td>
 				</tr>
 				<tr>
