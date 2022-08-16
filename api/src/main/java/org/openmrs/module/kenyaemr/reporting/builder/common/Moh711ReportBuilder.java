@@ -104,14 +104,14 @@ public class Moh711ReportBuilder extends AbstractReportBuilder {
     List<ColumnParameters> ancAgeDisaggregations = Arrays.asList(f10_14, f15_19, f20_24);
     List<ColumnParameters> cacxScreeningAgeDisaggregations = Arrays.asList(fUnder25, f25_49, f50AndAbove);
     List<ColumnParameters> maternalAgeDisaggregations = Arrays.asList(f10_14, f15_19, f20_24, f25AndAbove);
-    List<ColumnParameters> childWeightAgeDisaggregations = Arrays.asList(f0To5Months,m0To5Months,f6To23Months,
-            m6To23Months,f24To59Months,m24To59Months,colTotal);
-    List<ColumnParameters> childGrowthAgeDisaggregations = Arrays.asList(f24To59Months, m24To59Months,colTotal);
-    List<ColumnParameters> childFollowupTypeAgeDisaggregations = Arrays.asList(f0To59Months, m0To59Months,colTotal);
-    List<ColumnParameters> childExclusiveBFAgeDisaggregations = Arrays.asList(f0To5Months, m0To5Months,colTotal);
-    List<ColumnParameters> childMUACAgeDisaggregations = Arrays.asList(f6To59Months, m6To59Months,colTotal);
-    List<ColumnParameters> childMNPsAgeDisaggregations = Arrays.asList(f6To23Months, m6To23Months,colTotal);
-    List<ColumnParameters> childDewormingAgeDisaggregations = Arrays.asList(f12To59Months, m12To59Months,colTotal);
+    List<ColumnParameters> childWeightAgeDisaggregations = Arrays.asList(f0To5Months, m0To5Months, f6To23Months,
+            m6To23Months, f24To59Months, m24To59Months, colTotal);
+    List<ColumnParameters> childGrowthAgeDisaggregations = Arrays.asList(f24To59Months, m24To59Months, colTotal);
+    List<ColumnParameters> childFollowupTypeAgeDisaggregations = Arrays.asList(f0To59Months, m0To59Months, colTotal);
+    List<ColumnParameters> childExclusiveBFAgeDisaggregations = Arrays.asList(f0To5Months, m0To5Months, colTotal);
+    List<ColumnParameters> childMUACAgeDisaggregations = Arrays.asList(f6To59Months, m6To59Months, colTotal);
+    List<ColumnParameters> childMNPsAgeDisaggregations = Arrays.asList(f6To23Months, m6To23Months, colTotal);
+    List<ColumnParameters> childDewormingAgeDisaggregations = Arrays.asList(f12To59Months, m12To59Months, colTotal);
     List<ColumnParameters> childDelayedGrowthAgeDisaggregations = Arrays.asList(all0To59Months);
 
 
@@ -130,9 +130,9 @@ public class Moh711ReportBuilder extends AbstractReportBuilder {
 
         dsd.addColumn("New ANC Clients", "", ReportUtils.map(moh711Indicators.noOfNewANCClients(), indParams), "");
         dsd.addColumn("Revisiting ANC Clients", "", ReportUtils.map(moh711Indicators.noOfANCClientsRevisits(), indParams), "");
-	/*dsd.addColumn("Clients given IPT (1st dose)", "", ReportUtils.map(moh711Indicators.noOfANCClientsGivenIPT1stDose(), indParams), "");
-	dsd.addColumn("Clients given IPT (2nd dose)", "", ReportUtils.map(moh711Indicators.noOfANCClientsGivenIPT2ndDose(), indParams), "");
-	dsd.addColumn("Clients given IPT (3rd dose)", "", ReportUtils.map(moh711Indicators.noOfANCClientsGivenIPT3rdDose(), indParams), "");*/
+        dsd.addColumn("Clients given IPT (1st dose)", "", ReportUtils.map(moh711Indicators.noOfANCClientsGivenIPT1stDose(), indParams), "");
+        dsd.addColumn("Clients given IPT (2nd dose)", "", ReportUtils.map(moh711Indicators.noOfANCClientsGivenIPT2ndDose(), indParams), "");
+        dsd.addColumn("Clients given IPT (3rd dose)", "", ReportUtils.map(moh711Indicators.noOfANCClientsGivenIPT3rdDose(), indParams), "");
         dsd.addColumn("Clients with Hb less than 11 g per dl", "", ReportUtils.map(moh711Indicators.noOfANCClientsLowHB(), indParams), "");
         dsd.addColumn("Clients completed 4 Antenatal Visits", "", ReportUtils.map(moh711Indicators.ancClientsCompleted4Visits(), indParams), "");
         //dsd.addColumn("LLINs distributed to under 1 year", "", ReportUtils.map(moh711Indicators.distributedLLINsUnder1Year(), indParams), "");
@@ -164,8 +164,8 @@ public class Moh711ReportBuilder extends AbstractReportBuilder {
         dsd.addDimension("age", ReportUtils.map(commonDimensions.moh745AgeGroups(), "onDate=${endDate}"));
         dsd.addDimension("gender", ReportUtils.map(commonDimensions.gender()));
         EmrReportingUtils.addRow(dsd, "ANC_CACX", "No.of Client receiving VIA /VILI /HPV VILI / HPV", ReportUtils.map(moh711Indicators.cacxScreened(), indParams), cacxScreeningAgeDisaggregations, Arrays.asList("01", "02", "03"));
-        EmrReportingUtils.addRow(dsd, "CACX_Pap_Smear", "No.Screened for Pap smear", ReportUtils.map(moh711Indicators.cacxScreenedWithMethod("Pap Smear",885), indParams), cacxScreeningAgeDisaggregations, Arrays.asList("01", "02", "03"));
-        EmrReportingUtils.addRow(dsd, "CACX_HPV", "No.Screened for HPV test", ReportUtils.map(moh711Indicators.cacxScreenedWithMethod("HPV Test",159895), indParams), cacxScreeningAgeDisaggregations, Arrays.asList("01", "02", "03"));
+        EmrReportingUtils.addRow(dsd, "CACX_Pap_Smear", "No.Screened for Pap smear", ReportUtils.map(moh711Indicators.cacxScreenedWithMethod("Pap Smear", 885), indParams), cacxScreeningAgeDisaggregations, Arrays.asList("01", "02", "03"));
+        EmrReportingUtils.addRow(dsd, "CACX_HPV", "No.Screened for HPV test", ReportUtils.map(moh711Indicators.cacxScreenedWithMethod("HPV Test", 159895), indParams), cacxScreeningAgeDisaggregations, Arrays.asList("01", "02", "03"));
         EmrReportingUtils.addRow(dsd, "VIA_VILI", "Number of clients with Positive VIA/VILI result", ReportUtils.map(moh711Indicators.viaViliPositive(), indParams), cacxScreeningAgeDisaggregations, Arrays.asList("01", "02", "03"));
         EmrReportingUtils.addRow(dsd, "HPV", "Number of clients with Positive HPV result", ReportUtils.map(moh711Indicators.hpvPositive(), indParams), cacxScreeningAgeDisaggregations, Arrays.asList("01", "02", "03"));
         EmrReportingUtils.addRow(dsd, "Suspicious_CACX_Lessions", "Number of clients with suspicious cancer lesions", ReportUtils.map(moh711Indicators.suspiciousCancerLessions(), indParams), cacxScreeningAgeDisaggregations, Arrays.asList("01", "02", "03"));
@@ -269,23 +269,23 @@ public class Moh711ReportBuilder extends AbstractReportBuilder {
         dsd.addDimension("age", ReportUtils.map(commonDimensions.childAgeGroups(), "onDate=${endDate}"));
         dsd.addDimension("gender", ReportUtils.map(commonDimensions.gender()));
 
-        EmrReportingUtils.addRow(dsd, "Normal_Weight_for_Age", "", ReportUtils.map(moh711Indicators.normalWeightForAge(), indParams), childWeightAgeDisaggregations, Arrays.asList("01", "02", "03", "04","05","06","07"));
-        EmrReportingUtils.addRow(dsd, "Underweight", "", ReportUtils.map(moh711Indicators.underWeight(), indParams), childWeightAgeDisaggregations, Arrays.asList("01", "02", "03", "04","05","06","07"));
-        EmrReportingUtils.addRow(dsd, "Severe_Underweight", "", ReportUtils.map(moh711Indicators.severeUnderWeight(), indParams), childWeightAgeDisaggregations, Arrays.asList("01", "02", "03", "04","05","06","07"));
-        EmrReportingUtils.addRow(dsd, "Overweight", "", ReportUtils.map(moh711Indicators.overweight(), indParams), childWeightAgeDisaggregations, Arrays.asList("01", "02", "03", "04","05","06","07"));
-        EmrReportingUtils.addRow(dsd, "Obese", "", ReportUtils.map(moh711Indicators.obese(), indParams), childWeightAgeDisaggregations, Arrays.asList("01", "02", "03", "04","05","06","07"));
-       // EmrReportingUtils.addRow(dsd, "Total_Weighed ", "", ReportUtils.map(moh711Indicators.totalWeighed(), indParams), childAgeDisaggregations, Arrays.asList("01", "02", "03", "04","05","06","07","08","09","10","11","12","13"));
-        EmrReportingUtils.addRow(dsd, "MUAC_Normal(Green)", "", ReportUtils.map(moh711Indicators.normalMUAC(), indParams), childMUACAgeDisaggregations, Arrays.asList("01", "02","03"));
-        EmrReportingUtils.addRow(dsd, "MUAC_Moderate(Yellow)", "", ReportUtils.map(moh711Indicators.moderateMUAC(), indParams), childMUACAgeDisaggregations, Arrays.asList("01", "02","03"));
-        EmrReportingUtils.addRow(dsd, "MUAC_Severe(Red)", "", ReportUtils.map(moh711Indicators.severeMUAC(), indParams), childMUACAgeDisaggregations, Arrays.asList("01", "02","03"));
-        EmrReportingUtils.addRow(dsd, "Stunted", "", ReportUtils.map(moh711Indicators.stuntedGrowth(), indParams), childGrowthAgeDisaggregations, Arrays.asList("01", "02","03"));
+        EmrReportingUtils.addRow(dsd, "Normal_Weight_for_Age", "", ReportUtils.map(moh711Indicators.normalWeightForAge(), indParams), childWeightAgeDisaggregations, Arrays.asList("01", "02", "03", "04", "05", "06", "07"));
+        EmrReportingUtils.addRow(dsd, "Underweight", "", ReportUtils.map(moh711Indicators.underWeight(), indParams), childWeightAgeDisaggregations, Arrays.asList("01", "02", "03", "04", "05", "06", "07"));
+        EmrReportingUtils.addRow(dsd, "Severe_Underweight", "", ReportUtils.map(moh711Indicators.severeUnderWeight(), indParams), childWeightAgeDisaggregations, Arrays.asList("01", "02", "03", "04", "05", "06", "07"));
+        EmrReportingUtils.addRow(dsd, "Overweight", "", ReportUtils.map(moh711Indicators.overweight(), indParams), childWeightAgeDisaggregations, Arrays.asList("01", "02", "03", "04", "05", "06", "07"));
+        EmrReportingUtils.addRow(dsd, "Obese", "", ReportUtils.map(moh711Indicators.obese(), indParams), childWeightAgeDisaggregations, Arrays.asList("01", "02", "03", "04", "05", "06", "07"));
+        // EmrReportingUtils.addRow(dsd, "Total_Weighed ", "", ReportUtils.map(moh711Indicators.totalWeighed(), indParams), childAgeDisaggregations, Arrays.asList("01", "02", "03", "04","05","06","07","08","09","10","11","12","13"));
+        EmrReportingUtils.addRow(dsd, "MUAC_Normal(Green)", "", ReportUtils.map(moh711Indicators.normalMUAC(), indParams), childMUACAgeDisaggregations, Arrays.asList("01", "02", "03"));
+        EmrReportingUtils.addRow(dsd, "MUAC_Moderate(Yellow)", "", ReportUtils.map(moh711Indicators.moderateMUAC(), indParams), childMUACAgeDisaggregations, Arrays.asList("01", "02", "03"));
+        EmrReportingUtils.addRow(dsd, "MUAC_Severe(Red)", "", ReportUtils.map(moh711Indicators.severeMUAC(), indParams), childMUACAgeDisaggregations, Arrays.asList("01", "02", "03"));
+        EmrReportingUtils.addRow(dsd, "Stunted", "", ReportUtils.map(moh711Indicators.stuntedGrowth(), indParams), childGrowthAgeDisaggregations, Arrays.asList("01", "02", "03"));
         //EmrReportingUtils.addRow(dsd, "Total_Measured", "", ReportUtils.map(moh711Indicators.totalMeasured(), indParams), childAgeDisaggregations, Arrays.asList("01", "02", "03","04"));
-        EmrReportingUtils.addRow(dsd, "New_Enrollment", "", ReportUtils.map(moh711Indicators.newlyEnrolledMchs(), indParams), childFollowupTypeAgeDisaggregations, Arrays.asList("01", "02","03"));
-        EmrReportingUtils.addRow(dsd, "Followup_type_Kwashiorkor", "", ReportUtils.map(moh711Indicators.kwashiorkor(), indParams), childFollowupTypeAgeDisaggregations, Arrays.asList("01", "02","03"));
-        EmrReportingUtils.addRow(dsd, "Followup_type_Marasmus", "", ReportUtils.map(moh711Indicators.marasmus(), indParams), childFollowupTypeAgeDisaggregations, Arrays.asList("01", "02","03"));
-        EmrReportingUtils.addRow(dsd, "Exclusive_breast_feeding", "", ReportUtils.map(moh711Indicators.exclusiveBreastFeeding(), indParams), childExclusiveBFAgeDisaggregations, Arrays.asList("01", "02","03"));
-        EmrReportingUtils.addRow(dsd, "Dewormed", "", ReportUtils.map(moh711Indicators.dewormed(), indParams), childDewormingAgeDisaggregations, Arrays.asList("01", "02","03"));
-        EmrReportingUtils.addRow(dsd, "MNPs_Supplementation", "", ReportUtils.map(moh711Indicators.mnpsSupplementation(), indParams), childMNPsAgeDisaggregations, Arrays.asList("01", "02","03"));
+        EmrReportingUtils.addRow(dsd, "New_Enrollment", "", ReportUtils.map(moh711Indicators.newlyEnrolledMchs(), indParams), childFollowupTypeAgeDisaggregations, Arrays.asList("01", "02", "03"));
+        EmrReportingUtils.addRow(dsd, "Followup_type_Kwashiorkor", "", ReportUtils.map(moh711Indicators.kwashiorkor(), indParams), childFollowupTypeAgeDisaggregations, Arrays.asList("01", "02", "03"));
+        EmrReportingUtils.addRow(dsd, "Followup_type_Marasmus", "", ReportUtils.map(moh711Indicators.marasmus(), indParams), childFollowupTypeAgeDisaggregations, Arrays.asList("01", "02", "03"));
+        EmrReportingUtils.addRow(dsd, "Exclusive_breast_feeding", "", ReportUtils.map(moh711Indicators.exclusiveBreastFeeding(), indParams), childExclusiveBFAgeDisaggregations, Arrays.asList("01", "02", "03"));
+        EmrReportingUtils.addRow(dsd, "Dewormed", "", ReportUtils.map(moh711Indicators.dewormed(), indParams), childDewormingAgeDisaggregations, Arrays.asList("01", "02", "03"));
+        EmrReportingUtils.addRow(dsd, "MNPs_Supplementation", "", ReportUtils.map(moh711Indicators.mnpsSupplementation(), indParams), childMNPsAgeDisaggregations, Arrays.asList("01", "02", "03"));
         EmrReportingUtils.addRow(dsd, "Child Mortality", "", ReportUtils.map(moh711Indicators.childrenDiscontinuationReasonDied(), indParams), childDelayedGrowthAgeDisaggregations, Arrays.asList("01"));
         EmrReportingUtils.addRow(dsd, "Children_With_Disability_Any_Form", "", ReportUtils.map(moh711Indicators.childrenWithDisability(), indParams), childDelayedGrowthAgeDisaggregations, Arrays.asList("01"));
         EmrReportingUtils.addRow(dsd, "Children_with_delayed_developmental_milestones", "", ReportUtils.map(moh711Indicators.childrenWithDelayedDevelopmentalMilestones(), indParams), childDelayedGrowthAgeDisaggregations, Arrays.asList("01"));

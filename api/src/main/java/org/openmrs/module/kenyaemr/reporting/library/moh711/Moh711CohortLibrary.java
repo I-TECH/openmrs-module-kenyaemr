@@ -37,8 +37,8 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
     String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_mch_enrollment e\n" +
             "left join (select d.patient_id,max(visit_date) as latest_disc from kenyaemr_etl.etl_patient_program_discontinuation d\n" +
             "    where d.program_name = 'MCH Mother' group by d.patient_id)d on e.patient_id = d.patient_id\n" +
-            "where e.service_type = 1622 and date(e.visit_date) < date(:endDate) and (date(e.visit_date) > date(d.latest_disc) or d.patient_id is null);";
-    cd.setName("Latest MCH enrollment");
+            "where e.service_type = 1622 and date(e.visit_date) <= date(:endDate) and (date(e.visit_date) > date(d.latest_disc) or d.patient_id is null);";
+    cd.setName("Latest MCH enrollment at ANC");
     cd.setQuery(sqlQuery);
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -70,7 +70,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
         String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_mch_enrollment e\n" +
                 "left join (select d.patient_id,max(visit_date) as latest_disc from kenyaemr_etl.etl_patient_program_discontinuation d\n" +
                 "    where d.program_name = 'MCH Mother' group by d.patient_id)d on e.patient_id = d.patient_id\n" +
-                "where e.service_type = 1623 and date(e.visit_date) < date(:endDate) and (date(e.visit_date) > date(d.latest_disc) or d.patient_id is null);";
+                "where e.service_type = 1623 and date(e.visit_date) <= date(:endDate) and (date(e.visit_date) > date(d.latest_disc) or d.patient_id is null);";
         cd.setName("Latest MCH enrollment at PNC");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -113,11 +113,12 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
         return cd;
     }
     /**
-     *No.of Clients given IPT (1st dose)
+     *No.of Clients given IPT (1st dose) SQL
      */
-    public CohortDefinition noOfANCClientsGivenIPT1stDose() {
+    public CohortDefinition noOfANCClientsGivenIPT1stDoseSQL() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "";
+        String sqlQuery = "select p.patient_id from kenyaemr_etl.etl_preventive_services p where date(p.malaria_prophylaxis_1) <= date(:endDate)\n" +
+                "                        and date(p.malaria_prophylaxis_1) between date(:startDate) and date(:endDate);";
         cd.setName("No.of Clients given IPT (1st dose)");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -125,12 +126,27 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
         cd.setDescription("No.of Clients given IPT (1st dose)");
         return cd;
     }
+
     /**
-     *No.of Clients given IPT (2nd dose)
+     * No.of Clients given IPT (1st dose)
+     * @return
      */
-    public CohortDefinition noOfANCClientsGivenIPT2ndDose() {
+    public CohortDefinition noOfANCClientsGivenIPT1stDose() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("noOfANCClientsGivenIPT1stDoseSQL", ReportUtils.map(noOfANCClientsGivenIPT1stDoseSQL(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("latestMCHEnrollmentAtANC", ReportUtils.map(latestMCHEnrollmentAtANC(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("latestMCHEnrollmentAtANC AND noOfANCClientsGivenIPT1stDoseSQL");
+        return cd;
+    }
+    /**
+     *No.of Clients given IPT (2nd dose) SQL
+     */
+    public CohortDefinition noOfANCClientsGivenIPT2ndDoseSQL() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "";
+        String sqlQuery = "select p.patient_id from kenyaemr_etl.etl_preventive_services p where date(p.malaria_prophylaxis_2) <= date(:endDate)\n" +
+                "        and date(p.malaria_prophylaxis_2) between date(:startDate) and date(:endDate);";
         cd.setName("No.of Clients given IPT (2nd dose)");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -139,16 +155,44 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
         return cd;
     }
     /**
-     *No.of Clients given IPT (3rd dose)
+     * No.of Clients given IPT (2nd dose)
+     * @return
      */
-    public CohortDefinition noOfANCClientsGivenIPT3rdDose() {
+    public CohortDefinition noOfANCClientsGivenIPT2ndDose() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("noOfANCClientsGivenIPT2ndDoseSQL", ReportUtils.map(noOfANCClientsGivenIPT2ndDoseSQL(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("latestMCHEnrollmentAtANC", ReportUtils.map(latestMCHEnrollmentAtANC(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("latestMCHEnrollmentAtANC AND noOfANCClientsGivenIPT2ndDoseSQL");
+        return cd;
+    }
+    /**
+     *No.of Clients given IPT (3rd dose) SQL
+     */
+    public CohortDefinition noOfANCClientsGivenIPT3rdDoseSQL() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "";
+        String sqlQuery = "select p.patient_id from kenyaemr_etl.etl_preventive_services p where date(p.malaria_prophylaxis_3) <= date(:endDate)\n" +
+                "        and date(p.malaria_prophylaxis_3) between date(:startDate) and date(:endDate);";
         cd.setName("No.of Clients given IPT (3rd dose)");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("No.of Clients given IPT (3rd dose)");
+        return cd;
+    }
+
+    /**
+     * No.of Clients given IPT (3rd dose)
+     * @return
+     */
+    public CohortDefinition noOfANCClientsGivenIPT3rdDose() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("noOfANCClientsGivenIPT3rdDoseSQL", ReportUtils.map(noOfANCClientsGivenIPT3rdDoseSQL(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("latestMCHEnrollmentAtANC", ReportUtils.map(latestMCHEnrollmentAtANC(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("latestMCHEnrollmentAtANC AND noOfANCClientsGivenIPT3rdDoseSQL");
         return cd;
     }
     /**
@@ -616,27 +660,37 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
         cd.setCompositionString("latestMCHEnrollmentAtANC AND (cacxScreenedMethodSCForm OR cacxScreenedMethodANC)");
         return cd;
     }
+
+    /**
+     *No. of patients tested positive for VIA/VILI CACX screening Form
+     * @return
+     */
     public CohortDefinition viaViliPositiveCacxScreening(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery ="select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date(:startDate) and date(:endDate)\n" +
                 "        and s.screening_method  in ('VIA','VILI') and s.screening_result in ('Positive') ;";
-        cd.setName("No.of Fistula cases during PNC");
+        cd.setName("No. of patients tested positive for VIA/VILI");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("No.of Fistula cases during PNC");
+        cd.setDescription("No. of patients tested positive for VIA/VILI");
 
         return cd;
     }
+
+    /**
+     * No. of patients tested positive for VIA/VILI at ANC
+     * @return
+     */
     public CohortDefinition viaViliPositiveANC(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery ="select v.patient_id from kenyaemr_etl.etl_mch_antenatal_visit v where v.visit_date between date(:startDate) and date(:endDate)\n" +
         " and v.cacx_screening_method  in (162816,164977) and v.cacx_screening in (703);";
-        cd.setName("No.of Fistula cases during PNC");
+        cd.setName("No. of patients tested positive for VIA/VILI at ANC");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("No.of Fistula cases during PNC");
+        cd.setDescription("No. of patients tested positive for VIA/VILI at ANC");
 
         return cd;
     }
@@ -652,31 +706,44 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
         return cd;
     }
 
-
+    /**
+     * Positive for CACX using HPV method using CACX screening form
+     * @return
+     */
     public CohortDefinition hpvPositiveCacxScreening(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery ="select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date(:startDate) and date(:endDate)\n" +
                 "        and s.screening_method='HPV Test' and s.screening_result='Positive';";
-        cd.setName("No.of Fistula cases during PNC");
+        cd.setName("Positive for CACX using HPV method");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("No.of Fistula cases during PNC");
+        cd.setDescription("Positive for CACX using HPV method");
 
         return cd;
     }
+
+    /**
+     * Positive for CACX using HPV method at ANC
+     * @return
+     */
     public CohortDefinition hpvPositiveANC(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery ="select v.patient_id from kenyaemr_etl.etl_mch_antenatal_visit v where v.visit_date between date(:startDate) and date(:endDate)\n" +
                 "        and v.cacx_screening_method =159895 and v.cacx_screening=703;";
-        cd.setName("No.of Fistula cases during PNC");
+        cd.setName("Positive for CACX using HPV method at ANC");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("No.of Fistula cases during PNC");
+        cd.setDescription("Positive for CACX using HPV method at ANC");
 
         return cd;
     }
+
+    /**
+     * Tested Positive for CACX using HPV method
+     * @return
+     */
     public CohortDefinition hpvPositive() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -688,30 +755,44 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
         return cd;
     }
 
+    /**
+     * Suspicious Cervical cancer lessions through screening form
+     * @return
+     */
     public CohortDefinition suspiciousCancerLessionsCACXScreening(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery ="select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date(:startDate) and date(:endDate)\n" +
                 "        and s.screening_method  in ('Pap Smear','VIA','VILI','Colposcopy','HPV Test') and s.screening_result ='Suspicious for cancer';";
-        cd.setName("No.of Fistula cases during PNC");
+        cd.setName("Suspicious Cervical cancer lessions through screening form");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("");
+        cd.setDescription("Suspicious Cervical cancer lessions through screening form");
 
         return cd;
     }
+
+    /**
+     * Suspicious Cervical cancer lessions at ANC
+     * @return
+     */
     public CohortDefinition suspiciousCancerLessionsANC(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery ="select v.patient_id from kenyaemr_etl.etl_mch_antenatal_visit v where v.visit_date between date(:startDate) and date(:endDate)\n" +
                 "        and v.cacx_screening_method  in (885,162816,164977) and v.cacx_screening =159395;";
-        cd.setName("No.of Fistula cases during PNC");
+        cd.setName("Suspicious Cervical cancer lessions at ANC");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("No.of Fistula cases during PNC");
+        cd.setDescription("Suspicious Cervical cancer lessions at ANC");
 
         return cd;
     }
+
+    /**
+     * Suspicious Cervical cancer lessions
+     * @return
+     */
     public CohortDefinition suspiciousCancerLessions() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -723,28 +804,36 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
         return cd;
     }
 
+    /**
+     * Treated for CACX uisng Cyrotherapy
+     * @return
+     */
     public CohortDefinition treatedUsingCyrotherapy(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery ="select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date(:startDate) and date(:endDate)\n" +
                 "        and s.screening_method  in ('Pap Smear','VIA','VILI','Colposcopy','HPV Test') and s.screening_result='Positive' and s.treatment_method in ('Cryotherapy performed (single Visit)','Cryotherapy performed','Cryotherapy postponed');";
-        cd.setName("No.of Fistula cases during PNC");
+        cd.setName("Treated for CACX uisng Cyrotherapy");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("No.of Fistula cases during PNC");
+        cd.setDescription("Treated for CACX uisng Cyrotherapy");
 
         return cd;
     }
 
+    /**
+     * Treated for CACX uisng LEEP
+     * @return
+     */
     public CohortDefinition treatedUsingLEEP(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery ="select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date(:startDate) and date(:endDate)\n" +
                 "        and s.screening_method  in ('Pap Smear','VIA','VILI','Colposcopy','HPV Test') and s.screening_result='Positive' and s.treatment_method = 'LEEP performed';";
-        cd.setName("No.of Fistula cases during PNC");
+        cd.setName("Treated for CACX uisng LEEP");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("No.of Fistula cases during PNC");
+        cd.setDescription("Treated for CACX uisng LEEP");
 
         return cd;
     }
@@ -953,7 +1042,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
     public CohortDefinition babyPPCWithin48hrs(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_patient_demographics d inner join kenyaemr_etl.etl_hei_follow_up_visit f\n" +
-                "on d.patient_id = f.patient_id where date(f.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "on d.patient_id = f.patient_id inner join kenyaemr_etl.etl_hei_enrollment e on d.patient_id = e.patient_id where date(f.visit_date) between date(:startDate) and date(:endDate)\n" +
                 "and timestampdiff(HOUR,date(d.dob),date(f.visit_date)) <= 48;";
         cd.setName("Babies received PostParturm care within 48 hrs");
         cd.setQuery(sqlQuery);
@@ -970,7 +1059,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
     public CohortDefinition babyPPCbtw3And42Days(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_patient_demographics d inner join kenyaemr_etl.etl_hei_follow_up_visit f\n" +
-                "on d.patient_id = f.patient_id where date(f.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "on d.patient_id = f.patient_id inner join kenyaemr_etl.etl_hei_enrollment e on d.patient_id = e.patient_id where date(f.visit_date) between date(:startDate) and date(:endDate)\n" +
                 "                     and timestampdiff(DAY,date(d.dob),date(f.visit_date)) between 3 and 42;";
         cd.setName("Babies received PostParturm care btw 3 days and 6 weeks");
         cd.setQuery(sqlQuery);
@@ -987,7 +1076,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
     public CohortDefinition babyPPCAfter6weeks(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_patient_demographics d inner join kenyaemr_etl.etl_hei_follow_up_visit f\n" +
-                "on d.patient_id = f.patient_id where date(f.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "on d.patient_id = f.patient_id inner join kenyaemr_etl.etl_hei_enrollment e on d.patient_id = e.patient_id where date(f.visit_date) between date(:startDate) and date(:endDate)\n" +
                 "     and timestampdiff(WEEK,date(d.dob),date(f.visit_date)) > 6;";
         cd.setName("Babies received PostParturm care after 6 weeks");
         cd.setQuery(sqlQuery);
@@ -1036,7 +1125,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
      */
     public CohortDefinition deliveryMethod(Integer mode){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where d.visit_date between date(:startDate) and date(:endDate) and d.mode_of_delivery = "+mode+";";
+        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where coalesce(date(date_of_delivery),date(d.visit_date)) between date(:startDate) and date(:endDate) and d.mode_of_delivery = "+mode+";";
         cd.setName("Delivery method");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1051,7 +1140,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
      */
     public CohortDefinition liveBirths(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where d.visit_date between date(:startDate) and date(:endDate) and d.baby_condition=151849;";
+        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where coalesce(date(date_of_delivery),date(d.visit_date)) between date(:startDate) and date(:endDate) and d.baby_condition=151849;";
         cd.setName("Live Births");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1066,7 +1155,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
      */
     public CohortDefinition lowBirthWeight(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where d.visit_date between date(:startDate) and date(:endDate) and d.baby_condition=151849 and d.birth_weight < 2.5;";
+        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where coalesce(date(date_of_delivery),date(d.visit_date)) between date(:startDate) and date(:endDate) and d.baby_condition=151849 and d.birth_weight < 2.5;";
         cd.setName("No.of Low birth weight Babies (below 2500 grams)");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1082,7 +1171,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
      */
     public CohortDefinition deformities(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where d.visit_date between date(:startDate) and date(:endDate) and d.baby_condition=151849 and d.birth_with_deformity=155871;";
+        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where coalesce(date(date_of_delivery),date(d.visit_date)) between date(:startDate) and date(:endDate) and d.baby_condition=151849 and d.birth_with_deformity=155871;";
         cd.setName("No.of births with deformoties");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1122,7 +1211,6 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
 
         return cd;
     }
-
     /**
      * No of neonates 0 -28 days put on Continous Positive Airway Pressure(CPAP)
      * @return
@@ -1144,7 +1232,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
      */
     public CohortDefinition givenTetracyclineAtBirth(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where d.visit_date between date(:startDate) and date(:endDate) and d.baby_condition=151849 and d.teo_given=84893;";
+        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where coalesce(date(date_of_delivery),date(d.visit_date)) between date(:startDate) and date(:endDate) and d.baby_condition=151849 and d.teo_given=84893;";
         cd.setName("No.of babies given tetracycline at birth");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1159,7 +1247,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
      */
     public CohortDefinition preTermBabies(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where d.visit_date between date(:startDate) and date(:endDate) and d.baby_condition=151849 and d.duration_of_pregnancy < 32;";
+        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where coalesce(date(date_of_delivery),date(d.visit_date)) between date(:startDate) and date(:endDate) and d.baby_condition=151849 and d.duration_of_pregnancy < 32;";
         cd.setName("Pre-Term babies");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1168,7 +1256,6 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
 
         return cd;
     }
-
     /**
      * No.of babies discharged alive
      * @return
@@ -1190,7 +1277,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
      */
     public CohortDefinition initiatedBFWithinOneHour(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where d.visit_date between date(:startDate) and date(:endDate) and d.baby_condition=151849 and d.bf_within_one_hour=1065;";
+        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where coalesce(date(date_of_delivery),date(d.visit_date)) between date(:startDate) and date(:endDate) and d.baby_condition=151849 and d.bf_within_one_hour=1065;";
         cd.setName("No.of babies discharged alive");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1199,7 +1286,6 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
 
         return cd;
     }
-
     /**
      * Deliveries within period
      * @return
@@ -1238,7 +1324,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
      */
     public CohortDefinition perinatalFreshStillBirth(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where d.visit_date between date(:startDate) and date(:endDate) and d.baby_condition=159916;";
+        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where coalesce(date(date_of_delivery),date(d.visit_date)) between date(:startDate) and date(:endDate) and d.baby_condition=159916;";
         cd.setName("Perinatal Deaths - Fresh still birth");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1253,7 +1339,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
      */
     public CohortDefinition perinatalMaceratedStillBirth(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where d.visit_date between date(:startDate) and date(:endDate) and d.baby_condition=135436;";
+        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where coalesce(date(date_of_delivery),date(d.visit_date)) between date(:startDate) and date(:endDate) and d.baby_condition=135436;";
         cd.setName("Perinatal Deaths - Macerated still birth");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1340,7 +1426,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
      */
     public CohortDefinition maternalDeathDuringDelivery(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where d.visit_date between date(:startDate) and date(:endDate)\n" +
+        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where coalesce(date(date_of_delivery),date(d.visit_date)) between date(:startDate) and date(:endDate)\n" +
                 "and d.condition_of_mother = 134612;";
         cd.setName("Maternal death during delivery");
         cd.setQuery(sqlQuery);
@@ -1386,7 +1472,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
      */
     public CohortDefinition maternalDeathAuditedWithin7Days(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where d.visit_date between date(:startDate) and date(:endDate)\n" +
+        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where coalesce(date(date_of_delivery),date(d.visit_date)) between date(:startDate) and date(:endDate)\n" +
                 "      and d.condition_of_mother = 134612 and d.maternal_death_audited = 1065;";
         cd.setName("Maternal deaths audited within 7 days");
         cd.setQuery(sqlQuery);
@@ -1403,7 +1489,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
      */
     public CohortDefinition antePartumHaemorrhage(Integer motherCondition){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where d.visit_date between date(:startDate) and date(:endDate) and d.delivery_complications=1065 and d.coded_delivery_complications=228 and condition_of_mother = "+motherCondition+";";
+        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where coalesce(date(date_of_delivery),date(d.visit_date)) between date(:startDate) and date(:endDate) and d.delivery_complications=1065 and d.coded_delivery_complications=228 and condition_of_mother = "+motherCondition+";";
         cd.setName("Ante Partum Haemorrhage(APH)");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1419,7 +1505,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
      */
     public CohortDefinition postPartumHaemorrhage(Integer motherCondition){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where d.visit_date between date(:startDate) and date(:endDate) and d.delivery_complications=1065 and d.coded_delivery_complications=230 and condition_of_mother = "+motherCondition+";";
+        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where coalesce(date(date_of_delivery),date(d.visit_date)) between date(:startDate) and date(:endDate) and d.delivery_complications=1065 and d.coded_delivery_complications=230 and condition_of_mother = "+motherCondition+";";
         cd.setName("Post Partum Haemorrhage(PPH)");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1435,7 +1521,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
      */
     public CohortDefinition eclampsia(Integer motherCondition){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where d.visit_date between date(:startDate) and date(:endDate) and d.delivery_complications=1065 and d.coded_delivery_complications=118744 and condition_of_mother = "+motherCondition+";";
+        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where coalesce(date(date_of_delivery),date(d.visit_date)) between date(:startDate) and date(:endDate) and d.delivery_complications=1065 and d.coded_delivery_complications=118744 and condition_of_mother = "+motherCondition+";";
         cd.setName("Eclampsia");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1451,7 +1537,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
      */
     public CohortDefinition rupturedUterus(Integer motherCondition){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where d.visit_date between date(:startDate) and date(:endDate) and d.delivery_complications=1065 and d.coded_delivery_complications=113195 and condition_of_mother = "+motherCondition+";";
+        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where coalesce(date(date_of_delivery),date(d.visit_date)) between date(:startDate) and date(:endDate) and d.delivery_complications=1065 and d.coded_delivery_complications=113195 and condition_of_mother = "+motherCondition+";";
         cd.setName("Ruptured Uterus");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1467,7 +1553,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
      */
     public CohortDefinition obstructedLabour(Integer motherCondition){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where d.visit_date between date(:startDate) and date(:endDate) and d.delivery_complications=1065 and d.coded_delivery_complications=115036 and condition_of_mother = "+motherCondition+";";
+        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where coalesce(date(date_of_delivery),date(d.visit_date)) between date(:startDate) and date(:endDate) and d.delivery_complications=1065 and d.coded_delivery_complications=115036 and condition_of_mother = "+motherCondition+";";
         cd.setName("Obstructed Labour");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1483,7 +1569,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
      */
     public CohortDefinition sepsis(Integer motherCondition){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where d.visit_date between date(:startDate) and date(:endDate) and d.delivery_complications=1065 and d.coded_delivery_complications=130 and condition_of_mother = "+motherCondition+";";
+        String sqlQuery ="select d.patient_id from kenyaemr_etl.etl_mchs_delivery d where coalesce(date(date_of_delivery),date(d.visit_date)) between date(:startDate) and date(:endDate) and d.delivery_complications=1065 and d.coded_delivery_complications=130 and condition_of_mother = "+motherCondition+";";
         cd.setName("Sepsis");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
