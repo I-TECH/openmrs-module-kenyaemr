@@ -53,7 +53,9 @@
         </style>
 
     <script type="text/javascript">
-        var CIRCUMCISION_METHOD_CONCEPT = "<lookup expression="fn.latestObs(167118).valueCoded" />"
+
+        var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
+        var CIRCUMCISION_METHOD_CONCEPT = GREENCARD_VELOCITY.split(",")[15].split(":")[1];
         var CIRCUMCISION_METHOD = CIRCUMCISION_METHOD_CONCEPT.replace(/[^\d]/g, '');
 
         $(document).ready(function () {
@@ -204,7 +206,8 @@
 
     <ifMode mode="EDIT">
         <script type="text/javascript">
-            var CIRCUMCISION_METHOD_CONCEPT = "<lookup expression="fn.latestObs(167118).valueCoded" />"
+            var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
+            var CIRCUMCISION_METHOD_CONCEPT = GREENCARD_VELOCITY.split(",")[15].split(":")[1];
             var CIRCUMCISION_METHOD = CIRCUMCISION_METHOD_CONCEPT.replace(/[^\d]/g, '');
 
             $(document).ready(function () {
@@ -233,7 +236,6 @@
 
         </script>
     </ifMode>
-
 
     <div class="ke-form-header">
         <table width="100%">

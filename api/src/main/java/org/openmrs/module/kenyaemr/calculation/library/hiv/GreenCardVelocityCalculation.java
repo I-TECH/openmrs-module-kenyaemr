@@ -140,6 +140,7 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             String ldlResult = null;
             Double vlResult = 0.0;
             Concept cacxResult = null;
+            Concept vmmcMethodResult  = null;
             //Patient with current on anti tb drugs and/or anti tb start dates
             Obs tbCurrentObs = EmrCalculationUtils.obsResultForPatient(tbCurrent, ptId);
             Obs tbStartObs = EmrCalculationUtils.obsResultForPatient(tbStarted, ptId);
@@ -241,6 +242,16 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
                 }
             }
 
+            // Vmmc circumcision method result
+            Encounter lastVmmcMethodEnc = EmrUtils.lastEncounter(patientService.getPatient(ptId), encounterService.getEncounterTypeByUuid(CommonMetadata._EncounterType.VMMC_PROCEDURE), MetadataUtils.existing(Form.class, CommonMetadata._Form.VMMC_PROCEDURE_FORM));
+            if (lastVmmcMethodEnc != null ) {
+                for (Obs obs : lastVmmcMethodEnc.getObs()) {
+                    if (obs.getConcept().getConceptId().equals(167118)) {
+                        vmmcMethodResult = obs.getValueCoded();
+                    }
+                }
+            }
+
 
             //On ART -- find if client has active ART
             Encounter lastDrugRegimenEditorEncounter = EncounterBasedRegimenUtils.getLastEncounterForCategory(Context.getPatientService().getPatient(ptId), "ARV");   //last DRUG_REGIMEN_EDITOR encounter
@@ -292,7 +303,8 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             sb.append("isEnrolledInHIV:").append(patientEverInHivProgram).append(",");
             sb.append("artStartDate:").append(artStartDate).append(",");
             // sb.append("dueTB:").append(patientDueForTBEnrollment).append(",");
-            sb.append("CacXResult:").append(cacxResult);
+            sb.append("CacXResult:").append(cacxResult).append(",");
+            sb.append("vmmcProcedureResult:").append(vmmcMethodResult);
 
             ret.put(ptId, new SimpleResult(sb.toString(), this, context));
         }
