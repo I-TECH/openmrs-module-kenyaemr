@@ -200,6 +200,8 @@
                 jq('#hiv-status:text').val("Negative");
             }else if(PATIENT_IS_REPORTED_STATUS == 703) {
                     jq('#hiv-status:text').val("Positive");
+            }else if(PATIENT_IS_REPORTED_STATUS == 1067) {
+                jq('#hiv-status:text').val("Unknown");
             }else if(PATIENT_IS_REPORTED_STATUS == "" &amp;&amp; !PATIENT_IS_ENROLLED_HIV){
                 jq('#hiv-status:text').val("Not recorded");
             }else if(PATIENT_IS_ENROLLED_HIV){
@@ -218,13 +220,13 @@
          // Called when 'HIV Status' field is changed
          function onPatientHivStatusChange() {
                 var patientHivStatus = getValue('patient-hiv-status.value');
-            if (patientHivStatus == '' || patientHivStatus == UNKNOWN &amp;&amp; !PATIENT_IS_ENROLLED_HIV) {
+            if (patientHivStatus == '') {
                 jq('#patient-hiv-test-date input').prop('disabled', true);
                 jq('#tbl-enrolled-positive-details').hide();
                 jq('#tbl-reported-positive-details').hide();
                 setValue('patient-hiv-test-date.value', null);
                 jq('#no-hiv-data-alert').show();
-                jq('#reasons-unknown').show();
+                jq('#reasons-unknown').hide();
                 jq('#hiv-test-art-date').hide();
                 jq('#medical-history').hide();
                 jq('#other-treatments').hide();
@@ -233,6 +235,22 @@
                 jq('#prep-referrals').show();
                 jq('#sti-referrals').hide();
             }
+             if (patientHivStatus == UNKNOWN &amp;&amp; !PATIENT_IS_ENROLLED_HIV) {
+                 jq('#patient-hiv-test-date input').prop('disabled', true);
+                 setValue('patient-hiv-test-date.value', null);
+                 jq('#hiv-test-art-date').hide();
+                 jq('#tr-art-start-date').hide();
+                 jq('#reasons-unknown').show();
+                 jq('#medical-history').show();
+                 jq('#other-treatments').show();
+                 jq('#eligibility-confirmation').show();
+                 jq('#tbl-enrolled-positive-details').hide();
+                 jq('#tbl-reported-positive-details').hide();
+                 jq('#no-hiv-data-alert').hide();
+                 jq('#prep-referrals').hide();
+                 jq('#sti-referrals').hide();
+
+             }
             if (patientHivStatus == HIV_NEGATIVE) {
                 jq('#patient-hiv-test-date input').prop('disabled', false);
                 jq('#hiv-test-art-date').show();
@@ -873,7 +891,7 @@
             }else {
                 getField('patient-regimen.error').html('Please specify patient regimen.').hide();
             }
-            if(consentGiven == 'true' &amp;&amp; patientHivStatus != UNKNOWN &amp;&amp; complaintsToday == false){
+            if(consentGiven == 'true' &amp;&amp; complaintsToday == false){
                 getField('complaints-today.error').html('Please specify  if patient has any complaints today.').show();
                 return false;
             }else {
@@ -885,7 +903,7 @@
             }else {
                 getField('complaint-error.error').html('Please specify patient complaints.').hide();
             }
-            if (consentGiven == 'true' &amp;&amp; patientHivStatus != UNKNOWN &amp;&amp; treatmentToday == false ) {
+            if (consentGiven == 'true' &amp;&amp; treatmentToday == false ) {
                 getField('undergoing-treatment.error').html('Please specify if patient is undergoing treatment.').show();
                 return false;
             }else{
@@ -897,7 +915,7 @@
             }else {
                 getField('treatment-error.error').html('Please specify patient treatment.').hide();
             }
-            if (consentGiven == 'true' &amp;&amp; patientHivStatus != UNKNOWN &amp;&amp; knownAllergies == false ) {
+            if (consentGiven == 'true' &amp;&amp; knownAllergies == false ) {
                 getField('known-allergies.error').html('Please specify if patient has any known allergies.').show();
                 return false;
             }else{
@@ -909,19 +927,19 @@
             }else{
                 getField('allergy-field.error').html('Please specify the allergy.').hide();
             }
-            if (consentGiven == 'true' &amp;&amp; patientHivStatus != UNKNOWN &amp;&amp; prevSurgery == false) {
+            if (consentGiven == 'true' &amp;&amp; prevSurgery == false) {
                 getField('prev-surgical-operation.error').html('Please specify if patient had previous surgical operations.').show();
                 return false;
             }else{
                 getField('prev-surgical-operation.error').html('Please specify if patient had previous surgical operations.').hide();
             }
-            if (consentGiven == 'true' &amp;&amp; patientHivStatus != UNKNOWN &amp;&amp; ttBoosterProof == false) {
+            if (consentGiven == 'true' &amp;&amp; ttBoosterProof == false) {
                 getField('tetanus-booster-proof.error').html('Please specify if patient has proof of receiving Tetanus Booster Vaccine.').show();
                 return false;
             }else{
                 getField('tetanus-booster-proof.error').html('Please specify if patient has proof of receiving Tetanus Booster Vaccine.').hide();
             }
-            if (consentGiven == 'true' &amp;&amp; patientHivStatus != UNKNOWN &amp;&amp; ttBoosterGiven == false) {
+            if (consentGiven == 'true' &amp;&amp; ttBoosterGiven == false) {
                 getField('tetanus-booster-given.error').html('Please specify if patient has been given Tetanus Booster Vaccine.').show();
                 return false;
             }else{
@@ -933,13 +951,13 @@
             }else{
                 getField('tetanus-booster-date.error').html('Please specify when patient was given Tetanus Booster Vaccine.').hide();
             }
-            if (consentGiven == 'true' &amp;&amp; patientHivStatus != UNKNOWN &amp;&amp; goodHealth == false) {
+            if (consentGiven == 'true' &amp;&amp; goodHealth == false) {
                 getField('good-health.error').html('Please specify whether patient is in good health.').show();
                 return false;
             }else{
                 getField('good-health.error').html('Please specify whether patient is in good health.').hide();
             }
-            if (consentGiven == 'true' &amp;&amp; patientHivStatus != UNKNOWN &amp;&amp; counselled == false) {
+            if (consentGiven == 'true' &amp;&amp; counselled == false) {
                 getField('counselled.error').html('Please specify whether patient has been counselled.').show();
                 return false;
             }else{
@@ -986,12 +1004,6 @@
                 return false;
             }else {
                 getField('device-size.error').html('Please specify device size.').hide();
-            }
-            if(consentGiven == 'true' &amp;&amp; patientHivStatus == UNKNOWN &amp;&amp; prepReferred == false){
-                getField('prep-referred.error').html('Please specify referral service.').show();
-                return false;
-            }else {
-                getField('prep-referred.error').html('Please specify  referral service.').hide();
             }
             if(pAge &lt; 18 &amp;&amp; assentGiven == 1066 &amp;&amp; !PATIENT_IS_ENROLLED_HIV &amp;&amp; prepReferred == false){
                 console.log("Here");
@@ -1105,10 +1117,10 @@
                     jq('#reasons-unknown').show();
                     jq('#hiv-status-details').show();
                     jq('#hiv-test-art-date').hide();
-                    jq('#medical-history').hide();
-                    jq('#other-treatments').hide();
-                    jq('#consented-alert').hide();
-                    jq('#eligibility-confirmation').hide();
+                    jq('#medical-history').show();
+                    jq('#other-treatments').show();
+                    jq('#consented-alert').show();
+                    jq('#eligibility-confirmation').show();
                     jq('#sti-referrals').hide();
                     jq('#prep-referrals').hide();
                 }
