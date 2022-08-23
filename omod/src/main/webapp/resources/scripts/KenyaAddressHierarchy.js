@@ -218,7 +218,8 @@ var kenyaAddressHierarchy = {
                 ],
             "Gem":
                 [
-                    {"facility":"West GemNorth Gem","id":"West GemNorth Gem"},
+                    {"facility":"North Gem","id":"North Gem"},
+                    {"facility":"West Gem","id":"West Gem"},
                     {"facility":"Central Gem","id":"Central Gem"},
                     {"facility":"Yala Township","id":"Yala Township"},
                     {"facility":"East Gem","id":"East Gem"},
