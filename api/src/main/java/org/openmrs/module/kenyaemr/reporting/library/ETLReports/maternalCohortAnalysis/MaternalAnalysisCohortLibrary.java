@@ -58,8 +58,8 @@ public class MaternalAnalysisCohortLibrary {
                 "  left join kenyaemr_etl.etl_hts_test ht on ht.patient_id=e.patient_id and ht.hts_entry_point =160538\n" +
                 "where e.hiv_status in (664,1067)\n" +
                 "      and date(e.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)\n" +
-                "      and ((v.final_test_result = 703 and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year))\n" +
-                "            or (ht.final_test_result = 703 and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)));\n" +
+                "      and ((v.final_test_result like 'Positive' and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year))\n" +
+                "            or (ht.final_test_result like 'Positive' and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)));\n" +
                 "\n";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("originalMaternalNpCohort12Months");
@@ -99,8 +99,8 @@ public class MaternalAnalysisCohortLibrary {
                 "    where e.hiv_status in (664,1067) and he.patient_type=160563\n" +
                 "    and  date(e.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)\n" +
                 "    and date(he.transfer_in_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 10 month)\n" +
-                "    and ((v.final_test_result = 703 and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year))\n" +
-                "              or (ht.final_test_result = 703 and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)));\n";
+                "    and ((v.final_test_result like 'Positive' and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year))\n" +
+                "              or (ht.final_test_result like 'Positive' and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)));\n";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("transferInMaternalNp3MonthsCohort");
         cd.setQuery(sqlQuery);
@@ -139,8 +139,8 @@ public class MaternalAnalysisCohortLibrary {
                 "where  e.hiv_status in (664,1067) and dis.program_name='HIV' and dis.discontinuation_reason = 159492\n" +
                 "       and coalesce(date(dis.effective_discontinuation_date),date(dis.transfer_date),date(dis.visit_date)) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 10 month)\n" +
                 "       and  date(e.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)\n" +
-                "       and ((v.final_test_result = 703 and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year))\n" +
-                "            or (ht.final_test_result = 703 and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)));\n";
+                "       and ((v.final_test_result like 'Positive' and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year))\n" +
+                "            or (ht.final_test_result like 'Positive' and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)));\n";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("transferOutMaternalNp3MonthsCohort");
         cd.setQuery(sqlQuery);
@@ -180,8 +180,8 @@ public class MaternalAnalysisCohortLibrary {
                 "where  e.hiv_status in (664,1067) and dis.program_name='MCH Mother' and dis.discontinuation_reason = 160035\n" +
                 "       and coalesce(date(dis.effective_discontinuation_date),date(dis.transfer_date),date(dis.visit_date)) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 10 month)\n" +
                 "       and  date(e.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)\n" +
-                "       and ((v.final_test_result = 703 and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year))\n" +
-                "            or (ht.final_test_result = 703 and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)));";
+                "       and ((v.final_test_result like 'Positive' and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year))\n" +
+                "            or (ht.final_test_result like 'Positive' and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)));";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("dischargedToCCCMaternalNp3MonthsCohort");
         cd.setQuery(sqlQuery);
@@ -255,8 +255,8 @@ public class MaternalAnalysisCohortLibrary {
                 "where  e.hiv_status in (664,1067) and dis.program_name='MCH Mother' and dis.discontinuation_reason = 5240\n" +
                 "       and coalesce(date(dis.effective_discontinuation_date),date(dis.transfer_date),date(dis.visit_date)) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 10 month)\n" +
                 "       and  date(e.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)\n" +
-                "       and ((v.final_test_result = 703 and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year))\n" +
-                "            or (ht.final_test_result = 703 and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)));";
+                "       and ((v.final_test_result like 'Positive' and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year))\n" +
+                "            or (ht.final_test_result like 'Positive' and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)));";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("ltfuMaternalNp3MonthsCohort");
         cd.setQuery(sqlQuery);
@@ -296,8 +296,8 @@ public class MaternalAnalysisCohortLibrary {
                 "where  e.hiv_status in (664,1067) and dis.program_name='MCH Mother' and dis.discontinuation_reason = 160034\n" +
                 "       and coalesce(date(dis.effective_discontinuation_date),date(dis.transfer_date),date(dis.visit_date)) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 10 month)\n" +
                 "       and  date(e.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)\n" +
-                "       and ((v.final_test_result = 703 and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year))\n" +
-                "            or (ht.final_test_result = 703 and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)));";
+                "       and ((v.final_test_result like 'Positive' and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year))\n" +
+                "            or (ht.final_test_result like 'Positive' and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)));";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("deceasedMaternalNp3MonthsCohort");
         cd.setQuery(sqlQuery);
@@ -341,8 +341,8 @@ public class MaternalAnalysisCohortLibrary {
                 "      and date(e.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)\n" +
                 "      and ((de.regimen_stopped = 1260 and date(de.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 10 month))\n" +
                 "           or (d.discontinuation_reason = 819 and  date(d.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 10 month)))\n" +
-                "      and ((v.final_test_result = 703 and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year))\n" +
-                "           or (ht.final_test_result = 703 and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)));\n" +
+                "      and ((v.final_test_result like 'Positive' and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year))\n" +
+                "           or (ht.final_test_result like 'Positive' and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)));\n" +
                 "\n";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("stoppedTreatmentMaternalNp3MonthsCohort");
@@ -900,8 +900,8 @@ public class MaternalAnalysisCohortLibrary {
                 "    where e.hiv_status in (664,1067) and he.patient_type=160563\n" +
                 "    and  date(e.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)\n" +
                 "    and date(he.transfer_in_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 7 month)\n" +
-                "    and ((v.final_test_result = 703 and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year))\n" +
-                "              or (ht.final_test_result = 703 and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)));\n";
+                "    and ((v.final_test_result like 'Positive' and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year))\n" +
+                "              or (ht.final_test_result like 'Positive' and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)));\n";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("transferInMaternalNp6MonthsCohort");
         cd.setQuery(sqlQuery);
@@ -940,8 +940,8 @@ public class MaternalAnalysisCohortLibrary {
                 "where  e.hiv_status in (664,1067) and dis.program_name='HIV' and dis.discontinuation_reason = 159492\n" +
                 "       and coalesce(date(dis.effective_discontinuation_date),date(dis.transfer_date),date(dis.visit_date)) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 7 month)\n" +
                 "       and  date(e.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)\n" +
-                "       and ((v.final_test_result = 703 and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year))\n" +
-                "            or (ht.final_test_result = 703 and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)));\n";
+                "       and ((v.final_test_result like 'Positive' and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year))\n" +
+                "            or (ht.final_test_result like 'Positive' and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)));\n";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("transferOutMaternalNp6MonthsCohort");
         cd.setQuery(sqlQuery);
@@ -981,8 +981,8 @@ public class MaternalAnalysisCohortLibrary {
                 "where  e.hiv_status in (664,1067) and dis.program_name='MCH Mother' and dis.discontinuation_reason = 160035\n" +
                 "       and coalesce(date(dis.effective_discontinuation_date),date(dis.transfer_date),date(dis.visit_date)) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 7 month)\n" +
                 "       and  date(e.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)\n" +
-                "       and ((v.final_test_result = 703 and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year))\n" +
-                "            or (ht.final_test_result = 703 and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)));";
+                "       and ((v.final_test_result like 'Positive' and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year))\n" +
+                "            or (ht.final_test_result like 'Positive' and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)));";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("dischargedToCCCMaternalNp6MonthsCohort");
         cd.setQuery(sqlQuery);
@@ -1056,8 +1056,8 @@ public class MaternalAnalysisCohortLibrary {
                 "where  e.hiv_status in (664,1067) and dis.program_name='MCH Mother' and dis.discontinuation_reason = 5240\n" +
                 "       and coalesce(date(dis.effective_discontinuation_date),date(dis.transfer_date),date(dis.visit_date)) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 7 month)\n" +
                 "       and  date(e.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)\n" +
-                "       and ((v.final_test_result = 703 and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year))\n" +
-                "            or (ht.final_test_result = 703 and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)));";
+                "       and ((v.final_test_result like 'Positive' and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year))\n" +
+                "            or (ht.final_test_result like 'Positive' and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)));";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("ltfuMaternalNp6MonthsCohort");
         cd.setQuery(sqlQuery);
@@ -1097,8 +1097,8 @@ public class MaternalAnalysisCohortLibrary {
                 "where  e.hiv_status in (664,1067) and dis.program_name='MCH Mother' and dis.discontinuation_reason = 160034\n" +
                 "       and coalesce(date(dis.effective_discontinuation_date),date(dis.transfer_date),date(dis.visit_date)) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 7 month)\n" +
                 "       and  date(e.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)\n" +
-                "       and ((v.final_test_result = 703 and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year))\n" +
-                "            or (ht.final_test_result = 703 and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)));";
+                "       and ((v.final_test_result like 'Positive' and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year))\n" +
+                "            or (ht.final_test_result like 'Positive' and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)));";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("deceasedMaternalNp6MonthsCohort");
         cd.setQuery(sqlQuery);
@@ -1142,8 +1142,8 @@ public class MaternalAnalysisCohortLibrary {
                 "      and date(e.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)\n" +
                 "      and ((de.regimen_stopped = 1260 and date(de.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 7 month))\n" +
                 "           or (d.discontinuation_reason = 819 and  date(d.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 7 month)))\n" +
-                "      and ((v.final_test_result = 703 and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year))\n" +
-                "           or (ht.final_test_result = 703 and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)));\n" +
+                "      and ((v.final_test_result like 'Positive' and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year))\n" +
+                "           or (ht.final_test_result like 'Positive' and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year)));\n" +
                 "\n";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("stoppedTreatmentMaternalNp6MonthsCohort");
@@ -1702,8 +1702,8 @@ public class MaternalAnalysisCohortLibrary {
                 "    where e.hiv_status in (664,1067) and he.patient_type=160563\n" +
                 "    and  date(e.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate)\n" +
                 "    and date(he.transfer_in_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate)\n" +
-                "    and ((v.final_test_result = 703 and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate))\n" +
-                "              or (ht.final_test_result = 703 and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate)));\n";
+                "    and ((v.final_test_result like 'Positive' and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate))\n" +
+                "              or (ht.final_test_result like 'Positive' and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate)));\n";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("transferInMaternalNp12MonthsCohort");
         cd.setQuery(sqlQuery);
@@ -1742,8 +1742,8 @@ public class MaternalAnalysisCohortLibrary {
                 "where  e.hiv_status in (664,1067) and dis.program_name='HIV' and dis.discontinuation_reason = 159492\n" +
                 "       and coalesce(date(dis.effective_discontinuation_date),date(dis.transfer_date),date(dis.visit_date)) between date_sub(date(:startDate) , interval 1 year) and date(:endDate)\n" +
                 "       and  date(e.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate)\n" +
-                "       and ((v.final_test_result = 703 and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate))\n" +
-                "            or (ht.final_test_result = 703 and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate)));\n";
+                "       and ((v.final_test_result like 'Positive' and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate))\n" +
+                "            or (ht.final_test_result like 'Positive' and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate)));\n";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("transferOutMaternalNp12MonthsCohort");
         cd.setQuery(sqlQuery);
@@ -1783,8 +1783,8 @@ public class MaternalAnalysisCohortLibrary {
                 "where  e.hiv_status in (664,1067) and dis.program_name='MCH Mother' and dis.discontinuation_reason = 160035\n" +
                 "       and coalesce(date(dis.effective_discontinuation_date),date(dis.transfer_date),date(dis.visit_date)) between date_sub(date(:startDate) , interval 1 year) and date(:endDate)\n" +
                 "       and  date(e.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate)\n" +
-                "       and ((v.final_test_result = 703 and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate))\n" +
-                "            or (ht.final_test_result = 703 and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate)));";
+                "       and ((v.final_test_result like 'Positive' and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate))\n" +
+                "            or (ht.final_test_result like 'Positive' and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate)));";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("dischargedToCCCMaternalNp12MonthsCohort");
         cd.setQuery(sqlQuery);
@@ -1858,8 +1858,8 @@ public class MaternalAnalysisCohortLibrary {
                 "where  e.hiv_status in (664,1067) and dis.program_name='MCH Mother' and dis.discontinuation_reason = 5240\n" +
                 "       and coalesce(date(dis.effective_discontinuation_date),date(dis.transfer_date),date(dis.visit_date)) between date_sub(date(:startDate) , interval 1 year) and date(:endDate)\n" +
                 "       and  date(e.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate)\n" +
-                "       and ((v.final_test_result = 703 and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate))\n" +
-                "            or (ht.final_test_result = 703 and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate)));";
+                "       and ((v.final_test_result like 'Positive' and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate))\n" +
+                "            or (ht.final_test_result like 'Positive' and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate)));";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("ltfuMaternalNp12MonthsCohort");
         cd.setQuery(sqlQuery);
@@ -1899,8 +1899,8 @@ public class MaternalAnalysisCohortLibrary {
                 "where  e.hiv_status in (664,1067) and dis.program_name='MCH Mother' and dis.discontinuation_reason = 160034\n" +
                 "       and coalesce(date(dis.effective_discontinuation_date),date(dis.transfer_date),date(dis.visit_date)) between date_sub(date(:startDate) , interval 1 year) and date(:endDate)\n" +
                 "       and  date(e.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate)\n" +
-                "       and ((v.final_test_result = 703 and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate))\n" +
-                "            or (ht.final_test_result = 703 and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate)));";
+                "       and ((v.final_test_result like 'Positive' and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate))\n" +
+                "            or (ht.final_test_result like 'Positive' and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate)));";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("deceasedMaternalNp12MonthsCohort");
         cd.setQuery(sqlQuery);
@@ -1944,8 +1944,8 @@ public class MaternalAnalysisCohortLibrary {
                 "      and date(e.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate)\n" +
                 "      and ((de.regimen_stopped = 1260 and date(de.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate))\n" +
                 "           or (d.discontinuation_reason = 819 and  date(d.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate)))\n" +
-                "      and ((v.final_test_result = 703 and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate))\n" +
-                "           or (ht.final_test_result = 703 and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate)));\n" +
+                "      and ((v.final_test_result like 'Positive' and date(v.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate))\n" +
+                "           or (ht.final_test_result like 'Positive' and date(ht.visit_date) between date_sub(date(:startDate) , interval 1 year) and date(:endDate)));\n" +
                 "\n";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("stoppedTreatmentMaternalNp12MonthsCohort");
@@ -2504,8 +2504,8 @@ public class MaternalAnalysisCohortLibrary {
                 "  left join kenyaemr_etl.etl_hts_test ht on ht.patient_id=e.patient_id and ht.hts_entry_point =160538\n" +
                 "where e.hiv_status in (664,1067)\n" +
                 "      and date(e.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year)\n" +
-                "      and ((v.final_test_result = 703 and date(v.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year))\n" +
-                "            or (ht.final_test_result = 703 and date(ht.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year)));\n" +
+                "      and ((v.final_test_result like 'Positive' and date(v.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year))\n" +
+                "            or (ht.final_test_result like 'Positive' and date(ht.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year)));\n" +
                 "\n";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("originalMaternalNpCohort24months");
@@ -2545,8 +2545,8 @@ public class MaternalAnalysisCohortLibrary {
                 "    where e.hiv_status in (664,1067) and he.patient_type=160563\n" +
                 "    and  date(e.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year)\n" +
                 "    and date(he.transfer_in_date) between date_sub(date(:startDate) , interval 2 year) and date(:endDate)\n" +
-                "    and ((v.final_test_result = 703 and date(v.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year))\n" +
-                "              or (ht.final_test_result = 703 and date(ht.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year)));\n";
+                "    and ((v.final_test_result like 'Positive' and date(v.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year))\n" +
+                "              or (ht.final_test_result like 'Positive' and date(ht.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year)));\n";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("transferInMaternalNp24monthsCohort");
         cd.setQuery(sqlQuery);
@@ -2585,8 +2585,8 @@ public class MaternalAnalysisCohortLibrary {
                 "where  e.hiv_status in (664,1067) and dis.program_name='HIV' and dis.discontinuation_reason = 159492\n" +
                 "       and coalesce(date(dis.effective_discontinuation_date),date(dis.transfer_date),date(dis.visit_date)) between date_sub(date(:startDate) , interval 2 year) and date(:endDate)\n" +
                 "       and  date(e.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year)\n" +
-                "       and ((v.final_test_result = 703 and date(v.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year))\n" +
-                "            or (ht.final_test_result = 703 and date(ht.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year)));\n";
+                "       and ((v.final_test_result like 'Positive' and date(v.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year))\n" +
+                "            or (ht.final_test_result like 'Positive' and date(ht.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year)));\n";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("transferOutMaternalNp24monthsCohort");
         cd.setQuery(sqlQuery);
@@ -2626,8 +2626,8 @@ public class MaternalAnalysisCohortLibrary {
                 "where  e.hiv_status in (664,1067) and dis.program_name='MCH Mother' and dis.discontinuation_reason = 160035\n" +
                 "       and coalesce(date(dis.effective_discontinuation_date),date(dis.transfer_date),date(dis.visit_date)) between date_sub(date(:startDate) , interval 2 year) and date(:endDate)\n" +
                 "       and  date(e.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year)\n" +
-                "       and ((v.final_test_result = 703 and date(v.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year))\n" +
-                "            or (ht.final_test_result = 703 and date(ht.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year)));";
+                "       and ((v.final_test_result like 'Positive' and date(v.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year))\n" +
+                "            or (ht.final_test_result like 'Positive' and date(ht.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year)));";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("dischargedToCCCMaternalNp24monthsCohort");
         cd.setQuery(sqlQuery);
@@ -2701,8 +2701,8 @@ public class MaternalAnalysisCohortLibrary {
                 "where  e.hiv_status in (664,1067) and dis.program_name='MCH Mother' and dis.discontinuation_reason = 5240\n" +
                 "       and coalesce(date(dis.effective_discontinuation_date),date(dis.transfer_date),date(dis.visit_date)) between date_sub(date(:startDate) , interval 2 year) and date(:endDate)\n" +
                 "       and  date(e.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year)\n" +
-                "       and ((v.final_test_result = 703 and date(v.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year))\n" +
-                "            or (ht.final_test_result = 703 and date(ht.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year)));";
+                "       and ((v.final_test_result like 'Positive' and date(v.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year))\n" +
+                "            or (ht.final_test_result like 'Positive' and date(ht.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year)));";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("ltfuMaternalNp24monthsCohort");
         cd.setQuery(sqlQuery);
@@ -2742,8 +2742,8 @@ public class MaternalAnalysisCohortLibrary {
                 "where  e.hiv_status in (664,1067) and dis.program_name='MCH Mother' and dis.discontinuation_reason = 160034\n" +
                 "       and coalesce(date(dis.effective_discontinuation_date),date(dis.transfer_date),date(dis.visit_date)) between date_sub(date(:startDate) , interval 2 year) and date(:endDate)\n" +
                 "       and  date(e.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year)\n" +
-                "       and ((v.final_test_result = 703 and date(v.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year))\n" +
-                "            or (ht.final_test_result = 703 and date(ht.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year)));";
+                "       and ((v.final_test_result like 'Positive' and date(v.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year))\n" +
+                "            or (ht.final_test_result like 'Positive' and date(ht.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year)));";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("deceasedMaternalNp24monthsCohort");
         cd.setQuery(sqlQuery);
@@ -2787,8 +2787,8 @@ public class MaternalAnalysisCohortLibrary {
                 "      and date(e.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year)\n" +
                 "      and ((de.regimen_stopped = 1260 and date(de.visit_date) between date_sub(date(:startDate) , interval 2 year) and date(:endDate))\n" +
                 "           or (d.discontinuation_reason = 819 and  date(d.visit_date) between date_sub(date(:startDate) , interval 2 year) and date(:endDate)))\n" +
-                "      and ((v.final_test_result = 703 and date(v.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year))\n" +
-                "           or (ht.final_test_result = 703 and date(ht.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year)));\n" +
+                "      and ((v.final_test_result like 'Positive' and date(v.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year))\n" +
+                "           or (ht.final_test_result like 'Positive' and date(ht.visit_date) between date_sub(date(:startDate) , interval 2 year) and date_sub(date(:endDate) , interval 2 year)));\n" +
                 "\n";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("stoppedTreatmentMaternalNp24monthsCohort");
