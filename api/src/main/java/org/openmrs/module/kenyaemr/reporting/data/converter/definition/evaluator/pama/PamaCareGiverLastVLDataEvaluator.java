@@ -7,10 +7,11 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.art;
+package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.pama;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLLastVisitDateDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pama.PamaCareGiverLastVLDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pama.PamaCareGiverStatusDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
@@ -24,10 +25,10 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Evaluates Last Visit Date DataDefinition
+ * Evaluates a PersonDataDefinition
  */
-@Handler(supports= ETLLastVisitDateDataDefinition.class, order=50)
-public class ETLLastVisitDateDataEvaluator implements PersonDataEvaluator {
+@Handler(supports= PamaCareGiverLastVLDataDefinition.class, order=50)
+public class PamaCareGiverLastVLDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -35,11 +36,13 @@ public class ETLLastVisitDateDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select patient_id,\n" +
-                "max(visit_date) as last_visit_date from kenyaemr_etl.etl_patient_hiv_followup\n" +
-                "where  date(visit_date) <= date(:endDate)\n" +
-                "GROUP BY patient_id;";
-
+        String qry = "select r.person_b,\n" +
+                "  mid(max(concat(le.visit_date, if(le.lab_test = 856, le.test_result, if(le.lab_test=1305 and le.test_result = 1302, 'LDL','')), '' )),11) as vl_result\n" +
+                "from kenyaemr_etl.etl_patient_demographics d\n" +
+                "  inner join kenyaemr_etl.etl_laboratory_extract le on le.patient_id = d.patient_id and coalesce(date(le.date_test_requested),date(le.visit_date)) <= date(:endDate)\n" +
+                "  inner join openmrs.relationship r on d.patient_id = r.person_a\n" +
+                "  inner join openmrs.relationship_type t on r.relationship = t.relationship_type_id and t.uuid in ('8d91a210-c2cc-11de-8d13-0010c6dffd0f','5f115f62-68b7-11e3-94ee-6bef9086de92')\n" +
+                "GROUP BY d.patient_id;";
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
         Date startDate = (Date)context.getParameterValue("startDate");

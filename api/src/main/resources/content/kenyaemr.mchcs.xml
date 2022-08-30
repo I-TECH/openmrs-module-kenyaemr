@@ -46,6 +46,7 @@
 				<ref bean="kenyaemr.mchcs.report.moh510" />
 				<ref bean="kenyaemr.mchcs.report.moh710" />
 				<ref bean="kenyaemr.mchcs.report.moh511" />
+				<ref bean="kenyaemr.mchcs.report.pamaReport" />
 				<!--<ref bean="kenyaemr.mchcs.report/>
 				 />
 				<ref bean="kenyaemr.mchcs.report.vaccinationAppointments" />
@@ -245,6 +246,19 @@
 			</set></property>
 		<property name="template" value="kenyaemr:pmtct/hei_register_template.xls" />
 		<property name="repeatingSection" value="sheet:1,row:11,dataset:HEIRegister" />
+	</bean>
+
+	<!-- pama report-->
+	<bean id="kenyaemr.mchcs.report.pamaReport" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="f7a888a7-390c-452d-8277-a4e573bfa4e3" />
+		<property name="name" value="PAMA Report" />
+		<property name="description" value="PAMA Report" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:pmtct/Pama_Report_template.xls" />
+		<property name="repeatingSection" value="sheet:1,row:6,dataset:PamaReport" />
 	</bean>
 
 </beans>
