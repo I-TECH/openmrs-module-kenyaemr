@@ -156,7 +156,7 @@ var kenyaAddressHierarchy = {
                     {"facility":"Ragana Oruba","id":"Ragana Oruba"},
                     {"facility":"Wasimbete","id":"Wasimbete"}
                 ],
-            "Urir Sub County":
+            "Uriri Sub County":
                 [
                     {"facility":"North Kanyamkago","id":"North Kanyamkago"},
                     {"facility":"Central Kanyamkago","id":"Central Kanyamkago"},
