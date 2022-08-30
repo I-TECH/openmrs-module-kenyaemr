@@ -37,18 +37,12 @@ public class PamaCareGiverStabilityStatusDataEvaluator implements PersonDataEval
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select r.person_b,\n" +
-                "  (case fup.stability when 1 then 'Stable' when 2 then 'Unstable' else '' end) as Stability\n" +
+                "  (case mid(max(concat(fup.visit_date,fup.stability)),11)  when 1 then 'Stable' when 2 then 'Unstable' else '' end) as Stability\n" +
                 "from kenyaemr_etl.etl_patient_demographics d\n" +
-                "  inner join (select f.patient_id,\n" +
-                "                  mid(max(concat(f.visit_date,f.stability)),11) as stability,\n" +
-                "                  f.person_present person_present,\n" +
-                "                  f.visit_date visit_date\n" +
-                "                from kenyaemr_etl.etl_patient_hiv_followup f\n" +
-                "                where person_present = 978 and f.voided = 0 and date(visit_date) <= date(:endDate)\n" +
-                "                group by f.patient_id ) fup\n" +
+                "  inner join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id = d.patient_id and date(fup.visit_date) <= date(:endDate)\n" +
                 "  inner join openmrs.relationship r on d.patient_id = r.person_a\n" +
                 "  inner join openmrs.relationship_type t on r.relationship = t.relationship_type_id and t.uuid in ('8d91a210-c2cc-11de-8d13-0010c6dffd0f','5f115f62-68b7-11e3-94ee-6bef9086de92')\n" +
-                "GROUP BY d.patient_id;";
+                "GROUP BY r.person_b;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

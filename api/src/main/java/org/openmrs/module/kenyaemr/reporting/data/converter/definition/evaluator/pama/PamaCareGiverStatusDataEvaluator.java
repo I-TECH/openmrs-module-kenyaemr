@@ -36,15 +36,14 @@ public class PamaCareGiverStatusDataEvaluator implements PersonDataEvaluator {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select r.person_b,\n" +
-                "       if(ht.final_test_result='Positive' or d.unique_patient_no is not null,'Positive',\n" +
-                "           if(ht.final_test_result='Negative','Negative',\n" +
-                "              if(ht.final_test_result='Unknown','Unknown',''))) as care_giver_status\n" +
+                "  if(ht.final_test_result='Positive' or d.unique_patient_no is not null,'Positive',\n" +
+                "     if(ht.final_test_result='Negative','Negative',\n" +
+                "        if(ht.final_test_result='Unknown','Unknown',''))) as care_giver_status\n" +
                 "from kenyaemr_etl.etl_patient_demographics d\n" +
                 "  inner join openmrs.relationship r on d.patient_id = r.person_a\n" +
                 "  inner join openmrs.relationship_type t on r.relationship = t.relationship_type_id and t.uuid in ('8d91a210-c2cc-11de-8d13-0010c6dffd0f','5f115f62-68b7-11e3-94ee-6bef9086de92')\n" +
                 "  left outer join (select mid(max(concat(t.visit_date, t.patient_id)),11) as patient_id,t.final_test_result from kenyaemr_etl.etl_hts_test t  group by t.patient_id) ht on ht.patient_id = d.patient_id\n" +
-                "  left outer join (select mid(max(concat(e.visit_date, e.patient_id)),11) as patient_id from kenyaemr_etl.etl_hiv_enrollment e group by e.patient_id ) he on he.patient_id = d.patient_id\n" +
-                "GROUP BY d.patient_id;";
+                "  GROUP BY r.person_b;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

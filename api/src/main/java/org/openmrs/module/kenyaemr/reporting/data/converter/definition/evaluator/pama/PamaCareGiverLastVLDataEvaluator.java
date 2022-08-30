@@ -42,7 +42,7 @@ public class PamaCareGiverLastVLDataEvaluator implements PersonDataEvaluator {
                 "  inner join kenyaemr_etl.etl_laboratory_extract le on le.patient_id = d.patient_id and coalesce(date(le.date_test_requested),date(le.visit_date)) <= date(:endDate)\n" +
                 "  inner join openmrs.relationship r on d.patient_id = r.person_a\n" +
                 "  inner join openmrs.relationship_type t on r.relationship = t.relationship_type_id and t.uuid in ('8d91a210-c2cc-11de-8d13-0010c6dffd0f','5f115f62-68b7-11e3-94ee-6bef9086de92')\n" +
-                "GROUP BY d.patient_id;";
+                "GROUP BY r.person_b;";
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
         Date startDate = (Date)context.getParameterValue("startDate");

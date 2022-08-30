@@ -10,8 +10,8 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.pama;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pama.PamaCareGiverLastVLDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pama.PamaCareGiverLastVisitDateDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pama.PamaCareGiverNextAppointmentDateDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
@@ -27,8 +27,8 @@ import java.util.Map;
 /**
  * Evaluates a PersonDataDefinition
  */
-@Handler(supports= PamaCareGiverLastVisitDateDataDefinition.class, order=50)
-public class PamaCareGiverLastVisitDateDataEvaluator implements PersonDataEvaluator {
+@Handler(supports= PamaCareGiverNextAppointmentDateDataDefinition.class, order=50)
+public class PamaCareGiverNextAppointmentDateDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -37,12 +37,12 @@ public class PamaCareGiverLastVisitDateDataEvaluator implements PersonDataEvalua
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select r.person_b,\n" +
-                "  max(fup.visit_date) as last_visit_date\n" +
+                "  date(mid(max(concat(fup.visit_date,fup.next_appointment_date, '' )),11)) as next_appointment_date\n" +
                 "from kenyaemr_etl.etl_patient_demographics d\n" +
                 "  inner join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id = d.patient_id and date(fup.visit_date) <= date(:endDate)\n" +
                 "  inner join openmrs.relationship r on d.patient_id = r.person_a\n" +
                 "  inner join openmrs.relationship_type t on r.relationship = t.relationship_type_id and t.uuid in ('8d91a210-c2cc-11de-8d13-0010c6dffd0f','5f115f62-68b7-11e3-94ee-6bef9086de92')\n" +
-                "group by r.person_b;";
+                "GROUP BY r.person_b";
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
         Date startDate = (Date)context.getParameterValue("startDate");
