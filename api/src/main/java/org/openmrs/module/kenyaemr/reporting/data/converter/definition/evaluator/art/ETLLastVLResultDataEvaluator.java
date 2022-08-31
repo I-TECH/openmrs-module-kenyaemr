@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -34,12 +35,17 @@ public class ETLLastVLResultDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select patient_id,\n" +
-                "            mid(max(concat(visit_date, if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")), \"\" )),11) as vl_result from kenyaemr_etl.etl_laboratory_extract\n" +
-                "\tGROUP BY patient_id;";
+        String qry = "select patient_id, mid(max(concat(visit_date, if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, 'LDL','')), '' )),11) as vl_result\n" +
+                "from kenyaemr_etl.etl_laboratory_extract where coalesce(date(date_test_requested),date(visit_date)) <= date(:endDate)\n" +
+                "GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
+
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;

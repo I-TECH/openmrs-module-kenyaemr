@@ -111,6 +111,18 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         DataDefinition nupiDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(nupi.getName(), nupi), identifierFormatter);
         AgeAtReportingDataDefinition ageAtReportingDataDefinition = new AgeAtReportingDataDefinition();
         ageAtReportingDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+        ETLLastVLResultDataDefinition lastVlResultDataDefinition = new ETLLastVLResultDataDefinition();
+        lastVlResultDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+        ETLLastVLDateDataDefinition lastVLDateDataDefinition = new ETLLastVLDateDataDefinition();
+        lastVLDateDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+        ETLStabilityDataDefinition stabilityDataDefinition = new ETLStabilityDataDefinition();
+        stabilityDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+        ETLLastVisitDateDataDefinition lastVisitDateDataDefinition = new ETLLastVisitDateDataDefinition();
+        lastVisitDateDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+        ETLNextAppointmentDateDataDefinition nextAppointmentDateDataDefinition = new ETLNextAppointmentDateDataDefinition();
+        nextAppointmentDateDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+
+
         DataConverter formatter = new ObjectFormatter("{familyName}, {givenName}");
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), formatter);
         dsd.addColumn("id", new PersonIdDataDefinition(), "");
@@ -133,10 +145,10 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("Current Regimen Line", new ETLCurrentRegLineDataDefinition(), "");
         dsd.addColumn("Last WHO Stage", new WHOStageArtDataDefinition(), "");
         dsd.addColumn("Last WHO Stage Date", new ETLLastWHOStageDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
-        dsd.addColumn("Last VL Result", new ETLLastVLResultDataDefinition(), "");
+        dsd.addColumn("Last VL Result",  lastVlResultDataDefinition, "endDate=${endDate}");
         dsd.addColumn("VL Validility", new ETLLastVLResultValidityDataDefinition(), "");
         dsd.addColumn("Last VL Justification", new ETLLastVLJustificationDataDefinition(),"");
-        dsd.addColumn("Last VL Date", new ETLLastVLDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
+        dsd.addColumn("Last VL Date", lastVLDateDataDefinition, "endDate=${endDate}", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Active in PMTCT", new CalculationDataDefinition("Active in PMTCT", new ActiveInMCHProgramCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("Active in OVC", new CalculationDataDefinition("Active in OVC", new OnOVCProgramCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("Active in OTZ", new CalculationDataDefinition("Active in OTZ", new OnOTZProgramCalculation()), "", new CalculationResultConverter());
@@ -144,11 +156,11 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("IPT Start Date", new CalculationDataDefinition("IPT Start Date", new IPTStartDateCalculation()), "", new SimpleResultDateConverter());
         dsd.addColumn("IPT Outcome", new CalculationDataDefinition("IPT Outcome", new IPTOutcomeCalculation()), "", new IPTOutcomeDataConverter());
         dsd.addColumn("IPT Outcome Date", new CalculationDataDefinition("IPT Outcome Date", new IPTOutcomeDateCalculation()), "", new SimpleResultDateConverter());
-        dsd.addColumn("Stability", new ETLStabilityDataDefinition(), "");
+        dsd.addColumn("Stability", stabilityDataDefinition, "endDate=${endDate}");
         dsd.addColumn("Differentiated care model", new ETLDifferentiatedCareModelDataDefinition(), "");
-        dsd.addColumn("Last Visit Date", new ETLLastVisitDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
+        dsd.addColumn("Last Visit Date", lastVisitDateDataDefinition,"endDate=${endDate}", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Self Visit Date", new ETLHivSelfVisitDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
-        dsd.addColumn("Next Appointment Date", new ETLNextAppointmentDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
+        dsd.addColumn("Next Appointment Date", nextAppointmentDateDataDefinition, "endDate=${endDate}", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Months of Prescription", new ETLMonthsOfPrescriptionDataDefinition(), "");
         dsd.addColumn("Refill Date", new ETLRefillDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
 
