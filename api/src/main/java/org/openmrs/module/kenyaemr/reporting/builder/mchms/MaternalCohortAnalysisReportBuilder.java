@@ -119,7 +119,7 @@ public class MaternalCohortAnalysisReportBuilder extends AbstractReportBuilder {
         CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
         cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cohortDsd.setName("Maternal Cohort Analysis First Review");
+        cohortDsd.setName("First Review");
         cohortDsd.setDescription("(12 Months Cohort)");
         cohortDsd.addColumn("Original cohort-KP (12 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.originalCohortKp12Months(), "startDate=${startDate},endDate=${endDate}"), "");
         cohortDsd.addColumn("Original cohort-NP (12 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.originalCohortNp12Months(), "startDate=${startDate},endDate=${endDate}"), "");
@@ -135,8 +135,6 @@ public class MaternalCohortAnalysisReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("Interruption In treatment (LTFU) NP (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.ltfuMaternalNp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
         cohortDsd.addColumn("Reported Dead KP (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.deceasedMaternalKp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
         cohortDsd.addColumn("Reported Dead NP (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.deceasedMaternalNp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
-        cohortDsd.addColumn("Stopped treatment KP (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.stoppedTreatmentMaternalKp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
-        cohortDsd.addColumn("Stopped treatment NP (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.stoppedTreatmentMaternalNp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
         cohortDsd.addColumn("Stopped treatment KP (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.stoppedTreatmentMaternalKp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
         cohortDsd.addColumn("Stopped treatment NP (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.stoppedTreatmentMaternalNp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
         cohortDsd.addColumn("Alive and active on treatment KP (3 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.aliveAndActiveOnTreatmentMaternalKp3MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
@@ -175,8 +173,6 @@ public class MaternalCohortAnalysisReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("Reported Dead NP (6 Months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.deceasedMaternalNp6MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
         cohortDsd.addColumn("Stopped treatment KP (6 Months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.stoppedTreatmentMaternalKp6MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
         cohortDsd.addColumn("Stopped treatment NP (6 Months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.stoppedTreatmentMaternalNp6MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
-        cohortDsd.addColumn("Stopped treatment KP (6 Months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.stoppedTreatmentMaternalKp6MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
-        cohortDsd.addColumn("Stopped treatment NP (6 Months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.stoppedTreatmentMaternalNp6MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
         cohortDsd.addColumn("Alive and active on treatment KP (6 Months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.aliveAndActiveOnTreatmentMaternalKp6MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
         cohortDsd.addColumn("Alive and active on treatment NP (6 Months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.aliveAndActiveOnTreatmentMaternalNp6MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
         cohortDsd.addColumn("Viral Load samples collected maternal Kp (6 Months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.maternalCohortWithViralLoadSamplesCollectedKp6Months(), "startDate=${startDate},endDate=${endDate}"), "");
@@ -213,8 +209,6 @@ public class MaternalCohortAnalysisReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("Reported Dead NP (12 Months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.deceasedMaternalNp12MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
         cohortDsd.addColumn("Stopped treatment KP (12 Months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.stoppedTreatmentMaternalKp12MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
         cohortDsd.addColumn("Stopped treatment NP (12 Months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.stoppedTreatmentMaternalNp12MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
-        cohortDsd.addColumn("Stopped treatment KP (12 Months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.stoppedTreatmentMaternalKp12MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
-        cohortDsd.addColumn("Stopped treatment NP (12 Months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.stoppedTreatmentMaternalNp12MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
         cohortDsd.addColumn("Alive and active on treatment KP (12 Months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.aliveAndActiveOnTreatmentMaternalKp12MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
         cohortDsd.addColumn("Alive and active on treatment NP (12 Months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.aliveAndActiveOnTreatmentMaternalNp12MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
         cohortDsd.addColumn("Viral Load samples collected maternal Kp (12 Months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.maternalCohortWithViralLoadSamplesCollectedKp12Months(), "startDate=${startDate},endDate=${endDate}"), "");
@@ -249,7 +243,7 @@ public class MaternalCohortAnalysisReportBuilder extends AbstractReportBuilder {
         CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
         cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cohortDsd.setName("Maternal-Cohort-Analysis Second Review");
+        cohortDsd.setName("Second Review");
         cohortDsd.setDescription("(24 Months Cohort)");
         cohortDsd.addColumn("Original cohort-KP (24 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.originalCohortKp24Months(), "startDate=${startDate},endDate=${endDate}"), "");
         cohortDsd.addColumn("Original cohort-NP (24 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.originalCohortNp24Months(), "startDate=${startDate},endDate=${endDate}"), "");
@@ -265,8 +259,6 @@ public class MaternalCohortAnalysisReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("Interruption In treatment (LTFU) NP (24 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.ltfuMaternalNp24MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
         cohortDsd.addColumn("Reported Dead KP (24 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.deceasedMaternalKp24MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
         cohortDsd.addColumn("Reported Dead NP (24 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.deceasedMaternalNp24MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
-        cohortDsd.addColumn("Stopped treatment KP (24 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.stoppedTreatmentMaternalKp24MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
-        cohortDsd.addColumn("Stopped treatment NP (24 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.stoppedTreatmentMaternalNp24MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
         cohortDsd.addColumn("Stopped treatment KP (24 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.stoppedTreatmentMaternalKp24MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
         cohortDsd.addColumn("Stopped treatment NP (24 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.stoppedTreatmentMaternalNp24MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");
         cohortDsd.addColumn("Alive and active on treatment KP (24 months)", "", ReportUtils.map(maternalAnalysisIndicatorLibrary.aliveAndActiveOnTreatmentMaternalKp24MonthsCohort(), "startDate=${startDate},endDate=${endDate}"), "");

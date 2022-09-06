@@ -281,6 +281,7 @@
 		<property name="name" value="Maternal Cohort Analysis" />
 		<property name="description" value="Maternal Cohort Analysis Report" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:pmtct/maternal_cohort.xls" />
 	</bean>
 
 </beans>
