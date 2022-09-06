@@ -31,6 +31,7 @@ import org.openmrs.module.kenyaemr.reporting.calculation.converter.*;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ActivePatientsSnapshotCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ActivePatientsPopulationTypeDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.MFLCodeDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.*;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -125,6 +126,7 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
 
         DataConverter formatter = new ObjectFormatter("{familyName}, {givenName}");
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), formatter);
+        dsd.addColumn("MFL Code", new MFLCodeDataDefinition(), "");
         dsd.addColumn("id", new PersonIdDataDefinition(), "");
         dsd.addColumn("Name", nameDef, "");
         dsd.addColumn("CCC No", identifierDef, "");
