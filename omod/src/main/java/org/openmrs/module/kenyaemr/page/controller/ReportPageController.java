@@ -149,11 +149,6 @@ public class ReportPageController {
 					countyList.add(locationCounty);
 				}
 			}
-		} else {
-			String userCounty = EmrUtils.getUserCounty();
-			if (userCounty != null) {
-				countyList.add(userCounty);
-			}
 		}
 
 		SortedSet<String> uniqueCountyList = new TreeSet<String>(countyList);
