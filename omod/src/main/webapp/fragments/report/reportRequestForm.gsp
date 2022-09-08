@@ -12,12 +12,12 @@
 
 	def useDateBasedPeriodField = params.containsKey("startDate") && params.containsKey("endDate") && params.containsKey("dateBasedReporting")
 
-	def defaultOption = countyList.size() == 1 ? countyList.toArray()[0] : null;
+	def defaultOption = subCountyList.size() == 1 ? subCountyList.toArray()[0] : null;
 
-	def countyListOptions = []
+	def subCountyListOptions = []
 
-	countyList.each { county ->
-		countyListOptions.add([ value: county, label: county ])
+	subCountyList.each { subCounty ->
+		subCountyListOptions.add([ value: subCounty, label: subCounty ])
 	}
 
 	if (useMonthBasedPeriodField || useYearBasedPeriodField) {
@@ -113,7 +113,7 @@
 		<% params.each { name, param -> %>
 		<div class="ke-field-label">${ param.label }</div>
 		<div class="ke-field-content">
-			<% def configOptions = (param.name == "county") ? [ options: countyListOptions ] : [] %>
+			<% def configOptions = (param.name == "subCounty") ? [ options: subCountyListOptions ] : [] %>
 			${ ui.includeFragment("kenyaui", "widget/field", [
 					formFieldName: "param[" + param.name + "]",
 					class: param.type,
