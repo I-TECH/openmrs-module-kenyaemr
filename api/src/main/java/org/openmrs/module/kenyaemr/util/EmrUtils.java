@@ -26,14 +26,19 @@ import org.openmrs.Order;
 import org.openmrs.OrderType;
 import org.openmrs.Patient;
 import org.openmrs.Person;
+import org.openmrs.PersonAttribute;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.Provider;
 import org.openmrs.User;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.util.PrivilegeConstants;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -279,5 +284,22 @@ public class EmrUtils {
 		return passed;
 	}
 
+	public static List<String> getSubCountyList() {
+		List<String> subCountyList = new ArrayList<String>();
+		Context.addProxyPrivilege(PrivilegeConstants.SQL_LEVEL_ACCESS);
+		StringBuilder q = new StringBuilder();
+		q.append("Select distinct implementation_subcounty ");
+		q.append("from kenyaemr_etl.etl_contact;");
+
+		List<List<Object>> subCounties = Context.getAdministrationService().executeSQL(q.toString(), true);
+		if (!subCounties.isEmpty()) {
+			for (List<Object> res : subCounties) {
+				String subCounty = (String) res.get(0);
+				subCountyList.add(subCounty);
+			}
+		}
+		Context.removeProxyPrivilege(PrivilegeConstants.SQL_LEVEL_ACCESS);
+		return subCountyList;
+	}
 
 }
