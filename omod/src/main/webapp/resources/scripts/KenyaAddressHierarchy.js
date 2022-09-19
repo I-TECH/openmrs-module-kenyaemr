@@ -516,7 +516,7 @@ var kenyaAddressHierarchy = {
                     {"facility":"Sameta/Mokwerero","id":"Sameta/Mokwerero"},
                     {"facility":"Bobasi Boitangare","id":"Bobasi Boitangare"}
                 ],
-            "Bamachoge Chache":
+            "Bomachoge Chache":
                 [
                     {"facility":"Majoge Basi","id":"Majoge Basi"},
                     {"facility":"Boochi/Tendere","id":"Boochi/Tendere"},
