@@ -122,6 +122,12 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         lastVisitDateDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
         ETLNextAppointmentDateDataDefinition nextAppointmentDateDataDefinition = new ETLNextAppointmentDateDataDefinition();
         nextAppointmentDateDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+        ActiveInMchDataDefinition activeInMchDataDefinition = new ActiveInMchDataDefinition();
+        activeInMchDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+        ActiveInOvcDataDefinition activeInOvcDataDefinition = new ActiveInOvcDataDefinition();
+        activeInOvcDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+        ActiveInOtzDataDefinition activeInOtzDataDefinition = new ActiveInOtzDataDefinition();
+        activeInOtzDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 
 
         DataConverter formatter = new ObjectFormatter("{familyName}, {givenName}");
@@ -151,9 +157,9 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("VL Validility", new ETLLastVLResultValidityDataDefinition(), "");
         dsd.addColumn("Last VL Justification", new ETLLastVLJustificationDataDefinition(),"");
         dsd.addColumn("Last VL Date", lastVLDateDataDefinition, "endDate=${endDate}", new DateConverter(DATE_FORMAT));
-        dsd.addColumn("Active in PMTCT", new CalculationDataDefinition("Active in PMTCT", new ActiveInMCHProgramCalculation()), "", new CalculationResultConverter());
-        dsd.addColumn("Active in OVC", new CalculationDataDefinition("Active in OVC", new OnOVCProgramCalculation()), "", new CalculationResultConverter());
-        dsd.addColumn("Active in OTZ", new CalculationDataDefinition("Active in OTZ", new OnOTZProgramCalculation()), "", new CalculationResultConverter());
+        dsd.addColumn("Active in PMTCT",activeInMchDataDefinition, "endDate=${endDate}");
+        dsd.addColumn("Active in OVC", activeInOvcDataDefinition,"endDate=${endDate}");
+        dsd.addColumn("Active in OTZ", activeInOtzDataDefinition, "endDate=${endDate}");
         dsd.addColumn("Active in TB", new CalculationDataDefinition("Active in TB", new InTbProgramCalculation()), "", new CalculationResultConverter());
         dsd.addColumn("IPT Start Date", new CalculationDataDefinition("IPT Start Date", new IPTStartDateCalculation()), "", new SimpleResultDateConverter());
         dsd.addColumn("IPT Outcome", new CalculationDataDefinition("IPT Outcome", new IPTOutcomeCalculation()), "", new IPTOutcomeDataConverter());
