@@ -10,8 +10,8 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.art;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ActiveInOtzDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ActiveInOvcDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ActiveInTbDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
@@ -25,10 +25,10 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Evaluates Active in Otz Data Definition
+ * Evaluates Active in Tb Data Definition
  */
-@Handler(supports= ActiveInOtzDataDefinition.class, order=50)
-public class ActiveInOtzDataDefinitionEvaluator implements PersonDataEvaluator {
+@Handler(supports= ActiveInTbDataDefinition.class, order=50)
+public class ActiveInTbDataDefinitionEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -36,11 +36,13 @@ public class ActiveInOtzDataDefinitionEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select pp.patient_id, if(p.name is not null,'Yes','No') from patient_program pp\n" +
-                "   inner join program p on p.program_id = pp.program_id\n" +
-                "   where date(pp.date_completed) is null and p.name ='OTZ'\n" +
-                "    group by pp.patient_id\n" +
-                "    having max(date(pp.date_enrolled)) <= date(:endDate);";
+        String qry = "select d.patient_id,if(v.program_client is not null or c.hiv_client is not null,'Yes','No') from kenyaemr_etl.etl_patient_demographics d\n" +
+                "  left join (select pp.patient_id as program_client from patient_program pp\n" +
+                "    inner join program p on p.program_id = pp.program_id and p.name ='TB' and date(pp.date_enrolled) <= date(:endDate)\n" +
+                "  where date(pp.date_completed) is null) v on d.patient_id=v.program_client\n" +
+                "  left join (select v.patient_id as hiv_client,max(date(v.visit_date)),mid(max(concat(date(v.visit_date),v.on_anti_tb_drugs)),11) as on_tb_drugs\n" +
+                "              from kenyaemr_etl.etl_patient_hiv_followup v where date(v.visit_date) between date(:startDate) and date(:endDate) and v.on_anti_tb_drugs = 1065\n" +
+                "  group by v.patient_id)  c on d.patient_id = c.hiv_client;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

@@ -29,6 +29,7 @@ import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.*;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ActivePatientsSnapshotCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.ActiveInProgramConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ActivePatientsPopulationTypeDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.MFLCodeDataDefinition;
@@ -128,6 +129,8 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         activeInOvcDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
         ActiveInOtzDataDefinition activeInOtzDataDefinition = new ActiveInOtzDataDefinition();
         activeInOtzDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+        ActiveInTbDataDefinition activeInTbDataDefinition = new ActiveInTbDataDefinition();
+        activeInTbDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 
 
         DataConverter formatter = new ObjectFormatter("{familyName}, {givenName}");
@@ -157,10 +160,10 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("VL Validility", new ETLLastVLResultValidityDataDefinition(), "");
         dsd.addColumn("Last VL Justification", new ETLLastVLJustificationDataDefinition(),"");
         dsd.addColumn("Last VL Date", lastVLDateDataDefinition, "endDate=${endDate}", new DateConverter(DATE_FORMAT));
-        dsd.addColumn("Active in PMTCT",activeInMchDataDefinition, "endDate=${endDate}");
-        dsd.addColumn("Active in OVC", activeInOvcDataDefinition,"endDate=${endDate}");
-        dsd.addColumn("Active in OTZ", activeInOtzDataDefinition, "endDate=${endDate}");
-        dsd.addColumn("Active in TB", new CalculationDataDefinition("Active in TB", new InTbProgramCalculation()), "", new CalculationResultConverter());
+        dsd.addColumn("Active in PMTCT",activeInMchDataDefinition, "endDate=${endDate}", new ActiveInProgramConverter());
+        dsd.addColumn("Active in OVC", activeInOvcDataDefinition,"endDate=${endDate}",new ActiveInProgramConverter());
+        dsd.addColumn("Active in OTZ", activeInOtzDataDefinition, "endDate=${endDate}",new ActiveInProgramConverter());
+        dsd.addColumn("Active in TB", activeInTbDataDefinition, "endDate=${endDate}",new ActiveInProgramConverter());
         dsd.addColumn("IPT Start Date", new CalculationDataDefinition("IPT Start Date", new IPTStartDateCalculation()), "", new SimpleResultDateConverter());
         dsd.addColumn("IPT Outcome", new CalculationDataDefinition("IPT Outcome", new IPTOutcomeCalculation()), "", new IPTOutcomeDataConverter());
         dsd.addColumn("IPT Outcome Date", new CalculationDataDefinition("IPT Outcome Date", new IPTOutcomeDateCalculation()), "", new SimpleResultDateConverter());

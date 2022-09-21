@@ -36,10 +36,10 @@ public class ActiveInMchDataDefinitionEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select pp.patient_id,if(p.name in ('MCH - Child Services','MCH - Mother Services'),'Yes','No') from patient_program pp\n" +
+        String qry = "select pp.patient_id,if(p.name is not null,'Yes','No') from patient_program pp\n" +
                 "  inner join program p on p.program_id = pp.program_id\n" +
                 "where date(pp.date_completed) is null and p.name in ('MCH - Child Services','MCH - Mother Services')\n" +
-                "group by patient_id\n" +
+                "group by pp.patient_id\n" +
                 "having max(date(pp.date_enrolled)) <= date(:endDate);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
