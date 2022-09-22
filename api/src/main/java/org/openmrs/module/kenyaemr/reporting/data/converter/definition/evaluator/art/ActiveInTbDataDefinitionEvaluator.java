@@ -41,8 +41,9 @@ public class ActiveInTbDataDefinitionEvaluator implements PersonDataEvaluator {
                 "    inner join program p on p.program_id = pp.program_id and p.name ='TB' and date(pp.date_enrolled) <= date(:endDate)\n" +
                 "  where date(pp.date_completed) is null) v on d.patient_id=v.program_client\n" +
                 "  left join (select v.patient_id as hiv_client,max(date(v.visit_date)),mid(max(concat(date(v.visit_date),v.on_anti_tb_drugs)),11) as on_tb_drugs\n" +
-                "              from kenyaemr_etl.etl_patient_hiv_followup v where date(v.visit_date) between date(:startDate) and date(:endDate) and v.on_anti_tb_drugs = 1065\n" +
-                "  group by v.patient_id)  c on d.patient_id = c.hiv_client;";
+                "  from kenyaemr_etl.etl_patient_hiv_followup v\n" +
+                "  where date(v.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "  group by v.patient_id having max(date(visit_date)) <= date(:endDate) and on_tb_drugs = 1065)  c on d.patient_id = c.hiv_client;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
