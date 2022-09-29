@@ -43,6 +43,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -145,7 +146,7 @@ public class ReportPageController {
 		if (isSuperUser || userRole != null) {
 			subCountyList = EmrUtils.getSubCountyList();
 		     }
-		model.addAttribute("subCountyList", subCountyList.size() > 0 ? subCountyList : Arrays.asList("None"));
+		model.addAttribute("subCountyList", subCountyList.size() > 0 ? subCountyList : Collections.emptyList());
 		}
 
 		/**

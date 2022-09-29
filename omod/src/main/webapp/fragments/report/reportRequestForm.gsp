@@ -12,8 +12,6 @@
 
 	def useDateBasedPeriodField = params.containsKey("startDate") && params.containsKey("endDate") && params.containsKey("dateBasedReporting")
 
-	def defaultOption = subCountyList.size() == 1 ? subCountyList.toArray()[0] : null;
-
 	def subCountyListOptions = []
 
 	subCountyList.each { subCounty ->
@@ -118,7 +116,7 @@
 					formFieldName: "param[" + param.name + "]",
 					class: param.type,
 					required: true,
-					initialValue: defaultOption == null ? param.defaultValue : defaultOption,
+					initialValue: param.defaultValue,
 					config: configOptions
 			]) }
 		</div>
