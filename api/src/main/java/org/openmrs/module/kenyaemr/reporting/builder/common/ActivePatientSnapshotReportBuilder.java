@@ -164,9 +164,9 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("Active in OVC", activeInOvcDataDefinition,"endDate=${endDate}",new ActiveInProgramConverter());
         dsd.addColumn("Active in OTZ", activeInOtzDataDefinition, "endDate=${endDate}",new ActiveInProgramConverter());
         dsd.addColumn("Active in TB", activeInTbDataDefinition, "endDate=${endDate}",new ActiveInProgramConverter());
-        dsd.addColumn("IPT Start Date", new CalculationDataDefinition("IPT Start Date", new IPTStartDateCalculation()), "", new SimpleResultDateConverter());
-        dsd.addColumn("IPT Outcome", new CalculationDataDefinition("IPT Outcome", new IPTOutcomeCalculation()), "", new IPTOutcomeDataConverter());
-        dsd.addColumn("IPT Outcome Date", new CalculationDataDefinition("IPT Outcome Date", new IPTOutcomeDateCalculation()), "", new SimpleResultDateConverter());
+        dsd.addColumn("TPT Start Date", new CalculationDataDefinition("IPT Start Date", new IPTStartDateCalculation()), "", new SimpleResultDateConverter());
+        dsd.addColumn("TPT Outcome", new CalculationDataDefinition("IPT Outcome", new IPTOutcomeCalculation()), "", new IPTOutcomeDataConverter());
+        dsd.addColumn("TPT Outcome Date", new CalculationDataDefinition("IPT Outcome Date", new IPTOutcomeDateCalculation()), "", new SimpleResultDateConverter());
         dsd.addColumn("Stability", stabilityDataDefinition, "endDate=${endDate}");
         dsd.addColumn("Differentiated care model", new ETLDifferentiatedCareModelDataDefinition(), "");
         dsd.addColumn("Last Visit Date", lastVisitDateDataDefinition,"endDate=${endDate}", new DateConverter(DATE_FORMAT));
