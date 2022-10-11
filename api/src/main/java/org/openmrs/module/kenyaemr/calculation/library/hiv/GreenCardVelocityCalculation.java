@@ -38,6 +38,7 @@ import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.IsBreastFeedingCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.IsPregnantCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.EligibleForCaCxScreeningCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.IPTMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
@@ -108,6 +109,8 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
         Set<Integer> pregnantWomen = CalculationUtils.patientsThatPass(calculate(new IsPregnantCalculation(), cohort, context));
         //find breastfeeding women
         Set<Integer> breastFeeding = CalculationUtils.patientsThatPass(calculate(new IsBreastFeedingCalculation(), cohort, context));
+        //find women eligible for cacx screening
+        Set<Integer> eligibleForCacx = CalculationUtils.patientsThatPass(calculate(new EligibleForCaCxScreeningCalculation(), cohort, context));
 
         CalculationResultMap ret = new CalculationResultMap();
         StringBuilder sb = new StringBuilder();
@@ -125,6 +128,7 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             boolean goodAdherence6Months = false;
             boolean isPregnant = false;
             boolean isBreastFeeding = false;
+            boolean isEligibleForCacx = false;
             Integer adherenceDiffDays = 0;
             Integer  goodAdherenceAnswer = 159405;
             Integer  iptOutcomeQuestion = 161555;
@@ -288,6 +292,10 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             if(breastFeeding.contains(ptId)) {
                 isBreastFeeding = true;
             }
+
+            if(eligibleForCacx.contains(ptId)) {
+                isEligibleForCacx = true;
+            }
             sb.append("inIPT:").append(inIptProgram).append(",");
             sb.append("inTB:").append(patientInTBProgram).append(",");
             sb.append("onART:").append(patientOnART).append(",");
@@ -304,7 +312,8 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             sb.append("artStartDate:").append(artStartDate).append(",");
             // sb.append("dueTB:").append(patientDueForTBEnrollment).append(",");
             sb.append("CacXResult:").append(cacxResult).append(",");
-            sb.append("vmmcProcedureResult:").append(vmmcMethodResult);
+            sb.append("vmmcProcedureResult:").append(vmmcMethodResult).append(",");
+            sb.append("eligibleForCacx:").append(isEligibleForCacx);
 
             ret.put(ptId, new SimpleResult(sb.toString(), this, context));
         }
