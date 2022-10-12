@@ -100,6 +100,11 @@
             <legend>Client verification with Client Registry</legend>
             <table>
                 <tr>
+                    <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "country", config: [style: "list", options: countryOptions]])}</td>
+                    <td> <input type="checkbox" name="select-kenya-option" value="Y" id="select-kenya-option" /> Select Kenya </td>
+                    <td>
+                        <div id="country-msgBox" class="ke-warning">Country is Required</div>
+                    </td>
                     <td>Identifier Type</td>
                     <td>
                         <select id="idType" name="idtype">
