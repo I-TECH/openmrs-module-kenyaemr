@@ -98,7 +98,7 @@ Green Card follow-up visit form
         var GOOD_ADHERENCE = GREENCARD_VELOCITY.split(",")[9].split(":")[1];
         var PATIENT_PREGNANT = GREENCARD_VELOCITY.split(",")[10].split(":")[1];
         var PATIENT_BREASTFEEDING = GREENCARD_VELOCITY.split(",")[11].split(":")[1];
-
+        var PATIENT_ELIGIBLE_FOR_CACX = GREENCARD_VELOCITY.split(",")[16].split(":")[1];
 
         var pAge = parseInt('<lookup expression="patient.age"/>');
         var pgender = "<lookup expression="patient.gender" />";
@@ -648,10 +648,13 @@ Green Card follow-up visit form
                 setValue('height.value', recentHeightValue);
             }
 
-
         });   //End of JQuery onReady function
 
-      
+        jq(function() {
+            if(PATIENT_ELIGIBLE_FOR_CACX == "false"){
+                jq("#cacxScreeningRow").hide();
+            }
+        });
         // get count of patients booked on a date
         function getPatientsBookedOnDate() {
             var tca_date = jq('#returnVisitDate input[type=hidden]').val();
@@ -917,9 +920,9 @@ Green Card follow-up visit form
 //8. breast feeding
            if(PREVIOUSLY_BREASTFEEDING == 1065 || PATIENT_BREASTFEEDING == 'true') {
                 jq('#breast-feeding:text').val("YES");
-            }else{
-                jq('#breast-feeding:text').val("NO");
-            }
+            }else {
+               jq('#breast-feeding:text').val("NO");
+           }
         }
         function onLmpChange() {
             jq('#pregnancyOption :input').prop('disabled', false);
@@ -2272,7 +2275,7 @@ Green Card follow-up visit form
             var dapsoneAdherence = getValue('dapsone-adherence.value');
             var dapsoneDispensed = getValue('dapsone-dispensed.value');
             var arvAdherence = getValue('arv-adherence.value');
-            var cacxScreened = getValue('cacx-screening.value');
+            var cacxScreened = getValue('cacxScreening.value');
             var stiScreened = getValue('screened-sti.value');
             var stiPartnerNotification = getValue('sti-partnerNotification.value');
 
@@ -2316,12 +2319,12 @@ Green Card follow-up visit form
             }else{
                 getField('arv-adherence.error').html('Please conduct ARV adherence.').hide();
             }
-            if (pgender == 'F') {     //Cacx screening on over 18 years is mandatory
-                if (pAge &gt; 18 &amp;&amp; personPresent == SELF &amp;&amp; cacxScreened == false) {
-                    getField('cacx-screening.error').html('Please specify whether patient was screened for CaCx.').show();
+            if (pgender == 'F' &amp;&amp; PATIENT_ELIGIBLE_FOR_CACX == true) {     //Cacx screening on over 18 years is mandatory
+                if (pAge &gt; 14 &amp;&amp; personPresent == SELF &amp;&amp; cacxScreened == false) {
+                    getField('cacxScreening.error').html('Please specify whether patient was screened for CaCx.').show();
                     return false;
                 } else {
-                    getField('cacx-screening.error').html('Please specify whether patient was screened for CaCx.').hide();
+                    getField('cacxScreening.error').html('Please specify whether patient was screened for CaCx.').hide();
                 }
             }
             if (stiScreened == false &amp;&amp; personPresent == SELF ) {
@@ -4177,14 +4180,14 @@ Management<br />
                                          style="radio"
                                 /></td>
                             </tr>
-                            <includeIf velocityTest="$patient.gender == 'F' ">
-                                <tr>
+                            <includeIf velocityTest="($patient.gender == 'F') &amp;&amp; ($patient.age &gt; 14) &amp;&amp; ($patient.age &lt; 66)">
+                                <tr id="cacxScreeningRow">
                                     <td>Has the client been screened for CaCx <span style="color:red;">*</span></td>
                                     <td><obs conceptId="164934"
                                              answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                              answerLabels="Positive,Negative,Not Done,N/A"
                                              style="radio"
-                                             id="cacx-screening" /></td>
+                                             id="cacxScreening" /></td>
                                 </tr>
                             </includeIf>
                             <tr >

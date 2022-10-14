@@ -135,7 +135,7 @@ public class NeedsCACXTestCalculation extends AbstractPatientCalculation impleme
             boolean patientHasPresumedCancerTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxPresumedCancerResult) : false;
 
             // Newly initiated and without cervical cancer test
-            if(patient.getAge() >= 15){
+            if(patient.getAge() >= 18 && patient.getAge() <= 65){
 
                 // no cervical cancer screening done
                 if(lastCacxScreeningEnc == null) {
