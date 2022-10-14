@@ -79,6 +79,7 @@
 				<ref bean="kenyaemr.etl.common.report.publicHealthAction"/>
 				<ref bean="kenyaemr.common.report.mortalityLineList"/>
 				<ref bean="kenyaemr.common.report.moh711"/>
+				<ref bean="kenyaemr.common.report.sgbvlinelist"/>
 			</set>
 		</property>
 	</bean>
@@ -756,5 +757,16 @@
 		<property name="description" value="Integrated Programme Summary Report Form: Reproductive and Child Health, Medical and Rehabilitation Services" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 		<property name="template" value="kenyaemr:moh711.xls" />
+	</bean>
+	<bean id="kenyaemr.common.report.sgbvlinelist" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="cbe6786a-1485-11ed-ade9-02503af406d4" />
+		<property name="name" value="Sexual Gender Based Violence (SGBV) Linelist" />
+		<property name="description" value="SGBV Screening Reporting" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:sgbv/sgbv_linelist.xls" />
+		<property name="repeatingSection" value="sheet:1,row:6,dataset:sgbvLinelistPatients" />
 	</bean>
 </beans>
