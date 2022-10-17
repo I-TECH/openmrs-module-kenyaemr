@@ -25,7 +25,6 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.ActiveInProgramConve
 import org.openmrs.module.kenyaemr.reporting.data.converter.HTSMaritalStatusConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.KenyaEMRMaritalStatusDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ActiveInOvcDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.cacx.CACXVisitTypeDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.sgbv.EPCDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.sgbv.EmotionalIPVDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.sgbv.HivTestDataDefinition;
@@ -114,7 +113,6 @@ public class SGBVRegisterReportBuilder extends AbstractReportBuilder {
 
         dsd.addColumn("id", new PatientIdDataDefinition(), "");
         dsd.addColumn("Visit Date", new EncounterDatetimeDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT));
-        dsd.addColumn("Visit Type", new CACXVisitTypeDataDefinition(), null);
         dsd.addColumn("Name", nameDef, "");
         dsd.addColumn("ID Number", identifierDef, "");
         dsd.addColumn("Patient Clinic Number", identifierClinicNo, "");
