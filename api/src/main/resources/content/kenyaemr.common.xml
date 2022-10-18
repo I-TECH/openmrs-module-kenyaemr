@@ -62,7 +62,7 @@
 				<ref bean="kenyaemr.common.report.activePatientsLinelist" />
 				<ref bean="kenyaemr.common.report.allPatientsMissingIdentifiers" />
 				<ref bean="kenyaemr.common.report.rdqaReport" />
-				<ref bean="kenyaemr.common.report.clients.died" />
+<!--				<ref bean="kenyaemr.common.report.clients.died" />-->
 				<ref bean="kenyaemr.common.report.clients.transferred.in" />
 				<ref bean="kenyaemr.common.report.clients.transferred.out" />
 				<ref bean="kenyaemr.hiv.report.htsPositiveCLientsNotLinkedToCare"/>
@@ -633,13 +633,13 @@
 
 	</bean>
 
-	<bean id="kenyaemr.common.report.clients.died" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
-		<property name="targetUuid" value="d4c6805e-7ecf-11e5-8b43-10c37b209c79" />
-		<property name="name" value="Clients died" />
-		<property name="description" value="Patients who have died" />
-		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+<!--	<bean id="kenyaemr.common.report.clients.died" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">-->
+<!--		<property name="targetUuid" value="d4c6805e-7ecf-11e5-8b43-10c37b209c79" />-->
+<!--		<property name="name" value="Clients died" />-->
+<!--		<property name="description" value="Patients who have died" />-->
+<!--		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>-->
 
-	</bean>
+<!--	</bean>-->
 
 	<!-- MER indicators-->
 	<bean id="kenyaemr.common.report.mer-indicators" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
