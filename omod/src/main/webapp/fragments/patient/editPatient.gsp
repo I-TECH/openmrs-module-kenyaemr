@@ -96,7 +96,7 @@
 
     <div class="ke-panel-content">
 
-        <fieldset>
+        <fieldset id="clientVerificationSection">
             <legend>Client verification with Client Registry</legend>
             <table>
                 <tr>
@@ -750,8 +750,16 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         jQuery("#nationalID-msgBox").hide();
         jQuery("#village-msgBox").hide();
 
-        jQuery("input[name='CRVerificationStatus']").attr('readonly', true);
+        if("${isKDoD}"=="true"){
+            jQuery("#clientVerificationSection").hide();
+            jQuery("#CRVerificationStatus").hide();
+            jQuery('#createPatientBtn').prop('disabled', false);
+            jQuery('#post-registrations').hide();
+            jQuery('#upi-no').hide();
+            jQuery("input[name='CRVerificationStatus']").val("N/A");
+        }
 
+        jQuery("input[name='CRVerificationStatus']").attr('readonly', true);
         jQuery('#show-cr-info-dialog').hide();
         jQuery('#other-identifiers').click(otherIdentifiersChange);
         jQuery('#show-cr-info-dialog').click(showDataFromCR);
