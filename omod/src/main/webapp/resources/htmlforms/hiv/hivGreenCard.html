@@ -1849,7 +1849,7 @@ Green Card follow-up visit form
             var stabilityStatus = getValue('stability.value');
             var tca_reason = getField('returnVisitReason.value').val();
             var refillDate = jq("#refill-date").hide();
-            if (stabilityStatus == "false" || stabilityStatus == 1066){
+            if (stabilityStatus == "true" || stabilityStatus == 1065){
                 jq("#tbl-standard").show();
                 jq("#tbl-fast-track").hide();
                 jq("#refill-label").hide();
@@ -4215,7 +4215,7 @@ Management<br />
                     <table>
                         <tr>
                             <td>
-                                Is the patient stable?  &#160;&#160;&#160;&#160;
+                                Healthcare team has concerns about providing longer follow-up intervals for the patient?  &#160;&#160;&#160;&#160;
                             </td>
                             <td><obs
                                     conceptId="1855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"
