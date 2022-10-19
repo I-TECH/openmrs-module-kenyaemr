@@ -45,7 +45,7 @@ import java.util.Set;
  *
  * Adds "Stable" flag on patient's dashboard
  */
-public class StablePatientsCalculation extends AbstractPatientCalculation {
+public class StablePatientsCalculation extends AbstractPatientCalculation{
 
     protected static final Log log = LogFactory.getLog(StablePatientsCalculation.class);
     static ConceptService conceptService = Context.getConceptService();
@@ -182,7 +182,7 @@ public class StablePatientsCalculation extends AbstractPatientCalculation {
 
         */
 
-      /*This is the stability determination using the stability concept for a client from the previous visit */
+        /*This is the stability determination using the stability concept for a client from the previous visit */
 
 
 
@@ -218,8 +218,8 @@ public class StablePatientsCalculation extends AbstractPatientCalculation {
 
             if (patientInHivProgram && patientActive && reportedStable){
                 stable = true;
-              }
-        ret.put(ptId, new BooleanResult(stable, this));
+            }
+            ret.put(ptId, new BooleanResult(stable, this));
         }
         return ret;
     }
