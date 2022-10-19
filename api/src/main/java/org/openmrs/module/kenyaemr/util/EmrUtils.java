@@ -294,8 +294,8 @@ public class EmrUtils {
 		List<List<Object>> subCounties = Context.getAdministrationService().executeSQL(q.toString(), true);
 		if (!subCounties.isEmpty()) {
 			for (List<Object> res : subCounties) {
-				String subCounty = (String) res.get(0);
-				subCountyList.add(subCounty);
+				String location = (String) res.get(0);
+				subCountyList.add(location);
 			}
 		}
 		Context.removeProxyPrivilege(PrivilegeConstants.SQL_LEVEL_ACCESS);
