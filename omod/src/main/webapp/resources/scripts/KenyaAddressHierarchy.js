@@ -56,7 +56,7 @@ var kenyaAddressHierarchy = {
                     {"facility":"Rusinga Island","id":"Rusinga Island"},
                     {"facility":"Kasgunga","id":"Kasgunga"},
                     {"facility":"Gembe","id":"Gembe"},
-                    {"facility":"Labwe","id":"Labwe"}
+                    {"facility":"Lambwe","id":"Lambwe"}
 
                 ],
             "Suba":
@@ -168,6 +168,7 @@ var kenyaAddressHierarchy = {
                 [
                     {"facility":"Kachieng'","id":"Kachieng'"},
                     {"facility":"North Kadem","id":"North Kadem"},
+                    {"facility":"Kanyasa","id":"Kanyasa"},
                     {"facility":"Macalder/Kanyarwanda","id":"Macalder/Kanyarwanda"},
                     {"facility":"Kaler","id":"Kaler"},
                     {"facility":"Got Kachola","id":"Got Kachola"},
@@ -494,7 +495,7 @@ var kenyaAddressHierarchy = {
 
                     {"facility":"Boikanga","id":"Boikanga"},
                     {"facility":"Bogetenga","id":"Bogetenga"},
-                    {"facility":"Borabu / Chitago","id":"Borabu / Chitago"},
+                    {"facility":"Borabu/Chitago","id":"Borabu/Chitago"},
                     {"facility":"Moticho","id":"Moticho"},
                     {"facility":"Getenga","id":"Getenga"}
                 ],
@@ -656,7 +657,7 @@ var kenyaAddressHierarchy = {
         },
     "Kakamega":
         {
-            "shinyalu":
+            "Shinyalu":
                 [
                     {"facility":"Murhanda","id":"Murhanda"},
                     {"facility":"Isukha West","id":"Isukha West"},
@@ -665,7 +666,7 @@ var kenyaAddressHierarchy = {
                     {"facility":"Isukha North","id":"Isukha North"},
                     {"facility":"Isukha South","id":"Isukha South"}
                 ],
-            "ikolomani":
+            "Ikolomani":
                 [
                     {"facility":"Idakho South","id":"Idakho South"},
                     {"facility":"Idakho East","id":"Idakho East"},
@@ -808,7 +809,7 @@ var kenyaAddressHierarchy = {
         {
             "Kwanza":
                 [
-                    {"facility":"Kopomboi","id":"Kopomboi"},
+                    {"facility":"Kapomboi","id":"Kapomboi"},
                     {"facility":"Kwanza","id":"Kwanza"},
                     {"facility":"Keiyo","id":"Keiyo"},
                     {"facility":"Bidii","id":"Bidii"}
@@ -1061,7 +1062,7 @@ var kenyaAddressHierarchy = {
             "Ndia":
                 [
                     {"facility":"Mukure","id":"Mukure"},
-                    {"facility":"Kiini","id":"Kiini"},
+                    {"facility":"Kiine","id":"Kiine"},
                     {"facility":"Kariti","id":"Kariti"}
                 ],
             "Kirinyaga Central":
@@ -1540,7 +1541,7 @@ var kenyaAddressHierarchy = {
                 [
                     {"facility":"Chala","id":"Chala"},
                     {"facility":"Mahoo","id":"Mahoo"},
-                    {"facility":"Bomeni","id":"Bomeni"},
+                    {"facility":"Bomani","id":"Bomani"},
                     {"facility":"Mboghoni","id":"Mboghoni"},
                     {"facility":"Mata","id":"Mata"}
                 ],
@@ -1955,7 +1956,7 @@ var kenyaAddressHierarchy = {
                 ],
             "Kibish":
                 [
-                    {"facility":"Kaeris","id":"Kaeris"},
+                    {"facility":"Kibish","id":"Kibish"},
                     {"facility":"Lapur","id":"Lapur"}
                 ],
             "Turkana West":
@@ -1974,7 +1975,7 @@ var kenyaAddressHierarchy = {
                     {"facility":"Kangatotha","id":"Kangatotha"},
                     {"facility":"Kalokol","id":"Kalokol"},
                     {"facility":"Lodwar Township","id":"Lodwar Township"},
-                    {"facility":"Kanamkamer","id":"Kanamkamer"}
+                    {"facility":"Kanamkemer","id":"Kanamkemer"}
                 ],
             "Loima":
                 [
@@ -2117,12 +2118,12 @@ var kenyaAddressHierarchy = {
                     {"facility":"Kapyego","id":"Kapyego"},
                     {"facility":"Sambirir","id":"Sambirir"},
                     {"facility":"Endo","id":"Endo"},
-                    {"facility":"Embobut / Embulot","id":"Embobut / Embulot"}
+                    {"facility":"Embobut/Embulot","id":"Embobut/Embulot"}
                 ],
             "Marakwet West":
                 [
                     {"facility":"Lelan","id":"Lelan"},
-                    {"facility":"Sengwer- Kamoi","id":"Sengwer Kamoi"},
+                    {"facility":"Sengwer Kamoi","id":"Sengwer Kamoi"},
                     {"facility":"Moiben Kuserwo","id":"Moiben Kuserwo"},
                     {"facility":"Kapsowar","id":"Kapsowar"},
                     {"facility":"Arror","id":"Arror"}
@@ -2209,11 +2210,11 @@ var kenyaAddressHierarchy = {
             "Baringo North":
                 [
                     {"facility":"Barwessa","id":"Barwessa"},
-                    {"facility":"Kabartonjo","id":"Terik"},
-                    {"facility":"Saimo soy","id":"Saimo soy"},
+                    {"facility":"Kabartonjo","id":"Kabartonjo"},
+                    {"facility":"Saimo soi","id":"Saimo soi"},
                     {"facility":"Bartabwa","id":"Bartabwa"}
                 ],
-            "Baringo Central":
+            "Baringo central":
                 [
                     {"facility":"Kabarnet","id":"Kabarnet"},
                     {"facility":"Sacho","id":"Sacho"},
@@ -2237,9 +2238,9 @@ var kenyaAddressHierarchy = {
             "Koibatek":
                 [
                     {"facility":"Lembus","id":"Lembus"},
-                    {"facility":"Lembus Kwen","id":"Lembus Kwen"},
+                    {"facility":"Lembus kwen","id":"Lembus kwen"},
                     {"facility":"Ravine","id":"Ravine"},
-                    {"facility":"Mumberes/Maji Mazuri","id":"Mumberes/Maji Mazuri"},
+                    {"facility":"Mumberes/Maji mazuri","id":"Mumberes/Maji mazuri"},
                     {"facility":"Lembus/Perkerra","id":"Lembus/Perkerra"},
                     {"facility":"Koibatek","id":"Koibatek"}
                 ]
@@ -2428,6 +2429,12 @@ var kenyaAddressHierarchy = {
                     {"facility":"Marakaru/Tuuti","id":"Marakaru/Tuuti"},
                     {"facility":"West Sangalo","id":"West Sangalo"}
                 ],
+            "Webuye East":
+                [
+                    {"facility":"Mihuu","id":"Mihuu"},
+                    {"facility":"Ndivisi","id":"Ndivisi"},
+                    {"facility":"Maraka","id":"Maraka"}
+                ],
             "Webuye West":
                 [
                     {"facility":"Misikhu","id":"Misikhu"},
@@ -2450,7 +2457,7 @@ var kenyaAddressHierarchy = {
                     {"facility":"Mbakalo","id":"Mbakalo"},
                     {"facility":"Naitiri/Kabuyefwe","id":"Naitiri/Kabuyefwe"},
                     {"facility":"Milima","id":"Milima"},
-                    {"facility":"Ndalu/ Tabani","id":"Ndalu/ Tabani"},
+                    {"facility":"Ndalu/Tabani","id":"Ndalu/Tabani"},
                     {"facility":"Tongaren","id":"Tongaren"},
                     {"facility":"Soysambu/Mitua","id":"Soysambu/Mitua"}
                 ]
