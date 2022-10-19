@@ -7,32 +7,32 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.kenyaemr.reporting.cohort.definition;
+package org.openmrs.module.kenyaemr.reporting.cohort.definition.sgbv;
 
 import org.openmrs.Encounter;
-        import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
-        import org.openmrs.module.reporting.common.Localized;
-        import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
-        import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
-        import org.openmrs.module.reporting.evaluation.caching.Caching;
-        import org.openmrs.module.reporting.query.BaseQuery;
-        import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
+import org.openmrs.module.reporting.cohort.definition.BaseCohortDefinition;
+import org.openmrs.module.reporting.common.Localized;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationProperty;
+import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
+import org.openmrs.module.reporting.evaluation.caching.Caching;
+import org.openmrs.module.reporting.query.BaseQuery;
+import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
 
-        import java.util.Date;
+import java.util.Date;
 
 /**
- * Cervical cancer cohort definition
+ * SGBV Register cohort definition
  */
 @Caching(strategy = ConfigurationPropertyCachingStrategy.class)
-@Localized("reporting.CACXRegisterCohortDefinition")
-public class CACXRegisterCohortDefinition extends BaseQuery<Encounter> implements EncounterQuery {
+@Localized("reporting.SGBVRegisterCohortDefinition")
+public class SGBVRegisterCohortDefinition extends BaseQuery<Encounter> implements EncounterQuery {
     @ConfigurationProperty
     private Date startDate;
 
     @ConfigurationProperty
     private Date endDate;
 
-    public CACXRegisterCohortDefinition() {
+    public SGBVRegisterCohortDefinition() {
     }
 
     public Date getStartDate() {

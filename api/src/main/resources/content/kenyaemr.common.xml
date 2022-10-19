@@ -80,6 +80,7 @@
 				<ref bean="kenyaemr.common.report.mortalityLineList"/>
 				<ref bean="kenyaemr.common.report.moh711"/>
 				<ref bean="kenyaemr.common.report.sgbvlinelist"/>
+				<ref bean="kenyaemr.sgbv.report.sgbvRegister"/>
 			</set>
 		</property>
 	</bean>
@@ -770,5 +771,17 @@
 			</set></property>
 		<property name="template" value="kenyaemr:sgbv/sgbv_linelist.xls" />
 		<property name="repeatingSection" value="sheet:1,row:6,dataset:sgbvLinelistPatients" />
+	</bean>
+</beans>
+	<bean id="kenyaemr.sgbv.report.sgbvRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="0abef9b4-7dcd-4f5a-aa53-25d56b672701" />
+		<property name="name" value="Sexual Gender Based Violence (SGBV) Register" />
+		<property name="description" value="SGBV Register" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:sgbv/sgbv_register.xls" />
+		<property name="repeatingSection" value="sheet:1,row:6,dataset:SGBVRegister" />
 	</bean>
 </beans>
