@@ -14,8 +14,8 @@
 
 	def subCountyListOptions = []
 
-	subCountyList.each { subCounty ->
-		subCountyListOptions.add([ value: subCounty, label: subCounty ])
+	subCountyList.each { location ->
+		subCountyListOptions.add([ value: location, label: location ])
 	}
 
 	if (useMonthBasedPeriodField || useYearBasedPeriodField) {
@@ -111,7 +111,7 @@
 		<% params.each { name, param -> %>
 		<div class="ke-field-label">${ param.label }</div>
 		<div class="ke-field-content">
-			<% def configOptions = (param.name == "subCounty") ? [ options: subCountyListOptions ] : [] %>
+			<% def configOptions = (param.name == "location") ? [ options: subCountyListOptions ] : [] %>
 			${ ui.includeFragment("kenyaui", "widget/field", [
 					formFieldName: "param[" + param.name + "]",
 					class: param.type,

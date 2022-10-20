@@ -21,6 +21,7 @@ import org.openmrs.module.kenyaemr.calculation.library.ovc.ImplementingPartnerSu
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.OVCMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.*;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.ActivePatientsSnapshotCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ovc.PatientsOnOVCCohortDefinition;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -33,10 +34,12 @@ import org.openmrs.module.reporting.data.person.definition.*;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -54,11 +57,19 @@ public class PatientsOnOVCReportBuilder extends AbstractHybridReportBuilder {
         return null;
     }
 
+    @Override
+    protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {
+        return Arrays.asList(
+                new Parameter("endDate", "End Date", Date.class),
+                new Parameter("dateBasedReporting", "", String.class)
+        );
+    }
 
     protected Mapped<CohortDefinition> allPatientsCohort() {
         CohortDefinition cd = new PatientsOnOVCCohortDefinition();
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setName("Patients Currently on OVC");
-        return ReportUtils.map(cd, "");
+        return ReportUtils.map(cd, "endDate=${endDate}");
     }
 
     @Override
@@ -69,21 +80,20 @@ public class PatientsOnOVCReportBuilder extends AbstractHybridReportBuilder {
         DataSetDefinition allPatientsDSD = allVisits;
 
         return Arrays.asList(
-                ReportUtils.map(allPatientsDSD, "")
+                ReportUtils.map(allPatientsDSD, "endDate=${endDate}")
         );
     }
 
     protected PatientDataSetDefinition patientsOnOVCDataSetDefinition(String datasetName) {
 
         PatientDataSetDefinition dsd = new PatientDataSetDefinition(datasetName);
+        dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
         PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, OVCMetadata._PatientIdentifierType.CPIMS_NUMBER);
         DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
         DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), identifierFormatter);
         PatientIdentifierType cccNo = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
         DataDefinition cccNoIdentifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(cccNo.getName(), cccNo), identifierFormatter);
-
-
 
         DataConverter formatter = new ObjectFormatter("{familyName}, {givenName}");
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), formatter);
