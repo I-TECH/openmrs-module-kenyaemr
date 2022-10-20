@@ -476,6 +476,10 @@ public class EditPatientFragmentController {
 			if(isKDoD.equals("true")){
 			require(errors, "kDoDServiceNumber");
 			require(errors, "kDoDCadre");
+			require(errors, "personName.givenName");
+			require(errors, "personName.familyName");
+			require(errors, "gender");
+			require(errors, "birthdate");
 			}
 			else {
 				require(errors, "personName.givenName");

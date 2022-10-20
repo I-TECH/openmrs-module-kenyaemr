@@ -442,11 +442,11 @@
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
 
-            <% crVerifedField.each { %>
-            ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
-            <% } %>
-
-
+           <% if ("${isKDoD}"=="false") { %>
+                <% crVerifedField.each { %>
+                   ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
+                <% } %>
+           <% } %>
         </fieldset>
 
         <div class="text-wrap" align="center" id="post-msgBox"></div>
