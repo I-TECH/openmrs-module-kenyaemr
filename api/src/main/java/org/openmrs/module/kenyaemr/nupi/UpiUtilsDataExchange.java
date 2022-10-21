@@ -7,16 +7,26 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.kenyaemr.fragment.controller.upi;
+package org.openmrs.module.kenyaemr.nupi;
 
 //import com.fasterxml.jackson.databind.JsonNode;
 //import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.GlobalProperty;
+import org.openmrs.Patient;
 import org.openmrs.PatientIdentifierType;
+import org.openmrs.PatientIdentifier;
 import org.openmrs.ui.framework.SimpleObject;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.api.NUPIcccService;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -47,6 +57,10 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashSet;
+
+import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 
 
 public class UpiUtilsDataExchange {
@@ -65,6 +79,8 @@ public class UpiUtilsDataExchange {
 	private String strScope = ""; // scope
 	
 	private String strTokenUrl = ""; // Token URL
+
+	NUPIcccService nUPIcccService = Context.getService(NUPIcccService.class);
 
 	// Trust all certs
 	static {
@@ -287,6 +303,138 @@ public class UpiUtilsDataExchange {
 			}
 		}
 		return(null);
+	}
+
+	/**
+	 * Update patients CCC numbers for NUPI verification
+	 * 
+	 * @return Integer number of records updated
+	 */
+	public Integer updateNUPIcccNumbers(HashSet<Patient> patientsGroup) throws IOException, NoSuchAlgorithmException, KeyManagementException {
+		Integer ret = 0;
+		PatientIdentifierType ccc = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
+        PatientIdentifierType nupi = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER);
+
+		for (Patient patient : patientsGroup) {
+			System.err.println("Got the patient as: " + patient.getPatientId());
+			PatientIdentifier piccc = patient.getPatientIdentifier(ccc);
+			String cccNum = piccc.getIdentifier();
+			System.err.println("Got the ccc as: " + cccNum);
+			PatientIdentifier pinupi = patient.getPatientIdentifier(nupi);
+			String nupiNum = pinupi.getIdentifier();
+			System.err.println("Got the nupi as: " + nupiNum);
+			// Check if patient is already updated
+			String authToken = getToken();
+			GlobalProperty globalPostUrl = Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_POST_END_POINT);
+			String strUpdateCCCUrl = globalPostUrl.getPropertyValue();
+			strUpdateCCCUrl = strUpdateCCCUrl + "/" + nupiNum  + "/" + "update-ccc";
+
+			URL url = new URL(strUpdateCCCUrl);
+
+			HttpsURLConnection con =(HttpsURLConnection) url.openConnection();
+			con.setRequestMethod("PUT");
+
+			con.setRequestProperty("Authorization", "Bearer " + authToken);
+			con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+			con.setRequestProperty("Accept", "application/json");
+			con.setConnectTimeout(10000); // set timeout to 10 seconds
+
+			// Payload
+			SimpleObject payloadObj = new SimpleObject();
+			payloadObj.put("nascopCCCNumber", cccNum);
+			String payload = payloadObj.toJson();
+
+			con.setDoOutput(true);
+			OutputStream os = con.getOutputStream();
+			os.write(payload.getBytes());
+			os.flush();
+			os.close();
+
+			int responseCode = con.getResponseCode();
+			NUPIcccSyncRegister record = new NUPIcccSyncRegister();
+			record.setPatient(patient);
+			record.setDateUpdated(new Date());
+
+			if (responseCode == HttpURLConnection.HTTP_OK) { //success
+				BufferedReader in = null;
+				in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
+	
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				in.close();
+	
+				String stringResponse = response.toString();
+	
+				SimpleObject responseObj = processCCCUpdateResponse(stringResponse);
+				responseObj.put("status", responseCode);
+	
+				record.setCompleted(true);
+				record.setError(responseObj.get("status").toString() + " : " + responseObj.get("message").toString());
+	
+			} else {
+				BufferedReader in = null;
+				// BufferedReader in = new BufferedReader(new InputStreamReader(
+				// 		con.getErrorStream()));
+				in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
+	
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				in.close();
+	
+				String stringResponse = response.toString();
+	
+				SimpleObject responseObj = new SimpleObject();
+				responseObj.put("status", responseCode);
+				responseObj.put("message", stringResponse);
+				
+				record.setCompleted(false);
+				record.setError(responseObj.get("status").toString() + " : " + responseObj.get("message").toString());
+			}
+			// Update the table
+			nUPIcccService.saveOrUpdateRegister(record);
+
+			try {
+				//Delay for 5 seconds
+				Thread.sleep(5000);
+			}
+			catch (Exception ie) {
+				Thread.currentThread().interrupt();
+			}
+			ret++;
+		}
+		
+		return(ret);
+	}
+
+	/**
+	 * Processes CR response for updating CCC number on CR server
+	 * 
+	 * @param stringResponse the upi payload
+	 * @return SimpleObject the processed data
+	*/
+	public static SimpleObject processCCCUpdateResponse(String stringResponse) throws IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode jsonNode = null;
+		String message = "";
+		SimpleObject responseObj = new SimpleObject();
+
+		try {
+			jsonNode = mapper.readTree(stringResponse);
+			if (jsonNode != null) {
+				message = jsonNode.get("message").getTextValue();
+				responseObj.put("message", message);
+			}
+		}
+		catch (Exception e) {
+				e.printStackTrace();
+			}
+     return responseObj;
 	}
 
 }
