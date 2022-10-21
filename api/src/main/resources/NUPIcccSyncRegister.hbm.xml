@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!--
+
+    This Source Code Form is subject to the terms of the Mozilla Public License,
+    v. 2.0. If a copy of the MPL was not distributed with this file, You can
+    obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+    the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+
+    Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+    graphic logo is a trademark of OpenMRS Inc.
+
+-->
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="org.openmrs.module.kenyaemr">
+	<class name="org.openmrs.module.kenyaemr.nupi.NUPIcccSyncRegister"
+		table="kenyaemr_nupi_ccc_sync_register">
+		<id name="id" type="int" column="id" unsaved-value="0">
+			<generator class="native" />
+		</id>
+		<discriminator column="id" insert="false" />
+		<many-to-one name="patient" class="org.openmrs.Patient" column ="patient_id"/>
+		<property name="dateUpdated" type = "java.util.Date" column ="date_updated"/>
+		<property name="error" type = "java.lang.String" column ="error"/>
+		<property name="completed" type = "java.lang.Boolean" column ="completed"/>
+		<many-to-one name="creator" class="org.openmrs.User" not-null="true">
+			<column name="creator"/>
+		</many-to-one>
+		<property name="dateCreated" type="java.util.Date" column="date_created" not-null="true" length="19"/>
+		<many-to-one name="changedBy" class="org.openmrs.User" column="changed_by"/>
+		<property name="dateChanged" type="java.util.Date" column="date_changed" length="19"/>
+		<property name="voided" type="java.lang.Boolean" column="voided" length="1"/>
+		<many-to-one name="voidedBy" class ="org.openmrs.User" column="voided_by"/>
+		<property name="dateVoided" type ="java.util.Date" column ="date_voided" length="19"/>
+		<property name="voidReason" type="java.lang.String" column="voided_reason" length="255"/>
+	</class>
+</hibernate-mapping>

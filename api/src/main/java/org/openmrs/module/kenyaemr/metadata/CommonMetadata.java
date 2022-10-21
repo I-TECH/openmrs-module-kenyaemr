@@ -43,6 +43,8 @@ public class CommonMetadata extends AbstractMetadataBundle {
 	public static final String GP_CLIENT_VERIFICATION_OAUTH2_CLIENT_ID = "kenyaemr.client.registry.oath2.client.id";
 	public static final String GP_CLIENT_VERIFICATION_OAUTH2_CLIENT_SECRET = "kenyaemr.client.registry.oath2.client.secret";
 	public static final String GP_CLIENT_VERIFICATION_OAUTH2_SCOPE = "kenyaemr.client.registry.oath2.scope";
+	public static final String GP_CLIENT_VERIFICATION_QUERY_UPI_END_POINT = "kenyaemr.client.registry.query.upi.api";
+	public static final String GP_CLIENT_VERIFICATION_QUERY_CCC_END_POINT = "kenyaemr.client.registry.query.ccc.api";
 
 	public static final class _EncounterType {
 		public static final String CONSULTATION = "465a92f2-baf8-42e9-9612-53064be868e8";
@@ -206,6 +208,12 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		}
 		if(Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_OAUTH2_SCOPE) == null) {
 			install(globalProperty(GP_CLIENT_VERIFICATION_OAUTH2_SCOPE, "client registry authorization scope", "DHP.Gateway DHP.Partners"));
+		}
+		if(Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_QUERY_UPI_END_POINT) == null) {
+			install(globalProperty(GP_CLIENT_VERIFICATION_QUERY_UPI_END_POINT, "A GET API for getting client information at the client registry using NUPI number", "https://afyakenyaapi.health.go.ke/partners/registry/search/"));
+		}
+		if(Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_QUERY_CCC_END_POINT) == null) {
+			install(globalProperty(GP_CLIENT_VERIFICATION_QUERY_CCC_END_POINT, "A GET API for getting client information at the client registry using CCC number", "https://afyakenyaapi.health.go.ke/partners/registry/search/"));
 		}
 
 		install(patientIdentifierType("Old Identification Number", "Identifier given out prior to OpenMRS",
