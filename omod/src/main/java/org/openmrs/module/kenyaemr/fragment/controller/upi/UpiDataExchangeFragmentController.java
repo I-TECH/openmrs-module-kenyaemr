@@ -35,6 +35,7 @@ import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.openmrs.module.kenyaemr.nupi.UpiUtilsDataExchange;
 
 public class UpiDataExchangeFragmentController {
 

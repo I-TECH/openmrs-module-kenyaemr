@@ -100,12 +100,13 @@
             <legend>Client verification with Client Registry</legend>
             <table>
                 <tr>
-                    <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "country", config: [style: "list", options: countryOptions]])}</td>
-                    <td> <input type="checkbox" name="select-kenya-option" value="Y" id="select-kenya-option" /> Select Kenya </td>
+                    <td style="white-space:nowrap;"> <input type="checkbox" name="select-kenya-option-nupi-verification" value="Y" id="select-kenya-option-nupi-verification" /> Select Kenya </td>
+                    <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "country", name: "nupi-verification-country", id: "nupi-verification-country", config: [style: "list", options: countryOptions]])}</td>
                     <td>
-                        <div id="country-msgBox" class="ke-warning">Country is Required</div>
+                        <div id="nupi-verification-country-msgBox" name="nupi-verification-country-msgBox" class="ke-warning">Country is Required</div>
                     </td>
-                    <td>Identifier Type</td>
+                    <td></td>
+                    <td style="white-space:nowrap;">Identifier Type</td>
                     <td>
                         <select id="idType" name="idtype">
                             <option value="">Select a valid identifier type</option>
@@ -336,7 +337,7 @@
             </tr>
             <tr>
                 
-                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "country", config: [style: "list", options: countryOptions]])}</td>
+                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "country", id: "country-registration", config: [style: "list", options: countryOptions]])}</td>
                 <td> <input type="checkbox" name="select-kenya-option" value="Y" id="select-kenya-option" /> Select Kenya </td>
                 <td>
                     <div id="country-msgBox" class="ke-warning">Country is Required</div>
@@ -689,6 +690,26 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             }
         }
 
+        function validateCountry() {
+            //validate country is selected
+            var className = jQuery('#msgBox').attr("class");
+            jQuery('#msgBox').removeClass(className);
+            console.log("Country Validation");
+            if(jQuery('select[id=nupi-verification-country]').val() !=""){
+                jQuery("#nupi-verification-country-msgBox").hide();
+                //jQuery('#msgBox').addClass('ke-cr-client-not-found');
+                //jQuery('#msgBox').hide();
+                console.log("Country Is Ok");
+                return(true);
+            } else {
+                jQuery("#nupi-verification-country-msgBox").show();
+                //jQuery('#msgBox').addClass('ke-cr-client-not-found');
+                jQuery('#msgBox').text('Country must be selected');
+                console.log("No Country Selected");
+                return(false);
+            }
+        }
+
         // fetch the token asynchronously
         function fetchTokenAsync() {
             let dfrd = jq.Deferred();
@@ -748,6 +769,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         jQuery("#age-msgBox").hide();
         jQuery("#gender-msgBox").hide();
         jQuery("#country-msgBox").hide();
+        jQuery("#nupi-verification-country-msgBox").hide();
         jQuery("#phone-msgBox").hide();
         jQuery("#county-msgBox").hide();
         jQuery("#subCounty-msgBox").hide();
@@ -769,16 +791,21 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         jQuery('#other-identifiers').click(otherIdentifiersChange);
         jQuery('#show-cr-info-dialog').click(showDataFromCR);
         jQuery('#use-full-name').click(useFullName);
-        jQuery('#select-kenya-option').click(selectCountryKenyaOption);
+        jQuery('#select-kenya-option').click(selectCountryKenyaOptionOnRegistration);
+        jQuery('#select-kenya-option-nupi-verification').click(selectCountryKenyaOptionOnNUPIVerification);
 
         // clicking on the validate identifier button
         jQuery('#validate-identifier').click(function(event){
 
+            if(!validateCountry()) {
+                return;
+            }
             // connect to dhp server
             //var authToken = '${clientVerificationApiToken}';
             var idType = jQuery('#idType').val();
             var idValue = jQuery('input[name=idValue]').val();
             var idTypeParam = '';
+            var code = jQuery('#countryCode').val();
 
             if (idType == '' || idValue == '') {
                 jQuery('#show-cr-info-dialog').hide();
@@ -798,8 +825,12 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 idTypeParam = 'birth-certificate';
             }
 
+            var countryCode = countryObject[jQuery('select[id=nupi-verification-country]').val()].countryCode;
+
             var baseVerificationUrl = '${clientVerificationApi}';
-            var getUrl = baseVerificationUrl + idTypeParam + '/' +  idValue;
+            var getUrl = baseVerificationUrl + '/' + countryCode + '/' + idTypeParam + '/' +  idValue;
+
+            console.log("NUPI get URL: " + getUrl);
 
             // show spinner
             display_loading_validate_identifier(true);
@@ -983,10 +1014,11 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             if(jQuery('select[name=education]').val() !="") {
                 educationStatus = educationObject[jQuery('select[name=education]').val()].education;
             }
+            //validate country is selected
             var countryCode;
-            if(jQuery('select[name=country]').val() !=""){
+            if(jQuery('select[id=country-registration]').val() !=""){
                 jQuery("#country-msgBox").hide();
-                countryCode = countryObject[jQuery('select[name=country]').val()].countryCode;
+                countryCode = countryObject[jQuery('select[id=country-registration]').val()].countryCode;
             } else {
                 // Country is required
                 jQuery("#post-msgBox").text("Please enter country to successfully post to CR");
@@ -1302,16 +1334,34 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         }
     }
 
-    //Ckeckbox to select country Kenya
-    var selectCountryKenyaOption = function () {
+    //Ckeckbox to select country Kenya on NUPI verification
+    var selectCountryKenyaOptionOnNUPIVerification = function () {
+        console.log("NUPI country selection");
         var val = jq(this).val();
         if (jq(this).is(':checked')){
-            jQuery('select[name=country]').val(162883);
+            jQuery('select[id=nupi-verification-country]').val(162883);
         }else{
-            jQuery('select[name=country]').val("");
+            jQuery('select[id=nupi-verification-country]').val("");
         }
 
-        jQuery('select[name=country]').on('change', function() {
+        jQuery('select[id=nupi-verification-ountry]').on('change', function() {
+         if(this.value != 162883)  {
+             jq("#select-kenya-option-nupi-verification").prop("checked", false);
+         }
+         });
+    }
+
+    //Ckeckbox to select country Kenya on registration
+    var selectCountryKenyaOptionOnRegistration = function () {
+        console.log("Reg country selection");
+        var val = jq(this).val();
+        if (jq(this).is(':checked')){
+            jQuery('select[id=country-registration]').val(162883);
+        }else{
+            jQuery('select[id=country-registration]').val("");
+        }
+
+        jQuery('select[id=country-registration]').on('change', function() {
          if(this.value != 162883)  {
              jq("#select-kenya-option").prop("checked", false);
          }
@@ -1426,7 +1476,14 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
 
         responseData = "";
 
-        var params = params
+        var params = params;
+        var isOnART = false;
+
+        if(nascopCCCNumber == "") {
+            isOnART = false;
+        } else {
+            isOnART = true;
+        }
 
         var params = {
             "firstName": firstName,
@@ -1442,6 +1499,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             "countyOfBirth": countyCode,
             "isAlive": true,
             "originFacilityKmflCode": defaultMflCode,
+            "isOnART": isOnART,
             "nascopCCCNumber": nascopCCCNumber,
             "residence": {
                 "county": countyCode,
@@ -1452,6 +1510,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 "address": address
             },
             "identifications": [{
+                "CountryCode": countryCode,
                 "identificationType": identificationType,
                 "identificationNumber": identificationValue
             }],

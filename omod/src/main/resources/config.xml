@@ -99,4 +99,9 @@
 		</description>
 	</globalProperty>
 
+	<!--Mapping files-->
+	<mappingFiles>
+		NUPIcccSyncRegister.hbm.xml
+	</mappingFiles>
+
 </module>
