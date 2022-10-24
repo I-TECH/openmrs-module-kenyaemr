@@ -46,8 +46,21 @@ public class PatientsOnMCHReportBuilder extends AbstractHybridReportBuilder {
     public static final String DATE_FORMAT = "dd/MM/yyyy";
 
     @Override
+    protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {
+        return Arrays.asList(
+                new Parameter("startDate", "Start Date", Date.class),
+                new Parameter("endDate", "End Date", Date.class),
+                new Parameter("dateBasedReporting", "", String.class)
+        );
+    }
+
+    @Override
+    protected void addColumns(HybridReportDescriptor report, PatientDataSetDefinition dsd) {
+    }
+
+    @Override
     protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
-        return allPatientsCohort();
+        return null;
     }
 
     protected Mapped<CohortDefinition> allPatientsCohort() {
@@ -55,13 +68,12 @@ public class PatientsOnMCHReportBuilder extends AbstractHybridReportBuilder {
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setName("Patients Currently on MCH");
-        return ReportUtils.map(cd, "");
+        return ReportUtils.map(cd, "startDate=${startDate},endDate=${endDate}");
     }
 
-    @Override
     protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor descriptor, ReportDefinition report) {
 
-        PatientDataSetDefinition MCHPatients = patientsOnMCHDataSetDefinition();
+        PatientDataSetDefinition MCHPatients = patientsOnMCHDataSetDefinition("MCHClients");
         MCHPatients.addRowFilter(allPatientsCohort());
         DataSetDefinition allPatientsDSD =MCHPatients;
 
@@ -69,18 +81,12 @@ public class PatientsOnMCHReportBuilder extends AbstractHybridReportBuilder {
                 ReportUtils.map(allPatientsDSD, "startDate=${startDate},endDate=${endDate}")
         );
     }
-    @Override
-    protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {
-        return Arrays.asList(
-                new Parameter("startDate", "Start Date", Date.class),
-                new Parameter("endDate", "End Date", Date.class),
-                new Parameter("dateBasedReporting", "", String.class)     );
-    }
-    protected PatientDataSetDefinition patientsOnMCHDataSetDefinition() {
+    protected PatientDataSetDefinition patientsOnMCHDataSetDefinition(String datasetName) {
 
-        PatientDataSetDefinition dsd = new PatientDataSetDefinition("MCHClients");
+        PatientDataSetDefinition dsd = new PatientDataSetDefinition(datasetName);
         dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        String defParam = "startDate=${startDate},endDate=${endDate}";
         PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
         DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
         DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), identifierFormatter);
