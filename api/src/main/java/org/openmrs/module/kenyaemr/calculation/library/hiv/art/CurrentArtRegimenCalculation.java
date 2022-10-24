@@ -45,7 +45,7 @@ public class CurrentArtRegimenCalculation extends BaseEmrCalculation {
 					regimenName = o.get("regimenShortDisplay").toString();
 				}
 
-				if (regimenName != null) {
+				if (regimenName != null && o.get("current").equals(true)) {
 					ret.put(ptId, new SimpleResult(regimenName, this, context));
 				} else {
 					ret.put(ptId, null);
