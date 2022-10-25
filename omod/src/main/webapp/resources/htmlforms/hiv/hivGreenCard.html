@@ -4164,6 +4164,8 @@ Management<br />
                                          style="radio"
                                 /></td>
                             </tr>
+                            <!--Adult Questions-->
+                            <includeIf velocityTest="$patient.age &gt; 14">
                             <tr>
                                 <td>Has the Client disclosed HIV status to their sexually active partner?</td>
                                 <td><obs conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -4172,6 +4174,18 @@ Management<br />
                                          style="radio"
                                 /></td>
                             </tr>
+                            </includeIf>
+                            <!--Paed Questions-->
+                            <includeIf velocityTest="$patient.age &lt; 15">
+                                <tr>
+                                    <td>Disclosure status?</td>
+                                    <td><obs conceptId="5616AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerConceptIds="1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162979AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,166982AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabels="No disclosure,Partial disclosure,Full disclosure"
+                                             style="radio"
+                                    /></td>
+                                </tr>
+                            </includeIf>
                             <tr>
                                 <td>Has the client's partner received on-site HIV testing?</td>
                                 <td><obs conceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
