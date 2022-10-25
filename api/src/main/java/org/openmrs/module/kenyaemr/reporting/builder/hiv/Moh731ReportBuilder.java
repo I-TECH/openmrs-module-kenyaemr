@@ -238,14 +238,24 @@ public class Moh731ReportBuilder extends AbstractReportBuilder {
 
         // 3.1 (Enrolled in Care)
         EmrReportingUtils.addRow(cohortDsd, "HV03", "Enrolled in care", ReportUtils.map(moh731GreenCardIndicators.newHivEnrollment(), indParams), standardDisaggregationAgeAndSex, Arrays.asList("001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011"));
+
+        // 3.1 (KPs Enrolled in Care)
+        cohortDsd.addColumn( "HV03-12", "KPs Enrolled in care", ReportUtils.map(moh731GreenCardIndicators.hivEnrolledKPs(), indParams), "");
+
         // 3.2 (Pre-ART)
         EmrReportingUtils.addRow(cohortDsd, "HV03", "Pre-Art", ReportUtils.map(moh731GreenCardIndicators.preArtCohort(), indParams), preARTDisaggregation, Arrays.asList("013", "014", "015"));
 
         // 3.3 (Starting ART)
         EmrReportingUtils.addRow(cohortDsd, "HV03", "Starting ART", ReportUtils.map(moh731GreenCardIndicators.startedOnArt(), indParams), standardDisaggregationAgeAndSex, Arrays.asList("016", "017", "018", "019", "020", "021", "022", "023", "024", "025", "026"));
 
+        // 3.3 (KPs starting ART)
+        cohortDsd.addColumn( "HV03-27", "Starting ART", ReportUtils.map(moh731GreenCardIndicators.kpsStartedOnART(), indParams), "");
+
         // 3.4 (Currently on ART [All])
         EmrReportingUtils.addRow(cohortDsd, "HV03", "Current on ART", ReportUtils.map(moh731GreenCardIndicators.currentlyOnArt(), indParams), standardDisaggregationAgeAndSex, Arrays.asList("028", "029", "030", "031", "032", "033", "034", "035", "036", "037", "038"));
+
+        // 3.4 (KPs Currently on ART)
+        cohortDsd.addColumn( "HV03-039", "KPs Current on ART", ReportUtils.map(moh731GreenCardIndicators.kpsCurrentlyOnArtOnART(), indParams), "");
 
         // 3.5 (Survival and Retention on ART at 12 months)
         cohortDsd.addColumn("HV03-040", "On therapy at 12 months (Total) ", ReportUtils.map(moh731GreenCardIndicators.onTherapyAt12Months(), indParams), "");

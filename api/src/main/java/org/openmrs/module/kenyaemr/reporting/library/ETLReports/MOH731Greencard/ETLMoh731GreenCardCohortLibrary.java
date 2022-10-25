@@ -42,12 +42,11 @@ public class ETLMoh731GreenCardCohortLibrary {
 
     public CohortDefinition hivEnrollment(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select  e.patient_id " +
-                "from kenyaemr_etl.etl_hiv_enrollment e " +
-                "join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id " +
-                "where  (e.entry_point <> 160563 or e.entry_point is null) and transfer_in_date is null " +
-                "and date(e.visit_date) between date(:startDate) and date(:endDate) and (e.patient_type not in (160563, 164931, 159833) or e.patient_type is null ) " +
-                ";";
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_hiv_enrollment e\n" +
+                "         join kenyaemr_etl.etl_patient_demographics p on p.patient_id = e.patient_id\n" +
+                "where date(e.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "  and (e.patient_type = 164144 or (e.patient_type is null and transfer_in_date is null));";
         cd.setName("newHhivEnrollment");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -56,7 +55,36 @@ public class ETLMoh731GreenCardCohortLibrary {
 
         return cd;
     }
+    public CohortDefinition kpsWithHIVFollowupVisit(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "\n" +
+                "select f.patient_id\n" +
+                "from kenyaemr_etl.etl_patient_hiv_followup f\n" +
+                "where date(f.visit_date) <= date(:endDate)\n" +
+                "  having mid(max(concat(f.visit_date,f.population_type)),11) = 164929;";
+        cd.setName("kpsWithHIVFollowupVisit");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("KPS with HIV followup visit");
 
+        return cd;
+    }
+
+    /**
+     * KPs who were newly enrolled to care within the month
+     * @return
+     */
+    public CohortDefinition hivEnrolledKPs() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("enrolledKPs",ReportUtils.map(enrolledKPs(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("kpsWithHIVFollowupVisit",ReportUtils.map(kpsWithHIVFollowupVisit(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("hivEnrollment", ReportUtils.map(hivEnrollment(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(enrolledKPs or kpsWithHIVFollowupVisit) AND hivEnrollment");
+        return cd;
+    }
     /**
      * TODO: Review query. It takes time to execute
      * @return
@@ -133,6 +161,21 @@ public class ETLMoh731GreenCardCohortLibrary {
         return cd;
     }
 
+    /**
+     * KPs started on ART
+     * @return
+     */
+    public CohortDefinition kpsStartedOnART() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("kpsWithHIVFollowupVisit",ReportUtils.map(kpsWithHIVFollowupVisit(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("enrolledKPs",ReportUtils.map(enrolledKPs(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("startedOnART", ReportUtils.map(startedOnART(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(enrolledKPs or kpsWithHIVFollowupVisit) AND startedOnART");
+        return cd;
+    }
+
     public CohortDefinition currentlyOnArt() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery="select t.patient_id\n" +
@@ -177,6 +220,37 @@ public class ETLMoh731GreenCardCohortLibrary {
         return cd;
     }
 
+    /**
+     * Clients enrolled in KP program
+     * @return
+     */
+    public CohortDefinition enrolledKPs() {
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery="select c.client_id from kenyaemr_etl.etl_contact c\n" +
+                "           where date(c.visit_date) <= date(:endDate) and c.implementation_subcounty = :location\n" +
+                "           group by c.client_id having mid(max(concat(date(c.visit_date), c.key_population_type)), 11)\n" +
+                "in ('FSW','MSM','MSW','PWUD','PWID','Transgender','People in prison and other closed settings');";
+        cd.setName("enrolledKPs");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("KP clients");
+        return cd;
+    }
+    /**
+     * KPs currently on ART
+     * @return
+     */
+    public CohortDefinition kpsCurrentlyOnArtOnART() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("kpsWithHIVFollowupVisit",ReportUtils.map(kpsWithHIVFollowupVisit(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("enrolledKPs",ReportUtils.map(enrolledKPs(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("startedOnART", ReportUtils.map(startedOnART(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(enrolledKPs or kpsWithHIVFollowupVisit) AND startedOnART");
+        return cd;
+    }
     public CohortDefinition revisitsArt() {
         String sqlQuery="select  e.patient_id\n" +
                 "from (\n" +
