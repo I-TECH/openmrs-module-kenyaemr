@@ -49,20 +49,15 @@ public class PatientsOnMCHCohortDefinitionEvaluator implements CohortDefinitionE
 
 		Cohort newCohort = new Cohort();
 
-		String qry="select t.patient_id \n" +
-				"from \n" +
-				"(select e.patient_id, d.patient_id as disc_patient \n" +
-				",max(d.visit_date) as date_discontinued, \n" +
-				"max(e.visit_date) as enrollment_date \n" +
-				"from kenyaemr_etl.etl_mch_enrollment e \n" +
-				"join kenyaemr_etl.etl_patient_demographics p \n" +
-				"on p.patient_id=e.patient_id and p.voided=0 \n" +
-				"and p.dead=0 left outer JOIN \n" +
-				"(select patient_id,visit_date \n" +
-				"from kenyaemr_etl.etl_patient_program_discontinuation \n" +
-				"where program_name='MCH' group by patient_id ) d \n" +
-				"on d.patient_id = e.patient_id group by patient_id \n" +
-				"having (disc_patient is null or date(enrollment_date) >= date(date_discontinued) ))t;";
+		String qry="SELECT t.patient_id FROM" +
+				" ( SELECT e.patient_id, d.patient_id AS disc_patient," +
+				" max( d.visit_date ) AS date_discontinued,max( e.visit_date ) AS enrollment_date" +
+				" FROM kenyaemr_etl.etl_mch_enrollment e JOIN kenyaemr_etl.etl_patient_demographics" +
+				" p ON p.patient_id = e.patient_id AND p.voided = 0 AND p.dead = 0 LEFT " +
+				"OUTER JOIN ( SELECT patient_id, visit_date FROM kenyaemr_etl.etl_patient_program_discontinuation" +
+				" WHERE program_name = 'MCH Mother' GROUP BY patient_id ) d ON" +
+				" d.patient_id = e.patient_id GROUP BY patient_id HAVING ( disc_patient IS NULL" +
+				"  and (enrollment_date between date(:startDate) and date(:endDate)) )) t;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
