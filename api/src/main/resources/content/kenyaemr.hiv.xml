@@ -57,6 +57,7 @@
 				<ref bean="kenyaemr.hiv.report.scheduledDrugRefills"/>
 				<ref bean="kenyaemr.hiv.report.scheduledAppointment"/>
 				<ref bean="kenyaemr.hiv.report.covid19vaccination"/>
+				<ref bean="kenyaemr.mchcs.report.pamaReport" />
 			</set>
 		</property>
 		<property name="fragments">
@@ -450,6 +451,18 @@
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 		<property name="template" value="kenyaemr:hiv/patients_scheduled_for_hiv_appointment.xls" />
 		<property name="repeatingSection" value="sheet:1,row:6,dataset:patientsScheduledForAppointment" />
+	</bean>
+	<!-- pama report-->
+	<bean id="kenyaemr.mchcs.report.pamaReport" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="f7a888a7-390c-452d-8277-a4e573bfa4e3" />
+		<property name="name" value="PAMA Report" />
+		<property name="description" value="PAMA Report" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:pmtct/Pama_Report_template.xls" />
+		<property name="repeatingSection" value="sheet:1,row:6,dataset:PamaReport" />
 	</bean>
 
 </beans>
