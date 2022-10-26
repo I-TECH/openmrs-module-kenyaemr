@@ -71,22 +71,24 @@ public class PatientsOnMCHReportBuilder extends AbstractHybridReportBuilder {
         return ReportUtils.map(cd, "startDate=${startDate},endDate=${endDate}");
     }
 
+    @Override
     protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor descriptor, ReportDefinition report) {
 
         PatientDataSetDefinition MCHPatients = patientsOnMCHDataSetDefinition("MCHClients");
         MCHPatients.addRowFilter(allPatientsCohort());
-        DataSetDefinition allPatientsDSD =MCHPatients;
+        DataSetDefinition allPatientsDSD = MCHPatients;
 
         return Arrays.asList(
                 ReportUtils.map(allPatientsDSD, "startDate=${startDate},endDate=${endDate}")
         );
     }
-    protected PatientDataSetDefinition patientsOnMCHDataSetDefinition(String datasetName) {
 
+    protected PatientDataSetDefinition patientsOnMCHDataSetDefinition(String datasetName) {
         PatientDataSetDefinition dsd = new PatientDataSetDefinition(datasetName);
         dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
         String defParam = "startDate=${startDate},endDate=${endDate}";
+
         PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
         DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
         DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), identifierFormatter);
