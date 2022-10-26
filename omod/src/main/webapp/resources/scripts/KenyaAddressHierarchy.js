@@ -37,7 +37,7 @@ var kenyaAddressHierarchy = {
             "Rangwe":
                 [
                     {"facility":"East Gem","id":"East Gem"},
-                    {"facility":"Kagen","id":"Kagen"},
+                    {"facility":"Kagan","id":"Kagan"},
                     {"facility":"Kochia","id":"Kochia"},
                     {"facility":"West Gem","id":"West Gem"}
                 ],
