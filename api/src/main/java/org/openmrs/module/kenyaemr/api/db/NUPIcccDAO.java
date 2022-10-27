@@ -25,6 +25,13 @@ public interface NUPIcccDAO {
 	 * @return
 	 */
 	public NUPIcccSyncRegister saveOrUpdateRegister(NUPIcccSyncRegister record);
+
+	/**
+     * Remove stale records
+     * @param patient
+     * @return
+     */
+    public Integer purgeRecords(Patient patient);
 	
 	/**
 	 * Returns a record for a given id

@@ -100,13 +100,29 @@
             <legend>Client verification with Client Registry</legend>
             <table>
                 <tr>
+                    <td class="ke-field-label">Country *</td>
+                    <td> </td>
+                    <td> </td>
+                    <td> </td>
+                    <td class="ke-field-label" style="white-space:nowrap;">Identifier Type *</td>
+                    <td> </td>
+                    <td> </td>
+                </tr>
+                <tr>
+                    <td>
+                        <select name="nupi-verification-country" id="nupi-verification-country">
+                            <option></option>
+                            <%countryOptions.each { %>
+                                <option value="${it.id}">${ui.format(it)}</option>
+                            <%}%>
+                        </select>
+                    </td>
                     <td style="white-space:nowrap;"> <input type="checkbox" name="select-kenya-option-nupi-verification" value="Y" id="select-kenya-option-nupi-verification" /> Select Kenya </td>
-                    <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "country", name: "nupi-verification-country", id: "nupi-verification-country", config: [style: "list", options: countryOptions]])}</td>
                     <td>
                         <div id="nupi-verification-country-msgBox" name="nupi-verification-country-msgBox" class="ke-warning">Country is Required</div>
                     </td>
                     <td></td>
-                    <td style="white-space:nowrap;">Identifier Type</td>
+                    
                     <td>
                         <select id="idType" name="idtype">
                             <option value="">Select a valid identifier type</option>
@@ -445,13 +461,14 @@
                 </tr>
             </table>
             <% nextOfKinFieldRows.each { %>
-            ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
+                ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
 
            <% if ("${isKDoD}"=="false") { %>
                 <% crVerifedField.each { %>
                    ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
                 <% } %>
+                <input type="hidden" id="CRVerificationMessage" name="CRVerificationMessage">
            <% } %>
         </fieldset>
 
@@ -484,7 +501,7 @@
     <div id="client-registry-info">
 
         <fieldset>
-            <legend>Client name</legend>
+            <legend>Client Details</legend>
             <table>
                 <tr>
                     <td width="250px">Full name</td>
@@ -569,6 +586,21 @@
                 <tr>
                     <td>Phone number</td>
                     <td id="cr-kin-contact"></td>
+                    <td></td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset>
+            <legend>Origin Facility</legend>
+            <table>
+                <tr>
+                    <td width="250px">Facility Code</td>
+                    <td id="cr-facility-code"></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Facility Name</td>
+                    <td id="cr-facility-name"></td>
                     <td></td>
                 </tr>
             </table>
@@ -840,6 +872,8 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
 
                 // Verify that we have a token
                 if (authToken == '') {
+                    console.log("Error getting token");
+                    display_loading_validate_identifier(false);
                     jQuery('#show-cr-info-dialog').hide();
                     var className = jQuery('#msgBox').attr("class");
                     jQuery('#msgBox').removeClass(className);
@@ -909,6 +943,9 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                             jQuery('#cr-national-id').text("");
                             jQuery('#cr-upi').text("");
 
+                            jQuery('#cr-facility-code').text("");
+                            jQuery('#cr-facility-name').text("");
+
                             //
                             jQuery('#cr-full-name').text(data.client.firstName + ' ' + data.client.middleName + ' ' + data.client.lastName);
                             jQuery('#cr-sex').text(data.client.gender);
@@ -940,6 +977,24 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                                         jQuery('#cr-national-id').text(identifierObj.identificationNumber);
                                     }
                                 }
+                            }
+
+                            var facilityCode = data.client.originFacilityKmflCode;
+                            jQuery('#cr-facility-code').text(facilityCode);
+
+                            try {
+                                ui.getFragmentActionAsJson('kenyaemr', 'patient/editPatient', 'getFacilityName', { facilityCode : facilityCode }, function (result) {
+                                    if(result)
+                                    {
+                                        console.log("We got the facility name: " + result);
+
+                                        jQuery('#cr-facility-name').text(result);
+                                    } else {
+                                        console.log("Error Getting Facility Name");
+                                    }
+                                });
+                            } catch (ex) {
+                                console.log("Facility Name JSON Error: " + ex);
                             }
 
                             jQuery('#show-cr-info-dialog').show();
@@ -1539,20 +1594,27 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                         jQuery("input[name='nationalUniquePatientNumber']").val(data.clientNumber);
                         jQuery("#post-msgBox").text("Assigned National UPI : " + data.clientNumber);
                         jQuery("input[name='CRVerificationStatus']").val("Yes").attr('readonly', true);
+                        jQuery("input[name='CRVerificationMessage']").val("");
                         jQuery("#post-msgBox").show();
 
                     } else if(jQuery("input[name='nationalUniquePatientNumber']").val() != "" ) {
                         jQuery("#post-msgBox").text(jQuery("input[name='nationalUniquePatientNumber']").val());
                         jQuery("input[name='CRVerificationStatus']").val("Verified").attr('readonly', true);
+                        jQuery("input[name='CRVerificationMessage']").val("");
                         jQuery("#post-msgBox").show();
                     } else if(jQuery("input[name='nationalUniquePatientNumber']").val() == "" ) {
                         jQuery("input[name='CRVerificationStatus']").val("Pending").attr('readonly', true);
+                        jQuery("input[name='CRVerificationMessage']").val("Unknown Error");
                     }
                 } else {
                     if(jQuery("input[name='nationalUniquePatientNumber']").val() != "" ) {
                         jQuery("input[name='CRVerificationStatus']").val("Verified");
+                        jQuery("input[name='CRVerificationMessage']").val("");
                     } else {
                         jQuery("input[name='CRVerificationStatus']").val("Pending");
+                        let errors = "Code: " + data.status + JSON.stringify(JSON.parse(data.message).errors);
+                        jQuery("input[name='CRVerificationMessage']").val(errors.substring(0, 49).trim());
+                        console.log("Network Error: " + errors + " Code: " + data.status);
                     }
                     jQuery("#post-msgBox").text("Could not verify with Client registry. Please continue with registration : \\n" + JSON.stringify(JSON.parse(data.message).errors));
                     
@@ -1564,9 +1626,11 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                     // Hide spinner
                     display_loading_post_registration(false);
 
-                    console.log(err)
+                    console.log("Network Error: " + JSON.stringify(err));
 
                     jQuery("input[name='CRVerificationStatus']").val("Pending");
+                    let errors = "State: " + JSON.stringify(err.readyState) + " Status: " +  JSON.stringify(err.status) + " Text: " + JSON.stringify(err.statusText);
+                    jQuery("input[name='CRVerificationMessage']").val(errors.substring(0, 49).trim());
                     jQuery("#post-msgBox").text("Could not verify with Client registry. Please continue with registration");
                     jQuery("#post-msgBox").show();
                 }

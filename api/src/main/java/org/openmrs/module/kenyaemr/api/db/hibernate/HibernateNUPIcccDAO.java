@@ -59,6 +59,18 @@ public class HibernateNUPIcccDAO implements NUPIcccDAO {
         return record;
     }
 
+    /**
+     * Remove stale records
+     * @param patient
+     * @return
+     */
+    @Override
+    public Integer purgeRecords(Patient patient) {
+        String hql = "delete from kenyaemr_nupi_ccc_sync_register where patient_id = :patient_id and completed = 0";
+        Integer ret = getSession().createQuery(hql).setString("patient_id", Integer.toString(patient.getPatientId())).executeUpdate();
+        return(ret);
+    }
+
     @Override
     public NUPIcccSyncRegister getPatientRecordById(Integer id) {
         return (NUPIcccSyncRegister) getSession().createCriteria(NUPIcccSyncRegister.class).add(Restrictions.eq("id", id))

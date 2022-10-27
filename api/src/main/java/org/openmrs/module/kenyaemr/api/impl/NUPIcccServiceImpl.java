@@ -46,6 +46,16 @@ public class NUPIcccServiceImpl extends BaseOpenmrsService implements NUPIcccSer
         return nUPIcccDao.saveOrUpdateRegister(record);
     }
 
+    /**
+     * Remove stale records
+     * @param patient
+     * @return
+     */
+    @Override
+    public Integer purgeRecords(Patient patient) {
+        return nUPIcccDao.purgeRecords(patient);
+    }
+
     @Override
     public NUPIcccSyncRegister getPatientRecordById(Integer id) {
         return nUPIcccDao.getPatientRecordById(id);

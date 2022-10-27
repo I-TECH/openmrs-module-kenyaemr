@@ -456,4 +456,20 @@ public class PatientWrapper extends AbstractPatientWrapper {
 		setAsAttribute(CommonMetadata._PersonAttributeType.VERIFICATION_STATUS_WITH_NATIONAL_REGISTRY, value);
 	}
 
+	/**
+	 * Gets the CR verification message
+	 * @return the verification message
+	 */
+	public String getCRVerificationMessage() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.VERIFICATION_MESSAGE_WITH_NATIONAL_REGISTRY);
+	}
+
+	/**
+	 * Sets the CR verification message
+	 * @param value the CR verification message
+	 */
+	public void setCRVerificationMessage(String value) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.VERIFICATION_MESSAGE_WITH_NATIONAL_REGISTRY, value);
+	}
+
 }

@@ -37,6 +37,14 @@ public interface NUPIcccService extends OpenmrsService {
 	NUPIcccSyncRegister saveOrUpdateRegister(NUPIcccSyncRegister record);	
 	
 	/**
+     * Remove stale records
+     * @param patient
+     * @return
+     */
+	@Transactional
+    public Integer purgeRecords(Patient patient);
+	
+	/**
 	 * Returns a NUPIcccSyncRegister for a given id
 	 * 
 	 * @param id

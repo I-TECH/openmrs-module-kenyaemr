@@ -211,18 +211,18 @@
 		</insert>
 	</changeSet>
 
-	<!--Adding scheduled update CCC numbers task-->
+	<!--Adding scheduled sync CCC numbers with CR task-->
 	<changeSet id="${project.parent.artifactId}-20221014-101600" author="pwaweru">
 		<preConditions onFail="MARK_RAN">
 			<sqlCheck expectedResult="0">
 				SELECT COUNT(*) FROM scheduler_task_config
 				WHERE schedulable_class = 'org.openmrs.module.kenyaemr.task.UpdateCCCnumbersTask'
-				And name = 'Update CCC numbers Task'
+				And name = 'Sync CCC numbers with CR Task'
 			</sqlCheck>
 		</preConditions>
-		<comment>Inserting update CCC numbers Task into 'schedule_task_config' table</comment>
+		<comment>Inserting Sync CCC numbers with CR Task into 'schedule_task_config' table</comment>
 		<insert tableName="scheduler_task_config">
-			<column name="name" value="update CCC numbers Task" />
+			<column name="name" value="Sync CCC numbers with CR Task" />
 			<column name="description" value="updates ccc numbers which were not inserted during NUPI registration" />
 			<column name="schedulable_class" value="org.openmrs.module.kenyaemr.task.UpdateCCCnumbersTask" />
 			<column name="start_time_pattern" value="MM/dd/yyyy HH:mm:ss" />
@@ -284,5 +284,30 @@
                                  baseTableName="kenyaemr_nupi_ccc_sync_register" baseColumnNames="patient_id"
                                  referencedTableName="patient" referencedColumnNames="patient_id"/>
     </changeSet>
+
+	<!--Adding scheduled get NUPI for all patients task-->
+	<changeSet id="${project.parent.artifactId}-20221025-085300" author="pwaweru">
+		<preConditions onFail="MARK_RAN">
+			<sqlCheck expectedResult="0">
+				SELECT COUNT(*) FROM scheduler_task_config
+				WHERE schedulable_class = 'org.openmrs.module.kenyaemr.task.GetNUPIforAllTask'
+				And name = 'Get NUPI for all Patients Task'
+			</sqlCheck>
+		</preConditions>
+		<comment>Inserting Get NUPI for all Patients Task into 'schedule_task_config' table</comment>
+		<insert tableName="scheduler_task_config">
+			<column name="name" value="Get NUPI for all Patients Task" />
+			<column name="description" value="Gets NUPI for all Patients" />
+			<column name="schedulable_class" value="org.openmrs.module.kenyaemr.task.GetNUPIforAllTask" />
+			<column name="start_time_pattern" value="MM/dd/yyyy HH:mm:ss" />
+			<column name="start_time" valueDate="2022-10-25T09:59:59" />
+			<column name="repeat_interval" value="7200" />
+			<column name="date_created" valueDate="CURRENT_TIMESTAMP" />
+			<column name="created_by" value="1" />
+			<column name="start_on_startup" value="1" />
+			<column name="started" value="0" />
+			<column name="uuid" value="00faad52-02cb-4df5-b9e4-ab3ee07abe4b" />
+		</insert>
+	</changeSet>
 
 </databaseChangeLog>

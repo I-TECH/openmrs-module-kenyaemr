@@ -22,7 +22,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.api.NUPIcccService;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.nupi.NUPIcccSyncRegister;
 import org.openmrs.module.kenyaemr.nupi.UpiUtilsDataExchange;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.scheduler.tasks.AbstractTask;
@@ -32,7 +31,7 @@ import org.slf4j.LoggerFactory;
 /**
  * A scheduled task that updates ccc numbers on NUPI in case ccc was missed
  */
-public class UpdateCCCnumbersTask extends AbstractTask {
+public class GetNUPIforAllTask extends AbstractTask {
 	
 	private static final Logger log = LoggerFactory.getLogger(AutoCloseActiveVisitsTask.class);
 	NUPIcccService nUPIcccService = Context.getService(NUPIcccService.class);
@@ -42,11 +41,11 @@ public class UpdateCCCnumbersTask extends AbstractTask {
 	 */
 	@Override
 	public void execute() {
-		System.out.println("UPDATE NUPI CCC TASK");
+		System.out.println("GET NUPI FOR ALL PATIENTS TASK");
 		if (!isExecuting) {
 			if (log.isDebugEnabled()) {
-				log.debug("Starting Update NUPI CCC numbers Task...");
-				System.out.println("Starting Update NUPI CCC numbers Task...");
+				log.debug("Starting Get NUPI for all patients Task...");
+				System.out.println("Starting Get NUPI for all patients Task...");
 			}
 
 			PatientService patientService = Context.getPatientService();
@@ -61,34 +60,37 @@ public class UpdateCCCnumbersTask extends AbstractTask {
 			// NUPI
 			PatientIdentifierType nationalUniquePatientIdentifier = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER);
 
-			// CCC
-			PatientIdentifierType cccIdentifier = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
+			// National ID
+			PatientIdentifierType nationalID = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.NATIONAL_ID);
 
-			// loop checking for patients with NUPI and CCC and not already synced
+			// Passport Number
+			PatientIdentifierType passportNumber = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.PASSPORT_NUMBER);
+
+			// Birth Certificate
+			PatientIdentifierType birthCertificateNumber = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.BIRTH_CERTIFICATE_NUMBER);
+
+			// loop checking for patients without NUPI
 			HashSet<Patient> patientsGroup = new HashSet<Patient>();
 			for (Patient patient : allPatients) {
 				if (patient != null) {
 					ProgramWorkflowService pwfservice = Context.getProgramWorkflowService();
 					List<PatientProgram> programs = pwfservice.getPatientPrograms(patient, hivProgram, null, null, null,null, true);
 					if (programs.size() > 0) {
-						if(patient.getDead() == false && patient.getPatientIdentifier(cccIdentifier) != null &&  patient.getPatientIdentifier(nationalUniquePatientIdentifier) != null) {
-							NUPIcccSyncRegister ncsr = nUPIcccService.getLatestPatientRecordByPatient(patient);
-							if((ncsr != null && ncsr.getCompleted() == false) || ncsr == null) {
-								patientsGroup.add(patient);
-							}
+						if(patient.getDead() == false && patient.getPatientIdentifier(nationalUniquePatientIdentifier) == null && (patient.getPatientIdentifier(nationalID) != null || patient.getPatientIdentifier(passportNumber) != null || patient.getPatientIdentifier(birthCertificateNumber) != null)) {
+							patientsGroup.add(patient);
 						}
 					}	
 				}
 			}
-			System.out.println("Patients with CCC and NUPI: " + patientsGroup.size());
+			System.out.println("Patients without NUPI: " + patientsGroup.size());
 
-			// Sync with remote
+			// get NUPI for all
 			UpiUtilsDataExchange upiUtils = new UpiUtilsDataExchange();
 			try {
-				Integer result = upiUtils.updateNUPIcccNumbers(patientsGroup);
-				System.out.println("Finished the NUPI ccc numbers update: " + result);
+				Integer result = upiUtils.getNUPIforAll(patientsGroup);
+				System.out.println("Finished the Get NUPI for all patients update: " + result);
 			} catch(Exception x) {
-				System.err.println("NUPI ccc number update Error: " + x.getMessage());
+				System.err.println("Get NUPI for all patients Error: " + x.getMessage());
 				x.printStackTrace();
 			}
 			

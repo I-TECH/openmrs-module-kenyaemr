@@ -33,21 +33,26 @@ public class UpiVerificationHomePageController {
         List<SimpleObject> pendingVerification = new ArrayList<SimpleObject>();
         List<SimpleObject> verified = new ArrayList<SimpleObject>();
         PersonAttributeType verificationStatusPA = Context.getPersonService().getPersonAttributeTypeByUuid(CommonMetadata._PersonAttributeType.VERIFICATION_STATUS_WITH_NATIONAL_REGISTRY);
+        PersonAttributeType verificationMessagePA = Context.getPersonService().getPersonAttributeTypeByUuid(CommonMetadata._PersonAttributeType.VERIFICATION_MESSAGE_WITH_NATIONAL_REGISTRY);
         List<Patient> allPatients = Context.getPatientService().getAllPatients();
 
         for (Patient patient : allPatients) {
             if (patient.getAttribute(verificationStatusPA) != null) {
+                String networkError = "";
+                if(patient.getAttribute(verificationMessagePA) != null) {
+                    networkError = patient.getAttribute(verificationMessagePA).getValue();
+                }
                 // Has attempted verification
                 if (patient.getAttribute(verificationStatusPA).getValue().equals("Pending")) {
-                    // Has attempted verification but has not received UPI
+                    // Has attempted verification but has not received NUPI
                     SimpleObject patientPendingObject = SimpleObject.create("id", patient.getId(), "uuid", patient.getUuid(), "givenName", patient
-                            .getGivenName(), "middleName", patient.getMiddleName() != null ? patient.getMiddleName() : "", "familyName", patient.getFamilyName(), "birthdate", kenyaUi.formatDate(patient.getBirthdate()), "gender", patient.getGender());
+                            .getGivenName(), "middleName", patient.getMiddleName() != null ? patient.getMiddleName() : "", "familyName", patient.getFamilyName(), "birthdate", kenyaUi.formatDate(patient.getBirthdate()), "gender", patient.getGender(), "error", networkError != null ? networkError : "-");
                     pendingVerification.add(patientPendingObject);
                 }
-                // Has attempted verification and has received UPI
+                // Has attempted verification and has received NUPI
                 if (patient.getAttribute(verificationStatusPA).getValue().equals("Yes") || patient.getAttribute(verificationStatusPA).getValue().equals("Verified")) {
                     SimpleObject patientVerifiedObject = SimpleObject.create("id", patient.getId(), "uuid", patient.getUuid(), "givenName", patient
-                            .getGivenName(), "middleName", patient.getMiddleName() != null ? patient.getMiddleName() : "", "familyName", patient.getFamilyName(), "birthdate", kenyaUi.formatDate(patient.getBirthdate()), "gender", patient.getGender());
+                            .getGivenName(), "middleName", patient.getMiddleName() != null ? patient.getMiddleName() : "", "familyName", patient.getFamilyName(), "birthdate", kenyaUi.formatDate(patient.getBirthdate()), "gender", patient.getGender(), "error", networkError != null ? networkError : "-");
                     verified.add(patientVerifiedObject);
                 }
 

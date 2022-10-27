@@ -182,6 +182,7 @@ tr:nth-child(even) {background-color: #f2f2f2;}
                                             <th class="sampleTypeColumn">Last Name</th>
                                             <th class="dateRequestColumn">Sex</th>
                                             <th class="sampleStatusColumn">DOB</th>
+                                            <th class="sampleStatusColumn">ERROR</th>
                                             <th class="actionColumn">
                                                 Action
                                             </th>
@@ -281,6 +282,7 @@ tr:nth-child(even) {background-color: #f2f2f2;}
             tr.append("<td>" + displayRecords[i].familyName + "</td>");
             tr.append("<td>" + displayRecords[i].gender + "</td>");
             tr.append("<td>" + displayRecords[i].birthdate + "</td>");
+            tr.append("<td>" + displayRecords[i].error + "</td>");
 
             var actionTd = jq('<td/>');
 
