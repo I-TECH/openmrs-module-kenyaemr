@@ -129,6 +129,8 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String PARTNER = "007b765f-6725-4ae9-afee-9966302bace4";
 		public static final String CO_WIFE = "2ac0d501-eadc-4624-b982-563c70035d46";
 		public static final String SNS = "76edc1fe-c5ce-4608-b326-c8ecd1020a73";
+		public static final String CASE_MANAGER = "9065e3c6-b2f5-4f99-9cbf-f67fd9f82ec5";
+		public static final String CARE_GIVER = "3667e52f-8653-40e1-b227-a7278d474020";
 	}
 
 	public static final class _VisitAttributeType {
@@ -293,6 +295,8 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(relationshipType("Partner", "Partner", "Someone I had sex with for fun without commitment to a relationship", _RelationshipType.PARTNER));
 		install(relationshipType("Co-wife", "Co-wife", "Female member spouse in a polygamist household", _RelationshipType.CO_WIFE));
 		install(relationshipType("SNS", "SNS", "Social Network Strategy", _RelationshipType.SNS));
+		install(relationshipType("Case manager", "Case manager", "Case manager", _RelationshipType.CASE_MANAGER));
+		install(relationshipType("Primary caregiver", "Primary caregiver", "Primary caregiver", _RelationshipType.CARE_GIVER));
 
 
 		install(visitAttributeType("Source form", "The form whose submission created the visit",

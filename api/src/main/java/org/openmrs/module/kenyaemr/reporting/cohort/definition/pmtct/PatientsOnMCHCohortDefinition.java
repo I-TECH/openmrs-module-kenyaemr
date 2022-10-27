@@ -23,4 +23,5 @@ import java.util.Date;
 @Caching(strategy = ConfigurationPropertyCachingStrategy.class)
 @Localized("reporting.PatientsOnMCHCohortDefinition")
 public class PatientsOnMCHCohortDefinition extends BaseCohortDefinition {
+
 }

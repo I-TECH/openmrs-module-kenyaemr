@@ -7,10 +7,11 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.hei;
+package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.art;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEIIdDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLDisclosureStatusDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLStabilityDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
@@ -20,13 +21,14 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
- * Evaluates a PersonDataDefinition
+ * Evaluates Disclosure Status Data Definition
  */
-@Handler(supports= HEIIdDataDefinition.class, order=50)
-public class HEIIdDataEvaluator implements PersonDataEvaluator {
+@Handler(supports= ETLDisclosureStatusDataDefinition.class, order=50)
+public class ETLDisclosureStatusDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -34,14 +36,24 @@ public class HEIIdDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select\n" +
-                "  patient_id,\n" +
-                "  concat('`', hei_no) AS hei_no\n" +
-                "from kenyaemr_etl.etl_patient_demographics\n" +
-                "GROUP BY patient_id";
+        String qry="select fup.patient_id,\n" +
+                "        (case fup.pwp_pead_disclosure when 1066 then 'No disclosure' when 162979 then 'Partial disclosure' when 166982 then 'Full disclosure' else '' end) as Disclosure_status\n" +
+                "                from\n" +
+                "                 (select f.patient_id,\n" +
+                "      mid(max(concat(f.visit_date,f.pwp_pead_disclosure)),11) as pwp_pead_disclosure,\n" +
+                "      f.person_present person_present,\n" +
+                "      f.visit_date visit_date\n" +
+                "    from kenyaemr_etl.etl_patient_hiv_followup f\n" +
+                "    where person_present = 978 and f.voided = 0 and date(visit_date) <= date(:endDate)\n" +
+                "    group by f.patient_id ) fup;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
+
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;
