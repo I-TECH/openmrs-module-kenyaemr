@@ -59,7 +59,6 @@ import org.openmrs.PersonAttributeType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
-import org.openmrs.module.kenyaemr.api.NUPIcccService;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
@@ -83,8 +82,6 @@ public class UpiUtilsDataExchange {
 	private String strScope = ""; // scope
 	
 	private String strTokenUrl = ""; // Token URL
-
-	NUPIcccService nUPIcccService = Context.getService(NUPIcccService.class);
 
 	private CountryCodeList countryCodeList = new CountryCodeList();
 
@@ -360,9 +357,6 @@ public class UpiUtilsDataExchange {
 				os.close();
 
 				int responseCode = con.getResponseCode();
-				NUPIcccSyncRegister record = new NUPIcccSyncRegister();
-				record.setPatient(patient);
-				record.setDateUpdated(new Date());
 
 				if (responseCode == HttpURLConnection.HTTP_OK) { //success
 					BufferedReader in = null;
@@ -380,10 +374,15 @@ public class UpiUtilsDataExchange {
 					SimpleObject responseObj = processCCCUpdateResponse(stringResponse);
 					responseObj.put("status", responseCode);
 		
-					record.setCompleted(true);
 					String err = responseObj.get("status").toString() + " : " + responseObj.get("message").toString();
-					int endIndex = (err.length() - 1) > 254 ? 254 : (err.length() - 1);
-					record.setError(err.substring(0, endIndex)); // Error cannot be greater than 255 digits
+					int endIndex = (err.length() - 1) > 49 ? 49 : (err.length() - 1);
+					err = err.substring(0, endIndex); // Error cannot be greater than 50 digits
+					// update the patient CCC sync status
+					PatientWrapper wrapper = new PatientWrapper(patient);
+					wrapper.setCRcccSyncStatus("Done");
+					wrapper.setCRcccSyncMessage("");
+					Context.getPatientService().savePatient(patient);
+					System.out.println("Successfully synced ccc for patient: " + patient.getPatientId());
 		
 				} else {
 					String stringResponse = "";
@@ -407,15 +406,16 @@ public class UpiUtilsDataExchange {
 					responseObj.put("status", responseCode);
 					responseObj.put("message", stringResponse);
 					
-					record.setCompleted(false);
 					String err = responseObj.get("status").toString() + " : " + responseObj.get("message").toString();
-					int endIndex = (err.length() - 1) > 254 ? 254 : (err.length() - 1);
-					record.setError(err.substring(0, endIndex)); // Error cannot be greater than 255 digits
-				}
-				// Update the table
-				nUPIcccService.saveOrUpdateRegister(record);
-				if(record.getCompleted() == true) {
-					nUPIcccService.purgeRecords(patient);
+					int endIndex = (err.length() - 1) > 49 ? 49 : (err.length() - 1);
+					err = err.substring(0, endIndex); // Error cannot be greater than 50 digits
+
+					// update the patient CCC sync status
+					PatientWrapper wrapper = new PatientWrapper(patient);
+					wrapper.setCRcccSyncStatus("Pending");
+					wrapper.setCRcccSyncMessage(err);
+					Context.getPatientService().savePatient(patient);
+					System.out.println("Error: Failed to sync ccc for patient: " + patient.getPatientId());
 				}
 			} catch(Exception ex) {
 				System.err.println("Error updating CCC for client on CR: " + ex.getMessage());

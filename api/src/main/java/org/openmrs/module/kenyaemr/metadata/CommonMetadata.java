@@ -118,6 +118,8 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String KDOD_UNIT = "848f5688-41c6-464c-b078-ea6524a3e971";
 		public static final String VERIFICATION_STATUS_WITH_NATIONAL_REGISTRY = "869f623a-f78e-4ace-9202-0bed481822f5";
 		public static final String VERIFICATION_MESSAGE_WITH_NATIONAL_REGISTRY = "752a0331-5293-4aa5-bf46-4d51aaf2cdc5";
+		public static final String CCC_SYNC_STATUS_WITH_NATIONAL_REGISTRY = "4dfa195f-8420-424d-8275-d60cf115303d";
+		public static final String CCC_SYNC_MESSAGE_WITH_NATIONAL_REGISTRY = "9bc43f7e-ff05-4afb-8dc4-710d245a927c";
 	}
 
 	public static final class _Provider {
@@ -292,6 +294,12 @@ public class CommonMetadata extends AbstractMetadataBundle {
 
 		install(personAttributeType("cr verification message", "Verification message with national registry",
 				String.class, null, false, 4.5, _PersonAttributeType.VERIFICATION_MESSAGE_WITH_NATIONAL_REGISTRY));
+
+		install(personAttributeType("cr ccc sync status", "CCC Sync status with national registry",
+				String.class, null, false, 4.5, _PersonAttributeType.CCC_SYNC_STATUS_WITH_NATIONAL_REGISTRY));
+
+		install(personAttributeType("cr ccc sync message", "CCC Sync message with national registry",
+				String.class, null, false, 4.5, _PersonAttributeType.CCC_SYNC_MESSAGE_WITH_NATIONAL_REGISTRY));
 
 
 		install(relationshipType("Guardian", "Dependant", "One that guards, watches over, or protects", _RelationshipType.GUARDIAN_DEPENDANT));

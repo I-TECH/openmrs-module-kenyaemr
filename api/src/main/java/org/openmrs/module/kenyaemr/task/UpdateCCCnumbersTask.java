@@ -15,14 +15,13 @@ import java.util.List;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.PatientProgram;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.Program;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.api.NUPIcccService;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.nupi.NUPIcccSyncRegister;
 import org.openmrs.module.kenyaemr.nupi.UpiUtilsDataExchange;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.scheduler.tasks.AbstractTask;
@@ -35,7 +34,6 @@ import org.slf4j.LoggerFactory;
 public class UpdateCCCnumbersTask extends AbstractTask {
 	
 	private static final Logger log = LoggerFactory.getLogger(AutoCloseActiveVisitsTask.class);
-	NUPIcccService nUPIcccService = Context.getService(NUPIcccService.class);
 	
 	/**
 	 * @see AbstractTask#execute()
@@ -64,6 +62,9 @@ public class UpdateCCCnumbersTask extends AbstractTask {
 			// CCC
 			PatientIdentifierType cccIdentifier = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
 
+			// ccc sync attribute
+			PersonAttributeType patCCCSync = MetadataUtils.possible(PersonAttributeType.class, CommonMetadata._PersonAttributeType.CCC_SYNC_STATUS_WITH_NATIONAL_REGISTRY);
+
 			// loop checking for patients with NUPI and CCC and not already synced
 			HashSet<Patient> patientsGroup = new HashSet<Patient>();
 			for (Patient patient : allPatients) {
@@ -72,8 +73,7 @@ public class UpdateCCCnumbersTask extends AbstractTask {
 					List<PatientProgram> programs = pwfservice.getPatientPrograms(patient, hivProgram, null, null, null,null, true);
 					if (programs.size() > 0) {
 						if(patient.getDead() == false && patient.getPatientIdentifier(cccIdentifier) != null &&  patient.getPatientIdentifier(nationalUniquePatientIdentifier) != null) {
-							NUPIcccSyncRegister ncsr = nUPIcccService.getLatestPatientRecordByPatient(patient);
-							if((ncsr != null && ncsr.getCompleted() == false) || ncsr == null) {
+							if((patCCCSync != null && (patient.getAttribute(patCCCSync) == null || patient.getAttribute(patCCCSync).getValue().trim().equalsIgnoreCase("") || patient.getAttribute(patCCCSync).getValue().trim().equalsIgnoreCase("Pending")))) {
 								patientsGroup.add(patient);
 							}
 						}

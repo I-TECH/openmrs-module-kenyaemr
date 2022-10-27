@@ -472,4 +472,36 @@ public class PatientWrapper extends AbstractPatientWrapper {
 		setAsAttribute(CommonMetadata._PersonAttributeType.VERIFICATION_MESSAGE_WITH_NATIONAL_REGISTRY, value);
 	}
 
+	/**
+	 * Gets the CR ccc sync status
+	 * @return the ccc sync status
+	 */
+	public String getCRcccSyncStatus() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.CCC_SYNC_STATUS_WITH_NATIONAL_REGISTRY);
+	}
+
+	/**
+	 * Sets the CR ccc sync status
+	 * @param value the CR ccc sync status
+	 */
+	public void setCRcccSyncStatus(String value) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.CCC_SYNC_STATUS_WITH_NATIONAL_REGISTRY, value);
+	}
+
+	/**
+	 * Gets the CR ccc sync message
+	 * @return the ccc sync message
+	 */
+	public String getCRcccSyncMessage() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.CCC_SYNC_MESSAGE_WITH_NATIONAL_REGISTRY);
+	}
+
+	/**
+	 * Sets the CR ccc sync message
+	 * @param value the CR ccc sync message
+	 */
+	public void setCRcccSyncMessage(String value) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.CCC_SYNC_MESSAGE_WITH_NATIONAL_REGISTRY, value);
+	}
+
 }

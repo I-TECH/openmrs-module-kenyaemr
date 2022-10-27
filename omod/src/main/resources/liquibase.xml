@@ -236,55 +236,6 @@
 		</insert>
 	</changeSet>
 
-	<changeSet id="${project.parent.artifactId}-20221015-091900" author="pwaweru">
-		<preConditions onFail="MARK_RAN">
-			<not><tableExists tableName="kenyaemr_nupi_ccc_sync_register"/></not>
-		</preConditions>
-		<comment>
-			Creating the kenyaemr_nupi_ccc_sync_register table
-		</comment>
-		<createTable tableName="kenyaemr_nupi_ccc_sync_register">
-			<column name="id" type="int" autoIncrement="true">
-				<constraints primaryKey="true" nullable="false"/>
-			</column>
-			<column name="error" type="char(255)">
-				<constraints nullable="true" unique="false"></constraints>
-			</column>
-            <column name="patient_id" type="int">
-                <constraints nullable="false"/>
-            </column>
-            <column name="completed" type="boolean">
-                <constraints nullable="false"/>
-            </column>
-            <column name="date_updated" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="creator" type="int">
-                <constraints nullable="false"/>
-            </column>
-            <column name="date_created" type="datetime">
-                <constraints nullable="false"/>
-            </column>
-            <column name="changed_by" type="int"/>
-            <column name="date_changed" type="datetime"/>
-            <column defaultValueBoolean="false" name="voided" type="boolean">
-                <constraints nullable="false"/>
-            </column>
-            <column name="voided_by" type="int"/>
-            <column name="date_voided" type="datetime"/>
-            <column name="voided_reason" type="varchar(255)"/>
-		</createTable>
-        <addForeignKeyConstraint constraintName="nupi_ccc_sync_register_creator"
-                                 baseTableName="kenyaemr_nupi_ccc_sync_register" baseColumnNames="creator"
-                                 referencedTableName="users" referencedColumnNames="user_id"/>
-        <addForeignKeyConstraint constraintName="nupi_ccc_sync_register_changed_by"
-                                 baseTableName="kenyaemr_nupi_ccc_sync_register" baseColumnNames="changed_by"
-                                 referencedTableName="users" referencedColumnNames="user_id"/>
-        <addForeignKeyConstraint constraintName="nupi_ccc_sync_register_patient_pk"
-                                 baseTableName="kenyaemr_nupi_ccc_sync_register" baseColumnNames="patient_id"
-                                 referencedTableName="patient" referencedColumnNames="patient_id"/>
-    </changeSet>
-
 	<!--Adding scheduled get NUPI for all patients task-->
 	<changeSet id="${project.parent.artifactId}-20221025-085300" author="pwaweru">
 		<preConditions onFail="MARK_RAN">

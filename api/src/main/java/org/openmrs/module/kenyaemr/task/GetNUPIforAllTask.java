@@ -19,7 +19,6 @@ import org.openmrs.Program;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.api.NUPIcccService;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.nupi.UpiUtilsDataExchange;
@@ -34,7 +33,6 @@ import org.slf4j.LoggerFactory;
 public class GetNUPIforAllTask extends AbstractTask {
 	
 	private static final Logger log = LoggerFactory.getLogger(AutoCloseActiveVisitsTask.class);
-	NUPIcccService nUPIcccService = Context.getService(NUPIcccService.class);
 	
 	/**
 	 * @see AbstractTask#execute()
