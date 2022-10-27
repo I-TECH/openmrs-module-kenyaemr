@@ -583,7 +583,7 @@ public class UpiUtilsDataExchange {
 						// update the patient with verification error
 						PatientWrapper wrapper = new PatientWrapper(patient);
 						wrapper.setCRVerificationStatus("Pending");
-						wrapper.setCRVerificationMessage("Error: " + responseCode);
+						wrapper.setCRVerificationMessage("NETWORK Error: " + responseCode);
 						Context.getPatientService().savePatient(patient);
 
 						System.out.println("Error getting NUPI for client: " + responseCode + " : " + stringResponse);

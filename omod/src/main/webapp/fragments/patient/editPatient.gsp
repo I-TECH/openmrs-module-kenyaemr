@@ -1612,7 +1612,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                         jQuery("input[name='CRVerificationMessage']").val("");
                     } else {
                         jQuery("input[name='CRVerificationStatus']").val("Pending");
-                        let errors = "Code: " + data.status + JSON.stringify(JSON.parse(data.message).errors);
+                        let errors = "Code: " + data.status + " " + JSON.stringify(JSON.parse(data.message).errors);
                         jQuery("input[name='CRVerificationMessage']").val(errors.substring(0, 49).trim());
                         console.log("Network Error: " + errors + " Code: " + data.status);
                     }
