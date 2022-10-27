@@ -43,6 +43,8 @@ public class CommonMetadata extends AbstractMetadataBundle {
 	public static final String GP_CLIENT_VERIFICATION_OAUTH2_CLIENT_ID = "kenyaemr.client.registry.oath2.client.id";
 	public static final String GP_CLIENT_VERIFICATION_OAUTH2_CLIENT_SECRET = "kenyaemr.client.registry.oath2.client.secret";
 	public static final String GP_CLIENT_VERIFICATION_OAUTH2_SCOPE = "kenyaemr.client.registry.oath2.scope";
+	public static final String GP_CLIENT_VERIFICATION_QUERY_UPI_END_POINT = "kenyaemr.client.registry.query.upi.api";
+	public static final String GP_CLIENT_VERIFICATION_QUERY_CCC_END_POINT = "kenyaemr.client.registry.query.ccc.api";
 
 	public static final class _EncounterType {
 		public static final String CONSULTATION = "465a92f2-baf8-42e9-9612-53064be868e8";
@@ -115,6 +117,9 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String KDOD_RANK = "9f1f8254-20ea-4be4-a14d-19201fe217bf";
 		public static final String KDOD_UNIT = "848f5688-41c6-464c-b078-ea6524a3e971";
 		public static final String VERIFICATION_STATUS_WITH_NATIONAL_REGISTRY = "869f623a-f78e-4ace-9202-0bed481822f5";
+		public static final String VERIFICATION_MESSAGE_WITH_NATIONAL_REGISTRY = "752a0331-5293-4aa5-bf46-4d51aaf2cdc5";
+		public static final String CCC_SYNC_STATUS_WITH_NATIONAL_REGISTRY = "4dfa195f-8420-424d-8275-d60cf115303d";
+		public static final String CCC_SYNC_MESSAGE_WITH_NATIONAL_REGISTRY = "9bc43f7e-ff05-4afb-8dc4-710d245a927c";
 	}
 
 	public static final class _Provider {
@@ -207,6 +212,12 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		if(Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_OAUTH2_SCOPE) == null) {
 			install(globalProperty(GP_CLIENT_VERIFICATION_OAUTH2_SCOPE, "client registry authorization scope", "DHP.Gateway DHP.Partners"));
 		}
+		if(Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_QUERY_UPI_END_POINT) == null) {
+			install(globalProperty(GP_CLIENT_VERIFICATION_QUERY_UPI_END_POINT, "A GET API for getting client information at the client registry using NUPI number", "https://afyakenyaapi.health.go.ke/partners/registry/search/"));
+		}
+		if(Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_QUERY_CCC_END_POINT) == null) {
+			install(globalProperty(GP_CLIENT_VERIFICATION_QUERY_CCC_END_POINT, "A GET API for getting client information at the client registry using CCC number", "https://afyakenyaapi.health.go.ke/partners/registry/search/"));
+		}
 
 		install(patientIdentifierType("Old Identification Number", "Identifier given out prior to OpenMRS",
 				null, null, null,
@@ -280,6 +291,15 @@ public class CommonMetadata extends AbstractMetadataBundle {
 
 		install(personAttributeType("cr verification status", "Verification status with national registry",
 				String.class, null, false, 4.5, _PersonAttributeType.VERIFICATION_STATUS_WITH_NATIONAL_REGISTRY));
+
+		install(personAttributeType("cr verification message", "Verification message with national registry",
+				String.class, null, false, 4.5, _PersonAttributeType.VERIFICATION_MESSAGE_WITH_NATIONAL_REGISTRY));
+
+		install(personAttributeType("cr ccc sync status", "CCC Sync status with national registry",
+				String.class, null, false, 4.5, _PersonAttributeType.CCC_SYNC_STATUS_WITH_NATIONAL_REGISTRY));
+
+		install(personAttributeType("cr ccc sync message", "CCC Sync message with national registry",
+				String.class, null, false, 4.5, _PersonAttributeType.CCC_SYNC_MESSAGE_WITH_NATIONAL_REGISTRY));
 
 
 		install(relationshipType("Guardian", "Dependant", "One that guards, watches over, or protects", _RelationshipType.GUARDIAN_DEPENDANT));
