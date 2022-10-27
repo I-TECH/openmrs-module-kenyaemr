@@ -157,19 +157,21 @@ public class UpiDataExchangeFragmentController {
 			return(responseObj);
 
 		} else {
-			BufferedReader in = null;
-			// BufferedReader in = new BufferedReader(new InputStreamReader(
-			// 		con.getErrorStream()));
-			in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
-			String inputLine;
-			StringBuffer response = new StringBuffer();
+			if (con != null && con.getErrorStream() != null) {
+				BufferedReader in = null;
+				// BufferedReader in = new BufferedReader(new InputStreamReader(
+				// 		con.getErrorStream()));
+				in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
 
-			while ((inputLine = in.readLine()) != null) {
-				response.append(inputLine);
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				in.close();
+
+				stringResponse = response.toString();
 			}
-			in.close();
-
-			stringResponse = response.toString();
 
 			responseObj = new SimpleObject();
 			responseObj.put("status", responseCode);

@@ -45,6 +45,11 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.openmrs.module.kenyaemr.wrapper.Facility;
+import org.openmrs.ui.framework.annotation.SpringBean;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
+import org.openmrs.module.kenyaui.annotation.AppAction;
+import org.openmrs.module.kenyaemr.EmrConstants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,6 +74,20 @@ public class EditPatientFragmentController {
 	final String clientNumberPreferredLabel = (administrationService.getGlobalProperty("client_number_label"));
 	final String clientRegistryClientVerificationApi = (administrationService.getGlobalProperty(CommonMetadata.GP_CLIENT_VERIFICATION_GET_END_POINT));
 	final String clientRegistryApiToken = (administrationService.getGlobalProperty(CommonMetadata.GP_CLIENT_VERIFICATION_API_TOKEN));
+
+	/**
+	 * Gets the facility name given the facility code
+	 * @return
+	 */
+	@AppAction(EmrConstants.APP_REGISTRATION)
+	public String getFacilityName(@RequestParam("facilityCode") String facilityCode, @SpringBean KenyaUiUtils kenyaUi, UiUtils ui) {
+		String ret = "";
+
+		Location facility = Context.getService(KenyaEmrService.class).getLocationByMflCode(facilityCode);
+		ret = facility.getName();
+
+		return(ret);
+	}
 
 
 	/**
@@ -100,8 +119,8 @@ public class EditPatientFragmentController {
 		model.addAttribute("countryConcept", Dictionary.getConcept(Dictionary.COUNTRY));
 
 		//create list of countries
-		 List<Concept> countryList = new ArrayList<Concept>();
-		 for(Concept countryConcept:conceptService.getConcept(165657).getSetMembers()) {
+		List<Concept> countryList = new ArrayList<Concept>();
+		for(Concept countryConcept : conceptService.getConcept(165657).getSetMembers()) {
 			countryList.add(countryConcept);
 		}
 
@@ -333,6 +352,7 @@ public class EditPatientFragmentController {
 		private String alienIdNumber;
 		private String drivingLicenseNumber;
 		private String CRVerificationStatus;
+		private String CRVerificationMessage;
 		private Concept country;
 		private Obs savedCountry;
 
@@ -416,6 +436,7 @@ public class EditPatientFragmentController {
 			guardianLastName = wrapper.getGuardianLastName();
 			chtReferenceNumber = wrapper.getChtReferenceNumber();
 			CRVerificationStatus = wrapper.getCRVerificationStatus();
+			CRVerificationMessage = wrapper.getCRVerificationMessage();
 			if(isKDoD.equals("true")){
 			kDoDServiceNumber = wrapper.getKDoDServiceNumber();
 			kDoDCadre = wrapper.getCadre();
@@ -639,6 +660,12 @@ public class EditPatientFragmentController {
 			wrapper.setGuardianLastName(guardianLastName);
 			wrapper.setChtReferenceNumber(chtReferenceNumber);
 			wrapper.setCRVerificationStatus(CRVerificationStatus);
+			
+			if(nationalUniquePatientNumber.trim().equalsIgnoreCase("")) {
+				wrapper.setCRVerificationMessage(CRVerificationMessage);
+			} else {
+				wrapper.setCRVerificationMessage("");
+			}
 
 			if(isKDoD.equals("true")){
 				wrapper.setKDoDServiceNumber(kDoDServiceNumber, location);
@@ -1216,6 +1243,14 @@ public class EditPatientFragmentController {
 		public void setCRVerificationStatus(String CRVerificationStatus) {
 			this.CRVerificationStatus = CRVerificationStatus;
 		}
+
+		public String getCRVerificationMessage() {
+			return CRVerificationMessage;
+		}
+
+		public void setCRVerificationMessage(String cRVerificationMessage) {
+			CRVerificationMessage = cRVerificationMessage;
+		}	
 
 	}
 

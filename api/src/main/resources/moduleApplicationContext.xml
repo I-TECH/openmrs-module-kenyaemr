@@ -136,7 +136,7 @@
 
 	<bean id="kenyaemr.app.upiVerification" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
 		<constructor-arg value="kenyaemr.upiVerification" />
-		<constructor-arg value="UPI Verification" />
+		<constructor-arg value="NUPI Verification" />
 		<constructor-arg value="kenyaemr/upi/upiVerificationHome.page" />
 		<constructor-arg value="kenyaemr:apps/upi.png" />
 		<constructor-arg value="840" />
@@ -228,43 +228,6 @@
 			</list>
 		</property>
 	</bean>
-
-	<!-- Wraps NUPIcccService methods in DB transactions and OpenMRS interceptors,
-    which set audit info like dateCreated, changedBy, etc.-->
-
-    <!-- Adds NUPIcccService to OpenMRS context so it can be accessed
-    calling Context.getService(NUPIcccService.class) -->
-
-    <bean parent="serviceContext">
-        <property name="moduleService">
-            <list>
-                <value>org.openmrs.module.kenyaemr.api.NUPIcccService</value>
-                <bean
-                        class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-                    <property name="transactionManager">
-                        <ref bean="transactionManager" />
-                    </property>
-                    <property name="target">
-                        <bean class="org.openmrs.module.kenyaemr.api.impl.NUPIcccServiceImpl">
-                            <property name="nUPIcccDao">
-                                <bean class="org.openmrs.module.kenyaemr.api.db.hibernate.HibernateNUPIcccDAO">
-                                    <property name="sessionFactory">
-                                        <ref bean="sessionFactory" />
-                                    </property>
-                                </bean>
-                            </property>
-                        </bean>
-                    </property>
-                    <property name="preInterceptors">
-                        <ref bean="serviceInterceptors" />
-                    </property>
-                    <property name="transactionAttributeSource">
-                        <ref bean="transactionAttributeSource" />
-                    </property>
-                </bean>
-            </list>
-        </property>
-    </bean>
 
 	<!-- External requirements -->
 
