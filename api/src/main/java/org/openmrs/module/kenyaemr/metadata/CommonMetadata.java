@@ -229,7 +229,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 				".{1,15}", "At most 15 characters long", null,
 				LocationBehavior.NOT_USED, false, _PatientIdentifierType.PATIENT_CLINIC_NUMBER));
 		install(patientIdentifierType("National ID", "Kenyan national identity card number",
-				"\\d{5,10}", "Between 5 and 10 consecutive digits", null,
+				"\\d{5,18}", "Between 5 and 18 consecutive digits", null,
 				LocationBehavior.NOT_USED, false, _PatientIdentifierType.NATIONAL_ID));
 		install(patientIdentifierType("National Unique patient identifier", "National Unique patient identifier",
 				".{1,14}", "At most 14 characters long", null,
