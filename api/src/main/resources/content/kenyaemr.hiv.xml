@@ -238,6 +238,7 @@
 				<ref bean="kenyaemr.app.chart" />
 			</set>
 		</property>
+		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.HIVEnrollment" />
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:tb/tbScreening.html" />
 		<property name="order" value="200014" />
