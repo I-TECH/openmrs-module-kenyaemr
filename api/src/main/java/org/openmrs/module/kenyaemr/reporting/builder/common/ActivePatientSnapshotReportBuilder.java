@@ -131,7 +131,8 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         activeInOtzDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
         ActiveInTbDataDefinition activeInTbDataDefinition = new ActiveInTbDataDefinition();
         activeInTbDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
-
+        ETLCaseManagerDataDefinition etlCaseManagerDataDefinition = new ETLCaseManagerDataDefinition();
+        etlCaseManagerDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 
         DataConverter formatter = new ObjectFormatter("{familyName}, {givenName}");
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), formatter);
@@ -174,7 +175,7 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("Next Appointment Date", nextAppointmentDateDataDefinition, "endDate=${endDate}", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Months of Prescription", new ETLMonthsOfPrescriptionDataDefinition(), "");
         dsd.addColumn("Refill Date", new ETLRefillDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
-        dsd.addColumn("Case Manager", new ETLCaseManagerDataDefinition(), "");
+        dsd.addColumn("Case Manager", etlCaseManagerDataDefinition, "endDate=${endDate}", new DateConverter(DATE_FORMAT));
 
         return dsd;
     }
