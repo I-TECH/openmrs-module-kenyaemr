@@ -33,7 +33,7 @@
 				<ref bean="kenyaemr.hiv.form.alcoholAndDrugAbuseScreening" />
 				<ref bean="kenyaemr.hiv.form.enhancedAdherenceScreening" />
 				<!--<ref bean="kenyaemr.hiv.form.clinicalEncounterAddendum" />-->
-				<ref bean="kenyaemr.common.form.tbScreening" />
+<!--				<ref bean="kenyaemr.common.form.tbScreening" />-->
 				<ref bean="kenyaemr.hiv.form.artFastTrackForm"/>
 				<ref bean="kenyaemr.hiv.form.cccDefaulterTracing"/>
 			</set>
@@ -225,22 +225,6 @@
 		<property name="icon" value="kenyaui:forms/moh257.png" />
 		<property name="htmlform" value="kenyaemr:hiv/moh257VisitSummary.html" />
 		<property name="order" value="201030" />
-	</bean>
-
-	<!-- ====================== adding TB Screening forms =================== -->
-
-	<!-- Clinical Encounter - TB Screening -->
-	<bean id="kenyaemr.common.form.tbScreening" class="org.openmrs.module.kenyacore.form.FormDescriptor">
-		<property name="targetUuid" value="59ed8e62-7f1f-40ae-a2e3-eabe350277ce" />
-		<property name="apps">
-			<set>
-				<ref bean="kenyaemr.app.clinician" />
-				<ref bean="kenyaemr.app.chart" />
-			</set>
-		</property>
-		<property name="icon" value="kenyaui:forms/generic.png" />
-		<property name="htmlform" value="kenyaemr:tb/tbScreening.html" />
-		<property name="order" value="200014" />
 	</bean>
 
 	<!-- Clinical Encounter - Gene Xpert Form -->
