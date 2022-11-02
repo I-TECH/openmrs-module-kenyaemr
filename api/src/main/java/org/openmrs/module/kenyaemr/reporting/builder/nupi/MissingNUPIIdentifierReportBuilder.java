@@ -66,17 +66,13 @@ public class MissingNUPIIdentifierReportBuilder extends CalculationReportBuilder
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
 		DataConverter ageFormatter = new ObjectFormatter("{age}");
         DataDefinition ageDef = new ConvertedPersonDataDefinition("age", new AgeDataDefinition(), ageFormatter);
-		DataConverter errorFormatter = new ObjectFormatter("{error}");
-		DataDefinition networkErrorDef = new ConvertedPersonDataDefinition("error", new PersonAttributeDataDefinition(networkError.getName(), networkError), errorFormatter);
-		
+		DataDefinition networkErrorDef = new ConvertedPersonDataDefinition("error", new PersonAttributeDataDefinition(networkError.getName(), networkError));
+
 		dsd.removeColumnDefinition("upn");
 		addStandardColumns(report, dsd);
 		dsd.addColumn("Name", nameDef, "");
 		dsd.addColumn("Age", ageDef, "");
 		dsd.addColumn("Sex", new GenderDataDefinition(), "");
-		dsd.addColumn("CCC", CCCidentifierDef, "");
-		//dsd.addColumn("NUPI", nupiDef, "");
 		dsd.addColumn("ERROR", networkErrorDef, "");
-		// dsd.addColumn("ERROR", new CalculationDataDefinition("ERROR", new LastNUPIVerificationErrorCalculation()), "", new CalculationResultConverter());
 	}
 }

@@ -1558,8 +1558,8 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             "nascopCCCNumber": nascopCCCNumber,
             "residence": {
                 "county": countyCode,
-                "subCounty": subCounty.toLowerCase().replaceAll(" ", '-'),
-                "ward": ward.toLowerCase().replaceAll(" ", '-'),
+                "subCounty": subCounty.toLowerCase().replaceAll(" ", '-').replaceAll("/", '-'),
+                "ward": ward.toLowerCase().replaceAll(" ", '-').replaceAll("/", '-'),
                 "village": village,
                 "landMark": landMark,
                 "address": address
