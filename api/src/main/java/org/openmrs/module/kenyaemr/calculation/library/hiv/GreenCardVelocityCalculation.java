@@ -256,12 +256,13 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
                 }
             }
 
+
             //On ART -- find if client has active ART
             Encounter lastDrugRegimenEditorEncounter = EncounterBasedRegimenUtils.getLastEncounterForCategory(Context.getPatientService().getPatient(ptId), "ARV");   //last DRUG_REGIMEN_EDITOR encounter
             if (lastDrugRegimenEditorEncounter != null) {
                 SimpleObject o = EncounterBasedRegimenUtils.buildRegimenChangeObject(lastDrugRegimenEditorEncounter.getAllObs(), lastDrugRegimenEditorEncounter);
                 regimenName = o.get("regimenShortDisplay").toString();
-                if (regimenName != null && o.get("current").equals(true)) {
+                if (regimenName != null) {
                     patientOnART = true;
                 }
             }
