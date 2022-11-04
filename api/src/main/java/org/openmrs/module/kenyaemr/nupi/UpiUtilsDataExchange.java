@@ -311,7 +311,7 @@ public class UpiUtilsDataExchange {
 	}
 
 	/**
-	 * Update patients CCC numbers for NUPI verification
+	 * Update patients CCC numbers for NUPI on Client Registry
 	 * 
 	 * @return Integer number of records updated
 	 */
@@ -321,15 +321,14 @@ public class UpiUtilsDataExchange {
         PatientIdentifierType nupi = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER);
 
 		for (Patient patient : patientsGroup) {
-			System.err.println("Got the patient as: " + patient.getPatientId());
-			PatientIdentifier piccc = patient.getPatientIdentifier(ccc);
-			String cccNum = piccc.getIdentifier();
-			System.err.println("Got the ccc as: " + cccNum);
-			PatientIdentifier pinupi = patient.getPatientIdentifier(nupi);
-			String nupiNum = pinupi.getIdentifier();
-			System.err.println("Got the nupi as: " + nupiNum);
-			// Check if patient is already updated
+			System.err.println("NUPI CCC Update; Got the patient as: " + patient.getPatientId() + " : " + ret  + "/" + patientsGroup.size());
 			try {
+				PatientIdentifier piccc = patient.getPatientIdentifier(ccc);
+				String cccNum = piccc.getIdentifier();
+				System.err.println("Got the ccc as: " + cccNum);
+				PatientIdentifier pinupi = patient.getPatientIdentifier(nupi);
+				String nupiNum = pinupi.getIdentifier();
+				System.err.println("Got the nupi as: " + nupiNum);
 				String authToken = getToken();
 				GlobalProperty globalPostUrl = Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_POST_END_POINT);
 				String strUpdateCCCUrl = globalPostUrl.getPropertyValue();
@@ -373,13 +372,10 @@ public class UpiUtilsDataExchange {
 		
 					SimpleObject responseObj = processCCCUpdateResponse(stringResponse);
 					responseObj.put("status", responseCode);
-		
-					String err = responseObj.get("status").toString() + " : " + responseObj.get("message").toString();
-					int endIndex = (err.length() - 1) > 49 ? 49 : (err.length() - 1);
-					err = err.substring(0, endIndex); // Error cannot be greater than 50 digits
+
 					// update the patient CCC sync status
 					PatientWrapper wrapper = new PatientWrapper(patient);
-					wrapper.setCRcccSyncStatus("Done");
+					wrapper.setCRcccSyncStatus(getAttributeSubstring("Done"));
 					wrapper.setCRcccSyncMessage("");
 					Context.getPatientService().savePatient(patient);
 					System.out.println("Successfully synced ccc for patient: " + patient.getPatientId());
@@ -407,13 +403,11 @@ public class UpiUtilsDataExchange {
 					responseObj.put("message", stringResponse);
 					
 					String err = responseObj.get("status").toString() + " : " + responseObj.get("message").toString();
-					int endIndex = (err.length() - 1) > 49 ? 49 : (err.length() - 1);
-					err = err.substring(0, endIndex); // Error cannot be greater than 50 digits
 
 					// update the patient CCC sync status
 					PatientWrapper wrapper = new PatientWrapper(patient);
-					wrapper.setCRcccSyncStatus("Pending");
-					wrapper.setCRcccSyncMessage(err);
+					wrapper.setCRcccSyncStatus(getAttributeSubstring("Pending"));
+					wrapper.setCRcccSyncMessage(getAttributeSubstring(err));
 					Context.getPatientService().savePatient(patient);
 					System.out.println("Error: Failed to sync ccc for patient: " + patient.getPatientId());
 				}
@@ -454,9 +448,9 @@ public class UpiUtilsDataExchange {
 			}
 		}
 		catch (Exception e) {
-				e.printStackTrace();
-			}
-     return responseObj;
+			e.printStackTrace();
+		}
+     	return responseObj;
 	}
 
 	/**
@@ -471,102 +465,75 @@ public class UpiUtilsDataExchange {
 		PatientIdentifierType birthCertificateNumber = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.BIRTH_CERTIFICATE_NUMBER);
 
 		for (Patient patient : patientsGroup) {
-			System.err.println("Got the patient as: " + patient.getPatientId());
+			System.err.println("NUPI for All; Got the patient as: " + patient.getPatientId() + " : " + ret  + "/" + patientsGroup.size());
 			String natID = "";
 			Boolean hasNatID = false;
 			String passportNum = "";
 			Boolean hasPassNum = false;
 			String birthCert = "";
 			Boolean hasBirthCert = false;
-			//national id
-			PatientIdentifier piNatId = patient.getPatientIdentifier(nationalID);
-			if(piNatId != null) {
-				natID = piNatId.getIdentifier();
-				hasNatID = true;
-				System.err.println("Got the national id as: " + natID);
-			}
-			//passport number
-			PatientIdentifier piPassNum = patient.getPatientIdentifier(passportNumber);
-			if(piPassNum != null) {
-				passportNum = piPassNum.getIdentifier();
-				hasPassNum = true;
-				System.err.println("Got the passport number as: " + passportNum);
-			}
-			//birth certificate
-			PatientIdentifier piBirthCert = patient.getPatientIdentifier(birthCertificateNumber);
-			if(piBirthCert != null) {
-				birthCert = piBirthCert.getIdentifier();
-				hasBirthCert = true;
-				System.err.println("Got the birth certificate as: " + birthCert);
-			}
-			//country
-			Obs obsCountry = getLatestObs(patient, Dictionary.COUNTRY);
-			String countryCode = "KE";
-			if (obsCountry != null) {
-				Concept conCountry = obsCountry.getValueCoded();
-				countryCode = getCountryCode(conCountry);
-			}
-			// Check if patient is already on CR and update patient NUPI if found existing
-			if(!checkOnCRIfPatientExistsAndUpdate(patient, hasNatID, natID, hasPassNum, passportNum, hasBirthCert, birthCert, countryCode)) {
-				try {
-					String authToken = getToken();
-					GlobalProperty globalPostUrl = Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_POST_END_POINT);
-					String strPostUrl = globalPostUrl.getPropertyValue();
-					Location location = Context.getService(KenyaEmrService.class).getDefaultLocation();
+			try {
+				PatientWrapper wrapper = new PatientWrapper(patient);
+				//national id
+				PatientIdentifier piNatId = patient.getPatientIdentifier(nationalID);
+				if(piNatId != null) {
+					natID = piNatId.getIdentifier();
+					hasNatID = true;
+					System.err.println("Got the national id as: " + natID);
+				}
+				//passport number
+				PatientIdentifier piPassNum = patient.getPatientIdentifier(passportNumber);
+				if(piPassNum != null) {
+					passportNum = piPassNum.getIdentifier();
+					hasPassNum = true;
+					System.err.println("Got the passport number as: " + passportNum);
+				}
+				//birth certificate
+				PatientIdentifier piBirthCert = patient.getPatientIdentifier(birthCertificateNumber);
+				if(piBirthCert != null) {
+					birthCert = piBirthCert.getIdentifier();
+					hasBirthCert = true;
+					System.err.println("Got the birth certificate as: " + birthCert);
+				}
+				//country
+				Obs obsCountry = getLatestObs(patient, Dictionary.COUNTRY);
+				String countryCode = "KE";
+				if (obsCountry != null) {
+					Concept conCountry = obsCountry.getValueCoded();
+					countryCode = getCountryCode(conCountry);
+				}
+				// Check if patient is already on CR and update patient NUPI if found existing
+				if(!checkOnCRIfPatientExistsAndUpdate(patient, hasNatID, natID, hasPassNum, passportNum, hasBirthCert, birthCert, countryCode)) {
+					try {
+						String authToken = getToken();
+						GlobalProperty globalPostUrl = Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_POST_END_POINT);
+						String strPostUrl = globalPostUrl.getPropertyValue();
+						Location location = Context.getService(KenyaEmrService.class).getDefaultLocation();
 
-					System.out.println("Using NUPI POST URL: " + strPostUrl);
-					URL url = new URL(strPostUrl);
+						System.out.println("Using NUPI POST URL: " + strPostUrl);
+						URL url = new URL(strPostUrl);
 
-					HttpsURLConnection con =(HttpsURLConnection) url.openConnection();
-					con.setRequestMethod("POST");
+						HttpsURLConnection con =(HttpsURLConnection) url.openConnection();
+						con.setRequestMethod("POST");
 
-					con.setRequestProperty("Authorization", "Bearer " + authToken);
-					con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-					con.setRequestProperty("Accept", "application/json");
-					con.setConnectTimeout(10000); // set timeout to 10 seconds
+						con.setRequestProperty("Authorization", "Bearer " + authToken);
+						con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+						con.setRequestProperty("Accept", "application/json");
+						con.setConnectTimeout(10000); // set timeout to 10 seconds
 
-					String payload = generateNUPIpostPayload(patient, hasNatID, natID, hasPassNum, passportNum, hasBirthCert, birthCert, countryCode);
+						String payload = generateNUPIpostPayload(patient, hasNatID, natID, hasPassNum, passportNum, hasBirthCert, birthCert, countryCode);
 
-					con.setDoOutput(true);
-					OutputStream os = con.getOutputStream();
-					os.write(payload.getBytes());
-					os.flush();
-					os.close();
+						con.setDoOutput(true);
+						OutputStream os = con.getOutputStream();
+						os.write(payload.getBytes());
+						os.flush();
+						os.close();
 
-					int responseCode = con.getResponseCode();
+						int responseCode = con.getResponseCode();
 
-					if (responseCode == HttpURLConnection.HTTP_OK) { //success
-						BufferedReader in = null;
-						in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-						String inputLine;
-						StringBuffer response = new StringBuffer();
-			
-						while ((inputLine = in.readLine()) != null) {
-							response.append(inputLine);
-						}
-						in.close();
-			
-						String stringResponse = response.toString();
-						System.out.println("Got the Response as: " + stringResponse);
-			
-						SimpleObject responseObj = processNUPIpostResponse(stringResponse);
-						String NUPI = (String) responseObj.get("clientNumber");
-						System.out.println("Got the NUPI as: " + NUPI);
-						// update the patient NUPI
-						PatientWrapper wrapper = new PatientWrapper(patient);
-						wrapper.setNationalUniquePatientNumber(NUPI, location);
-						wrapper.setCRVerificationStatus("Verified");
-						wrapper.setCRVerificationMessage("");
-						Context.getPatientService().savePatient(patient);
-						System.out.println("Successfully updated patient NUPI: " + patient.getPatientId());
-			
-					} else {
-						String stringResponse = "";
-						if(con != null && con.getErrorStream() != null) {
+						if (responseCode == HttpURLConnection.HTTP_OK) { //success
 							BufferedReader in = null;
-							// BufferedReader in = new BufferedReader(new InputStreamReader(
-							// 		con.getErrorStream()));
-							in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+							in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 							String inputLine;
 							StringBuffer response = new StringBuffer();
 				
@@ -575,24 +542,68 @@ public class UpiUtilsDataExchange {
 							}
 							in.close();
 				
-							stringResponse = response.toString();
+							String stringResponse = response.toString();
+							System.out.println("Got the Response as: " + stringResponse);
+				
+							SimpleObject responseObj = processNUPIpostResponse(stringResponse);
+							String NUPI = (String) responseObj.get("clientNumber");
+							System.out.println("Got the NUPI as: " + NUPI);
+							// update the patient NUPI
+							wrapper.setNationalUniquePatientNumber(NUPI, location);
+							wrapper.setCRVerificationStatus(getAttributeSubstring("Verified"));
+							wrapper.setCRVerificationMessage("");
+							Context.getPatientService().savePatient(patient);
+							System.out.println("Successfully updated patient NUPI: " + patient.getPatientId());
+				
 						} else {
-							System.out.println("Could not get error stream");
+							String stringResponse = "";
+							if(con != null && con.getErrorStream() != null) {
+								BufferedReader in = null;
+								// BufferedReader in = new BufferedReader(new InputStreamReader(
+								// 		con.getErrorStream()));
+								in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+								String inputLine;
+								StringBuffer response = new StringBuffer();
+					
+								while ((inputLine = in.readLine()) != null) {
+									response.append(inputLine);
+								}
+								in.close();
+					
+								stringResponse = response.toString();
+							} else {
+								System.out.println("Could not get error stream");
+							}
+
+							// update the patient with verification error
+							wrapper.setCRVerificationStatus(getAttributeSubstring("Pending"));
+							if(responseCode == HttpURLConnection.HTTP_BAD_REQUEST) {
+								wrapper.setCRVerificationMessage(getAttributeSubstring("Missing Mandatory Fields: " + responseCode));
+							} else {
+								wrapper.setCRVerificationMessage(getAttributeSubstring("NETWORK Error: " + responseCode));
+							}
+							Context.getPatientService().savePatient(patient);
+
+							System.out.println("Error getting NUPI for client: " + responseCode + " : " + stringResponse);
 						}
-
-						// update the patient with verification error
-						PatientWrapper wrapper = new PatientWrapper(patient);
-						wrapper.setCRVerificationStatus("Pending");
-						wrapper.setCRVerificationMessage("NETWORK Error: " + responseCode);
-						Context.getPatientService().savePatient(patient);
-
-						System.out.println("Error getting NUPI for client: " + responseCode + " : " + stringResponse);
+					} catch(Exception ex) {
+						try {
+							wrapper.setCRVerificationStatus(getAttributeSubstring("Pending"));
+							if(ex.getMessage() == null) {
+								wrapper.setCRVerificationMessage(getAttributeSubstring("Missing Mandatory Fields"));
+							} else {
+								wrapper.setCRVerificationMessage(getAttributeSubstring("Error : " + ex.getMessage()));
+							}
+							Context.getPatientService().savePatient(patient);
+						} catch(Exception e) {}
+						System.err.println("Error getting NUPI for client: " + ex.getMessage());
+						ex.printStackTrace();
 					}
-				} catch(Exception ex) {
-					System.err.println("Error getting NUPI for client: " + ex.getMessage());
-					ex.printStackTrace();
 				}
-			}
+			} catch(Exception ex) {
+				System.err.println("General Error getting NUPI for client: " + ex.getMessage());
+				ex.printStackTrace();
+			}	
 
 			try {
 				//Delay for 5 seconds
@@ -617,6 +628,7 @@ public class UpiUtilsDataExchange {
 		GlobalProperty globalGetUrl = Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_GET_END_POINT);
 		String strGetUrl = globalGetUrl.getPropertyValue();
 		Location location = Context.getService(KenyaEmrService.class).getDefaultLocation();
+		PatientWrapper wrapper = new PatientWrapper(patient);
 		// If patient has a national ID
 		if(hasNatID == true) {
 			try {
@@ -654,22 +666,32 @@ public class UpiUtilsDataExchange {
 						String NUPI = (String) responseObj.get("clientNumber");
 						System.out.println("Got the NUPI as: " + NUPI);
 						// update the patient NUPI
-						PatientWrapper wrapper = new PatientWrapper(patient);
 						wrapper.setNationalUniquePatientNumber(NUPI, location);
-						wrapper.setCRVerificationStatus("Verified");
+						wrapper.setCRVerificationStatus(getAttributeSubstring("Verified"));
 						wrapper.setCRVerificationMessage("");
 						Context.getPatientService().savePatient(patient);
 						System.out.println("Successfully updated patient NUPI: " + patient.getPatientId());
 						// return true to end processing for this client
 						return(true);
 					} else {
+						wrapper.setCRVerificationStatus(getAttributeSubstring("Pending"));
+						wrapper.setCRVerificationMessage(getAttributeSubstring("Client does not exist on CR"));
+						Context.getPatientService().savePatient(patient);
 						System.out.println("Client does not exist on CR");
 					}
 		
 				} else {
+					wrapper.setCRVerificationStatus(getAttributeSubstring("Pending"));
+					wrapper.setCRVerificationMessage(getAttributeSubstring("Error getting NUPI for client: " + responseCode));
+					Context.getPatientService().savePatient(patient);
 					System.out.println("Error getting NUPI for client: " + responseCode);
 				}
 			} catch(Exception ex) {
+				try {
+					wrapper.setCRVerificationStatus(getAttributeSubstring("Pending"));
+					wrapper.setCRVerificationMessage(getAttributeSubstring("Error : " + ex.getMessage()));
+					Context.getPatientService().savePatient(patient);
+				} catch(Exception e) {}
 				System.err.println("Error getting NUPI for client: " + ex.getMessage());
 				ex.printStackTrace();
 			}
@@ -711,22 +733,32 @@ public class UpiUtilsDataExchange {
 						String NUPI = (String) responseObj.get("clientNumber");
 						System.out.println("Got the NUPI as: " + NUPI);
 						// update the patient NUPI
-						PatientWrapper wrapper = new PatientWrapper(patient);
 						wrapper.setNationalUniquePatientNumber(NUPI, location);
-						wrapper.setCRVerificationStatus("Verified");
+						wrapper.setCRVerificationStatus(getAttributeSubstring("Verified"));
 						wrapper.setCRVerificationMessage("");
 						Context.getPatientService().savePatient(patient);
 						System.out.println("Successfully updated patient NUPI: " + patient.getPatientId());
 						// return true to end processing for this client
 						return(true);
 					} else {
+						wrapper.setCRVerificationStatus(getAttributeSubstring("Pending"));
+						wrapper.setCRVerificationMessage(getAttributeSubstring("Client does not exist on CR"));
+						Context.getPatientService().savePatient(patient);
 						System.out.println("Client does not exist on CR");
 					}
 		
 				} else {
+					wrapper.setCRVerificationStatus(getAttributeSubstring("Pending"));
+					wrapper.setCRVerificationMessage(getAttributeSubstring("Error getting NUPI for client: " + responseCode));
+					Context.getPatientService().savePatient(patient);
 					System.out.println("Error getting NUPI for client: " + responseCode);
 				}
 			} catch(Exception ex) {
+				try {
+					wrapper.setCRVerificationStatus(getAttributeSubstring("Pending"));
+					wrapper.setCRVerificationMessage(getAttributeSubstring("Error : " + ex.getMessage()));
+					Context.getPatientService().savePatient(patient);
+				} catch(Exception e) {}
 				System.err.println("Error getting NUPI for client: " + ex.getMessage());
 				ex.printStackTrace();
 			}
@@ -768,22 +800,32 @@ public class UpiUtilsDataExchange {
 						String NUPI = (String) responseObj.get("clientNumber");
 						System.out.println("Got the NUPI as: " + NUPI);
 						// update the patient NUPI
-						PatientWrapper wrapper = new PatientWrapper(patient);
 						wrapper.setNationalUniquePatientNumber(NUPI, location);
-						wrapper.setCRVerificationStatus("Verified");
+						wrapper.setCRVerificationStatus(getAttributeSubstring("Verified"));
 						wrapper.setCRVerificationMessage("");
 						Context.getPatientService().savePatient(patient);
 						System.out.println("Successfully updated patient NUPI: " + patient.getPatientId());
 						// return true to end processing for this client
 						return(true);
 					} else {
+						wrapper.setCRVerificationStatus(getAttributeSubstring("Pending"));
+						wrapper.setCRVerificationMessage(getAttributeSubstring("Client does not exist on CR"));
+						Context.getPatientService().savePatient(patient);
 						System.out.println("Client does not exist on CR");
 					}
 		
 				} else {
+					wrapper.setCRVerificationStatus(getAttributeSubstring("Pending"));
+					wrapper.setCRVerificationMessage(getAttributeSubstring("Error getting NUPI for client: " + responseCode));
+					Context.getPatientService().savePatient(patient);
 					System.out.println("Error getting NUPI for client: " + responseCode);
 				}
 			} catch(Exception ex) {
+				try {
+					wrapper.setCRVerificationStatus(getAttributeSubstring("Pending"));
+					wrapper.setCRVerificationMessage(getAttributeSubstring("Error : " + ex.getMessage()));
+					Context.getPatientService().savePatient(patient);
+				} catch(Exception e) {}
 				System.err.println("Error getting NUPI for client: " + ex.getMessage());
 				ex.printStackTrace();
 			}
@@ -924,6 +966,31 @@ public class UpiUtilsDataExchange {
 	}
 
 	/**
+	 * Mark the patients with missing identifiers with error descriptions
+	 * 
+	 * @return Integer number of records updated
+	 */
+	public Integer markPatientsWithoutIdentifiers(HashSet<Patient> missingIdentifiersGroup) {
+		Integer ret = 0;
+
+		for (Patient patient : missingIdentifiersGroup) {
+			System.err.println("Missing Identifiers; Got the patient as: " + patient.getPatientId() + " : " + ret  + "/" + missingIdentifiersGroup.size());
+			try {
+				PatientWrapper wrapper = new PatientWrapper(patient);
+				wrapper.setCRVerificationStatus(getAttributeSubstring("Pending"));
+				wrapper.setCRVerificationMessage(getAttributeSubstring("Missing identifiers"));
+				Context.getPatientService().savePatient(patient);
+			} catch(Exception ex) {
+				System.err.println("Error marking patient as having missing identifiers: " + ex.getMessage());
+				ex.printStackTrace();
+			}
+			ret++;
+		}
+		
+		return(ret);
+	}
+
+	/**
 	 * Get the latest OBS
 	 * @param patient
 	 * @param conceptIdentifier
@@ -937,6 +1004,20 @@ public class UpiUtilsDataExchange {
 			return obs.get(0);
 		}
 		return null;
+	}
+
+	/**
+	 * This gets a substring of max 50 chars for PersonAttribute which is a limitation in the DB
+	 * @param input
+	 * @return
+	 */
+	public String getAttributeSubstring(String input) {
+		String output = "";
+		if(input != null) {
+			int endIndex = (input.length()) > 50 ? 50 : (input.length());
+			output = input.substring(0, endIndex);
+		}
+		return(output);
 	}
 
 	/**
@@ -1066,14 +1147,15 @@ public class UpiUtilsDataExchange {
 			if (jsonNode != null) {
 				clientExists = jsonNode.get("clientExists") == null ? false : jsonNode.get("clientExists").getBooleanValue();
 				responseObj.put("clientExists", clientExists);
-				clientNumber = jsonNode.get("client.clientNumber") == null ? "" : jsonNode.get("client.clientNumber").getTextValue();
+				JsonNode client = jsonNode.get("client");
+				clientNumber = client.get("clientNumber") == null ? "" : client.get("clientNumber").getTextValue();
 				responseObj.put("clientNumber", clientNumber);
 			}
 		}
 		catch (Exception e) {
-				e.printStackTrace();
-			}
-     return responseObj;
+			e.printStackTrace();
+		}
+     	return responseObj;
 	}
 
 	/**
