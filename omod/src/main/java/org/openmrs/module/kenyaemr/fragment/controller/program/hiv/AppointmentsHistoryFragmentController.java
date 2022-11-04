@@ -57,7 +57,7 @@ public class AppointmentsHistoryFragmentController {
 				Encounter enc = hivClinicalEncounters.get(i);
 				SimpleObject o = getEncDetails(enc.getObs(), enc, hivClinicalEncounters);
 				encDetails.add(o);
-				if (i == 9) {
+				if (i == 2) {
 					break;
 				}
 			}
