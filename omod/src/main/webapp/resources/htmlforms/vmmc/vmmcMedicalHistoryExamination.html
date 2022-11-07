@@ -198,8 +198,9 @@
 
             if(PATIENT_IS_REPORTED_STATUS == 664) {
                 jq('#hiv-status:text').val("Negative");
-            }else if(PATIENT_IS_REPORTED_STATUS == 703) {
+            }else if(PATIENT_IS_REPORTED_STATUS == 703 &amp;&amp; !PATIENT_IS_ENROLLED_HIV) {
                     jq('#hiv-status:text').val("Positive");
+                    jq('#tbl-reported-positive-details').show();
             }else if(PATIENT_IS_REPORTED_STATUS == 1067) {
                 jq('#hiv-status:text').val("Unknown");
             }else if(PATIENT_IS_REPORTED_STATUS == "" &amp;&amp; !PATIENT_IS_ENROLLED_HIV){

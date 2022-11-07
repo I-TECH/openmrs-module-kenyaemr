@@ -19,6 +19,7 @@ import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.reporting.data.person.definition.PersonIdDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.VMMCRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.SubCountyAddressCalculation;
@@ -132,12 +133,12 @@ public class VMMCRegisterReportBuilder extends AbstractHybridReportBuilder {
         DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(nationalId.getName(), nationalId), identifierFormatter);
 
         PersonAttributeType phoneNumber = MetadataUtils.existing(PersonAttributeType.class, CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT);
-
+        dsd.addColumn("id", new PersonIdDataDefinition(), "");
+        dsd.addColumn("Name", nameDef, "");
         dsd.addColumn("Date of circumcision", new VMMCCircumcisionDateDataDefinition(), "");
         dsd.addColumn("Theatre Register Number", new VMMCTheatreRegisterNumDataDefinition(), "");
         dsd.addColumn("ID Number", identifierDef, "");
         dsd.addColumn("Referred By", new VMMCReferredByDataDefinition(), "");
-        dsd.addColumn("Name", nameDef, "");
         dsd.addColumn("Age in years", new AgeDataDefinition(), "");
         dsd.addColumn("Sex", new GenderDataDefinition(), "");
         dsd.addColumn("Sub-County", new CalculationDataDefinition("Sub-County", new SubCountyAddressCalculation()), "", null);
