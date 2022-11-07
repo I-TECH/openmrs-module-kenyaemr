@@ -568,7 +568,7 @@ public class HcaCohortLibrary {
         String sqlQuery = "select hf.patient_id from kenyaemr_etl.etl_hei_follow_up_visit hf\n" +
                 "         inner join kenyaemr_etl.etl_patient_demographics pd on hf.patient_id = pd.patient_id\n" +
                 "    where TIMESTAMPDIFF(MONTH,pd.DOB,hf.dna_pcr_sample_date) = 12\n" +
-                "    and hf.dna_pcr_result is not null and dna_pcr_contextual_status in (162081)\n" +
+                "    and hf.dna_pcr_result is not null\n" +
                 "    group by hf.patient_id;";
 
         cd.setName("heiEligibleRepeatPCRTwelveMonths");
