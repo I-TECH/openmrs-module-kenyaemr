@@ -262,7 +262,7 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             if (lastDrugRegimenEditorEncounter != null) {
                 SimpleObject o = EncounterBasedRegimenUtils.buildRegimenChangeObject(lastDrugRegimenEditorEncounter.getAllObs(), lastDrugRegimenEditorEncounter);
                 regimenName = o.get("regimenShortDisplay").toString();
-                if (regimenName != null) {
+                if (regimenName != null && o.get("current").equals(true)) {
                     patientOnART = true;
                 }
             }
