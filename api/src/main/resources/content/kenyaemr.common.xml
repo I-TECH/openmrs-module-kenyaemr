@@ -29,6 +29,7 @@
 				<ref bean="kenyaemr.common.form.triage" />
 				<ref bean="kenyaemr.common.form.clinicalEncounter" />
 				<ref bean="kenyaemr.common.form.labResults" />
+				<ref bean="kenyaemr.common.form.tbScreening" />
 				<!--<ref bean="kenyaemr.common.form.otherMedications" />-->
 				<ref bean="kenyaemr.common.form.progressNote" />
 				<ref bean="kenyaemr.common.form.htsinitialtest"/>
@@ -60,7 +61,7 @@
 				<ref bean="kenyaemr.common.report.allPatients" />
 				<ref bean="kenyaemr.etl.common.report.diffcarestability" />
 				<ref bean="kenyaemr.common.report.activePatientsLinelist" />
-				<ref bean="kenyaemr.common.report.allPatientsMissingIdentifiers" />
+				<ref bean="kenyaemr.nupi.report.allPatientsMissingNationalUniquePatientIdentifier" />
 				<ref bean="kenyaemr.common.report.rdqaReport" />
 <!--				<ref bean="kenyaemr.common.report.clients.died" />-->
 				<ref bean="kenyaemr.common.report.clients.transferred.in" />
@@ -80,7 +81,7 @@
 				<ref bean="kenyaemr.common.report.mortalityLineList"/>
 				<ref bean="kenyaemr.common.report.moh711"/>
 				<ref bean="kenyaemr.common.report.sgbvlinelist"/>
-				<ref bean="kenyaemr.sgbv.report.sgbvRegister"/>
+				<ref bean="kenyaemr.common.report.sgbvRegister"/>
 			</set>
 		</property>
 	</bean>
@@ -198,6 +199,7 @@
 				<ref bean="kenyaemr.app.chart" />
 			</set>
 		</property>
+		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.HIVEnrollment" />
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:clinicalEncounter.html" />
 		<property name="order" value="200015" />
@@ -257,6 +259,7 @@
 				<ref bean="kenyaemr.app.chart" />
 			</set>
 		</property>
+		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.HIVEnrollment" />
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:tb/tbScreening.html" />
 		<property name="order" value="200014" />
@@ -582,15 +585,13 @@
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
-	<bean id="kenyaemr.common.report.allPatientsMissingIdentifiers" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+	<bean id="kenyaemr.nupi.report.allPatientsMissingNationalUniquePatientIdentifier" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
 		<property name="targetUuid" value="c7fbb62a-c165-11ec-9d64-0242ac120002" />
 		<property name="name" value="All Patients Missing National Unique Patient Identifier" />
 	    <property name="description" value="List of clients who do not have national unique patient identifier listed" />
-		<property name="apps">
-			<set>
-				<ref bean="kenyaemr.app.reports" />
-			</set>
-		</property>
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.MissingNUPIIdentifierCalculation" />
+		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
     <!-- =========================== RDQA Reports =============================-->
@@ -772,7 +773,7 @@
 		<property name="template" value="kenyaemr:sgbv/sgbv_linelist.xls" />
 		<property name="repeatingSection" value="sheet:1,row:6,dataset:sgbvLinelistPatients" />
 	</bean>
-	<bean id="kenyaemr.sgbv.report.sgbvRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+	<bean id="kenyaemr.common.report.sgbvRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
 		<property name="targetUuid" value="0abef9b4-7dcd-4f5a-aa53-25d56b672701" />
 		<property name="name" value="Sexual Gender Based Violence (SGBV) Register" />
 		<property name="description" value="SGBV Register" />

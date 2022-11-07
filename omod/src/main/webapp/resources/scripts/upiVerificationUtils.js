@@ -708,16 +708,19 @@ var countyObject =  {
         "occupation": "farmer"
     },
     "1539": {
-        "occupation": "banker"
+        "occupation": "trader"
     },
     "1540": {
-        "occupation": "doctor"
+        "occupation": "employee"
     },
     "159466": {
-        "occupation": "mechanic"
+        "occupation": "driver"
     },
     "1107": {
-        "occupation": "student"
+        "occupation": "none"
+    },
+    "5622": {
+      "occupation": "other"
     },
  };
 

@@ -35,6 +35,7 @@ import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.openmrs.module.kenyaemr.nupi.UpiUtilsDataExchange;
 
 public class UpiDataExchangeFragmentController {
 
@@ -156,19 +157,21 @@ public class UpiDataExchangeFragmentController {
 			return(responseObj);
 
 		} else {
-			BufferedReader in = null;
-			// BufferedReader in = new BufferedReader(new InputStreamReader(
-			// 		con.getErrorStream()));
-			in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
-			String inputLine;
-			StringBuffer response = new StringBuffer();
+			if (con != null && con.getErrorStream() != null) {
+				BufferedReader in = null;
+				// BufferedReader in = new BufferedReader(new InputStreamReader(
+				// 		con.getErrorStream()));
+				in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
 
-			while ((inputLine = in.readLine()) != null) {
-				response.append(inputLine);
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				in.close();
+
+				stringResponse = response.toString();
 			}
-			in.close();
-
-			stringResponse = response.toString();
 
 			responseObj = new SimpleObject();
 			responseObj.put("status", responseCode);

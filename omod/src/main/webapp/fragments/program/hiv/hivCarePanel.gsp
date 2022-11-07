@@ -81,4 +81,6 @@
 	${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Regimen", value: ui.message("kenyaemr.neverOnARVs") ]) }
 
 	<% } %>
+	${ui.includeFragment("kenyaemr", "program/hiv/appointmentsHistory", [ patient: currentPatient]) }
+
 </div>
