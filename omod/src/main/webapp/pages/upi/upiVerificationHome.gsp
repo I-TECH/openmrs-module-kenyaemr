@@ -147,6 +147,10 @@ tr:nth-child(even) {background-color: #f2f2f2;}
                         <td>${patientVerifiedListSize}</td>
                     </tr>
                     <tr>
+                        <td width="15%">Verified currently on ART</td>
+                        <td>${patientVerifiedOnARTListSize}</td>
+                    </tr>
+                    <tr>
                         <td width="15%">Total pending verification</td>
                         <td>${patientPendingListSize}</td>
                     </tr>
