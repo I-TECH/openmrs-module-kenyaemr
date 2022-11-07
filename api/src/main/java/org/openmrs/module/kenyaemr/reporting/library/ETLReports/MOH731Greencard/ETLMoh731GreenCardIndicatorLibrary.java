@@ -973,6 +973,9 @@ public class ETLMoh731GreenCardIndicatorLibrary {
         return cohortIndicator("New Enrollment in care (excludes transfers)", ReportUtils.map(moh731Cohorts.hivEnrollment(), "startDate=${startDate},endDate=${endDate}"));
     }
 
+    public CohortIndicator hivEnrolledKPs() {
+        return cohortIndicator("KPs newly Enrolled in care (excludes transfers)", ReportUtils.map(moh731Cohorts.hivEnrolledKPs(), "startDate=${startDate},endDate=${endDate}"));
+    }
 
     /**
      * Number of patients who are currently on ART
@@ -984,12 +987,27 @@ public class ETLMoh731GreenCardIndicatorLibrary {
     }
 
     /**
+     * KPs currently on ART
+     * @return
+     */
+    public CohortIndicator kpsCurrentlyOnArtOnART() {
+        return cohortIndicator("Currently on ART", ReportUtils.map(moh731Cohorts.kpsCurrentlyOnArtOnART(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
      * Number of patients who are ART revisits
      *
      * @return the indicator
      */
     public CohortIndicator revisitsArt() {
         return cohortIndicator("Revisits ART", ReportUtils.map(moh731Cohorts.revisitsArt(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * KPs started on ART
+     * @return
+     */
+    public CohortIndicator kpsStartedOnART() {
+        return cohortIndicator("KPs started on ART", ReportUtils.map(moh731Cohorts.kpsStartedOnART(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
