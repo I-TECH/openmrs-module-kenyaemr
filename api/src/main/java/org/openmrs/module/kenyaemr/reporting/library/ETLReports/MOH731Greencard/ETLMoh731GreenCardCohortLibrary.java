@@ -1718,9 +1718,9 @@ public class ETLMoh731GreenCardCohortLibrary {
                 ReportUtils.map(initialHIVTestInMchmsAntenatal(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("testedForHivInMchmsDelivery",
                 ReportUtils.map(testedForHivInMchmsDelivery(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("initialTestAtPNCUpto6Weeks",
-                ReportUtils.map(initialTestAtPNCUpto6Weeks(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("(knownPositiveAtFirstANC OR initialHIVTestInMchmsAntenatal OR testedForHivInMchmsDelivery OR initialTestAtPNCUpto6Weeks ");
+        cd.addSearch("testedHivPositiveInPNCWithin6Weeks",
+                ReportUtils.map(testedHivPositiveInPNCWithin6Weeks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(knownPositiveAtFirstANC OR initialHIVTestInMchmsAntenatal OR testedForHivInMchmsDelivery OR testedHivPositiveInPNCWithin6Weeks ");
         return cd;
     }
     //Retesting PNC <=6 weeks HV02-08
