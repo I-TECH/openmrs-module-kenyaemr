@@ -63,6 +63,11 @@
 		<class>${project.parent.groupId}.${project.parent.artifactId}.advice.MCHMSDeliveryFormProcessor</class>
 	</advice>
 
+	<advice>
+		<point>org.openmrs.api.EncounterService</point>
+		<class>${project.parent.groupId}.${project.parent.artifactId}.advice.SyncHFEAppointmentsWithBahmniModule</class>
+	</advice>
+
 	<messages>
 		<lang>en</lang>
 		<file>messages.properties</file>
