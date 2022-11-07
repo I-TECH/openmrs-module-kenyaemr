@@ -2263,6 +2263,7 @@ Green Card follow-up visit form
 //var PATIENT_STABLE = "<lookup expression="kenyaemr.patientIsStable()" />";
             var personPresent =getValue('person-present.value');
             var tca_date = getValue('returnVisitDate.value');
+            var refill_date = getValue('refillVisitDate.value');
             var tca_reason = getValue('returnVisitReason.value');
             var refillFacility = getValue('refill-facility-name.value');
             var encounterDate = getValue('encounter-date.value');
@@ -2364,6 +2365,12 @@ Green Card follow-up visit form
                 return false;
             }else{
                 getField('returnVisitDate.error').html('Please specify return visit date for patient.').hide();
+            }
+            if (tca_date &lt; refill_date ) {
+                getField('refillVisitDate.error').html('Refill date should not be later than next appointment date.').show();
+                return false;
+            }else{
+                getField('refillVisitDate.error').html('Refill date should not be later than next appointment date.').hide();
             }
             if (tca_date &lt; encounterDate ) {
                 getField('returnVisitDate.error').html('Return visit date should not be earlier than encounter date.').show();
