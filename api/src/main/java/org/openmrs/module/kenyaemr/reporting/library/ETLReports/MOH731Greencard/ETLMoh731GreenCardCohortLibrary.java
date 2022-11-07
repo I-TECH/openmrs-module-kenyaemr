@@ -1695,7 +1695,7 @@ public class ETLMoh731GreenCardCohortLibrary {
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery = "select v.patient_id from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
                 "  inner join (select mch.patient_id, max(mch.visit_date) as latest_mch_enrolment_date, mch.hiv_status as hiv_status_at_enrolment\n" +
-                "              from kenyaemr_etl.etl_mch_enrollment mch)mch on mch.patient_id = v.patient_id\n" +
+                "              from kenyaemr_etl.etl_mch_enrollment mch group by mch.patient_id )mch on mch.patient_id = v.patient_id\n" +
                 "  left join (select e.patient_id, max(e.visit_date) as latest_hiv_enrollment_date\n" +
                 "             from kenyaemr_etl.etl_hiv_enrollment e where e.visit_date < date(:endDate)\n" +
                 "             group by e.patient_id)e on v.patient_id = e.patient_id\n" +
@@ -1703,8 +1703,8 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "             from kenyaemr_etl.etl_hts_test t where t.visit_date < date(:endDate)\n" +
                 "             group by t.patient_id)t on v.patient_id = t.patient_id\n" +
                 "where v.visit_date between date(:startDate) and date(:endDate) and v.anc_visit_number = 1\n" +
-                "      and (mch.latest_mch_enrolment_date > e.latest_hiv_enrollment_date or hiv_status_at_enrolment = 703 or\n" +
-                "      (mch.latest_mch_enrolment_date > t.latest_hiv_test_date and t.test_result = 'Positive'))\n" +
+                "      and ((mch.latest_mch_enrolment_date > e.latest_hiv_enrollment_date or hiv_status_at_enrolment = 703 or\n" +
+                "            (mch.latest_mch_enrolment_date > t.latest_hiv_test_date and t.test_result = 'Positive')))\n" +
                 "group by v.patient_id";
 
         cd.setName("Known Positive at First ANC");
