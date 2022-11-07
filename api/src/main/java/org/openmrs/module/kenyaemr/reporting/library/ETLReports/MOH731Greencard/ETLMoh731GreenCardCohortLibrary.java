@@ -373,8 +373,10 @@ public class ETLMoh731GreenCardCohortLibrary {
      */
     public CohortDefinition screenedForTbWithinPeriod() {
 // look all active in care who were screened for tb
-        String sqlQuery = "select tb.patient_id from kenyaemr_etl.etl_tb_screening tb group by tb.patient_id\n" +
-                "having mid(max(concat(tb.visit_date,tb.resulting_tb_status)),11) in (1660,1662,142177);";
+        String sqlQuery = "select a.patient_id from\n" +
+                "     (select max(tb.visit_date) as max_visit,tb.patient_id,mid(max(concat(date(tb.visit_date),ifnull(tb.resulting_tb_status,0))),11) as tb_screened,\n" +
+                "mid(max(concat(date(tb.visit_date),ifnull(tb.person_present,0))),11) as person_present from kenyaemr_etl.etl_tb_screening tb\n" +
+                "group by tb.patient_id)a where a.person_present = 978 and a.tb_screened in (1660,1662,142177);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("tbScreening");
         cd.setQuery(sqlQuery);

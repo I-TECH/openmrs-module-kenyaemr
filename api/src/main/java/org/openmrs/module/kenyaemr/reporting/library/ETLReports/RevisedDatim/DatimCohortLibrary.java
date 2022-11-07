@@ -1704,7 +1704,8 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("screenedTBPositiveLast6Months",ReportUtils.map(screenedTBPositiveLast6Months(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("previouslyOnART",ReportUtils.map(previouslyOnART(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("screenedTBPositiveLast6Months AND previouslyOnART");
+        cd.addSearch("currentlyOnArt",ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("currentlyOnArt AND screenedTBPositiveLast6Months AND previouslyOnART");
         return cd;
 
     }
@@ -1731,7 +1732,8 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("screenedTBNegativeLast6Months",ReportUtils.map(screenedTBNegativeLast6Months(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("previouslyOnART",ReportUtils.map(previouslyOnART(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("screenedTBNegativeLast6Months AND previouslyOnART");
+        cd.addSearch("currentlyOnArt",ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("currentlyOnArt AND screenedTBNegativeLast6Months AND previouslyOnART");
         return cd;
     }
 
