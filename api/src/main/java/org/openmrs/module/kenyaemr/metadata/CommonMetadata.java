@@ -193,7 +193,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(globalProperty("clientNumber.enabled", "Switch to show client number", "false"));
 
 		if(Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_GET_END_POINT) == null) {
-			install(globalProperty(GP_CLIENT_VERIFICATION_GET_END_POINT, "A GET API for getting client information at the client registry", "https://afyakenyaapi.health.go.ke/partners/registry/search/"));
+			install(globalProperty(GP_CLIENT_VERIFICATION_GET_END_POINT, "A GET API for getting client information at the client registry", "https://afyakenyaapi.health.go.ke/partners/registry/search"));
 		}
 		if(Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_POST_END_POINT) == null) {
 			install(globalProperty(GP_CLIENT_VERIFICATION_POST_END_POINT, "A POST API for posting client information to the client registry", "https://afyakenyaapi.health.go.ke/partners/registry"));
@@ -214,10 +214,10 @@ public class CommonMetadata extends AbstractMetadataBundle {
 			install(globalProperty(GP_CLIENT_VERIFICATION_OAUTH2_SCOPE, "client registry authorization scope", "DHP.Gateway DHP.Partners"));
 		}
 		if(Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_QUERY_UPI_END_POINT) == null) {
-			install(globalProperty(GP_CLIENT_VERIFICATION_QUERY_UPI_END_POINT, "A GET API for getting client information at the client registry using NUPI number", "https://afyakenyaapi.health.go.ke/partners/registry/search/"));
+			install(globalProperty(GP_CLIENT_VERIFICATION_QUERY_UPI_END_POINT, "A GET API for getting client information at the client registry using NUPI number", "https://afyakenyaapi.health.go.ke/partners/registry/search/upi"));
 		}
 		if(Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_QUERY_CCC_END_POINT) == null) {
-			install(globalProperty(GP_CLIENT_VERIFICATION_QUERY_CCC_END_POINT, "A GET API for getting client information at the client registry using CCC number", "https://afyakenyaapi.health.go.ke/partners/registry/search/"));
+			install(globalProperty(GP_CLIENT_VERIFICATION_QUERY_CCC_END_POINT, "A GET API for getting client information at the client registry using CCC number", "https://afyakenyaapi.health.go.ke/partners/registry/search/ccc"));
 		}
 
 		install(patientIdentifierType("Old Identification Number", "Identifier given out prior to OpenMRS",

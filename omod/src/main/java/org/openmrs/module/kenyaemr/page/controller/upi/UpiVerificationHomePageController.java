@@ -47,17 +47,17 @@ public class UpiVerificationHomePageController {
             if (patient.getAttribute(verificationStatusPA) != null) {
                 String networkError = "";
                 if(patient.getAttribute(verificationMessagePA) != null) {
-                    networkError = patient.getAttribute(verificationMessagePA).getValue();
+                    networkError = patient.getAttribute(verificationMessagePA).getValue().trim();
                 }
                 // Has attempted verification
-                if (patient.getAttribute(verificationStatusPA).getValue().equals("Pending")) {
+                if (patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Pending")) {
                     // Has attempted verification but has not received NUPI
                     SimpleObject patientPendingObject = SimpleObject.create("id", patient.getId(), "uuid", patient.getUuid(), "givenName", patient
                             .getGivenName(), "middleName", patient.getMiddleName() != null ? patient.getMiddleName() : "", "familyName", patient.getFamilyName(), "birthdate", kenyaUi.formatDate(patient.getBirthdate()), "gender", patient.getGender(), "error", networkError != null ? networkError : "-");
                     pendingVerification.add(patientPendingObject);
                 }
                 // Has attempted verification and has received NUPI
-                if (patient.getAttribute(verificationStatusPA).getValue().equals("Yes") || patient.getAttribute(verificationStatusPA).getValue().equals("Verified")) {
+                if (patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Yes") || patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Verified") || patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Verified Elsewhere")) {
                     SimpleObject patientVerifiedObject = SimpleObject.create("id", patient.getId(), "uuid", patient.getUuid(), "givenName", patient
                             .getGivenName(), "middleName", patient.getMiddleName() != null ? patient.getMiddleName() : "", "familyName", patient.getFamilyName(), "birthdate", kenyaUi.formatDate(patient.getBirthdate()), "gender", patient.getGender(), "error", networkError != null ? networkError : "-");
                     verified.add(patientVerifiedObject);
@@ -66,14 +66,12 @@ public class UpiVerificationHomePageController {
                 ProgramWorkflowService pwfservice = Context.getProgramWorkflowService();
                 List<PatientProgram> programs = pwfservice.getPatientPrograms(patient, hivProgram, null, null, null,null, true);
                 if (programs.size() > 0) {
-                    if (patient.getAttribute(verificationStatusPA).getValue().equals("Yes") || patient.getAttribute(verificationStatusPA).getValue().equals("Verified")) {
+                    if (patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Yes") || patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Verified") || patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Verified Elsewhere")) {
                         SimpleObject patientVerifiedObject = SimpleObject.create("id", patient.getId(), "uuid", patient.getUuid(), "givenName", patient
                                 .getGivenName(), "middleName", patient.getMiddleName() != null ? patient.getMiddleName() : "", "familyName", patient.getFamilyName(), "birthdate", kenyaUi.formatDate(patient.getBirthdate()), "gender", patient.getGender(), "error", networkError != null ? networkError : "-");
                         verifiedOnART.add(patientVerifiedObject);
                     }
                 }
-
-
             }
         }
         model.put("patientPendingList", ui.toJson(pendingVerification));
