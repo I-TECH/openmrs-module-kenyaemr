@@ -384,14 +384,6 @@ Green Card follow-up visit form
             });
 //TB MODULE
 // Defaults on load
-            /*On TB Drugs  */
-            if (PATIENT_ON_TB == "true"){
-                jq("#on-anti-tb-drugs input[value=1065]").prop("checked", true);
-                jq('#on-ipt input').prop("disabled", true);
-                jq('input[type=radio].on-ipt').prop("checked", false);
-// jq('#on-anti-tb-drugs input[type=radio]').attr("style", "pointer-events:none;");
-                jq(".tb-patient").text("On TB Treatment");
-            }
             /*On TPT Drugs  */
             if (PATIENT_ON_IPT == 'true'){
                 jq('#on-ipt input').prop("disabled", false);
@@ -404,6 +396,16 @@ Green Card follow-up visit form
                 jq("#tb-screening-tab").show();
                 jq("#ipt-followup").show();
                 jq("#tb-screening-result").show();
+            }
+     /*On TB Drugs from being active in TB program  supersede onIPT*/
+            if (PATIENT_ON_TB == "true"){
+                jq("#on-anti-tb-drugs input[value=1065]").prop("checked", true);
+                jq('#on-ipt input').prop("disabled", true);
+                jq("#currently-onIpt").hide();
+                jq("#tb-screening-tab").hide();
+                jq("#ipt-followup").hide();
+                jq("#tb-screening-result").hide();
+                jq(".tb-patient").text("On TB Treatment");
             }
 // Screening
             /*TB Screening form validation*/
