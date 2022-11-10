@@ -36,8 +36,8 @@ public class UpiVerificationHomePageController {
 
 
         List<SimpleObject> pendingVerification = new ArrayList<SimpleObject>();
-        List<SimpleObject> verified = new ArrayList<SimpleObject>();
-        List<SimpleObject> verifiedOnART = new ArrayList<SimpleObject>();
+        Integer verifiedCount = 0;
+        Integer verifiedOnART = 0;
         PersonAttributeType verificationStatusPA = Context.getPersonService().getPersonAttributeTypeByUuid(CommonMetadata._PersonAttributeType.VERIFICATION_STATUS_WITH_NATIONAL_REGISTRY);
         PersonAttributeType verificationMessagePA = Context.getPersonService().getPersonAttributeTypeByUuid(CommonMetadata._PersonAttributeType.VERIFICATION_MESSAGE_WITH_NATIONAL_REGISTRY);
         List<Patient> allPatients = Context.getPatientService().getAllPatients();
@@ -58,27 +58,22 @@ public class UpiVerificationHomePageController {
                 }
                 // Has attempted verification and has received NUPI
                 if (patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Yes") || patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Verified") || patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Verified Elsewhere")) {
-                    SimpleObject patientVerifiedObject = SimpleObject.create("id", patient.getId(), "uuid", patient.getUuid(), "givenName", patient
-                            .getGivenName(), "middleName", patient.getMiddleName() != null ? patient.getMiddleName() : "", "familyName", patient.getFamilyName(), "birthdate", kenyaUi.formatDate(patient.getBirthdate()), "gender", patient.getGender(), "error", networkError != null ? networkError : "-");
-                    verified.add(patientVerifiedObject);
+                    verifiedCount++;
                 }
                 // Has successful verification and has received NUPI and in HIV program
                 ProgramWorkflowService pwfservice = Context.getProgramWorkflowService();
                 List<PatientProgram> programs = pwfservice.getPatientPrograms(patient, hivProgram, null, null, null,null, true);
                 if (programs.size() > 0) {
                     if (patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Yes") || patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Verified") || patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Verified Elsewhere")) {
-                        SimpleObject patientVerifiedObject = SimpleObject.create("id", patient.getId(), "uuid", patient.getUuid(), "givenName", patient
-                                .getGivenName(), "middleName", patient.getMiddleName() != null ? patient.getMiddleName() : "", "familyName", patient.getFamilyName(), "birthdate", kenyaUi.formatDate(patient.getBirthdate()), "gender", patient.getGender(), "error", networkError != null ? networkError : "-");
-                        verifiedOnART.add(patientVerifiedObject);
+                        verifiedOnART++;
                     }
                 }
             }
         }
         model.put("patientPendingList", ui.toJson(pendingVerification));
         model.put("patientPendingListSize", pendingVerification.size());
-        model.put("patientVerifiedList", ui.toJson(verified));
-        model.put("patientVerifiedListSize", verified.size());
-        model.put("patientVerifiedOnARTListSize", verifiedOnART.size());
-        model.put("totalAttemptedVerification", pendingVerification.size() + verified.size());
+        model.put("patientVerifiedListSize", verifiedCount);
+        model.put("patientVerifiedOnARTListSize", verifiedOnART);
+        model.put("totalAttemptedVerification", pendingVerification.size() + verifiedCount);
     }
 }
