@@ -57,14 +57,14 @@ public class UpiVerificationHomePageController {
                     pendingVerification.add(patientPendingObject);
                 }
                 // Has attempted verification and has received NUPI
-                if (patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Yes") || patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Verified") || patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Verified Elsewhere")) {
+                if (patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Yes") || patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Verified") || patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Verified elsewhere")) {
                     verifiedCount++;
                 }
                 // Has successful verification and has received NUPI and in HIV program
                 ProgramWorkflowService pwfservice = Context.getProgramWorkflowService();
                 List<PatientProgram> programs = pwfservice.getPatientPrograms(patient, hivProgram, null, null, null,null, true);
                 if (programs.size() > 0) {
-                    if (patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Yes") || patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Verified") || patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Verified Elsewhere")) {
+                    if (patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Yes") || patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Verified") || patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Verified elsewhere")) {
                         verifiedOnART++;
                     }
                 }
