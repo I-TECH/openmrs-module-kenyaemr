@@ -1854,7 +1854,7 @@ Green Card follow-up visit form
             var stabilityStatus = getValue('stability.value');
             var tca_reason = getField('returnVisitReason.value').val();
             var refillDate = jq("#refill-date").hide();
-            if (stabilityStatus == "true" || stabilityStatus == 1065){
+            if (stabilityStatus == "false" || stabilityStatus == 1066){
                 jq("#tbl-standard").show();
                 jq("#tbl-fast-track").hide();
                 jq("#refill-label").hide();
@@ -1872,7 +1872,7 @@ Green Card follow-up visit form
         var returnReasonSelected = function() {
             var stabilityStatus = getValue('stability.value');
             var tca_reason = getField('returnVisitReason.value').val();
-            if (stabilityStatus == "false" &amp;&amp; tca_reason == 160521){
+            if (stabilityStatus == "true" &amp;&amp; tca_reason == 160521){
                 jq("#refill-label").show();
                 jq("#refill-date").show();
                 jq('#refill-label input').prop('disabled', false);
@@ -2343,20 +2343,20 @@ Green Card follow-up visit form
             }else{
                 getField('sti-partnerNotification.error').html('Please specify partner notification status.').hide();
             }
-            if (personPresent == SELF &amp;&amp; stabilityStatus == true) {
+            if (personPresent == SELF &amp;&amp; stabilityStatus == false) {
                 getField('stability.error').html('Please specify stability status.').show();
                 return false;
             }else{
                 getField('stability.error').html('Please specify stability status.').hide();
             }
 
-            if (personPresent == SELF &amp;&amp; stabilityStatus == "false" &amp;&amp; fastTrackCareError == "") {
+            if (personPresent == SELF &amp;&amp; stabilityStatus == "true" &amp;&amp; fastTrackCareError == "") {
                 getField('fast-track.error').html('Please specify differentiated care model.').show();
                 return false;
             }else{
                 getField('fast-track.error').html('Please specify differentiated care model.').hide();
             }
-            if (personPresent == SELF &amp;&amp; stabilityStatus == "true" &amp;&amp; standardCareError == "") {
+            if (personPresent == SELF &amp;&amp; stabilityStatus == "false" &amp;&amp; standardCareError == "") {
                 getField('standard.error').html('Please specify differentiated care model.').show();
                 return false;
             }else{
@@ -2510,7 +2510,7 @@ Management<br />
                             var iptEnrollmentTab = jq('#ipt-enrollment');
                             var tbInitiationTab = jq('#tb-enrollment');
 
-                            if (stabilityStatus == "true" || stabilityStatus == 1065){
+                            if (stabilityStatus == "false" || stabilityStatus == 1066){
                                 jq("#tbl-standard").show();
                                 jq("#tbl-fast-track").hide();
                                 jq('#standard select').prop('disabled', false);
@@ -2522,7 +2522,7 @@ Management<br />
                                 jq('#fast-track select').prop('disabled', false);
                                 jq('#standard select').prop('disabled', true);
                             }
-                            if (stabilityStatus == "false" &amp;&amp; tca_reason == 160521 ){
+                            if (stabilityStatus == "true" &amp;&amp; tca_reason == 160521 ){
                                 jq("#refill-label").show();
                                 jq("#refill-date").show();
                                 jq('#refill-label input').prop('disabled', false);
@@ -4241,7 +4241,7 @@ Management<br />
                     <table>
                         <tr>
                             <td>
-                                Healthcare team has concerns about providing longer follow-up intervals for the patient?  &#160;&#160;&#160;&#160;
+                                Healthcare team is satisfied about providing longer follow-up intervals for the patient?  &#160;&#160;&#160;&#160;
                             </td>
                             <td><obs
                                     conceptId="1855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"
