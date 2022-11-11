@@ -73,35 +73,27 @@ public class GetNUPIforAllTask extends AbstractTask {
 
 			// loop checking for patients without NUPI
 			HashSet<Patient> patientsGroup = new HashSet<Patient>();
-			HashSet<Patient> missingIdentifiersGroup = new HashSet<Patient>();
 			for (Patient patient : allPatients) {
 				if (patient != null) {
 					ProgramWorkflowService pwfservice = Context.getProgramWorkflowService();
 					List<PatientProgram> programs = pwfservice.getPatientPrograms(patient, hivProgram, null, null, null,null, true);
 					if (programs.size() > 0) {
 						if(patient.getDead() == false && patient.getPatientIdentifier(nationalUniquePatientIdentifier) == null && (patient.getPatientIdentifier(nationalID) != null || patient.getPatientIdentifier(passportNumber) != null || patient.getPatientIdentifier(birthCertificateNumber) != null)) {
-							patientsGroup.add(patient);
-						} else if(patient.getDead() == false && patient.getPatientIdentifier(nationalUniquePatientIdentifier) == null && (patient.getPatientIdentifier(nationalID) == null && patient.getPatientIdentifier(passportNumber) == null && patient.getPatientIdentifier(birthCertificateNumber) == null)) {
-							// If status is already pending, there is no need to update error status
-							if((patient.getAttribute(patNUPIver) != null && !patient.getAttribute(patNUPIver).getValue().trim().equalsIgnoreCase("Pending")) || patient.getAttribute(patNUPIver) == null) {
-								missingIdentifiersGroup.add(patient);
+							if(patient.getAttribute(patNUPIver) != null && patient.getAttribute(patNUPIver).getValue().trim().equalsIgnoreCase("Pending")) {
+								patientsGroup.add(patient);
 							}
 						}
 					}	
 				}
 			}
 			System.out.println("NUPI to be checked: " + patientsGroup.size());
-			System.out.println("Missing Identifiers: " + missingIdentifiersGroup.size());
 
 			// get NUPI for all
 			UpiUtilsDataExchange upiUtils = new UpiUtilsDataExchange();
 			try {
-				System.out.println("Marking Patients without identifiers");
-				Integer marked = upiUtils.markPatientsWithoutIdentifiers(missingIdentifiersGroup);
-				System.out.println("Marked Patients without identifiers: " + marked);
-				System.out.println("Getting NUPI for all patients with identifiers");
+				System.out.println("Getting NUPI for all patients with identifiers and status marked as PENDING");
 				Integer result = upiUtils.getNUPIforAll(patientsGroup);
-				System.out.println("Finished the Get NUPI for all patients update: " + result);
+				System.out.println("Finished the Get NUPI for patients update: " + result);
 			} catch(Exception x) {
 				System.err.println("Get NUPI for all patients Error: " + x.getMessage());
 				x.printStackTrace();
