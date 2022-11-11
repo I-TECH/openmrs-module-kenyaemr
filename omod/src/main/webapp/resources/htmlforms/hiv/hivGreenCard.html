@@ -1853,7 +1853,6 @@ Green Card follow-up visit form
         var stabilitySelected = function() {
             var stabilityStatus = getValue('stability.value');
             var tca_reason = getField('returnVisitReason.value').val();
-            var refillDate = jq("#refill-date").hide();
             if (stabilityStatus == "false" || stabilityStatus == 1066){
                 jq("#tbl-standard").show();
                 jq("#tbl-fast-track").hide();
