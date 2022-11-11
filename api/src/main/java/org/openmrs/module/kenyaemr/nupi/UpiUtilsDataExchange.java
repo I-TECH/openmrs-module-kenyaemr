@@ -966,31 +966,6 @@ public class UpiUtilsDataExchange {
 	}
 
 	/**
-	 * Mark the patients with missing identifiers with error descriptions
-	 * 
-	 * @return Integer number of records updated
-	 */
-	public Integer markPatientsWithoutIdentifiers(HashSet<Patient> missingIdentifiersGroup) {
-		Integer ret = 0;
-
-		for (Patient patient : missingIdentifiersGroup) {
-			System.err.println("Missing Identifiers; Got the patient as: " + patient.getPatientId() + " : " + ret  + "/" + missingIdentifiersGroup.size());
-			try {
-				PatientWrapper wrapper = new PatientWrapper(patient);
-				wrapper.setCRVerificationStatus(getAttributeSubstring("Pending"));
-				wrapper.setCRVerificationMessage(getAttributeSubstring("Missing identifiers"));
-				Context.getPatientService().savePatient(patient);
-			} catch(Exception ex) {
-				System.err.println("Error marking patient as having missing identifiers: " + ex.getMessage());
-				ex.printStackTrace();
-			}
-			ret++;
-		}
-		
-		return(ret);
-	}
-
-	/**
 	 * Get the latest OBS
 	 * @param patient
 	 * @param conceptIdentifier

@@ -237,7 +237,7 @@
 	</changeSet>
 
 	<!-- Removing scheduled task get NUPI for all patients -->
-	<changeSet id="kenyaemr-delete-nupiforall-scheduler-20221110-140604" author="pwaweru">
+	<!-- <changeSet id="kenyaemr-delete-nupiforall-scheduler-20221110-140604" author="pwaweru">
 		<preConditions onFail="MARK_RAN">
 			<sqlCheck expectedResult="1">
 				SELECT COUNT(*) FROM scheduler_task_config
@@ -249,10 +249,10 @@
 		<delete tableName="scheduler_task_config">  
 			<where>schedulable_class = 'org.openmrs.module.kenyaemr.task.GetNUPIforAllTask'</where>  
 		</delete>
-	</changeSet>
+	</changeSet> -->
 
 	<!--Adding scheduled get NUPI for all patients task-->
-	<!-- <changeSet id="${project.parent.artifactId}-20221025-085300" author="pwaweru">
+	<changeSet id="${project.parent.artifactId}-20221025-085300" author="pwaweru">
 		<preConditions onFail="MARK_RAN">
 			<sqlCheck expectedResult="0">
 				SELECT COUNT(*) FROM scheduler_task_config
@@ -274,6 +274,6 @@
 			<column name="started" value="0" />
 			<column name="uuid" value="00faad52-02cb-4df5-b9e4-ab3ee07abe4b" />
 		</insert>
-	</changeSet> -->
+	</changeSet>
 
 </databaseChangeLog>
