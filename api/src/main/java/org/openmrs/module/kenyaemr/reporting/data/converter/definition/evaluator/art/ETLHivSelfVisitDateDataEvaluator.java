@@ -37,10 +37,17 @@ public class ETLHivSelfVisitDateDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry="select patient_id, max(visit_date) as last_visit_date from kenyaemr_etl.etl_patient_hiv_followup where person_present=978 GROUP BY patient_id;";
+        String qry="select patient_id, max(visit_date) as last_visit_date from kenyaemr_etl.etl_patient_hiv_followup\n" +
+                "where person_present=978 and date(visit_date) <= date(:endDate)\n" +
+                "group by patient_id;";
 
-       SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
+        SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
+
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;

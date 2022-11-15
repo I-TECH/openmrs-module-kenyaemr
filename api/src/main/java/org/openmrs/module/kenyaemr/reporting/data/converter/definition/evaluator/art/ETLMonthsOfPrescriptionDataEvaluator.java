@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -35,13 +36,19 @@ public class ETLMonthsOfPrescriptionDataEvaluator implements PersonDataEvaluator
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry="SELECT patient_id, TIMESTAMPDIFF(MONTH, date(max(visit_date)), date(mid(max(concat(visit_date,next_appointment_date )),11))) as months_of_prescription\n" +
-                "FROM kenyaemr_etl.etl_patient_hiv_followup\n" +
-                "WHERE next_appointment_date is not null GROUP BY patient_id;";
+                "    FROM kenyaemr_etl.etl_patient_hiv_followup\n" +
+                "    WHERE next_appointment_date is not null and date(visit_date) <= date(:endDate)\n" +
+                "    GROUP BY patient_id;";
 
-                SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
-                queryBuilder.append(qry);
-                Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
-                c.setData(data);
+        SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
+        queryBuilder.append(qry);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
+
+        Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
+        c.setData(data);
         return c;
     }
 }

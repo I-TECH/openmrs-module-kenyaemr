@@ -21,6 +21,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -36,11 +37,17 @@ public class ETLRefillDateDataEvaluator implements PersonDataEvaluator {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select patient_id,\n" +
-                "date(mid(max(concat(visit_date,refill_date, \"\" )),11)) as refill_date from kenyaemr_etl.etl_patient_hiv_followup\n" +
-                "\tGROUP BY patient_id;";
+                "    date(mid(max(concat(visit_date,refill_date, '' )),11)) as refill_date from kenyaemr_etl.etl_patient_hiv_followup\n" +
+                "   where  date(visit_date) <= date(:endDate)\n" +
+                "   GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
+
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;

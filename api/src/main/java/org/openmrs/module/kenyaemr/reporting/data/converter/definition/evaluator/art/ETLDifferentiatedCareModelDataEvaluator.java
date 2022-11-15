@@ -21,6 +21,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -49,10 +50,15 @@ public class ETLDifferentiatedCareModelDataEvaluator implements PersonDataEvalua
                 "          f.person_present person_present,\n" +
                 "          f.visit_date visit_date\n" +
                 "        from kenyaemr_etl.etl_patient_hiv_followup f\n" +
-                "        where stability is not null and person_present = 978 and f.voided = 0 group by f.patient_id) fup;";
+                "        where stability is not null and person_present = 978 and date(visit_date) <= date(:endDate) and f.voided = 0 group by f.patient_id) fup;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
+
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;
