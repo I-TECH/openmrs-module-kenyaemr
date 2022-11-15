@@ -133,6 +133,16 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         activeInTbDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
         ETLCaseManagerDataDefinition etlCaseManagerDataDefinition = new ETLCaseManagerDataDefinition();
         etlCaseManagerDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+        ETLDifferentiatedCareModelDataDefinition eTLDifferentiatedCareModelDataDefinition = new ETLDifferentiatedCareModelDataDefinition();
+        eTLDifferentiatedCareModelDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+        ETLRefillDateDataDefinition eTLRefillDateDataDefinition = new ETLRefillDateDataDefinition();
+        eTLRefillDateDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+        ETLMonthsOfPrescriptionDataDefinition eTLMonthsOfPrescriptionDataDefinition = new ETLMonthsOfPrescriptionDataDefinition();
+        eTLMonthsOfPrescriptionDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+        ETLHivSelfVisitDateDataDefinition eTLHivSelfVisitDateDataDefinition = new ETLHivSelfVisitDateDataDefinition();
+        eTLHivSelfVisitDateDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+        ETLLastVLJustificationDataDefinition eTLLastVLJustificationDataDefinition = new ETLLastVLJustificationDataDefinition();
+        eTLLastVLJustificationDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 
         DataConverter formatter = new ObjectFormatter("{familyName}, {givenName}");
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), formatter);
@@ -159,7 +169,7 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("Last WHO Stage Date", new ETLLastWHOStageDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Last VL Result",  lastVlResultDataDefinition, "endDate=${endDate}");
         dsd.addColumn("VL Validility", new ETLLastVLResultValidityDataDefinition(), "");
-        dsd.addColumn("Last VL Justification", new ETLLastVLJustificationDataDefinition(),"");
+        dsd.addColumn("Last VL Justification", eTLLastVLJustificationDataDefinition,"endDate=${endDate}");
         dsd.addColumn("Last VL Date", lastVLDateDataDefinition, "endDate=${endDate}", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Active in PMTCT",activeInMchDataDefinition, "endDate=${endDate}", new ActiveInProgramConverter());
         dsd.addColumn("Active in OVC", activeInOvcDataDefinition,"endDate=${endDate}",new ActiveInProgramConverter());
@@ -169,12 +179,12 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("TPT Outcome", new CalculationDataDefinition("IPT Outcome", new IPTOutcomeCalculation()), "", new IPTOutcomeDataConverter());
         dsd.addColumn("TPT Outcome Date", new CalculationDataDefinition("IPT Outcome Date", new IPTOutcomeDateCalculation()), "", new SimpleResultDateConverter());
         dsd.addColumn("Stability", stabilityDataDefinition, "endDate=${endDate}");
-        dsd.addColumn("Differentiated care model", new ETLDifferentiatedCareModelDataDefinition(), "");
+        dsd.addColumn("Differentiated care model", eTLDifferentiatedCareModelDataDefinition, "endDate=${endDate}");
         dsd.addColumn("Last Visit Date", lastVisitDateDataDefinition,"endDate=${endDate}", new DateConverter(DATE_FORMAT));
-        dsd.addColumn("Self Visit Date", new ETLHivSelfVisitDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
+        dsd.addColumn("Self Visit Date", eTLHivSelfVisitDateDataDefinition, "endDate=${endDate}", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Next Appointment Date", nextAppointmentDateDataDefinition, "endDate=${endDate}", new DateConverter(DATE_FORMAT));
-        dsd.addColumn("Months of Prescription", new ETLMonthsOfPrescriptionDataDefinition(), "");
-        dsd.addColumn("Refill Date", new ETLRefillDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
+        dsd.addColumn("Months of Prescription", eTLMonthsOfPrescriptionDataDefinition, "endDate=${endDate}");
+        dsd.addColumn("Refill Date", eTLRefillDateDataDefinition, "endDate=${endDate}", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Case Manager", etlCaseManagerDataDefinition, "endDate=${endDate}", new DateConverter(DATE_FORMAT));
 
         return dsd;
