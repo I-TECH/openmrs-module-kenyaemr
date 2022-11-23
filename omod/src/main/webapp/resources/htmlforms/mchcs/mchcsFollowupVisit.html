@@ -59,6 +59,28 @@
 		var YES_CONCEPT_ID = 1065;
 		var NO_CONCEPT_ID = 1066;
 		var WHITE_COLOR_CONCEPT_ID = 1075;
+		var OTHER_CONCEPT_ID = 5622;
+		var patientId = <lookup expression="patient.patientId"/>;
+
+		var showOtherSpecifyFollowup = function () {
+			var val = jq(this).val();
+			if (val == OTHER_CONCEPT_ID) {
+				jq("#tbl-other-followup").show();
+			}
+			else {
+				jq("#tbl-other-followup").hide();
+			}
+		}
+
+		var showOtherSpecifyCaregiver = function () {
+			var val = jq(this).val();
+			if (val == 5622) {
+				jq("#tbl-other-caregiver").show();
+			}
+			else {
+				jq("#tbl-other-caregiver").hide();
+			}
+		}
 
 		function displayDate(birthDate)
 		{
@@ -98,6 +120,44 @@
 					Days = l.getDate() + Days;
 			}
 			return Years +" Y(s)"+"<br />" + Months + " Mnth(s)" +"<br />"+ wks + " wk(s)" +"<br />"+ remDays +" Day(s)";
+		}
+
+		//Include Mothers Details
+		//CCC Number
+		function includeMothersCccNumber() {
+			var cccNumber;
+			jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/getMothersUniquePatientNumber.action', {patientId: patientId}, function (data) {
+				console.log("ccc number ", data);
+				if (data != null || data != "") {
+					cccNumber = data;
+					getField('mothers-ccc.value').val(cccNumber);
+					console.log("cccNumber", cccNumber);
+				} else {
+					getField('mothers-ccc.value').val("");
+				}
+				//Prepopulate hei exposure status
+				if (!cccNumber) {
+					heiInfants()
+				} else {
+					jq("#hiv-exposed-child input[value=822]").prop("checked", true);
+					heiInfants()
+				}
+			});
+		}
+
+		//Mother VL
+		function includeMotherCurrentVL() {
+			var encounterDate = getValue('encounter-date.value');
+			jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/currentMothersVL.action', { patientId: patientId, now: encounterDate })
+				.done(function(data) {
+					var msg = data;
+					console.log("msg", msg);
+					if(msg != ""){
+						jq("#motherVL").html(msg.lastVl);
+					}else{
+						jq("#motherVL").html(" ");
+					}
+				});
 		}
 
 		function getTetracycline() {
@@ -140,8 +200,24 @@
 			jq('#pupil-image').html('&lt;img src="<lookup expression="ui.resourceLink('kenyaemr', '/images/htmlforms/mchcs/whitepupil.jpg')" />" width="200" height="50" /&gt;');
 			jq('#squint-eyes-image').html('&lt;img src="<lookup expression="ui.resourceLink('kenyaemr', '/images/htmlforms/mchcs/squint.jpg')" />" width="200" height="50" /&gt;');
 		}
+
+		function loadPreviousVitals() {
+			var weightKg = "<lookup expression="fn.latestObs(5089).valueNumeric"/>"
+			var heightM = "<lookup expression="fn.latestObs(5090).valueNumeric"/>"
+			var weightKgVal = parseFloat(getValue('weight.value'));
+			var heightMVal = parseFloat(getValue('height.value'));
+
+			if (isNaN(heightMVal)) {
+				getField('height.value').val(heightM);
+			}
+			if(isNaN(weightKgVal)) {
+				getField('weight.value').val(weightKg);
+			}
+		}
 		jq(function(){
 			var birthDate = "<lookup expression="patient.birthdate" />";
+			jq("#tbl-other-followup").hide();
+			jq("#tbl-other-caregiver").hide();
 			jq('#age').html(displayDate(birthDate));
 			jq('#calculated-age-deworming').html(displayDate(birthDate));
 			//toggle options for tetracycline given
@@ -153,11 +229,65 @@
 			//sight examination
 			sightExamination();
 			jq('#sight-examination input').click(sightExamination);
+			//other followup
+			jq("#folloup-for :input[type=radio]").change(showOtherSpecifyFollowup);
+			//other caregiver
+			jq("#primary-caregiver select").change(showOtherSpecifyCaregiver);
 			//squint condition
 			squint();
 			jq('#squint input').click(squint);
 			//loading images
 			loadingImages();
+			loadPreviousVitals();
+			includeMotherCurrentVL();
+			includeMothersCccNumber();
+		});
+
+		beforeSubmit.push(function () {
+			var weight = getValue('weight.value');
+			var height = getValue('height.value');
+			var infantFeeding = getValue('infant-feeding.value');
+			// add medication
+			var tbAssesment = getValue('tb-assesment.value');
+			var nextAppointmentDate = getValue('next-appointment-date.value');
+			var longasLastingNet = getValue('long-lasting-net.value');
+
+			if (weight == "") {
+				getField('weight.error').html('Please specify the weight for client.').show();
+				return false;
+			}else{
+				getField('weight.error').html('Please specify the weight for client.').hide();
+			}
+			if (height == "") {
+				getField('height.error').html('Please specify the height for client.').show();
+				return false;
+			}else{
+				getField('height.error').html('Please specify the height for client.').hide();
+			}
+			if (infantFeeding == "") {
+				getField('infant-feeding.error').html('Please specify the infant feeding for client.').show();
+				return false;
+			}else{
+				getField('infant-feeding.error').html('Please specify the infant feeding for client.').hide();
+			}
+			if (tbAssesment == "") {
+				getField('tb-assesment.error').html('Please specify the tb assesment for client.').show();
+				return false;
+			}else{
+				getField('tb-assesment.error').html('Please specify the tb assesment for client.').hide();
+			}
+			if (nextAppointmentDate == "") {
+				getField('next-appointment-date.error').html('Please specify the next appointment date for client.').show();
+				return false;
+			}else{
+				getField('next-appointment-date.error').html('Please specify the next appointment date for client.').hide();
+			}
+			if (longasLastingNet == "") {
+				getField('long-lasting-net.error').html('Please specify if the long-lasting insecticidal nets (LLIN) was given to client.').show();
+				return false;
+			}else{
+				getField('long-lasting-net.error').html('Please specify if the long-lasting insecticidal nets (LLIN) was given to client.').hide();
+			}
 		});
 	</script>
 
@@ -165,6 +295,7 @@
 		<table style="width: 100%">
 			<tr>
 				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" /></td>
+				<td>Enrollment date: <encounterDate id="encounter-date" showTime="true" /></td>
 			</tr>
 		</table>
 	</div>
@@ -215,30 +346,57 @@
 								</tr>
 								<tr>
 									<td><encounterDate id="encounter-date" showTime="true" /><br /><br />
-									Revisit this year? <obs conceptId="164142AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" />
+  								        Follow-up for: <br /> <br />
+										<obs id="folloup-for" conceptId="167079AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="160552AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 161624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " answerLabels="Nutrion services,Rehabilitaon services,Other" answerSeparator="&lt;br/&gt;" /> <br /><br />
+										<table >
+											<tr id="tbl-other-followup">
+												<td> Specify :
+													<obs id="other-specify-followup" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+													&#160;&#160;&#160;
+												</td>
+											</tr>
+										</table>
+										Revisit this year? <obs conceptId="164142AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" />
 										<br /><br />
-										Primary care give ?
+										Primary care giver ?
 										<obs
 												id="primary-caregiver" conceptId="160640AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown"
 												answerConceptIds="970AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,973AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,972AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 												answerLabels="Mother,Grandparent,Sibling,Guardian,Other"
-										/>
+										/><br /> <br />
+										<table >
+											<tr id="tbl-other-caregiver">
+												<td> Specify :
+													<obs id="other-specify-caregiver" conceptId="167214AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+													&#160;&#160;&#160;
+												</td>
+											</tr>
+										</table>
+										<br />
+										Mother's Viral Load: <obs conceptId="856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="motherVL" /> cp/ml <br/><br/>
 									</td>
-									<td><div id="age" class="value"></div></td>
+									<td>
+										<div id="age" class="value"></div> <br/><br/>
+										Weight: <br/> <obs id="weight" conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"/> <br/><br/>
+										Height: <br/> <obs id="height" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"/> <br/><br/>
+									</td>
 									<td>  <obs conceptId="160908AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="160909AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160910AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,127778AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Green,Yellow,Red" answerSeparator="&lt;br/&gt;" /></td>
-									<td><obs conceptId="1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="5526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6046AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Exclusive Breastfeeding(EBF),Exclusive Replacement(ERF),Mixed Feeding(MF)" answerSeparator="&lt;br/&gt;" /><br /><br />
-									Exclusive breastfeeding 0-6 Months <obs conceptId="5526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio"/><br />
-									Stunted? <obs conceptId="164088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="164085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio"/>									</td>
+									<td><obs conceptId="1151AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="infant-feeding" style="radio" answerConceptIds="164478AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 5632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1595AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6046AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Not Breastfeeding(NBF), Breastfeeding(BF),Exclusive Breastfeeding(EBF),Exclusive Replacement(ERF),Mixed Feeding(MF)" answerSeparator="&lt;br/&gt;" /><br /><br />
+									Exclusive breastfeeding 0-6 Months <obs conceptId="5526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio"/><br /> <br />
+									Height/Length (k) <br /> <obs conceptId="164088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 164085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 164086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Normal, Stunted, Severe stunted" /> <br/><br />
+									Any Danger Signs (l) <br /> <obs conceptId="159860AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159861AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 1983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 164482AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 138868AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 460AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 164483AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Unable to breastfeed, Unable to drink, Vomits everything, Bloody Diarrhea, Has Oedema, Has convulsions" style="radio" answerSeparator="&lt;br/&gt;" /> <br/> </td>
 									<td><obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" /></td>
 									<td><obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" /></td>
 									<td><obs conceptId="1109AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105281AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" /></td>
 									<td><obs conceptId="1193AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="461AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" /></td>
-									<td><obs conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1661AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1679AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="No signs,Suspect,Confirmed,TB Rx,INH,Not done" answerSeparator="&lt;br/&gt;" /></td>
-									<td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /><br /><br />
+									<td><obs conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" id="tb-assesment" answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1661AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1679AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="No signs,Suspect,Confirmed,TB Rx,INH,Not done" answerSeparator="&lt;br/&gt;" /></td>
+									<td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="next-appointment-date" allowFutureDates="true" /><br /><br />
+									Referred? <br /> <obs conceptId="1788AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /> <br /> <br />
+									Reason for Referral <br /> <obs conceptId="164359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> <br /><br />
 									Referral from: <br />
-									<obs conceptId="160481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Other Health facility,Community Unit" answerSeparator="&lt;br/&gt;" /><br />
+									<obs conceptId="160481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Other Health facility,Community Unit" answerSeparator="&lt;br/&gt;" /><br /><br />
 									Referral to:<br />
-									<obs conceptId="163145AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Other Health facility,Community Unit" answerSeparator="&lt;br/&gt;" />
+									<obs conceptId="163145AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerConceptIds="1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Other Health facility,Community Unit" answerSeparator="&lt;br/&gt;" />
 									</td>
 								</tr>
 							</tbody>
@@ -297,7 +455,11 @@
 									<th>Date Results Collected</th>
 								</tr>
 								<tr>
-									<td>DNA PCR</td>
+									<td>
+										<obs conceptId="b61c1482-1697-404c-ab96-fd698d5fd317" style="dropdown"
+											 answerConceptIds="844AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 167015AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, bbd5d81e-d694-48e6-a948-ed82e63e2030, 1030AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 4da97634-7e25-4b96-8d21-62106c7e1c68,164860AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA "
+											 answerLabels="1st DNA PCR,2nd DNA PCR at 6 months, 3rd DNA PCR at 12 months, Confirmatory PCR for positives, Baseline viral load for positives, Final antibody at 18 months " />
+									</td>
 									<td><obs conceptId="159951AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime="false" /></td>
 									<td><obs conceptId="162084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 									<td><obs conceptId="1030AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
@@ -305,17 +467,61 @@
 									<td><obs conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 								</tr>
 								<tr>
-									<td>First Antibody Test</td>
+									<td>
+										<obs conceptId="b61c1482-1697-404c-ab96-fd698d5fd317" style="dropdown"
+											 answerConceptIds="844AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 167015AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, bbd5d81e-d694-48e6-a948-ed82e63e2030, 1030AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 4da97634-7e25-4b96-8d21-62106c7e1c68,164860AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA "
+											 answerLabels="1st DNA PCR,2nd DNA PCR at 6 months, 3rd DNA PCR at 12 months, Confirmatory PCR for positives, Baseline viral load for positives, Final antibody at 18 months " />
+									</td>
 									<td><obs conceptId="159951AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime="false" /></td>
-									<td><!--<obs conceptId="162084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />--></td>
+									<td><obs conceptId="162084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 									<td><obs conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 									<td><obs conceptId="162086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 									<td><obs conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 								</tr>
 								<tr>
-									<td>Final Antibody Test</td>
+									<td>
+										<obs conceptId="b61c1482-1697-404c-ab96-fd698d5fd317" style="dropdown"
+											 answerConceptIds="844AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 167015AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, bbd5d81e-d694-48e6-a948-ed82e63e2030, 1030AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 4da97634-7e25-4b96-8d21-62106c7e1c68,164860AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA "
+											 answerLabels="1st DNA PCR,2nd DNA PCR at 6 months, 3rd DNA PCR at 12 months, Confirmatory PCR for positives, Baseline viral load for positives, Final antibody at 18 months " />
+									</td>
 									<td><obs conceptId="159951AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime="false" /></td>
-									<td><!--<obs conceptId="162084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />--></td>
+									<td><obs conceptId="162084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+									<td><obs conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+									<td><obs conceptId="162086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+									<td><obs conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+								</tr>
+								<tr id="confirmatoryPCRTbl">
+									<td>
+										<obs conceptId="b61c1482-1697-404c-ab96-fd698d5fd317" style="dropdown"
+											 answerConceptIds="844AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 167015AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, bbd5d81e-d694-48e6-a948-ed82e63e2030, 1030AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 4da97634-7e25-4b96-8d21-62106c7e1c68,164860AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA "
+											 answerLabels="1st DNA PCR,2nd DNA PCR at 6 months, 3rd DNA PCR at 12 months, Confirmatory PCR for positives, Baseline viral load for positives, Final antibody at 18 months " />
+									</td>
+									<td><obs conceptId="159951AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime="false" /></td>
+									<td><obs conceptId="162084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+									<td><obs conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+									<td><obs conceptId="162086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+									<td><obs conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+								</tr>
+								<tr id="baseVlTbl">
+									<td>
+										<obs conceptId="b61c1482-1697-404c-ab96-fd698d5fd317" style="dropdown"
+											 answerConceptIds="844AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 167015AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, bbd5d81e-d694-48e6-a948-ed82e63e2030, 1030AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 4da97634-7e25-4b96-8d21-62106c7e1c68,164860AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA "
+											 answerLabels="1st DNA PCR,2nd DNA PCR at 6 months, 3rd DNA PCR at 12 months, Confirmatory PCR for positives, Baseline viral load for positives, Final antibody at 18 months " />
+									</td>
+									<td><obs conceptId="159951AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime="false" /></td>
+									<td><obs conceptId="162084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+									<td><obs conceptId="1326AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+									<td><obs conceptId="162086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+									<td><obs conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
+								</tr>
+								<tr>
+									<td>
+										<obs conceptId="b61c1482-1697-404c-ab96-fd698d5fd317" style="dropdown"
+											 answerConceptIds="844AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 167015AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, bbd5d81e-d694-48e6-a948-ed82e63e2030, 1030AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 4da97634-7e25-4b96-8d21-62106c7e1c68,164860AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA "
+											 answerLabels="1st DNA PCR,2nd DNA PCR at 6 months, 3rd DNA PCR at 12 months, Confirmatory PCR for positives, Baseline viral load for positives, Final antibody at 18 months " />
+									</td>
+									<td><obs conceptId="159951AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime="false" /></td>
+									<td><obs conceptId="162084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 									<td><obs conceptId="1326AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 									<td><obs conceptId="162086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 									<td><obs conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
@@ -404,34 +610,34 @@
 					</td>
 				</tr>
 				<tr>
-					<td>
-						<table border="0" cellspacing="0" cellpadding="0" class="hei">
-						  <tr>
-							<th>Clinician's Notes</th>
-							<th></th>
-							<th>Physical features</th>
-						  </tr>
-						  <tr>
-							<td valign="top"><obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" cols="40" rows="10"/></td>
-							<td valign="top">
-								Counseled On? 
-								  <obs conceptId="1379AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="1914AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1380AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="HIV,Nutrition" /><br />
-								Supplemented with MNPS 6-23 Months? 
-								<obs conceptId="5484AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="161649AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No"/>
-							</td>
-							<td valign="top">
-							<div class="alert-box notice">Colouration...,Ears...,Mouth..., Chest...,<br />
-							  Heart...,Abdomen..., Umblical Cord..,Spine..,<br /> 
-							  Arms &amp; feet...,Genitlia..., Anus...,Congenital abnomalities... </div>
-							<obs conceptId="1391AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" cols="40" rows="10"/></td>
-						  </tr>
-						</table>
-
-					</td>
-					
+					<td colspan="3" style="background-color: #696969; color: #ffffff;">OTHER PARAMETERS</td>
 				</tr>
 				<tr>
-					<td></td>
+					<td>
+							Counseled On?
+							  <obs conceptId="1379AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="1914AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1380AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="HIV,Nutrition" /><br />
+							Supplemented with MNPS 6-23 Months?
+							<obs conceptId="5484AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="161649AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No"/> <br />
+							Long-lasting insecticidal nets (LLIN) given to less that 1 Year old?
+							<obs conceptId="159855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="long-lasting-net" style="radio" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3" style="background-color: #696969; color: #ffffff;">PHYSICAL FEATURES</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="alert-box notice">Colouration...,Ears...,Mouth..., Chest...,<br />
+							Heart...,Abdomen..., Umblical Cord..,Spine..,<br />
+							Arms &amp; feet...,Genitlia..., Anus...,Congenital abnomalities... </div>
+						<obs conceptId="1391AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" cols="100" rows="5"/>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3" style="background-color: #696969; color: #ffffff;">CLINICAL NOTES</td>
+				</tr>
+				<tr>
+					<td valign="top"><obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" cols="100" rows="5"/></td>
 				</tr>
 			</tbody>
 		</table>

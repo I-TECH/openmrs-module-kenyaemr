@@ -44,14 +44,7 @@ import org.openmrs.ui.framework.session.Session;
 import org.openmrs.util.PersonByNameComparator;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -552,5 +545,94 @@ public SimpleObject currentMothersArvRegimen(@RequestParam("patientId") Patient 
 			return obs.get(0);
 		}
 		return null;
+	}
+
+	/**
+	 * Check mothers current VL
+	 * @param patient
+	 * @param now
+	 * @return list of mothers
+	 */
+	public SimpleObject currentMothersVL(@RequestParam("patientId") Patient patient, UiUtils ui) {
+		String latestVL = "856AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		String latestLDL = "1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+		SimpleObject object = null;
+
+		for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
+
+			if (relationship.getRelationshipType().getbIsToA().equals("Parent")) {
+				if (relationship.getPersonB().getGender().equals("F")) {
+					if (!relationship.getPersonB().isDead()) {
+
+						Integer personId = relationship.getPersonB().getPersonId();
+						if (Context.getPatientService().getPatient(personId) != null) {
+							Patient mother = Context.getPatientService().getPatient(personId);
+							Obs mothersNumericVLObs = getLatestObs(mother, latestVL);
+							Obs mothersLDLObs = getLatestObs(mother, latestLDL);
+							if (mothersNumericVLObs != null && mothersLDLObs == null) {
+								object = SimpleObject.create("lastVl", mothersNumericVLObs.getValueNumeric(), "lastVlDate", mothersNumericVLObs.getObsDatetime());
+							}
+							if (mothersNumericVLObs == null && mothersLDLObs != null) {
+								object = SimpleObject.create("lastVl", "LDL", "lastVlDate", mothersLDLObs.getObsDatetime());
+							}
+							if (mothersNumericVLObs != null && mothersLDLObs != null) {
+								//find the latest of the 2
+								Obs lastViralLoadPicked = null;
+								if (mothersNumericVLObs.getObsDatetime().after(mothersLDLObs.getObsDatetime())) {
+									lastViralLoadPicked = mothersNumericVLObs;
+								} else {
+									lastViralLoadPicked = mothersLDLObs;
+								}
+
+								if (lastViralLoadPicked.getConcept().getConceptId().equals(856)) {
+									object = SimpleObject.create("lastVl", lastViralLoadPicked.getValueNumeric(), "lastVlDate", mothersNumericVLObs.getObsDatetime());
+								} else {
+									object = SimpleObject.create("lastVl", "LDL", "lastVlDate", mothersLDLObs.getObsDatetime());
+								}
+
+							}
+						}
+					}
+				}
+				break;
+			}
+			if (relationship.getRelationshipType().getaIsToB().equals("Parent")) {
+				if (relationship.getPersonA().getGender().equals("F")) {
+					if (!relationship.getPersonA().isDead()) {
+
+						Integer personId = relationship.getPersonA().getPersonId();
+						//Patient mother = Context.getPatientService().getPatient(personId);
+						if (Context.getPatientService().getPatient(personId) != null) {
+							Patient mother = Context.getPatientService().getPatient(personId);
+							Obs mothersNumericVLObs = getLatestObs(mother, latestVL);
+							Obs mothersLDLObs = getLatestObs(mother, latestLDL);
+							if (mothersNumericVLObs != null && mothersLDLObs == null) {
+								object = SimpleObject.create("lastVl", mothersNumericVLObs.getValueNumeric(), "lastVlDate", mothersNumericVLObs.getObsDatetime());
+							}
+							if (mothersNumericVLObs == null && mothersLDLObs != null) {
+								object = SimpleObject.create("lastVl", "LDL", "lastVlDate", mothersLDLObs.getObsDatetime());
+							}
+							if (mothersNumericVLObs != null && mothersLDLObs != null) {
+								//find the latest of the 2
+								Obs lastViralLoadPicked = null;
+								if (mothersNumericVLObs.getObsDatetime().after(mothersLDLObs.getObsDatetime())) {
+									lastViralLoadPicked = mothersNumericVLObs;
+								} else {
+									lastViralLoadPicked = mothersLDLObs;
+								}
+								if (lastViralLoadPicked.getConcept().getConceptId().equals(856)) {
+									object = SimpleObject.create("lastVl", lastViralLoadPicked.getValueNumeric(), "lastVlDate", mothersNumericVLObs.getObsDatetime());
+								} else {
+									object = SimpleObject.create("lastVl", "LDL", "lastVlDate", mothersLDLObs.getObsDatetime());
+								}
+
+							}
+
+						}
+					}
+				}
+			}
+		}
+		return object;
 	}
 }
