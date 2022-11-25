@@ -36,6 +36,11 @@
         var DIS_COUNSELLED_ON_INFANT_FEEDING = "<lookup expression="fn.latestObs(161651).getValueCoded()"/>";
         //On ready start
         jq(document).ready(function () {
+            jq('#single').show();
+            jq('#twins').hide();
+            jq('#triplets').hide();
+            getField('delivery-outcome.value').prop("selectedIndex", 1);
+            jq('#delivery-outcome select').change(onDeliveryOutcomeChange);
             //Prepopulate infant feeding option if available
             if(ANC_COUNSELLED_ON_INFANT_FEEDING == 161651 || DIS_COUNSELLED_ON_INFANT_FEEDING == 1065){
                 getField('infant-feeding.value').prop("selectedIndex", 1);
@@ -44,6 +49,24 @@
             }
         });
         //on ready end
+
+        function onDeliveryOutcomeChange() {
+            if (getValue('delivery-outcome.value') == 159913) {
+                jq('#single').show();
+                jq('#twins').hide();
+                jq('#triplets').hide();
+            }
+            if (getValue('delivery-outcome.value') == 159914) {
+                jq('#single').show();
+                jq('#twins').show();
+                jq('#triplets').hide();
+            }
+            if (getValue('delivery-outcome.value') == 159915) {
+                jq('#single').show();
+                jq('#twins').show();
+                jq('#triplets').show();
+            }
+        }
 
         //Clear hidden sections
         clearHiddenSections = function(parentObj) {
@@ -100,40 +123,123 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>Counselled on infant feeding ?</td>
-                                <td>
+                                <td>Counselled on infant feeding ? &#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                     <obs conceptId="161651AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="infant-feeding"
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         style="dropdown" answerLabels="YES,NO"/>
+                                         style="dropdown" answerLabels="YES,NO" width="30%"/>
                                 </td>
-                                <td>Vitamin A for mother dispensed?</td>
-                                <td>
+                                <td>Vitamin A for mother dispensed? &#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                     <obs conceptId="161534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          style="dropdown" answerLabels="Yes,No,N/A"
                                     />
                                 </td>
                             </tr>
+
                             <tr>
-                                <td>Status of the baby: </td>
-                                <td valign="top">
-                                    <obs conceptId="159926AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerConceptIds="163016AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerLabels="Alive,Dead"/>
-                                </td>
-                                <td>Birth notification number :</td>
                                 <td>
-                                    <obs conceptId="162051AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                    />
+                                    <legend>Baby(s)</legend>
+                                    <table align="center" width="100%" class="tb1" id="single">
+                                        <tr>
+                                            <td><strong>Delivery outcome : </strong></td>
+                                            <td>
+                                                <obs conceptId="159949AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="delivery-outcome"
+                                                     answerConceptIds="159913AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159914AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159915AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerLabels="Single,Twins,Triplets"/>
+                                            </td>
+                                        </tr>
+                                        <obsgroup groupingConceptId="162588AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                            <tr>
+                                                <td colspan="6">
+                                                    Baby 1:
+                                                    <hr />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <tr>
+                                                    <td valign="top"> Status of the baby</td>
+                                                    <td>
+                                                        <obs conceptId="159926AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptIds="163016AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabels="Alive,Dead"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Birth notification number :</td>
+                                                    <td>
+                                                        <obs conceptId="162051AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                        />
+                                                    </td>
+                                                </tr>
+                                            </tr>
+
+                                        </obsgroup>
+                                    </table>
+                                    <table align="center" width="100%" class="tb1" id="twins">
+                                        <obsgroup groupingConceptId="162588AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                            <tr>
+                                                <td colspan="6">
+                                                    Baby 2:
+                                                    <hr />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <tr>
+                                                    <td valign="top"> Status of the baby</td>
+                                                    <td>
+                                                        <obs conceptId="159926AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptIds="163016AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabels="Alive,Dead"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Birth notification number :</td>
+                                                    <td>
+                                                        <obs conceptId="162051AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                        />
+                                                    </td>
+                                                </tr>
+                                            </tr>
+
+                                        </obsgroup>
+                                    </table>
+                                    <table align="center" width="100%" class="tb1" id="triplets">
+                                        <obsgroup groupingConceptId="162588AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                            <tr>
+                                                <td colspan="6">
+                                                    Baby 3:
+                                                    <hr />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <tr>
+                                                    <td valign="top"> Status of the baby</td>
+                                                    <td>
+                                                        <obs conceptId="159926AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptIds="163016AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabels="Alive,Dead"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Birth notification number :</td>
+                                                    <td>
+                                                        <obs conceptId="162051AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                        />
+                                                    </td>
+                                                </tr>
+                                            </tr>
+
+                                        </obsgroup>
+                                    </table>
                                 </td>
                             </tr>
+
                             <tr>
-                                <td>Discharge date :</td>
-                                <td>
+                                <td>Discharge date : &#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                     <obs conceptId="1641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime ="False"
                                     />
                                 </td>
-                                <td>Maternal condition</td>
+                                <td>Maternal condition </td>
                                 <td>
                                     <obs conceptId="162093AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" cols="10"/>
                                 </td>
