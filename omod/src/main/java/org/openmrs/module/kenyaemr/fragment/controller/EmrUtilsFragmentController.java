@@ -124,11 +124,13 @@ public class EmrUtilsFragmentController {
 	public SimpleObject identifierExists(@RequestParam(value = "heiNumber", required = false) String heiNumber,
 										 @RequestParam(value = "upn", required = false) String upn,
 										 @RequestParam(value = "cwcNumber", required = false) String cwcNumber,
-										 @RequestParam(value = "clinicNumber", required = false) String clinicNumber) {
+										 @RequestParam(value = "clinicNumber", required = false) String clinicNumber,
+										 @RequestParam(value = "recencyNumber", required = false) String recencyNumber) {
 		boolean heiNoExists = false;
 		boolean upnExists = false;
 		boolean clinicNoExists = false;
 		boolean cwcNoExists = false;
+		boolean recencyIdExists = false;
 		PatientService patientService = Context.getPatientService();
 
 		if (heiNumber != null && heiNumber != "") {
@@ -154,11 +156,17 @@ public class EmrUtilsFragmentController {
 			if (patientsFound.size() > 0)
 				cwcNoExists = true;
 		}
+		if (recencyNumber != null && recencyNumber != "") {
+			List<Patient> patientsFound = patientService.getPatients(null, recencyNumber.trim(), Arrays.asList(MetadataUtils.existing(PatientIdentifierType.class, Metadata.IdentifierType.RECENCY_TESTING_ID)), true );
+			if (patientsFound.size() > 0)
+				recencyIdExists = true;
+		}
 		return SimpleObject.create(
 				"heiNumberExists", heiNoExists,
 				"upnExists",upnExists,
 				"clinicNumberExists", clinicNoExists,
-				"cwcNoExists", cwcNoExists
+				"cwcNoExists", cwcNoExists,
+				"recencyIdExists", recencyIdExists
 				);
 	}
 
@@ -181,7 +189,27 @@ public class EmrUtilsFragmentController {
 
 			return cccNumber;
 	}
+	/**
+	 * Get patients Recency ID
+	 * @param patient
+	 * @param now
+	 * @return recency Id
+	 * */
 
+	public String getPatientRecencyId(@RequestParam(value = "patientId", required = false) Integer patientId) {
+		String recencyId = "";
+		PatientService patientService = Context.getPatientService();
+		if (patientId != null) {
+
+			PatientIdentifierType pit = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.RECENCY_TESTING_ID);
+			PatientIdentifier recencyIdObject =  patientService.getPatient(patientId).getPatientIdentifier(pit);
+			if(recencyIdObject != null) {
+				recencyId = recencyIdObject.getIdentifier();
+			}
+		}
+
+		return recencyId;
+	}
 	/**
 	 * Checks whether provided identifier(s) is already assigned
 	 * @return simple object with statuses for the different identifiers

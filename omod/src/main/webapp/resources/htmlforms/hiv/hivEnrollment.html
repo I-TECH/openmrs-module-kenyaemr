@@ -29,6 +29,7 @@
         var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
 		var IS_KDoD_SITE = <lookup expression="kenyaemr.getFacilityType()" />;
         var ENROLLED_IN_HIV = GREENCARD_VELOCITY.split(",")[12].split(":")[1];
+        var patientId = <lookup expression="patient.patientId"/>;
         //On Ready
         jq(function() {
 
@@ -43,6 +44,7 @@
             var pAge = parseInt('<lookup expression="patient.age"/>');
             jq('#upnError').hide();
             jq("#hiv-id input[type=text]").blur(checkForExistingPatientIdentifiers);
+            jq("#rt-id input[type=text]").blur(checkForExistingRecencyIdentifiers);
 
             ageGroup();
             jq('.muac').hide();
@@ -56,11 +58,15 @@
             getField('weight.value').change(onWeightOrHeightChange);
             getField('height.value').change(onWeightOrHeightChange);
             onWeightOrHeightChange();
+            jq('#tbl-recency-testing').hide();
+            jq("#tbl-recency-id").hide();
+            jq("#recency-testing input").change(recencyTestingSelected);
 
             //vl and ldl validation
             getField('ldl.value').change(viralLoadValidation);
             getField('vl.value').keyup(viralLoadValidation);
             viralLoadValidation;
+            includePatientsRecencyIdIfExists();
             jQuery('#rsn').keypress(function(event) {
                 var code = (event.keyCode ? event.keyCode : event.which);
                 //alert(code)
@@ -136,6 +142,31 @@
                     jq('#upnError').show();
                     jq('#hiv-id input[type=text]').focus();
 				}
+            });
+        }
+        function checkForExistingRecencyIdentifiers() {
+            var recencyIdEntered = jq('#rt-id input[type=text]').val();
+            jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/identifierExists.action', { upn: recencyIdEntered }, function(data) {
+                jq('#rtError').hide();
+                if (data.recencyIdExists === true) {
+
+                    jq('#rtError').text("A patient with similar Recency Id already exists. Please correct before proceeding");
+                    jq('#rtError').show();
+                    jq('#rt-id input[type=text]').focus();
+                }
+            });
+        }
+
+        //Recency Number
+        function includePatientsRecencyIdIfExists() {
+            var recencyId;
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/getPatientRecencyId.action', {patientId: patientId}, function (data) {
+                if (data != null || data != "") {
+                    recencyId = data;
+                    jq("#tbl-recency-testing").show();
+                    jq("#tbl-recency-id").show();
+                    jq('#rt-id input[type=text]').val(recencyId);
+                }
             });
         }
 
@@ -282,6 +313,7 @@
             var prepChecked = jq('#prepChecked');
             var haartChecked = jq('#haartChecked');
             var baselineFieldset = jq('#baseline-fieldset');
+            var recencyTesting = jq('#recency-testing');
             //New patient
             if (entryPointStatus == NEW_CLIENT) {
                 var facility_confirmed = "<lookup expression="fn.latestObs(162724).getValueText()"/>";
@@ -306,6 +338,7 @@
                 jq('#patient-regimen select').prop('disabled', true);
 
                 jq('#transit-patient').hide();
+                jq('#tbl-recency-testing').show();
                 //Gender based validations  pregnancy and breastfeeding
                 if (pgender == 'M') {
                     jq('#pregnant :input').prop('disabled', true);
@@ -346,6 +379,8 @@
                 jq('#ldl :input').prop('disabled', false);
                 jq('#ldl-date :input').prop('disabled', false);
                 jq('#patient-regimen select').prop('disabled', false);
+                jq('#tbl-recency-testing').hide();
+                jq("#tbl-recency-id").hide();
 
                 jq('#transit-patient').hide();
                 //Gender based validations  pregnancy, breastfeeding bmi and muac
@@ -360,7 +395,7 @@
                 if (pAge &lt; 19 || getValue('pregnant.value') == 1065) {
                     jq('.muac').show();
                 }
-                clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked, baselineFieldset,]);
+                clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked, baselineFieldset,recencyTesting]);
             }
             if (entryPointStatus== TRANSIT) {
                 jq('#hiv-id :input').prop('disabled', false);
@@ -371,7 +406,9 @@
                 jq('#art-history').hide();
                 jq('#baseline-fieldset').hide();
                 jq('#treatment-supporter-fieldset').hide();
-                clearHiddenSections([transferDetails, dateConfirmedPositive, facilityConfirmedPositive, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked,baselineFieldset]);
+                jq('#tbl-recency-testing').hide();
+                jq("#tbl-recency-id").hide();
+                clearHiddenSections([transferDetails, dateConfirmedPositive, facilityConfirmedPositive, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked,baselineFieldset,recencyTesting]);
             }
             if (entryPointStatus == RE_ENROLL) {
                 jq('#hiv-id :input').prop('disabled', true);
@@ -383,7 +420,9 @@
                 jq('#baseline-fieldset').hide();
                 jq('#treatment-supporter-fieldset').hide();
                 jq('#hiv-id :input').prop('disabled', false);
-                clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked, baselineFieldset]);
+                jq('#tbl-recency-testing').hide();
+                jq("#tbl-recency-id").hide();
+                clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked, baselineFieldset,recencyTesting]);
             }
             if (entryPointStatus == false) {
                 jq('#hiv-id :input').prop('disabled', false);
@@ -394,7 +433,9 @@
                 jq('#art-history').hide();
                 jq('#baseline-fieldset').hide();
                 jq('#treatment-supporter-fieldset').hide();
-                clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked, baselineFieldset]);
+                jq('#tbl-recency-testing').hide();
+                jq("#tbl-recency-id").hide();
+                clearHiddenSections([transferDetails, whoAdult, whoChild, artStatus, pmtctChecked, pepChecked, prepChecked, haartChecked, baselineFieldset,recencyTesting]);
             }
         }
         function onArtStatusChange() {
@@ -481,6 +522,16 @@
                 jq('#ldl-date :input').prop("disabled", true);
             }
         }
+
+        var recencyTestingSelected = function () {
+            var val = jq(this).val();
+            if (val == 1065) {
+                jq("#tbl-recency-id").show();
+            }else{
+                jq("#tbl-recency-id").hide();
+                jq('#rt-id input[type=text]').val('');
+            }
+        }
         clearHiddenSections = function(parentObj) {
             for(var i=0; i &lt; parentObj.length; i++){
                 parentObj[i].find('input[type=radio]').each(function() {
@@ -506,14 +557,29 @@
 				<td>
 					<ifMode mode="EDIT">
 						<script type="text/javascript">
+                            var patientId = <lookup expression="patient.patientId"/>;
                             jq(function(){
                                 jq("#transfer-in-status input[value=164144]").prop("disabled", false);
                                // setValue("encounter-date.value", "");
                                 if (getValue('art-status.value') == 'true') {
                                     jq('#art-history :input').prop('disabled', false);
-
                                 }
+                                includePatientsRecencyIdIfExists();
+
                             });
+                            //Recency Number
+                            function includePatientsRecencyIdIfExists() {
+                                var recencyId;
+                                jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/getPatientRecencyId.action', {patientId: patientId}, function (data) {
+                                    if (data != null || data != "") {
+                                        recencyId = data;
+                                        jq("#tbl-recency-testing").show();
+                                        jq("#tbl-recency-id").show();
+                                        jq('#rt-id input[type=text]').val(recencyId);
+                                    }
+                                });
+                            }
+
 						</script>
 					</ifMode>
 					<ifMode mode="EDIT">
@@ -641,6 +707,22 @@
 				<tr>
 					<td>Facility where confirmation done</td>
 					<td><obs conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="facility-confirmed"/></td><td>  <input type="checkbox" name="default-facility" id="default-location" /> This facility</td>
+				</tr>
+				<tr id="tbl-recency-testing">
+					<td>Has recency test been done?   </td>
+					<td>
+						<obs id="recency-testing" conceptId="163777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabel="Yes,No"
+							 style="radio" />
+					</td>
+				</tr>
+				<tr id="tbl-recency-id">
+					<td> Recency Id :
+					</td><td>
+						<span id="rt-id"><patient id="rt_id" field="identifier" identifierTypeId="fd52829a-75d2-4732-8e43-4bff8e5b4f1a" required="false" /></span>
+					      <span id="rtError" class="error"></span>
+				</td>
 				</tr>
 				<tr>
 					<td>WHO Stage <strong><span id="patient-age-group"></span></strong> </td>
