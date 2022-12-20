@@ -425,6 +425,7 @@
                 clearHiddenSections(jq('#couple-discordant'));
                 jq('#negative-referral').hide();
                 jq('#fs-referral').hide();
+                jq('#hts-recency-testing').hide();
             }
             //Positive
             if(secondTest ==703){
@@ -439,6 +440,7 @@
                 jq('#negative-referral').hide();
                 jq('#tbl-results-given').show();
                 jq('#tbl-discordant').show();
+                jq('#hts-recency-testing').show();
 
             }
             //Invalid
@@ -450,6 +452,7 @@
                 jq("#expiry-date2 input").prop("disabled", false);
                 getField('hiv-final-result.value').val(1138);
                 jq('#tbl-discordant').hide();
+                jq('#hts-recency-testing').hide();
             }
             //Invalid
             if(secondTest ==1175){
@@ -460,6 +463,7 @@
                 jq("#expiry-date2 input").prop("disabled", false);
                 getField('hiv-final-result.value').val(1138);
                 jq('#tbl-discordant').hide();
+                jq('#hts-recency-testing').hide();
             }
         }
 
@@ -665,6 +669,10 @@
                 clearHiddenSections(jq('#prev-test-date'));
             }
 
+            jq('#hts-recency-testing').hide();
+            jq("#tbl-recency-id").hide();
+            jq("#recency-testing input").change(recencyTestingSelected);
+
             //First test
             var firstTest = getField("hiv-test1-result.value").val();
             //Negative
@@ -708,6 +716,7 @@
                 jq('#ccc-no input').prop("disabled", true);
                 jq('#negative-referral').hide();
                 jq('#fs-referral').hide();
+                jq('#hts-recency-testing').hide();
              }
             //Positive
             if(secondTest ==703){
@@ -718,6 +727,7 @@
                 jq('#ccc-no input').prop("disabled", false);
                 jq('#fs-referral').show();
                 jq('#negative-referral').hide();
+                jq('#hts-recency-testing').show();
             }
             //Invalid
             if(secondTest ==163611){
@@ -725,6 +735,7 @@
                 jq(".lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
                 getField('hiv-final-result.value').val(1138);
+                jq('#hts-recency-testing').hide();
             }
             //Invalid
             if(secondTest ==1175){
@@ -732,6 +743,7 @@
                 jq(".lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
                 getField('hiv-final-result.value').val(1138);
+                jq('#hts-recency-testing').hide();
             }
 
         // add code for ML feature
@@ -1017,6 +1029,16 @@
                 getField('specify-referral.value').val("");
             }
         }
+
+        var recencyTestingSelected = function () {
+            var val = jq(this).val();
+            if (val == 1065) {
+                jq("#tbl-recency-id").show();
+            }else{
+                jq("#tbl-recency-id").hide();
+                jq('#rt-id input[type=text]').val('');
+            }
+        }
         //Before Submit
         beforeSubmit.push(function() {
             var clientConsent = getValue('clientConsent.value');
@@ -1179,6 +1201,7 @@
                     jq('#ccc-no input').prop("disabled", true);
                     jq('#negative-referral').hide();
                     jq('#fs-referral').hide();
+                    jq('#hts-recency-testing').hide();
                 }
                 //Positive
                 if(secondTest ==703){
@@ -1189,6 +1212,8 @@
                     jq('#ccc-no input').prop("disabled", false);
                     jq('#fs-referral').show();
                     jq('#negative-referral').hide();
+                    jq('#hts-recency-testing').show();
+                    jq('#tbl-recency-id').show();
 
                 }
                 //Invalid
@@ -1197,6 +1222,7 @@
                     jq(".lot-number2 input").prop("disabled", false);
                     jq("#expiry-date2 input").prop("disabled", false);
                     getField('hiv-final-result.value').val(1138);
+                    jq('#hts-recency-testing').hide();
                 }
                 //Invalid
                 if(secondTest ==1175){
@@ -1204,6 +1230,7 @@
                     jq(".lot-number2 input").prop("disabled", false);
                     jq("#expiry-date2 input").prop("disabled", false);
                     getField('hiv-final-result.value').val(1138);
+                    jq('#hts-recency-testing').hide();
                 }
 //if key pop show which type
                 var popTypeSelected = getValue('population-type.value');
@@ -1821,6 +1848,24 @@
                                 </td>
                             </tr>
                         </table>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset id="hts-recency-testing">
+            <legend>Recency Testing</legend>
+            <table id="tbl-recency-testing">
+                <tr>
+                    <td>Has recency test been done? &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs id="recency-testing" conceptId="163777AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Yes,No"
+                             style="radio" />
+                    </td>
+                </tr>
+                <tr id="tbl-recency-id">
+                    <td> Recency Id :&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <span id="rt-id"><patient id="rt_id" field="identifier" identifierTypeId="fd52829a-75d2-4732-8e43-4bff8e5b4f1a" required="false" /></span>
                     </td>
                 </tr>
             </table>

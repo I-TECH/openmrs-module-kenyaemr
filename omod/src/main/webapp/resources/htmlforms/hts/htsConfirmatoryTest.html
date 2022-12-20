@@ -20,6 +20,7 @@
         var IS_KDoD_SITE = <lookup expression="kenyaemr.getFacilityType()" />;
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
         var mlCaseFindingEnabled = "<lookup expression="fn.globalProperty('kenyaemrml.casefinding.feature.enabled')"/>";
+        var patientId = <lookup expression="patient.patientId"/>;
 
         var populationTypeSelected = function () {
             var val = jq(this).val();
@@ -678,6 +679,8 @@
             jq('#hts-recency-testing').hide();
             jq("#tbl-recency-id").hide();
             jq("#recency-testing input").change(recencyTestingSelected);
+            includePatientsRecencyIdIfExists();
+            jq("#rt-id input[type=text]").blur(checkForExistingRecencyIdentifiers);
 
             //First test
             var firstTest = getField("hiv-test1-result.value").val();
@@ -1049,6 +1052,34 @@
                 jq('#rt-id input[type=text]').val('');
             }
         }
+
+        //Recency Number
+        function includePatientsRecencyIdIfExists() {
+            var recencyId;
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/getPatientRecencyId.action', {patientId: patientId}, function (data) {
+                if (data != null || data != "") {
+                    recencyId = data;
+                    jq("#tbl-recency-testing").show();
+                    jq("#tbl-recency-id").show();
+                    jq("#recency-testing input[value=1065]").prop("checked", true);
+                    jq('#rt-id input[type=text]').val(recencyId);
+                }
+            });
+        }
+
+        function checkForExistingRecencyIdentifiers() {
+            var recencyIdEntered = jq('#rt-id input[type=text]').val();
+            jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/identifierExists.action', { upn: recencyIdEntered }, function(data) {
+                jq('#rtError').hide();
+                if (data.recencyIdExists === true) {
+
+                    jq('#rtError').text("A patient with similar Recency Id already exists. Please correct before proceeding");
+                    jq('#rtError').show();
+                    jq('#rt-id input[type=text]').focus();
+                }
+            });
+        }
+
         //Before Submit
         beforeSubmit.push(function() {
             var clientConsent = getValue('clientConsent.value');
@@ -1150,6 +1181,7 @@
     </ifMode>
     <ifMode mode="EDIT">
         <script type="text/javascript">
+            var patientId = <lookup expression="patient.patientId"/>;
             jq(function(){
                 //facility referral
                 var val = getField("referral-to.value").val();
@@ -1318,7 +1350,23 @@
                     jq('#dual-results-1').show();
                 }
 
+                includePatientsRecencyIdIfExists();
+
             });
+
+            //Recency Number
+            function includePatientsRecencyIdIfExists() {
+                var recencyId;
+                jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/getPatientRecencyId.action', {patientId: patientId}, function (data) {
+                    if (data != null || data != "") {
+                        recencyId = data;
+                        jq("#tbl-recency-testing").show();
+                        jq("#tbl-recency-id").show();
+                        jq("#recency-testing input[value=1065]").prop("checked", true);
+                        jq('#rt-id input[type=text]').val(recencyId);
+                    }
+                });
+            }
         </script>
     </ifMode>
     <div class="ke-form-header">
@@ -1878,6 +1926,7 @@
                 <tr id="tbl-recency-id">
                     <td> Recency Id :&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                         <span id="rt-id"><patient id="rt_id" field="identifier" identifierTypeId="fd52829a-75d2-4732-8e43-4bff8e5b4f1a" required="false" /></span>
+                        <span id="rtError" class="error"></span>
                     </td>
                 </tr>
             </table>
