@@ -876,7 +876,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             } else if (idType == '${birthCertificateNumberType}') {
                 idTypeParam = 'birth-certificate';
             }else if (idType == '${prisonerNumberType}') {
-                idTypeParam = 'prisoner-id';
+                idTypeParam = 'prison-id';
             }
 
             var countryCode = countryObject[jQuery('select[id=nupi-verification-country]').val()].countryCode;
@@ -1052,7 +1052,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 identifierValue = jQuery('input[name=birthCertificateNumber]').val();
                 jQuery("#nationalID-msgBox").hide();
             }else if(jQuery('input[name=prisonerServiceNumber]').val() !=""){
-                identifierType = "prisoner-id";
+                identifierType = "prison-id";
                 identifierValue = jQuery('input[name=prisonerServiceNumber]').val();
                 jQuery("#nationalID-msgBox").hide();
             }else{
@@ -1506,7 +1506,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             var nationalIdType = 'Identification Number';
             var passportIdType = 'passport-no';
             var birthCertificateIdType = 'birth-certificate';
-            var prisonerIdType = 'prisoner-id';
+            var prisonerIdType = 'prison-id';
 
             for (i = 0; i < crResponseData.client.identifications.length; i++) {
                 var identifierObj = crResponseData.client.identifications[i];
