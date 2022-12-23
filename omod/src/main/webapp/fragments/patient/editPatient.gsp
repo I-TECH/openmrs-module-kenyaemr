@@ -995,8 +995,12 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                             if (data.client.identifications.length > 0) {
                                 for (i = 0; i < data.client.identifications.length; i++) {
                                     var identifierObj = data.client.identifications[i];
+                                    console.log("Identification Type ==>"+identifierObj.identificationType);
                                     if (identifierObj.identificationType == 'Identification Number') {
                                         jQuery('#cr-national-id').text(identifierObj.identificationNumber);
+                                    }
+                                    if (identifierObj.identificationType == 'prison-id') {
+                                        jQuery('#cr-prisoner-id').text(identifierObj.identificationNumber);
                                     }
                                 }
                             }
