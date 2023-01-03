@@ -12,6 +12,7 @@
     def nationalIdType = "49af6cdc-7968-4abb-bf46-de10d7f4859f"
     def birthCertificateNumberType = "68449e5a-8829-44dd-bfef-c9c8cf2cb9b2"
     def passportNumberType = "be9beef6-aacc-4e1f-ac4e-5babeaa1e303"
+    def prisonerNumberType = "c625c325-5de5-4e63-8d62-572725fb9416"
     def nameFields = [
             [
                     [object: command, property: "personName.familyName", label: "Surname *"],
@@ -48,10 +49,10 @@
                     [object: command, property: "alternatePhoneContact", label: "Alternate phone number"]
             ]
     ]
-   def otherContactsFields = [         [
-                    [object: command, property: "personAddress.address1", label: "Postal Address", config: [size: 60]],
-                    [object: command, property: "emailAddress", label: "Email address"]
-            ]
+    def otherContactsFields = [         [
+                                                [object: command, property: "personAddress.address1", label: "Postal Address", config: [size: 60]],
+                                                [object: command, property: "emailAddress", label: "Email address"]
+                                        ]
     ]
 
     def locationSubLocationVillageFields = [
@@ -113,7 +114,7 @@
                         <select name="nupi-verification-country" id="nupi-verification-country">
                             <option></option>
                             <%countryOptions.each { %>
-                                <option value="${it.id}">${ui.format(it)}</option>
+                            <option value="${it.id}">${ui.format(it)}</option>
                             <%}%>
                         </select>
                     </td>
@@ -122,12 +123,12 @@
                         <div id="nupi-verification-country-msgBox" name="nupi-verification-country-msgBox" class="ke-warning">Country is Required</div>
                     </td>
                     <td></td>
-                    
+
                     <td>
                         <select id="idType" name="idtype">
                             <option value="">Select a valid identifier type</option>
                             <% idTypes.each {%>
-                            <% if(it.uuid == nationalIdType || it.uuid == birthCertificateNumberType || it.uuid == passportNumberType) { %>
+                            <% if(it.uuid == nationalIdType || it.uuid == birthCertificateNumberType || it.uuid == passportNumberType || it.uuid == prisonerNumberType) { %>
                             <option value="${it.uuid}">${it.name}</option>
                             <% } %>
                             <%}%>
@@ -188,11 +189,17 @@
                     <td class="ke-field-instructions"><% if (!command.patientClinicNumber) { %>(if available)<%
                         } %></td>
                 </tr>
-                <tr>
+                <tr id="national-identification-no">
                     <td class="ke-field-label">National ID Number</td>
                     <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "nationalIdNumber"])}</td>
                     <td class="ke-field-instructions"><% if (!command.nationalIdNumber) { %>(This is required for all kenyans aged 18+)<% } %></td>
                     <td><div id="nationalID-msgBox" class="ke-warning">National Id or Birth Certificate Number is Required</div></td>
+                </tr>
+
+                <tr id="prisoner-service-no">
+                    <td class="ke-field-label">Prisoner ID Number *</td>
+                    <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "prisonerServiceNumber"])}</td>
+                    <td class="ke-field-instructions"><% if (!command.prisonerServiceNumber) { %>(This is required for all prisoners)<% } %></td>
                 </tr>
 
                 <tr  id="birth-cert-no">
@@ -250,13 +257,13 @@
             <% } %>
             &nbsp;&nbsp;
             <table>
-               <tr>
-                <td>
-                    <div id="surname-msgBox" class="ke-warning">Surname is Required</div>
-                </td>
-                   <td>
-                       <div id="firstname-msgBox" class="ke-warning">First name is Required</div>
-                   </td>
+                <tr>
+                    <td>
+                        <div id="surname-msgBox" class="ke-warning">Surname is Required</div>
+                    </td>
+                    <td>
+                        <div id="firstname-msgBox" class="ke-warning">First name is Required</div>
+                    </td>
                 </tr>
             </table>
             <table>
@@ -347,30 +354,30 @@
         <fieldset>
             <legend>Address</legend>
             <table>
-            <tr>
-            <td class="ke-field-label">Country *</td>
-            <td> </td>
-            </tr>
-            <tr>
-                
-                <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "country", id: "country-registration", config: [style: "list", options: countryOptions]])}</td>
-                <td> <input type="checkbox" name="select-kenya-option" value="Y" id="select-kenya-option" /> Select Kenya </td>
-                <td>
-                    <div id="country-msgBox" class="ke-warning">Country is Required</div>
-                </td>
-            </tr>
+                <tr>
+                    <td class="ke-field-label">Country *</td>
+                    <td> </td>
+                </tr>
+                <tr>
+
+                    <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "country", id: "country-registration", config: [style: "list", options: countryOptions]])}</td>
+                    <td> <input type="checkbox" name="select-kenya-option" value="Y" id="select-kenya-option" /> Select Kenya </td>
+                    <td>
+                        <div id="country-msgBox" class="ke-warning">Country is Required</div>
+                    </td>
+                </tr>
             </table>
 
             <% contactsFields.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
             <table>
-            <tr>
-                <td>
-                    <div id="phone-msgBox" class="ke-warning">Phone number is Required</div>
-                </td>
-            </tr>
-           </table>
+                <tr>
+                    <td>
+                        <div id="phone-msgBox" class="ke-warning">Phone number is Required</div>
+                    </td>
+                </tr>
+            </table>
             <% otherContactsFields.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
@@ -401,17 +408,17 @@
                         </select>
                     </td>
                 </tr>
-            <tr>
-                <td>
-                    <div id="county-msgBox" class="ke-warning">County is Required</div>
-                </td>
-                <td>
-                    <div id="subCounty-msgBox" class="ke-warning">Sub County is Required</div>
-                </td>
-                <td>
-                    <div id="ward-msgBox" class="ke-warning">Ward is Required</div>
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        <div id="county-msgBox" class="ke-warning">County is Required</div>
+                    </td>
+                    <td>
+                        <div id="subCounty-msgBox" class="ke-warning">Sub County is Required</div>
+                    </td>
+                    <td>
+                        <div id="ward-msgBox" class="ke-warning">Ward is Required</div>
+                    </td>
+                </tr>
             </table>
 
             <% locationSubLocationVillageFields.each { %>
@@ -422,7 +429,7 @@
             <% landmarkNearestFacilityFields.each { %>
             ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
-            
+
         </fieldset>
 
         <% if (peerEducator) { %>
@@ -461,15 +468,15 @@
                 </tr>
             </table>
             <% nextOfKinFieldRows.each { %>
-                ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
+            ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
             <% } %>
 
-           <% if ("${isKDoD}"=="false") { %>
-                <% crVerifedField.each { %>
-                   ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
-                <% } %>
-                <input type="hidden" id="CRVerificationMessage" name="CRVerificationMessage">
-           <% } %>
+            <% if ("${isKDoD}"=="false") { %>
+            <% crVerifedField.each { %>
+            ${ui.includeFragment("kenyaui", "widget/rowOfFields", [fields: it])}
+            <% } %>
+            <input type="hidden" id="CRVerificationMessage" name="CRVerificationMessage">
+            <% } %>
         </fieldset>
 
         <div class="text-wrap" align="center" id="post-msgBox"></div>
@@ -492,7 +499,7 @@
                 </div>
             </div>
         </fieldset>
-        
+
     </div>
 
 </form>
@@ -546,6 +553,11 @@
                 <tr>
                     <td>Passport Number</td>
                     <td id="cr-passport"></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Prisoner Number</td>
+                    <td id="cr-prisoner-id"></td>
                     <td></td>
                 </tr>
             </table>
@@ -818,6 +830,14 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             jQuery("input[name='CRVerificationStatus']").val("N/A");
         }
 
+        if("${isPrisoner}"=="true"){
+            jQuery('#prisoner-service-no').show();
+            jQuery('#national-identification-no').hide();
+        }
+        else {
+            jQuery('#prisoner-service-no').hide();
+        }
+
         jQuery("input[name='CRVerificationStatus']").attr('readonly', true);
         jQuery('#show-cr-info-dialog').hide();
         jQuery('#other-identifiers').click(otherIdentifiersChange);
@@ -855,6 +875,8 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 idTypeParam = 'passport';
             } else if (idType == '${birthCertificateNumberType}') {
                 idTypeParam = 'birth-certificate';
+            }else if (idType == '${prisonerNumberType}') {
+                idTypeParam = 'prison-id';
             }
 
             var countryCode = countryObject[jQuery('select[id=nupi-verification-country]').val()].countryCode;
@@ -973,8 +995,12 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                             if (data.client.identifications.length > 0) {
                                 for (i = 0; i < data.client.identifications.length; i++) {
                                     var identifierObj = data.client.identifications[i];
+                                    console.log("Identification Type ==>"+identifierObj.identificationType);
                                     if (identifierObj.identificationType == 'Identification Number') {
                                         jQuery('#cr-national-id').text(identifierObj.identificationNumber);
+                                    }
+                                    if (identifierObj.identificationType == 'prison-id') {
+                                        jQuery('#cr-prisoner-id').text(identifierObj.identificationNumber);
                                     }
                                 }
                             }
@@ -1029,30 +1055,34 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 identifierType = "birth-certificate";
                 identifierValue = jQuery('input[name=birthCertificateNumber]').val();
                 jQuery("#nationalID-msgBox").hide();
+            }else if(jQuery('input[name=prisonerServiceNumber]').val() !=""){
+                identifierType = "prison-id";
+                identifierValue = jQuery('input[name=prisonerServiceNumber]').val();
+                jQuery("#nationalID-msgBox").hide();
             }else{
-                // National Id or Birth Certificate Number is required
+                // National Id or Birth Certificate Number or Prisoner ID is required
                 jQuery("#post-msgBox").text("Please enter National Id or Birth Certificate Number to successfully post to CR");
                 jQuery("#post-msgBox").show();
                 jQuery("#nationalID-msgBox").show();
                 return;
             }
-                //gender:
-                var gender;
-                if(jQuery('input[name=gender]').val() !="") {
-                    jQuery("#gender-msgBox").hide();
-                    if (jQuery('#gender-F').is(':checked')) {
-                        gender = "female";
-                    }
-                    if (jQuery('#gender-M').is(':checked')) {
-                        gender = "male";
-                    }
-                }else{
-                    // Gender is required
-                    jQuery("#post-msgBox").text("Please enter gender to successfully post to CR");
-                    jQuery("#post-msgBox").show();
-                    jQuery("#gender-msgBox").show();
-                    return;
+            //gender:
+            var gender;
+            if(jQuery('input[name=gender]').val() !="") {
+                jQuery("#gender-msgBox").hide();
+                if (jQuery('#gender-F').is(':checked')) {
+                    gender = "female";
                 }
+                if (jQuery('#gender-M').is(':checked')) {
+                    gender = "male";
+                }
+            }else{
+                // Gender is required
+                jQuery("#post-msgBox").text("Please enter gender to successfully post to CR");
+                jQuery("#post-msgBox").show();
+                jQuery("#gender-msgBox").show();
+                return;
+            }
             //Marital status:
             var maritalStatus;
             if(jQuery('select[name=maritalStatus]').val() !="") {
@@ -1259,6 +1289,13 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             });
         }
 
+        if("${isPrisoner}"=="false"){
+            jQuery('#prisoner-service-no').hide();
+        }
+        else {
+            jQuery('#prisoner-service-no').show();
+        }
+
         jQuery('#county').change(updateSubcounty);
         jQuery('#subCounty').change(updateWard);
         jQuery('#patient-birthdate_date').change(updateIdentifiers);
@@ -1400,10 +1437,10 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         }
 
         jQuery('select[id=nupi-verification-ountry]').on('change', function() {
-         if(this.value != 162883)  {
-             jq("#select-kenya-option-nupi-verification").prop("checked", false);
-         }
-         });
+            if(this.value != 162883)  {
+                jq("#select-kenya-option-nupi-verification").prop("checked", false);
+            }
+        });
     }
 
     //Ckeckbox to select country Kenya on registration
@@ -1417,10 +1454,10 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         }
 
         jQuery('select[id=country-registration]').on('change', function() {
-         if(this.value != 162883)  {
-             jq("#select-kenya-option").prop("checked", false);
-         }
-         });
+            if(this.value != 162883)  {
+                jq("#select-kenya-option").prop("checked", false);
+            }
+        });
     }
 
     function showDataFromCR() {
@@ -1473,6 +1510,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             var nationalIdType = 'Identification Number';
             var passportIdType = 'passport-no';
             var birthCertificateIdType = 'birth-certificate';
+            var prisonerIdType = 'prison-id';
 
             for (i = 0; i < crResponseData.client.identifications.length; i++) {
                 var identifierObj = crResponseData.client.identifications[i];
@@ -1482,6 +1520,8 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                     jQuery("input[name='passPortNumber']").val(identifierObj.identificationNumber);
                 } else if (identifierObj.identificationType == birthCertificateIdType) {
                     jQuery("input[name='birthCertificateNumber']").val(identifierObj.identificationNumber);
+                } else if (identifierObj.identificationType == prisonerIdType) {
+                    jQuery("input[name='prisonerServiceNumber']").val(identifierObj.identificationNumber);
                 }
             }
 
@@ -1588,7 +1628,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 display_loading_post_registration(false);
 
                 responseData = data;
-                
+
                 if(data.status == 200) {
                     if(data.clientNumber) {
                         jQuery("input[name='nationalUniquePatientNumber']").val(data.clientNumber);
@@ -1617,10 +1657,10 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                         console.log("Network Error: " + errors + " Code: " + data.status);
                     }
                     jQuery("#post-msgBox").text("Could not verify with Client registry. Please continue with registration : \\n" + JSON.stringify(JSON.parse(data.message).errors));
-                    
+
                     jQuery("#post-msgBox").show();
                 }
-                
+
             })
             .fail(function (err) {
                     // Hide spinner
@@ -1636,6 +1676,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 }
             )
     }
+
 
 
 </script>

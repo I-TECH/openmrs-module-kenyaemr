@@ -381,6 +381,23 @@ public class PatientWrapper extends AbstractPatientWrapper {
 	public void setKDoDServiceNumber(String value, Location location) {
 		setAsIdentifier(CommonMetadata._PatientIdentifierType.KDoD_SERVICE_NUMBER, value, location);
 	}
+
+	/**
+	 * Gets prisoner service number
+	 * @return the identifier value
+	 */
+	public String getPrisonerServiceNumber() {
+		return getAsIdentifier(CommonMetadata._PatientIdentifierType.PRISONER_ID);
+	}
+
+	/**
+	 * Sets prisoner service number
+	 * @param value the identifier value
+	 * @param location the identifier location
+	 */
+	public void setPrisonerServiceNumber(String value, Location location) {
+		setAsIdentifier(CommonMetadata._PatientIdentifierType.PRISONER_ID, value, location);
+	}
 	/**
 	 * Gets patient's cadre for KDoD
 	 * @return KDoD cadre
