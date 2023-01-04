@@ -830,7 +830,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             jQuery("input[name='CRVerificationStatus']").val("N/A");
         }
 
-        if("${isPrisoner}"=="true"){
+        if("${isPrison}"=="true"){
             jQuery('#prisoner-service-no').show();
             jQuery('#national-identification-no').hide();
         }
@@ -1289,7 +1289,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             });
         }
 
-        if("${isPrisoner}"=="false"){
+        if("${isPrison}"=="false"){
             jQuery('#prisoner-service-no').hide();
         }
         else {
