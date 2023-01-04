@@ -74,7 +74,7 @@ public class EditPatientFragmentController {
 	final String clientNumberPreferredLabel = (administrationService.getGlobalProperty("client_number_label"));
 	final String clientRegistryClientVerificationApi = (administrationService.getGlobalProperty(CommonMetadata.GP_CLIENT_VERIFICATION_GET_END_POINT));
 	final String clientRegistryApiToken = (administrationService.getGlobalProperty(CommonMetadata.GP_CLIENT_VERIFICATION_API_TOKEN));
-	final String isPrisoner = (administrationService.getGlobalProperty("kenyaemr.isPrisoner"));
+	final String isPrison = (administrationService.getGlobalProperty("kenyaemr.isPrison"));
 	/**
 	 * Gets the facility name given the facility code
 	 * @return
@@ -255,7 +255,7 @@ public class EditPatientFragmentController {
         );
         model.addAttribute("rankOptions", rankOptions);
         model.addAttribute("isKDoD", isKDoD);
-        model.addAttribute("isPrisoner", isPrisoner);
+        model.addAttribute("isPrison", isPrison);
         model.addAttribute("idTypes", Context.getPatientService().getAllPatientIdentifierTypes());
 
     }
@@ -445,7 +445,7 @@ public class EditPatientFragmentController {
 			kDoDRank = wrapper.getRank();
 			kDoDUnit = wrapper.getKDoDUnit();
 			}
-			else if(isPrisoner.equals("true")) {
+			else if(isPrison.equals("true")) {
 				prisonerServiceNumber = wrapper.getPrisonerServiceNumber();
 				uniquePatientNumber = wrapper.getUniquePatientNumber();
 			}
@@ -678,7 +678,7 @@ public class EditPatientFragmentController {
 				wrapper.setCadre(kDoDCadre);
 				wrapper.setRank(kDoDRank);
 				wrapper.setKDoDUnit(kDoDUnit);
-			}else if(isPrisoner.equals("true")){
+			}else if(isPrison.equals("true")){
 				wrapper.setPrisonerServiceNumber(prisonerServiceNumber, location);
 				wrapper.setUniquePatientNumber(uniquePatientNumber, location);
 			}
