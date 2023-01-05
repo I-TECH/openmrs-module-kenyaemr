@@ -197,7 +197,7 @@
                 </tr>
 
                 <tr id="prisoner-service-no">
-                    <td class="ke-field-label">Prisoner ID Number *</td>
+                    <td class="ke-field-label">Prisoner ID Number </td>
                     <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "prisonerServiceNumber"])}</td>
                     <td class="ke-field-instructions"><% if (!command.prisonerServiceNumber) { %>(This is required for all prisoners)<% } %></td>
                 </tr>
