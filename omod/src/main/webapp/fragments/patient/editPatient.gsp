@@ -832,7 +832,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
 
         if("${isPrison}"=="true"){
             jQuery('#prisoner-service-no').show();
-            jQuery('#national-identification-no').hide();
+            jQuery('#national-identification-no').show();
         }
         else {
             jQuery('#prisoner-service-no').hide();
