@@ -99,12 +99,4 @@
 		</description>
 	</globalProperty>
 
-	<globalProperty>
-		<property>kenyaemr.isPrison</property>
-		<defaultValue>false</defaultValue>
-		<description>
-			Defines whether facility handles Prisoners or not
-		</description>
-	</globalProperty>
-
 </module>

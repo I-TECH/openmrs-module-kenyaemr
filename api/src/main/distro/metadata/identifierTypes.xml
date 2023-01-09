@@ -29,5 +29,4 @@
 	<ref key="ALIEN_ID_NUMBER" uuid="1c7d0e5b-2068-4816-a643-8de83ab65fbf" />
 	<ref key="DRIVING_LICENSE" uuid="ca125004-e8af-445d-9436-a43684150f8b" />
 	<ref key="RECENCY_TESTING_ID" uuid="fd52829a-75d2-4732-8e43-4bff8e5b4f1a" />
-	<ref key="PRISONER_ID" uuid="c625c325-5de5-4e63-8d62-572725fb9416" />
 </refs>

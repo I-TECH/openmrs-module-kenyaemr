@@ -74,7 +74,7 @@ public class EditPatientFragmentController {
 	final String clientNumberPreferredLabel = (administrationService.getGlobalProperty("client_number_label"));
 	final String clientRegistryClientVerificationApi = (administrationService.getGlobalProperty(CommonMetadata.GP_CLIENT_VERIFICATION_GET_END_POINT));
 	final String clientRegistryApiToken = (administrationService.getGlobalProperty(CommonMetadata.GP_CLIENT_VERIFICATION_API_TOKEN));
-	final String isPrison = (administrationService.getGlobalProperty("kenyaemr.isPrison"));
+
 	/**
 	 * Gets the facility name given the facility code
 	 * @return
@@ -255,7 +255,6 @@ public class EditPatientFragmentController {
         );
         model.addAttribute("rankOptions", rankOptions);
         model.addAttribute("isKDoD", isKDoD);
-        model.addAttribute("isPrison", isPrison);
         model.addAttribute("idTypes", Context.getPatientService().getAllPatientIdentifierTypes());
 
     }
@@ -337,7 +336,7 @@ public class EditPatientFragmentController {
 		private String nextOfKinContact;
 		private String nextOfKinAddress;
 		private String subChiefName;
-        private String alternatePhoneContact;
+		private String alternatePhoneContact;
 		private String nearestHealthFacility;
 		private String emailAddress;
 		private String guardianFirstName;
@@ -354,7 +353,6 @@ public class EditPatientFragmentController {
 		private String drivingLicenseNumber;
 		private String CRVerificationStatus;
 		private String CRVerificationMessage;
-        private String prisonerServiceNumber;
 		private Concept country;
 		private Obs savedCountry;
 
@@ -445,14 +443,9 @@ public class EditPatientFragmentController {
 			kDoDRank = wrapper.getRank();
 			kDoDUnit = wrapper.getKDoDUnit();
 			}
-			else if(isPrison.equals("true")) {
-				prisonerServiceNumber = wrapper.getPrisonerServiceNumber();
+			else{
 				uniquePatientNumber = wrapper.getUniquePatientNumber();
 			}
-			else{
-					uniquePatientNumber = wrapper.getUniquePatientNumber();
-			}
-
 			savedMaritalStatus = getLatestObs(patient, Dictionary.CIVIL_STATUS);
 			if (savedMaritalStatus != null) {
 				maritalStatus = savedMaritalStatus.getValueCoded();
@@ -507,7 +500,8 @@ public class EditPatientFragmentController {
 			require(errors, "personName.familyName");
 			require(errors, "gender");
 			require(errors, "birthdate");
-			}else {
+			}
+			else {
 				require(errors, "personName.givenName");
 				require(errors, "personName.familyName");
 				require(errors, "gender");
@@ -542,7 +536,7 @@ public class EditPatientFragmentController {
 
 			validateField(errors, "personAddress");
 
-            if(isKDoD.equals("true")) {
+            if(isKDoD.equals("true")){
                 validateIdentifierField(errors, "kDoDServiceNumber", CommonMetadata._PatientIdentifierType.KDoD_SERVICE_NUMBER);
             }
             else {
@@ -678,9 +672,6 @@ public class EditPatientFragmentController {
 				wrapper.setCadre(kDoDCadre);
 				wrapper.setRank(kDoDRank);
 				wrapper.setKDoDUnit(kDoDUnit);
-			}else if(isPrison.equals("true")){
-				wrapper.setPrisonerServiceNumber(prisonerServiceNumber, location);
-				wrapper.setUniquePatientNumber(uniquePatientNumber, location);
 			}
 			else{
 				wrapper.setUniquePatientNumber(uniquePatientNumber, location);
@@ -1259,15 +1250,7 @@ public class EditPatientFragmentController {
 
 		public void setCRVerificationMessage(String cRVerificationMessage) {
 			CRVerificationMessage = cRVerificationMessage;
-		}
-
-        public String getPrisonerServiceNumber() {
-            return prisonerServiceNumber;
-        }
-
-        public void setPrisonerServiceNumber(String prisonerServiceNumber) {
-            this.prisonerServiceNumber = prisonerServiceNumber;
-        }
+		}	
 
 	}
 
