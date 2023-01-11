@@ -213,7 +213,7 @@ public class DatimReportBuilder extends AbstractReportBuilder {
                 Arrays.asList(f15_to19, f20_to24, f25_to29, f30_to34, f35_to39, f40_to44, f45_to49, fAbove50, colTotal);
 
         List<ColumnParameters> datimPMTCTCXCAExpandedAgeDisaggregation =
-                Arrays.asList(f15_to19, f20_to24, f25_to29, f30_to34, f35_to39, f40_to44, f45_to49, fAbove50, f50_to54, f55_to59, f60_to64, fAbove65, colTotal);
+                Arrays.asList(f15_to19, f20_to24, f25_to29, f30_to34, f35_to39, f40_to44, f45_to49, f50_to54, f55_to59, f60_to64, fAbove65, colTotal);
 
         List<ColumnParameters> datimAgeDisaggregationMonths = Arrays.asList(all0_to_2m, all2_to_12m, colTotal);
 
@@ -541,58 +541,58 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "PMTCT_HEI_POS_ART", "Infants identified HIV Positive within 12 months after birth and Started ART", ReportUtils.map(datimIndicators.infantsTurnedHIVPositiveOnART(), indParams), datimAgeDisaggregationMonths, Arrays.asList("01", "02", "03"));
 
         //CXCA_SCRN_FIRST_TIME_NEGATIVE
-        EmrReportingUtils.addRow(cohortDsd, "CXCA_SCRN_FIRST_TIME_NEGATIVE", "HIV Positive women on ART screened Negative for CACX for the 1st time", ReportUtils.map(datimIndicators.firstTimeCXCASCRNNegative(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13"));
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_SCRN_FIRST_TIME_NEGATIVE", "HIV Positive women on ART screened Negative for CACX for the 1st time", ReportUtils.map(datimIndicators.firstTimeCXCASCRNNegative(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
 
         //CXCA_SCRN_FIRST_TIME_POSITIVE
-        EmrReportingUtils.addRow(cohortDsd, "CXCA_SCRN_FIRST_TIME_POSITIVE", "HIV Positive women on ART screened Positive for CACX for the 1st time", ReportUtils.map(datimIndicators.firstTimeCXCASCRNPositive(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13"));
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_SCRN_FIRST_TIME_POSITIVE", "HIV Positive women on ART screened Positive for CACX for the 1st time", ReportUtils.map(datimIndicators.firstTimeCXCASCRNPositive(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
 
         //CXCA_SCRN_FIRST_TIME_PRESUMED
-        EmrReportingUtils.addRow(cohortDsd, "CXCA_SCRN_FIRST_TIME_PRESUMED", "HIV Positive Women on ART with Presumed CACX for the 1st time", ReportUtils.map(datimIndicators.firstTimeCXCASCRNPresumed(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13"));
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_SCRN_FIRST_TIME_PRESUMED", "HIV Positive Women on ART with Presumed CACX for the 1st time", ReportUtils.map(datimIndicators.firstTimeCXCASCRNPresumed(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
 
         //CXCA_SCRN_RESCREENED_NEGATIVE
-        EmrReportingUtils.addRow(cohortDsd, "CXCA_SCRN_RESCREENED_NEGATIVE", "HIV Positive Women on ART re-screened Negative for CACX", ReportUtils.map(datimIndicators.rescreenedCXCASCRNNegative(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13"));
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_SCRN_RESCREENED_NEGATIVE", "HIV Positive Women on ART re-screened Negative for CACX", ReportUtils.map(datimIndicators.rescreenedCXCASCRNNegative(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
 
         //CXCA_SCRN_RESCREENED_POSITIVE
-        EmrReportingUtils.addRow(cohortDsd, "CXCA_SCRN_RESCREENED_POSITIVE", "HIV Positive Women on ART re-screened Positive for CACX", ReportUtils.map(datimIndicators.rescreenedCXCASCRNPositive(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13"));
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_SCRN_RESCREENED_POSITIVE", "HIV Positive Women on ART re-screened Positive for CACX", ReportUtils.map(datimIndicators.rescreenedCXCASCRNPositive(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
 
         //CXCA_SCRN_RESCREENED_PRESUMED
-        EmrReportingUtils.addRow(cohortDsd, "CXCA_SCRN_RESCREENED_PRESUMED", "HIV Positive Women on ART re-screened with presumed CACX outcome", ReportUtils.map(datimIndicators.rescreenedCXCASCRNPresumed(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13"));
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_SCRN_RESCREENED_PRESUMED", "HIV Positive Women on ART re-screened with presumed CACX outcome", ReportUtils.map(datimIndicators.rescreenedCXCASCRNPresumed(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
 
         //CXCA_SCRN_POST_TREATMENT_NEGATIVE
-        EmrReportingUtils.addRow(cohortDsd, "CXCA_SCRN_POST_TREATMENT_NEGATIVE", "HIV Positive Women on ART screened Negative for CACX after previous treatment", ReportUtils.map(datimIndicators.postTreatmentCXCASCRNNegative(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13"));
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_SCRN_POST_TREATMENT_NEGATIVE", "HIV Positive Women on ART screened Negative for CACX after previous treatment", ReportUtils.map(datimIndicators.postTreatmentCXCASCRNNegative(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
 
         //CXCA_SCRN_POST_TREATMENT_POSITIVE
-        EmrReportingUtils.addRow(cohortDsd, "CXCA_SCRN_POST_TREATMENT_POSITIVE", "HIV Positive Women on ART screened Positive for CACX after previous treatment", ReportUtils.map(datimIndicators.postTreatmentCXCASCRNPositive(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13"));
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_SCRN_POST_TREATMENT_POSITIVE", "HIV Positive Women on ART screened Positive for CACX after previous treatment", ReportUtils.map(datimIndicators.postTreatmentCXCASCRNPositive(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
 
         //CXCA_SCRN_POST_TREATMENT_PRESUMED
-        EmrReportingUtils.addRow(cohortDsd, "CXCA_SCRN_POST_TREATMENT_PRESUMED", "HIV Positive women on ART with Presumed CACX after previous treatment", ReportUtils.map(datimIndicators.postTreatmentCXCASCRNPresumed(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13"));
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_SCRN_POST_TREATMENT_PRESUMED", "HIV Positive women on ART with Presumed CACX after previous treatment", ReportUtils.map(datimIndicators.postTreatmentCXCASCRNPresumed(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
 
         //CXCA_TX_FIRST_TIME_CRYOTHERAPY
-        EmrReportingUtils.addRow(cohortDsd, "CXCA_TX_CRYOTHERAPY_1ST_SCREENING", "HIV positive Women on ART and received Cryotherapy CACX treatment in their first CACX screening", ReportUtils.map(datimIndicators.firstScreeningCXCATXCryotherapy(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13"));
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_TX_CRYOTHERAPY_1ST_SCREENING", "HIV positive Women on ART and received Cryotherapy CACX treatment in their first CACX screening", ReportUtils.map(datimIndicators.firstScreeningCXCATXCryotherapy(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
 
         //CXCA_TX_FIRST_TIME_THERMOCOAGULATION
-        EmrReportingUtils.addRow(cohortDsd, "CXCA_TX_THERMOCOAGULATION_1ST_SCREENING", "HIV positive Women on ART and received Thermocoagulation CACX treatment in their first CACX screening", ReportUtils.map(datimIndicators.firstScreeningCXCATXThermocoagulation(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13"));
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_TX_THERMOCOAGULATION_1ST_SCREENING", "HIV positive Women on ART and received Thermocoagulation CACX treatment in their first CACX screening", ReportUtils.map(datimIndicators.firstScreeningCXCATXThermocoagulation(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
 
         //CXCA_TX_FIRST_TIME_LEEP
-        EmrReportingUtils.addRow(cohortDsd, "CXCA_TX_LEEP_1ST_SCREENING", "HIV positive Women on ART and received LEEP CACX treatment in their first CACX screening", ReportUtils.map(datimIndicators.firstScreeningCXCATXLEEP(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13"));
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_TX_LEEP_1ST_SCREENING", "HIV positive Women on ART and received LEEP CACX treatment in their first CACX screening", ReportUtils.map(datimIndicators.firstScreeningCXCATXLEEP(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
 
         //CXCA_TX_RESCREENING_CRYOTHERAPY
-        EmrReportingUtils.addRow(cohortDsd, "CXCA_TX_CRYOTHERAPY_RESCREENING", "HIV positive Women on ART and received Cryotherapy CACX treatment in their CACX re-screening", ReportUtils.map(datimIndicators.rescreenedCXCATxCryotherapy(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13"));
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_TX_CRYOTHERAPY_RESCREENING", "HIV positive Women on ART and received Cryotherapy CACX treatment in their CACX re-screening", ReportUtils.map(datimIndicators.rescreenedCXCATxCryotherapy(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
 
         //CXCA_TX_RESCREENING_THERMOCOAGULATION
-        EmrReportingUtils.addRow(cohortDsd, "CXCA_TX_THERMOCOAGULATION_RESCREENING", "HIV positive Women on ART and received Thermocoagulation CACX treatment in their CACX re-screening", ReportUtils.map(datimIndicators.rescreenedCXCATXThermocoagulation(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13"));
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_TX_THERMOCOAGULATION_RESCREENING", "HIV positive Women on ART and received Thermocoagulation CACX treatment in their CACX re-screening", ReportUtils.map(datimIndicators.rescreenedCXCATXThermocoagulation(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
 
         //CXCA_TX_RESCRENING_LEEP
-        EmrReportingUtils.addRow(cohortDsd, "CXCA_TX_LEEP_RESCREENING", "HIV positive Women on ART and received LEEP CACX treatment in their re-screening", ReportUtils.map(datimIndicators.rescreenedCXCATXLEEP(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13"));
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_TX_LEEP_RESCREENING", "HIV positive Women on ART and received LEEP CACX treatment in their re-screening", ReportUtils.map(datimIndicators.rescreenedCXCATXLEEP(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
 
         //CXCA_TX_POST_TX_FOLLOWUP_CRYOTHERAPY
-        EmrReportingUtils.addRow(cohortDsd, "CXCA_TX_CRYOTHERAPY_POST_Tx_FOLLOWUP", "HIV positive Women on ART and received Cryotherapy CACX treatment in their Post treatment follow-up CACX screening", ReportUtils.map(datimIndicators.postTxFollowupCXCATxCryotherapy(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13"));
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_TX_CRYOTHERAPY_POST_Tx_FOLLOWUP", "HIV positive Women on ART and received Cryotherapy CACX treatment in their Post treatment follow-up CACX screening", ReportUtils.map(datimIndicators.postTxFollowupCXCATxCryotherapy(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
 
         //CXCA_TX_FIRST_TIME_THERMOCOAGULATION
-        EmrReportingUtils.addRow(cohortDsd, "CXCA_TX_THERMOCOAGULATION_POST_Tx_FOLLOWUP", "HIV positive Women on ART and received Thermocoagulation CACX treatment in their Post treatment follow-up CACX screening", ReportUtils.map(datimIndicators.postTxFollowupCXCATXThermocoagulation(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13"));
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_TX_THERMOCOAGULATION_POST_Tx_FOLLOWUP", "HIV positive Women on ART and received Thermocoagulation CACX treatment in their Post treatment follow-up CACX screening", ReportUtils.map(datimIndicators.postTxFollowupCXCATXThermocoagulation(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
 
         //CXCA_TX_POST_TX_FOLLOWUP_LEEPdatimPMTCTCXCAAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10"));
-        EmrReportingUtils.addRow(cohortDsd, "CXCA_TX_LEEP_POST_Tx_FOLLOWUP", "HIV positive Women on ART and received LEEP cancer treatment in their Post treatment follow-up CACX screening", ReportUtils.map(datimIndicators.postTxFollowupCXCATXLEEP(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13"));
+        EmrReportingUtils.addRow(cohortDsd, "CXCA_TX_LEEP_POST_Tx_FOLLOWUP", "HIV positive Women on ART and received LEEP cancer treatment in their Post treatment follow-up CACX screening", ReportUtils.map(datimIndicators.postTxFollowupCXCATXLEEP(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
 
 
         //Number of OVC current on ART reported to implementing partner
