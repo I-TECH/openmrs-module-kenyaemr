@@ -185,7 +185,7 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("Next Appointment Date", nextAppointmentDateDataDefinition, "endDate=${endDate}", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Months of Prescription", eTLMonthsOfPrescriptionDataDefinition, "endDate=${endDate}");
         dsd.addColumn("Refill Date", eTLRefillDateDataDefinition, "endDate=${endDate}", new DateConverter(DATE_FORMAT));
-        dsd.addColumn("Case Manager", etlCaseManagerDataDefinition, "endDate=${endDate}", new DateConverter(DATE_FORMAT));
+        dsd.addColumn("Case Manager", etlCaseManagerDataDefinition, "endDate=${endDate}");
 
         return dsd;
     }
