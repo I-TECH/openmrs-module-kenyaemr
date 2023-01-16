@@ -55,6 +55,11 @@
             jq('#single').show();
             jq('#twins').hide();
             jq('#triplets').hide();
+            jq('#started-haart-anc').hide();
+            jq('#initiated-arv-prophylaxis').hide();
+            jq('#initiated-arv-prophylaxis-twins').hide();
+            jq('#initiated-arv-prophylaxis-triplets').hide();
+            jq("#haart-anc input").change(onMotherHaartChange);
             getField('delivery-outcome.value').prop("selectedIndex", 1);
             jq('#delivery-outcome select').change(onDeliveryOutcomeChange);
             jq('#tr-maternal-death-audited').hide();
@@ -160,6 +165,7 @@
                 getField('hiv-final-result.value').val(664);
                 jq('#ccc-no input').prop("disabled", true);
             }
+
             //Positive
             if(firstTest ==703){
 
@@ -382,6 +388,21 @@
                 getField('hiv-final-result.value').val(1138);
             }
         }
+        // mother on HAART during ANC
+
+        function onMotherHaartChange() {
+            if (getValue('haart-anc.value') == 1065) {
+                jq('#started-haart-anc').show();
+                jq('#initiated-arv-prophylaxis').show();
+                jq('#initiated-arv-prophylaxis-twins').show();
+                jq('#initiated-arv-prophylaxis-triplets').show();
+            }else{
+                jq('#started-haart-anc').hide();
+                jq('#initiated-arv-prophylaxis').hide();
+                jq('#initiated-arv-prophylaxis-twins').hide();
+                jq('#initiated-arv-prophylaxis-triplets').hide();
+            }
+        }
 
         var kit1Selected = function () {
             var val = jq(this).val();
@@ -431,8 +452,12 @@
             var vagina_examination = getValue('vagina-examination.value');
             var uterotonic_given = getValue('uterotonic-given.value');
             var chlorhexidine_applied = getValue('chlorhexidine-applied.value');
-            var kangaroo_mother_care = getValue('kangaroo-mother-care.value');
-            var given_vitamink = getValue('given-vitamink.value');
+            var kangaroo_mother_care_single = getValue('kangaroo-mother-care-single.value');
+            var kangaroo_mother_care_twins = getValue('kangaroo-mother-care-twins.value');
+            var kangaroo_mother_care_triplets = getValue('kangaroo-mother-care-triplets.value');
+            var given_vitaminkSingle = getValue('given-vitamink-single.value');
+            var given_vitaminkTwins = getValue('given-vitamink-twins.value');
+            var given_vitaminkTriplets = getValue('given-vitamink-triplets.value');
             var testing_done_maternity = getValue('testing-done-maternity.value');
 
             if (gestation != null) {
@@ -508,17 +533,41 @@
             }else{
                 getField('chlorhexidine-applied.error').html('Please specify if chlorhexidine was applied.').hide();
             }
-            if (kangaroo_mother_care == "" ) {
-                getField('kangaroo-mother-care.error').html('Please specify if kangaroo mother care was given.').show();
+            if (kangaroo_mother_care_single == "" ) {
+                getField('kangaroo-mother-care-single.error').html('Please specify if kangaroo mother care was given.').show();
                 return false;
             }else{
-                getField('kangaroo-mother-care.error').html('Please specify if kangaroo mother care was given.').hide();
+                getField('kangaroo-mother-care-single.error').html('Please specify if kangaroo mother care was given.').hide();
             }
-            if (given_vitamink == "" ) {
-                getField('given-vitamink.error').html('Please specify if vitamin K was given.').show();
+            if (kangaroo_mother_care_twins == "" ) {
+                getField('kangaroo-mother-care-twins.error').html('Please specify if kangaroo mother care was given.').show();
                 return false;
             }else{
-                getField('given-vitamink.error').html('Please specify if vitamin K was given.').hide();
+                getField('kangaroo-mother-care-twins.error').html('Please specify if kangaroo mother care was given.').hide();
+            }
+            if (kangaroo_mother_care_triplets == "" ) {
+                getField('kangaroo-mother-care-triplets.error').html('Please specify if kangaroo mother care was given.').show();
+                return false;
+            }else{
+                getField('kangaroo-mother-care-triplets.error').html('Please specify if kangaroo mother care was given.').hide();
+            }
+            if (given_vitaminkSingle == "" ) {
+                getField('given-vitamink-single.error').html('Please specify if vitamin K was given.').show();
+                return false;
+            }else{
+                getField('given-vitamink-single.error').html('Please specify if vitamin K was given.').hide();
+            }
+            if (given_vitaminkTwins == "" ) {
+                getField('given-vitamink-twins.error').html('Please specify if vitamin K was given.').show();
+                return false;
+            }else{
+                getField('given-vitamink-twins.error').html('Please specify if vitamin K was given.').hide();
+            }
+            if (given_vitaminkTriplets == "" ) {
+                getField('given-vitamink-triplets.error').html('Please specify if vitamin K was given.').show();
+                return false;
+            }else{
+                getField('given-vitamink-triplets.error').html('Please specify if vitamin K was given.').hide();
             }
             if (testing_done_maternity == "" ) {
                 getField('testing-done-maternity.error').html('Please specify if testing was done in the maternity.').show();
@@ -579,7 +628,6 @@
                     <ifMode mode="EDIT">
                         <script type="text/javascript">
                             jq(function(){
-
                                 //First test
                                 var firstTest = getField("hiv-test1-result.value").val();
                                 //Negative
@@ -743,7 +791,7 @@
                                      answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                     664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                     1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerLabels="Yes, No, Not Done"
+                                     answerLabels="Positive, Negative, Not Done"
                                      style="radio" />
                             </td>
                         </tr>
@@ -964,7 +1012,7 @@
                                 </td>
                                 <td>Given Vitamin K</td>
                                 <td>
-                                    <obs id="given-vitamink" conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    <obs id="given-vitamink-single" conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                             1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerLabels="Yes, No"
@@ -974,7 +1022,7 @@
                             <tr>
                                 <td>Kangaroo Mother care given:</td>
                                 <td>
-                                    <obs id="kangaroo-mother-care" conceptId="161094AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    <obs id="kangaroo-mother-care-single" conceptId="161094AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                             1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                             1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -984,6 +1032,13 @@
                                 <td>Initiated BF in less than 1 hour:</td>
                                 <td><obs conceptId="161543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="initiated-bf-single"
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+                            </tr>
+                            <tr id="initiated-arv-prophylaxis">
+                                <td>Infant provided with Infant ARV prophylaxis</td>
+                                <td>
+                                    <obs conceptId="161930"
+                                         answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes, No, N/A" style="radio"/>
+                                </td>
                             </tr>
                             <tr id="apgar-score-single">
                                 <td>Apgar Score (1 min):&#160;&#160;&#160;&#160;&#160;
@@ -1053,9 +1108,35 @@
                                             answerLabels="Yes,No,N/A"
                                             style="dropdown" />
                                 </td>
+                                <td>Given Vitamin K</td>
+                                <td>
+                                    <obs id="given-vitamink-twins" conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                            1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabels="Yes, No"
+                                         style="radio" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Kangaroo Mother care given:</td>
+                                <td>
+                                    <obs id="kangaroo-mother-care-twins" conceptId="161094AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                            1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                            1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabels="Yes, No, N/A"
+                                         style="radio" />
+                                </td>
                                 <td>Initiated BF in less than 1 hour:</td>
                                 <td><obs conceptId="161543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="initiated-bf-twins"
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+                            </tr>
+                            <tr id="initiated-arv-prophylaxis-twins">
+                                <td>Infant provided with Infant ARV prophylaxis</td>
+                                <td>
+                                    <obs conceptId="161930"
+                                         answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes, No, N/A" style="radio"/>
+                                </td>
                             </tr>
                             <tr id="apgar-score-twins" >
                                 <td>Apgar Score (1 min):&#160;&#160;&#160;&#160;&#160;
@@ -1125,9 +1206,35 @@
                                             answerLabels="Yes,No,N/A"
                                             style="dropdown" />
                                 </td>
+                                <td>Given Vitamin K</td>
+                                <td>
+                                    <obs id="given-vitamink-triplets" conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                            1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabels="Yes, No"
+                                         style="radio" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Kangaroo Mother care given:</td>
+                                <td>
+                                    <obs id="kangaroo-mother-care-triplets" conceptId="161094AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                            1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                            1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabels="Yes, No, N/A"
+                                         style="radio" />
+                                </td>
                                 <td>Initiated BF in less than 1 hour:</td>
                                 <td><obs conceptId="161543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="initiated-bf-triplets"
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+                            </tr>
+                            <tr id="initiated-arv-prophylaxis-triplets">
+                                <td>Infant provided with Infant ARV prophylaxis</td>
+                                <td>
+                                    <obs conceptId="161930"
+                                         answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes, No, N/A" style="radio"/>
+                                </td>
                             </tr>
                             <tr id="apgar-score-triplets">
                                 <td>Apgar Score (1 min):&#160;&#160;&#160;&#160;&#160;
@@ -1352,6 +1459,27 @@
                                          answerConceptIds="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerLabels="Yes,No,N/A"
                                          style="radio" id="nvp-dispensed" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Was mother on HAART during ANC?</td>
+                                <td>
+                                    <obs
+                                            conceptId="163783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                            answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                            answerLabels="Yes,No,N/A"
+                                            style="radio" id="haart-anc" />
+                                </td>
+                            </tr>
+
+                            <tr id="started-haart-anc" >
+                                <td>Started on HAART?</td>
+                                <td>
+                                    <obs
+                                            conceptId="163783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                            answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                            answerLabels="Yes,No,N/A"
+                                            style="radio"/>
                                 </td>
                             </tr>
                         </table>
