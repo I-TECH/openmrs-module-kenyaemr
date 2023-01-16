@@ -5768,7 +5768,144 @@ public class DatimCohortLibrary {
         cd.setDescription("Transferred and Verified within period");
         return cd;
     }
+    /**
+     * Returns all priority populations
+     * @return
+     */
+    public CohortDefinition allPriorityPopulations() {
+        String sqlQuery = "select c.client_id from kenyaemr_etl.etl_contact c where c.visit_date <= date(:endDate) group by c.client_id having mid(max(concat(c.visit_date,c.priority_population_type)),11) in (\"Fisher Folk\",\"Truck Driver\",\"Adolescent and Young Girls\",\"Prisoner\");";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("ppType");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Priority populations type");
+        return cd;
+    }
+    /**
+     * PP_PREV
+     * @return
+     */
+    public CohortDefinition ppPrev() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("kpPrevCurrentPeriod",ReportUtils.map(kpPrevCurrentPeriod(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("kpPrevPreviousPeriod",ReportUtils.map(kpPrevPreviousPeriod(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("allPriorityPopulations",ReportUtils.map(allPriorityPopulations(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("kpPrevReceivedService",ReportUtils.map(kpPrevReceivedService(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("kpPrevOfferedHTSServices",ReportUtils.map(kpPrevOfferedHTSServices(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("kpPrevKnownPositiveSql",ReportUtils.map(kpPrevKnownPositiveSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("allPriorityPopulations AND (kpPrevCurrentPeriod AND NOT kpPrevPreviousPeriod) AND ((kpPrevReceivedService AND kpPrevOfferedHTSServices) OR (kpPrevReceivedService AND kpPrevKnownPositiveSql))");
+        return cd;
 
+    }
+    /**
+     * PP_PREV by PP type
+     * @return
+     */
+    public CohortDefinition ppPrevByType(String ppType) {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("kpPrevCurrentPeriod",ReportUtils.map(kpPrevCurrentPeriod(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("kpPrevPreviousPeriod",ReportUtils.map(kpPrevPreviousPeriod(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("priorityPopulationByType",ReportUtils.map(priorityPopulationByType(ppType), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("kpPrevReceivedService",ReportUtils.map(kpPrevReceivedService(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("kpPrevOfferedHTSServices",ReportUtils.map(kpPrevOfferedHTSServices(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("kpPrevKnownPositiveSql",ReportUtils.map(kpPrevKnownPositiveSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("priorityPopulationByType AND (kpPrevCurrentPeriod AND NOT kpPrevPreviousPeriod) AND ((kpPrevReceivedService AND kpPrevOfferedHTSServices) OR (kpPrevReceivedService AND kpPrevKnownPositiveSql))");
+        return cd;
+
+    }
+
+    /**
+     * Returns Priority populations by type
+     * @param ppType
+     * @return
+     */
+    public CohortDefinition priorityPopulationByType(String ppType) {
+        String sqlQuery = "select c.client_id from kenyaemr_etl.etl_contact c where c.visit_date <= date(:endDate) group by c.client_id having mid(max(concat(c.visit_date,c.priority_population_type)),11) in ("+ppType+");";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("priorityPopulationByType");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Priority pops by type");
+        return cd;
+    }
+
+    /**
+     * PP_PREV known positives
+     * @return
+     */
+    public CohortDefinition ppPrevKnownPositive() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("ppPrev",ReportUtils.map(ppPrev(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("kpPrevKnownPositiveSql",ReportUtils.map(kpPrevKnownPositiveSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("ppPrev AND kpPrevKnownPositiveSql");
+        return cd;
+    }
+
+    /**
+     * PP_PREV newly tested or referred
+     * @return
+     */
+    public CohortDefinition ppPrevNewlyTestedOrReferred() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("ppPrev",ReportUtils.map(ppPrev(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("kpPrevNewlyTestedOrReferredSql",ReportUtils.map(kpPrevNewlyTestedOrReferredSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("ppPrev AND kpPrevNewlyTestedOrReferredSql");
+        return cd;
+    }
+
+    /**
+     * PP_PREV declined testing
+     * @return
+     */
+    public CohortDefinition ppPrevDeclinedTesting() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("ppPrev",ReportUtils.map(ppPrev(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("kpPrevDeclinedTestingSql",ReportUtils.map(kpPrevDeclinedTestingSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("ppPrev AND kpPrevDeclinedTestingSql");
+        return cd;
+    }
+
+    /**
+     * Screened ineligible for HIV testing
+     * @return
+     */
+    private CohortDefinition testNotRequiredSql() {
+        String sqlQuery ="select s.patient_id from kenyaemr_etl.etl_hts_eligibility_screening s where s.visit_date <= date(:endDate) group by s.patient_id\n" +
+                "having mid(max(concat(s.visit_date,s.eligible_for_test)),11) = 1066;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("testNotRequired");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("HIV test not required based on risk assessment");
+        return cd;
+    }
+
+    /**
+     * PP_PREV test not required based on HTS eligibility screening
+     * @return
+     */
+    public CohortDefinition ppPrevTestNotRequired() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("ppPrev",ReportUtils.map(ppPrev(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testNotRequired",ReportUtils.map(testNotRequiredSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("ppPrev AND testNotRequired");
+        return cd;
+    }
 }
 
 

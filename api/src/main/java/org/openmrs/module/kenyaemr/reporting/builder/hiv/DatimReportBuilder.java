@@ -27,6 +27,7 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -229,8 +230,8 @@ public class DatimReportBuilder extends AbstractReportBuilder {
                 Arrays.asList(fUnder15, f15AndAbove, mUnder15, m15AndAbove,colTotal);
 
         List<ColumnParameters>  kpAgeDisaggregation = Arrays.asList(below_15, kp15_to_19, kp20_to_24, kp25_and_above,colTotal);
-        List<ColumnParameters> kpAgeGenderDisaggregation = Arrays.asList(below_15_f, below_15_m, kp15_to_19_f, kp15_to_19_m,
-                kp20_to_24_f, kp20_to_24_m, kp25_and_above_f, kp25_and_above_m,colTotal);
+        List<ColumnParameters> ppAgeGenderDisaggregation = Arrays.asList(f10_to14, m10_to14,f15_to19, m15_to19, f20_to24, m20_to24,
+                f25_to29, m25_to29, f30_to34, m30_to34, f35_to39, m35_to39, f40_to44, m40_to44, f45_to49, m45_to49, fAbove50, mAbove50, colTotal);
 
         List<ColumnParameters> datimGBVDisaggregation =
                 Arrays.asList(fUnder10,mUnder10,f10_to14, m10_to14,f15_to19, m15_to19, f20_to24, m20_to24,
@@ -252,6 +253,7 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         List<ColumnParameters> datimVMMCHTSStatusDisaggregation = Arrays.asList(mInfant,m1_to4,m5_to9, m10_to14,m15_to19, m20_to24,
                 m25_to29, m30_to34, m35_to39, m40_to44, m45_to49, mAbove50, colTotal);
         //End of patient contact Disaggregations
+        ArrayList<String> priorityPopulation = new ArrayList<String>(Arrays.asList("Fisher Folk","Truck Driver","Adolescent and Young Girls","Prisoner"));
 
         String indParams = "startDate=${startDate},endDate=${endDate}";
         String endDateParams = "endDate=${endDate}";
@@ -338,6 +340,32 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("KP_PREV_FSW_DECLINED_HTS", "Declined testing and/or referral",ReportUtils.map(datimIndicators.kpPrevDeclinedTesting("FSW"), indParams), "");
         cohortDsd.addColumn("KP_PREV_PWID_DECLINED_HTS", "Declined testing and/or referral",ReportUtils.map(datimIndicators.kpPrevDeclinedTesting("PWID"), indParams),"");
         cohortDsd.addColumn("KP_PREV_PRISONS_CLOSED_SETTINGS_DECLINED_HTS", "Declined testing and/or referral",ReportUtils.map(datimIndicators.kpPrevDeclinedTesting("People in prison and other closed settings"), indParams), "");
+
+        /**
+         * PP_PREV
+         */
+        /**
+         * Age/sex disaggregation
+         */
+        EmrReportingUtils.addRow(cohortDsd, "PP_PREV", "Reached with individual and/or small group-level HIV prevention interventions designed for the target population", ReportUtils.map(datimIndicators.ppPrev(), indParams), ppAgeGenderDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19"));
+
+        //PP_PREV by PP type by Testing services
+        //Known Positive
+        cohortDsd.addColumn("PP_PREV_KNOWN_POSITIVE", "Known Positive",ReportUtils.map(datimIndicators.ppPrevKnownPositive(), indParams),"");
+
+        //Newly tested and/or referred for HTS
+        cohortDsd.addColumn("PP_PREV_NEWLY_TESTED_REFERRED", "Newly tested and/or referred for HTS",ReportUtils.map(datimIndicators.ppPrevNewlyTestedOrReferred(), indParams),"");
+
+        //Declined testing and/or referral
+        cohortDsd.addColumn("PP_PREV_DECLINED_HTS", "Declined testing and/or referral",ReportUtils.map(datimIndicators.ppPrevDeclinedTesting(), indParams),"");
+
+        //Testing not required based on risk assessment
+        cohortDsd.addColumn("PP_PREV_TEST_NOT_REQUIRED", "Test not required based on risk assessment",ReportUtils.map(datimIndicators.ppPrevTestNotRequired(), indParams),"");
+
+        // Priority population type
+        cohortDsd.addColumn("PP_PREV_Fisher_Folk", "Reached with individual and/or small group-level HIV prevention interventions designed for the target population",ReportUtils.map(datimIndicators.ppPrevByType(priorityPopulation.get(0)), indParams),"");
+        cohortDsd.addColumn("PP_PREV_Mobile_Population", "Reached with individual and/or small group-level HIV prevention interventions designed for the target population",ReportUtils.map(datimIndicators.ppPrevByType(priorityPopulation.get(1)), indParams), "");
+        cohortDsd.addColumn("PP_PREV_Other", "Reached with individual and/or small group-level HIV prevention interventions (Prisoners and AYG))",ReportUtils.map(datimIndicators.ppPrevByType(priorityPopulation.subList(2,4).toString()), indParams), "");
 
         /*GEND_GBV
         Number of people receiving post-gender-based violence (GBV) clinical care based on the minimum package*/
