@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -34,11 +35,18 @@ public class ETLLastVLResultValidityDataEvaluator implements PersonDataEvaluator
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select patient_id, if(timestampdiff(MONTH,(mid(max(concat(date(visit_date),date(date_test_requested))),11)),date(CURDATE())) <= 12,'Valid','Invalid') as validity\n" +
-                "                from kenyaemr_etl.etl_laboratory_extract GROUP BY patient_id having mid(max(concat(visit_date,lab_test)),11) in (1305,856);";
+        String qry = "select patient_id,\n" +
+                "  if(timestampdiff(MONTH,(mid(max(concat(date(visit_date),\n" +
+                "                          coalesce(date(date_test_requested),date(visit_date)))),11)),date(:endDate)) <= 12,'Valid','Invalid') as validity\n" +
+                "   from kenyaemr_etl.etl_laboratory_extract GROUP BY patient_id having mid(max(concat(visit_date,lab_test)),11) in (1305,856);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
+
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;
