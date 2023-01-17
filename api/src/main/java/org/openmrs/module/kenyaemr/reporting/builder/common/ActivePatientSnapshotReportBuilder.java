@@ -117,6 +117,8 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         lastVlResultDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
         ETLLastVLDateDataDefinition lastVLDateDataDefinition = new ETLLastVLDateDataDefinition();
         lastVLDateDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+        ETLLastVLResultValidityDataDefinition lastVLResultValidityDataDefinition = new ETLLastVLResultValidityDataDefinition();
+        lastVLResultValidityDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
         ETLStabilityDataDefinition stabilityDataDefinition = new ETLStabilityDataDefinition();
         stabilityDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
         ETLLastVisitDateDataDefinition lastVisitDateDataDefinition = new ETLLastVisitDateDataDefinition();
@@ -168,7 +170,7 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("Last WHO Stage", new WHOStageArtDataDefinition(), "");
         dsd.addColumn("Last WHO Stage Date", new ETLLastWHOStageDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Last VL Result",  lastVlResultDataDefinition, "endDate=${endDate}");
-        dsd.addColumn("VL Validility", new ETLLastVLResultValidityDataDefinition(), "");
+        dsd.addColumn("VL Validility", lastVLResultValidityDataDefinition, "endDate=${endDate}");
         dsd.addColumn("Last VL Justification", eTLLastVLJustificationDataDefinition,"endDate=${endDate}");
         dsd.addColumn("Last VL Date", lastVLDateDataDefinition, "endDate=${endDate}", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Active in PMTCT",activeInMchDataDefinition, "endDate=${endDate}", new ActiveInProgramConverter());
