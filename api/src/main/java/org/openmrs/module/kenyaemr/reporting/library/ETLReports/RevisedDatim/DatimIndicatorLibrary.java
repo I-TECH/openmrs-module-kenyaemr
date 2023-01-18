@@ -15,6 +15,7 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.KPTypeDat
 
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.RevisedDatim.DatimCohortLibrary;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -1448,5 +1449,13 @@ public class DatimIndicatorLibrary {
      */
     public CohortIndicator ppPrevByType(String ppType) {
         return cohortIndicator("PP_PREV by priority population type", ReportUtils.<CohortDefinition>map(datimCohorts.ppPrevByType(ppType), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * PP_PREV Other priority pops
+     * @return
+     */
+    public CohortIndicator ppPrevOther() {
+        return cohortIndicator("PP_PREV Other", ReportUtils.<CohortDefinition>map(datimCohorts.ppPrevOther(), "startDate=${startDate},endDate=${endDate}"));
     }
 }

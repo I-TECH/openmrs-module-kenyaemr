@@ -5769,11 +5769,11 @@ public class DatimCohortLibrary {
         return cd;
     }
     /**
-     * Returns all priority populations
+     * Returns all priority populations. Excludes AGYW
      * @return
      */
     public CohortDefinition allPriorityPopulations() {
-        String sqlQuery = "select c.client_id from kenyaemr_etl.etl_contact c where c.visit_date <= date(:endDate) group by c.client_id having mid(max(concat(c.visit_date,c.priority_population_type)),11) in (\"Fisher Folk\",\"Truck Driver\",\"Adolescent and Young Girls\",\"Prisoner\");";
+        String sqlQuery = "select c.client_id from kenyaemr_etl.etl_contact c where c.visit_date <= date(:endDate) group by c.client_id having mid(max(concat(c.visit_date,c.priority_population_type)),11) in (\"Fisher Folk\",\"Truck Driver\",\"Prisoner\");";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("ppType");
         cd.setQuery(sqlQuery);
@@ -5790,15 +5790,68 @@ public class DatimCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("kpPrevCurrentPeriod",ReportUtils.map(kpPrevCurrentPeriod(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("kpPrevPreviousPeriod",ReportUtils.map(kpPrevPreviousPeriod(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("ppPrevCurrentPeriod",ReportUtils.map(ppPrevCurrentPeriod(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("ppPrevPreviousPeriod",ReportUtils.map(ppPrevPreviousPeriod(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("allPriorityPopulations",ReportUtils.map(allPriorityPopulations(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("kpPrevReceivedService",ReportUtils.map(kpPrevReceivedService(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("kpPrevOfferedHTSServices",ReportUtils.map(kpPrevOfferedHTSServices(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("kpPrevKnownPositiveSql",ReportUtils.map(kpPrevKnownPositiveSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("allPriorityPopulations AND (kpPrevCurrentPeriod AND NOT kpPrevPreviousPeriod) AND ((kpPrevReceivedService AND kpPrevOfferedHTSServices) OR (kpPrevReceivedService AND kpPrevKnownPositiveSql))");
+        cd.setCompositionString("allPriorityPopulations AND (ppPrevCurrentPeriod AND NOT ppPrevPreviousPeriod) AND ((kpPrevReceivedService AND kpPrevOfferedHTSServices) OR (kpPrevReceivedService AND kpPrevKnownPositiveSql))");
         return cd;
 
+    }
+    /**
+     * PP_PREV for the current semi-annual reporting period
+     * @return
+     */
+    public CohortDefinition ppPrevCurrentPeriod() {
+        String sqlQuery = "select c.client_id from kenyaemr_etl.etl_contact c\n" +
+                "  left join (select v.client_id,v.visit_date from kenyaemr_etl.etl_clinical_visit v where v.visit_date <= date(:endDate))v on c.client_id = v.client_id\n" +
+                "  left join (select p.client_id, p.visit_date as first_peer_enc from kenyaemr_etl.etl_peer_calendar p where p.visit_date <= date(:endDate))p on c.client_id = p.client_id\n" +
+                "where(((v.visit_date between (CASE MONTH(date(:startDate)) when 5 then replace(date(:startDate), MONTH(date(:startDate)),4) when 6 then replace(date(:startDate), MONTH(date(:startDate)),4)\n" +
+                "                                             when 7 then replace(date(:startDate), MONTH(date(:startDate)),4) when 8 then replace(date(:startDate), MONTH(date(:startDate)),4) when 9 then replace(date(:startDate), MONTH(date(:startDate)),4) when 11 then replace(date(:startDate), MONTH(date(:startDate)),10) when 12 then replace(date(:startDate), MONTH(date(:startDate)),10) when 1 then (replace(@startOfYear, '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR))))\n" +
+                "                                             when 2 then replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR))) when 3 then replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR)))\n" +
+                "                                             else date(:startDate) end) and date(:endDate))\n" +
+                "or (p.first_peer_enc between (CASE MONTH(date(:startDate)) when 5 then replace(date(:startDate), MONTH(date(:startDate)),4) when 6 then replace(date(:startDate), MONTH(date(:startDate)),4)\n" +
+                "                                            when 7 then replace(date(:startDate), MONTH(date(:startDate)),4) when 8 then replace(date(:startDate), MONTH(date(:startDate)),4) when 9 then replace(date(:startDate), MONTH(date(:startDate)),4) when 11 then replace(date(:startDate), MONTH(date(:startDate)),10) when 12 then replace(date(:startDate), MONTH(date(:startDate)),10) when 1 then (replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR))))\n" +
+                "                                            when 2 then replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR))) when 3 then replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR)))\n" +
+                "                                            else date(:startDate) end) and date(:endDate)) and c.voided=0)) group by c.client_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("ppPrevCurrentPeriod");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("PPs with visit within the reporting period");
+        return cd;
+    }
+
+    /**
+     * PP_PREV for the previous period (Half year). This is required for de-duplication when getting PP_PREV clients
+     * @return
+     */
+    public CohortDefinition ppPrevPreviousPeriod() {
+        String sqlQuery = "select c.client_id from kenyaemr_etl.etl_contact c\n" +
+                "                          left join (select v.client_id,v.visit_date from kenyaemr_etl.etl_clinical_visit v where v.visit_date <= date(:endDate))v on c.client_id = v.client_id\n" +
+                "                          left join (select p.client_id, p.visit_date as first_peer_enc from kenyaemr_etl.etl_peer_calendar p where p.visit_date <= date(:endDate))p on c.client_id = p.client_id\n" +
+                "where(((v.visit_date between (CASE MONTH(date(:startDate)) when 5 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),4) when 6 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),4)\n" +
+                "    when 7 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),4) when 8 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),4) when 9 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),4)\n" +
+                "    when 11 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),10) when 12 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),10) when 1 then date_sub((replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR)))), INTERVAL 6 MONTH)\n" +
+                "    when 2 then date_sub((replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR)))), INTERVAL 6 MONTH) when 3 then date_sub((replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR)))), INTERVAL 6 MONTH)\n" +
+                "    else date_sub(date(:startDate), INTERVAL 6 MONTH) end) and date_sub(date(:endDate), INTERVAL 6 MONTH))\n" +
+                "         or (p.first_peer_enc between (CASE MONTH(date(:startDate)) when 5 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),4) when 6 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),4)\n" +
+                "    when 7 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),4) when 8 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),4) when 9 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),4)\n" +
+                "    when 11 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),10) when 12 then replace(date(:startDate), MONTH(date_sub(date(:startDate), INTERVAL 6 MONTH)),10) when 1 then date_sub((replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR)))), INTERVAL 6 MONTH)\n" +
+                "    when 2 then date_sub((replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR)))), INTERVAL 6 MONTH) when 3 then date_sub((replace('"+startOfYear+"', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR)))), INTERVAL 6 MONTH)\n" +
+                "    else date_sub(date(:startDate), INTERVAL 6 MONTH) end) and date_sub(date(:endDate), INTERVAL 6 MONTH)) and c.voided=0)) group by c.client_id;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("ppPrevPreviousPeriod");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("PPs with visit during previous reporting period");
+        return cd;
     }
     /**
      * PP_PREV by PP type
@@ -5808,13 +5861,13 @@ public class DatimCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("kpPrevCurrentPeriod",ReportUtils.map(kpPrevCurrentPeriod(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("kpPrevPreviousPeriod",ReportUtils.map(kpPrevPreviousPeriod(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("ppPrevCurrentPeriod",ReportUtils.map(ppPrevCurrentPeriod(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("ppPrevPreviousPeriod",ReportUtils.map(ppPrevPreviousPeriod(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("priorityPopulationByType",ReportUtils.map(priorityPopulationByType(ppType), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("kpPrevReceivedService",ReportUtils.map(kpPrevReceivedService(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("kpPrevOfferedHTSServices",ReportUtils.map(kpPrevOfferedHTSServices(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("kpPrevKnownPositiveSql",ReportUtils.map(kpPrevKnownPositiveSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("priorityPopulationByType AND (kpPrevCurrentPeriod AND NOT kpPrevPreviousPeriod) AND ((kpPrevReceivedService AND kpPrevOfferedHTSServices) OR (kpPrevReceivedService AND kpPrevKnownPositiveSql))");
+        cd.setCompositionString("priorityPopulationByType AND (ppPrevCurrentPeriod AND NOT ppPrevPreviousPeriod) AND ((kpPrevReceivedService AND kpPrevOfferedHTSServices) OR (kpPrevReceivedService AND kpPrevKnownPositiveSql))");
         return cd;
 
     }
@@ -5825,13 +5878,27 @@ public class DatimCohortLibrary {
      * @return
      */
     public CohortDefinition priorityPopulationByType(String ppType) {
-        String sqlQuery = "select c.client_id from kenyaemr_etl.etl_contact c where c.visit_date <= date(:endDate) group by c.client_id having mid(max(concat(c.visit_date,c.priority_population_type)),11) in ("+ppType+");";
+        String sqlQuery = "select c.client_id from kenyaemr_etl.etl_contact c where c.visit_date <= date(:endDate) group by c.client_id having mid(max(concat(c.visit_date,c.priority_population_type)),11) in (\""+ppType+"\");";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("priorityPopulationByType");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Priority pops by type");
+        return cd;
+    }
+
+    /** Other pririty popultaions. Excludes AGYW
+     * @return
+     */
+    public CohortDefinition otherPriorityPopulation() {
+        String sqlQuery = "select c.client_id from kenyaemr_etl.etl_contact c where c.visit_date <= date(:endDate) group by c.client_id having mid(max(concat(c.visit_date,c.priority_population_type)),11) in ('Prisoner');";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("otherPriorityPopulation");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Other priority populations");
         return cd;
     }
 
@@ -5904,6 +5971,20 @@ public class DatimCohortLibrary {
         cd.addSearch("ppPrev",ReportUtils.map(ppPrev(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("testNotRequired",ReportUtils.map(testNotRequiredSql(), "startDate=${startDate},endDate=${endDate}"));
         cd.setCompositionString("ppPrev AND testNotRequired");
+        return cd;
+    }
+
+    /**
+     * PP_prev_Other
+     * @return
+     */
+    public CohortDefinition ppPrevOther() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("ppPrev",ReportUtils.map(ppPrev(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("otherPriorityPopulation",ReportUtils.map(otherPriorityPopulation(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("ppPrev AND otherPriorityPopulation");
         return cd;
     }
 }

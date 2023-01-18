@@ -253,7 +253,7 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         List<ColumnParameters> datimVMMCHTSStatusDisaggregation = Arrays.asList(mInfant,m1_to4,m5_to9, m10_to14,m15_to19, m20_to24,
                 m25_to29, m30_to34, m35_to39, m40_to44, m45_to49, mAbove50, colTotal);
         //End of patient contact Disaggregations
-        ArrayList<String> priorityPopulation = new ArrayList<String>(Arrays.asList("Fisher Folk","Truck Driver","Adolescent and Young Girls","Prisoner"));
+        ArrayList<String> priorityPopulation = new ArrayList<String>(Arrays.asList("\"Fisher Folk\"","\"Truck Driver\"","\"Adolescent and Young Girls\"","\"Prisoner\""));
 
         String indParams = "startDate=${startDate},endDate=${endDate}";
         String endDateParams = "endDate=${endDate}";
@@ -363,9 +363,9 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("PP_PREV_TEST_NOT_REQUIRED", "Test not required based on risk assessment",ReportUtils.map(datimIndicators.ppPrevTestNotRequired(), indParams),"");
 
         // Priority population type
-        cohortDsd.addColumn("PP_PREV_Fisher_Folk", "Reached with individual and/or small group-level HIV prevention interventions designed for the target population",ReportUtils.map(datimIndicators.ppPrevByType(priorityPopulation.get(0)), indParams),"");
-        cohortDsd.addColumn("PP_PREV_Mobile_Population", "Reached with individual and/or small group-level HIV prevention interventions designed for the target population",ReportUtils.map(datimIndicators.ppPrevByType(priorityPopulation.get(1)), indParams), "");
-        cohortDsd.addColumn("PP_PREV_Other", "Reached with individual and/or small group-level HIV prevention interventions (Prisoners and AYG))",ReportUtils.map(datimIndicators.ppPrevByType(priorityPopulation.subList(2,4).toString()), indParams), "");
+        cohortDsd.addColumn("PP_PREV_FISHING_COMMUNITIES", "Reached with individual and/or small group-level HIV prevention interventions designed for the target population",ReportUtils.map(datimIndicators.ppPrevByType("Fisher Folk"), indParams),"");
+        cohortDsd.addColumn("PP_PREV_MOBILE_POPULATION", "Reached with individual and/or small group-level HIV prevention interventions designed for the target population",ReportUtils.map(datimIndicators.ppPrevByType("Truck Driver"), indParams), "");
+        cohortDsd.addColumn("PP_PREV_OTHER", "Reached with individual and/or small group-level HIV prevention interventions (Prisoners))",ReportUtils.map(datimIndicators.ppPrevOther(), indParams), "");
 
         /*GEND_GBV
         Number of people receiving post-gender-based violence (GBV) clinical care based on the minimum package*/
