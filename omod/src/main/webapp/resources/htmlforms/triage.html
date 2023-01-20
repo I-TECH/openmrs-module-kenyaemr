@@ -14,6 +14,8 @@
 <htmlform>
 
     <script type="text/javascript">
+        var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
+        var PATIENT_PREGNANT = GREENCARD_VELOCITY.split(",")[10].split(":")[1];
         function onWeightOrHeightChange() {
             var display = '';
             var weightKg = parseFloat(getValue('weight.value'));
@@ -54,12 +56,25 @@
         }
 
         jQuery(function () {
+            var pAge = parseInt('<lookup expression="patient.age"/>');
+            var miscariageVal = getValue('miscariage.value');
+            var fpVal = getValue('fplanning.value');
+            var lmpVal = getValue('last-menstrual-period.value');
+            babyVal = getValue('baby-last-wee.value');
             getField('weight.value').change(onWeightOrHeightChange);
             getField('height.value').change(onWeightOrHeightChange);
             onWeightOrHeightChange();
             displayRecentBmi();
-
+            jq('#miscariage input').change(onMiscariageChange);
+            jq('#baby-last-week').hide();
             //limit letters only in text field
+            if(pAge &lt; 10 || PATIENT_PREGNANT == 'true' ) {
+                jq('#pregnancy-screening').hide();
+                jq('#triage-notes').hide();
+             }else{
+                jp('#pregnancy-screening').show();
+                jq('#triage-notes').show();
+             }
             jQuery('#rsn').keypress(function(event) {
                 var code = (event.keyCode ? event.keyCode : event.which);
                 //alert(code)
@@ -67,9 +82,17 @@
                     event.preventDefault();
             });
 
-
+            function onMiscariageChange() {
+                if (getValue('miscariage.value') == 1065) {
+                    jq('#baby-last-week').show();
+                }else{
+                    jq('#baby-last-week').hide();
+                    clearHiddenSections(jq('#baby-last-week'));
+                }
+            }
             var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
             var pgender = "<lookup expression="patient.gender" />";
+            var pAge = parseInt('<lookup expression="patient.age"/>');
 
             if (pgender === 'F') {
                 beforeSubmit.push(function () {
@@ -78,10 +101,27 @@
                         getField('lmp-date.error').html('Should not be earlier than birth date').show();
                         return false;
                     }
+
                     return true;
                 });
             }
         });
+         //Clear hidden sections
+    clearHiddenSections = function(parentObj) {
+        parentObj.find('input[type=radio]').each(function() {
+            this.checked = false;
+        });
+        parentObj.find('input[type=checkbox]').each(function() {
+            this.checked = false;
+        });
+        parentObj.find('input[type=text]').each(function() {
+            jq(this).val("");
+        });
+        parentObj.find('select').each(function() {
+            this.selectedIndex =0;
+        });
+    }
+
     </script>
 
     <div class="ke-form-header">
@@ -151,67 +191,135 @@
                 </tr>
             </table>
         </fieldset>
-
         <fieldset>
             <legend>Other Recordings</legend>
-
-            <table>
-                <tr>
-                    <th></th>
-                    <th>Current</th>
-                    <th>Recent</th>
-                </tr>
-                <tr>
-                    <td>Weight</td>
-                    <td>
-                        <obs id="weight" conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"/>
-                        kg
-                    </td>
-                    <td>
-                        <recentObs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Height</td>
-                    <td>
-                        <obs id="height" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"/>
-                        cm
-                    </td>
-                    <td>
-                        <recentObs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                    </td>
-                </tr>
-                <includeIf velocityTest="$patient.age &gt; 14">
+            <td colspan="6">
+                <table>
                     <tr>
-                        <td>BMI</td>
-                        <td><span id="calculated-bmi" class="value"></span></td>
-                        <td><span id="recent-calculated-bmi"></span></td>
+                        <th></th>
+                        <th>Current</th>
+                        <th>Recent</th>
                     </tr>
-                </includeIf>
-                <tr>
-                    <td>MUAC</td>
-                    <td>
-                        <obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                    </td>
-                    <td>
-                        <recentObs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                    </td>
-                </tr>
-                <includeIf velocityTest="$patient.gender == 'F' ">
                     <tr>
-                        <td>LMP</td>
+                        <td>Weight</td>
                         <td>
-                            <obs id="lmp-date" conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                            <obs id="weight" conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"/>
+                            kg
                         </td>
                         <td>
-                            <recentObs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                            <recentObs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                         </td>
                     </tr>
-                </includeIf>
-            </table>
+                    <tr>
+                        <td>Height</td>
+                        <td>
+                            <obs id="height" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"/>
+                            cm
+                        </td>
+                        <td>
+                            <recentObs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                        </td>
+                    </tr>
+                    <includeIf velocityTest="$patient.age &gt; 14">
+                        <tr>
+                            <td>BMI</td>
+                            <td><span id="calculated-bmi" class="value"></span></td>
+                            <td><span id="recent-calculated-bmi"></span></td>
+                        </tr>
+                    </includeIf>
+                    <tr>
+                        <td>MUAC</td>
+                        <td>
+                            <obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                        </td>
+                        <td>
+                            <recentObs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                        </td>
+                    </tr>
+                    <includeIf velocityTest="$patient.gender == 'F' ">
+                        <tr>
+                            <td>LMP</td>
+                            <td>
+                                <obs id="lmp-date" conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                            </td>
+                            <td>
+                                <recentObs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                            </td>
+                        </tr>
+                    </includeIf>
+                    <includeIf velocityTest="($patient.gender == 'F') &amp;&amp; ($patient.age &gt; 9) &amp;&amp; ($patient.age &lt; 14)">
+                        <tr id="hpv-vaccine">
+                            <td>Client Vaccinated against HPV? &#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
+                            <td>  <obs  align="right" conceptId="160325AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                        style="radio"
+                                        answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                        answerLabels="Yes,No"/>
+                            </td>
+                        </tr>
+                    </includeIf>
+                </table>
+            </td>
         </fieldset>
-    </div>
 
+        <includeIf velocityTest="$patient.gender == 'F'  &amp;&amp; ($patient.age &gt; 10)" >
+            <fieldset id="pregnancy-screening">
+                <legend>Pregnancy Screening</legend>
+                <table>
+                    <obsgroup groupingConceptId="160108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+
+                        <tr>
+                            <td>Have you abstained from sexual intercourse from your last menstrual period/delivery?  &#160;&#160; </td>
+                            <td><obs conceptId="160109AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerLabels="Yes,No"
+                                     style="radio" id="sexual-abstained" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Did your last menstrual period start within the past 7 days ? &#160;&#160;</td>
+                            <td><obs conceptId="162877AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="last-menstrual-period" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+
+                        </tr>
+                        <tr>
+                            <td>Are you on FP method ? &#160; </td>
+                            <td><obs conceptId="160653AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "  id="fplanning" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+                        </tr>
+                        <tr>
+                            <td>Have you had a miscarriage in the past 7 days ? &#160; </td>
+                            <td><obs conceptId="48AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "  id="miscariage" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+                        </tr>
+                        <tr id="baby-last-week">
+                            <td>Have you had a baby in the last 4 weeks? &#160; </td>
+                            <td><obs conceptId="1657AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+                        </tr>
+                    </obsgroup>
+                </table>
+            </fieldset>
+            <fieldset id="triage-notes">
+                <legend>Triage Notes</legend>
+                <table align="center" width="100%" class="tb1">
+                    <tr>
+                        <td>Did you refer the client for a Pregnancy test?
+                            <obs class ="refer-client-for-pregnancy"
+                                 conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabels="Yes,No"
+                                 style="radio" id="refer-client-for-pregnancy" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Triage Notes:</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="100"
+                                 style="textarea"/>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+
+        </includeIf>
+    </div>
     <div class="ke-form-footer">
         <submit/>
     </div>
