@@ -54,7 +54,7 @@
         <appframeworkVersion>2.13.0</appframeworkVersion>
         <calculationVersion>1.2</calculationVersion>
         <groovyVersion>2.2.4</groovyVersion>
-        <htmlformentryVersion>3.9.2</htmlformentryVersion>
+        <htmlformentryVersion>5.1.0</htmlformentryVersion>
         <htmlwidgetsVersion>1.10.0</htmlwidgetsVersion>
         <idgenVersion>4.5.0</idgenVersion>
         <kenyacoreVersion>3.0.0</kenyacoreVersion>
