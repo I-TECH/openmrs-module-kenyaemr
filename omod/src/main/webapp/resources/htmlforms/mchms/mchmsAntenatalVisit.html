@@ -572,6 +572,7 @@
 					<ifMode mode="EDIT">
 						<script type="text/javascript">
                         jq(function(){
+                            var pAge = parseInt('<lookup expression="patient.age"/>');
 
                             //First test
                             var firstTest = getField("hiv-test1-result.value").val();
@@ -652,6 +653,12 @@
                                 $("#kit-name-2 option[value='165351']").remove();
                                 $("#kit-name-2 option[value='164961']").remove();
                             }
+
+
+                            var antenatalPackage = getValue('antenatal-care.value');
+						      if(antenatalPackage == 1065){
+                                jq('#package-care').show();
+                               }
 
                         });
 					</script>
