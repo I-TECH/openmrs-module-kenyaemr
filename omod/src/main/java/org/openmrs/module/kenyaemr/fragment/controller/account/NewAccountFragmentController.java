@@ -10,15 +10,19 @@
 package org.openmrs.module.kenyaemr.fragment.controller.account;
 
 import org.apache.commons.lang.StringUtils;
+import org.openmrs.Location;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.Privilege;
 import org.openmrs.Provider;
+import org.openmrs.ProviderAttribute;
 import org.openmrs.Role;
 import org.openmrs.User;
 import org.openmrs.api.PasswordException;
+import org.openmrs.api.ProviderService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.SecurityMetadata;
 import org.openmrs.module.kenyaemr.validator.EmailAddressValidator;
 import org.openmrs.module.kenyaemr.validator.TelephoneNumberValidator;
@@ -48,44 +52,39 @@ import java.util.Set;
  */
 public class NewAccountFragmentController {
 	
-	public void controller(@FragmentParam(value = "person", required = false) Person person,
-						   FragmentModel model) {
-
+	public void controller(@FragmentParam(value = "person", required = false) Person person, FragmentModel model) {
+		
 		// Roles which can't be assigned directly to new users
-		List<String> disallowedRoles = Arrays.asList(
-				"Anonymous",
-				"Authenticated",
-				SecurityMetadata._Role.API_PRIVILEGES,
-				SecurityMetadata._Role.API_PRIVILEGES_VIEW_AND_EDIT,
-				SecurityMetadata._Role.SYSTEM_DEVELOPER
-		);
-
+		List<String> disallowedRoles = Arrays.asList("Anonymous", "Authenticated", SecurityMetadata._Role.API_PRIVILEGES,
+		    SecurityMetadata._Role.API_PRIVILEGES_VIEW_AND_EDIT, SecurityMetadata._Role.SYSTEM_DEVELOPER);
+		
+		List<Location> facilities = Context.getLocationService().getAllLocations();
+		
 		model.addAttribute("disallowedRoles", disallowedRoles);
 		model.addAttribute("command", newCreateAccountForm(person));
+		model.addAttribute("facilities", facilities);
 	}
-
+	
 	/**
 	 * Handles form submission
 	 */
 	@AppAction(EmrConstants.APP_ADMIN)
-	public SimpleObject submit(@MethodParam("newCreateAccountForm") @BindParams CreateAccountForm form,
-							   UiUtils ui,
-							   HttpSession session,
-							   @SpringBean KenyaUiUtils kenyaUi) {
-
+	public SimpleObject submit(@MethodParam("newCreateAccountForm") @BindParams CreateAccountForm form, UiUtils ui,
+	        HttpSession session, @SpringBean KenyaUiUtils kenyaUi) {
+		
 		ui.validate(form, form, null);
-
+		
 		try {
 			// This method will be typically called by a IT admin account that doesn't have all privileges. However, the
 			// OpenMRS security model requires that you have a privilege to be able to grant it to others.
 			for (Privilege priv : Context.getUserService().getAllPrivileges()) {
 				Context.addProxyPrivilege(priv.getPrivilege());
 			}
-
+			
 			Person person = form.save();
-
+			
 			kenyaUi.notifySuccess(session, "Account created");
-
+			
 			return SimpleObject.create("personId", person.getId());
 		}
 		finally {
@@ -99,22 +98,21 @@ public class NewAccountFragmentController {
 	public CreateAccountForm newCreateAccountForm(@RequestParam(value = "personId", required = false) Person person) {
 		if (person != null) {
 			return new CreateAccountForm(person);
-		}
-		else {
+		} else {
 			return new CreateAccountForm();
 		}
 	}
 	
 	public class CreateAccountForm extends AbstractWebForm {
-
+		
 		private Person original;
 		
 		private PersonName personName;
 		
 		private String gender;
-
+		
 		private String telephoneContact;
-
+		
 		private String emailAddress;
 		
 		private String username;
@@ -127,23 +125,26 @@ public class NewAccountFragmentController {
 		
 		private String providerIdentifier;
 		
+		private String providerFacility;
+		
 		public CreateAccountForm() {
 			personName = new PersonName();
 		}
-
+		
 		public CreateAccountForm(Person original) {
 			this.original = original;
-
+			
 			this.personName = original.getPersonName();
 			this.gender = original.getGender();
-
+			
 			PersonWrapper wrapper = new PersonWrapper(original);
 			this.telephoneContact = wrapper.getTelephoneContact();
 			this.emailAddress = wrapper.getEmailAddress();
 		}
 		
 		/**
-		 * @see org.openmrs.module.kenyaui.form.AbstractWebForm#validate(Object, org.springframework.validation.Errors)
+		 * @see org.openmrs.module.kenyaui.form.AbstractWebForm#validate(Object,
+		 *      org.springframework.validation.Errors)
 		 */
 		@Override
 		public void validate(Object target, Errors errors) {
@@ -152,7 +153,7 @@ public class NewAccountFragmentController {
 			require(errors, "personName.familyName");
 			require(errors, "gender");
 			require(errors, "telephoneContact");
-
+			
 			if (StringUtils.isNotBlank(telephoneContact)) {
 				validateField(errors, "telephoneContact", new TelephoneNumberValidator());
 			}
@@ -169,8 +170,7 @@ public class NewAccountFragmentController {
 				
 				if (StringUtils.isEmpty(password)) {
 					require(errors, "password");
-				}
-				else {
+				} else {
 					try {
 						OpenmrsUtil.validatePassword(username, password, null);
 					}
@@ -186,6 +186,7 @@ public class NewAccountFragmentController {
 				}
 				
 				require(errors, "roles");
+				require(errors, "providerFacility");
 			}
 			
 			boolean hasProvider = false;
@@ -201,7 +202,7 @@ public class NewAccountFragmentController {
 				errors.reject("Account must be a User, a Provider, or both");
 			}
 		}
-
+		
 		/**
 		 * @see org.openmrs.module.kenyaui.form.AbstractWebForm#save()
 		 */
@@ -211,42 +212,44 @@ public class NewAccountFragmentController {
 			Person person = createPerson();
 			User user = getUser(person);
 			Provider provider = getProvider(person);
-
+			
 			ValidateUtil.validate(person);
-
+			
 			if (user != null) {
 				ValidateUtil.validate(user);
 			}
-
+			
 			if (provider != null) {
 				ValidateUtil.validate(provider);
 			}
-
+			
 			Context.getPersonService().savePerson(person);
-
+			
 			if (user != null) {
 				Context.getUserService().createUser(user, getPassword());
 			}
+			
 			if (provider != null) {
 				Context.getProviderService().saveProvider(provider);
 			}
-
+			
 			return person;
 		}
-
+		
 		/**
 		 * Creates a new person to be saved
+		 * 
 		 * @return the person
 		 */
 		public Person createPerson() {
 			Person ret = original != null ? original : new Person();
 			ret.addName(personName);
 			ret.setGender(gender);
-
+			
 			PersonWrapper wrapper = new PersonWrapper(ret);
 			wrapper.setTelephoneContact(telephoneContact);
 			wrapper.setEmailAddress(emailAddress);
-
+			
 			return ret;
 		}
 		
@@ -268,9 +271,24 @@ public class NewAccountFragmentController {
 			Provider ret = new Provider();
 			ret.setPerson(person);
 			ret.setIdentifier(providerIdentifier);
+			ProviderAttribute attribute = getFacilityAttribute(providerFacility);
+			if (attribute != null) {
+				ret.setAttribute(attribute);
+			}
 			return ret;
 		}
-
+		
+		ProviderAttribute getFacilityAttribute(String facility) {
+			if (StringUtils.isEmpty(facility)) {
+				return null;
+			}
+			ProviderAttribute attribute = new ProviderAttribute();
+			attribute.setAttributeType(Context.getService(ProviderService.class)
+			        .getProviderAttributeTypeByUuid(CommonMetadata._ProviderAttributeType.PRIMARY_FACILITY));
+			attribute.setValue(Context.getLocationService().getLocation(Integer.parseInt(facility)));
+			return attribute;
+		}
+		
 		public Person getOriginal() {
 			return original;
 		}
@@ -302,29 +320,29 @@ public class NewAccountFragmentController {
 		public void setGender(String gender) {
 			this.gender = gender;
 		}
-
+		
 		/**
 		 * @return the telephone
 		 */
 		public String getTelephoneContact() {
 			return telephoneContact;
 		}
-
+		
 		/**
 		 * @param telephoneContact the telephone
 		 */
 		public void setTelephoneContact(String telephoneContact) {
 			this.telephoneContact = telephoneContact;
 		}
-
+		
 		public String getEmailAddress() {
 			return emailAddress;
 		}
-
+		
 		public void setEmailAddress(String emailAddress) {
 			this.emailAddress = emailAddress;
 		}
-
+		
 		/**
 		 * @return the username
 		 */
@@ -395,5 +413,12 @@ public class NewAccountFragmentController {
 			this.providerIdentifier = providerIdentifier;
 		}
 		
+		public void setProviderFacility(String providerFacility) {
+			this.providerFacility = providerFacility;
+		}
+		
+		public String getProviderFacility() {
+			return providerFacility;
+		}
 	}
 }

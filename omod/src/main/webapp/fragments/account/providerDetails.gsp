@@ -4,6 +4,9 @@
 	<% if (provider && !provider.retired) { %>
 	<div class="ke-panel-content">
 		${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Provider ID", value: provider.identifier ]) }
+		<% if (primaryFacility) { %>
+		    ${ ui.includeFragment("kenyaui", "widget/dataPoint", [ label: "Provider Primary Facility", value: primaryFacility.getName() ]) }
+		<% } %>
 	</div>
 	<% } %>
 
@@ -22,7 +25,10 @@
 				action: "submit",
 				prefix: "provider",
 				commandObject: form,
-				properties: [ "identifier" ],
+				properties: [ "identifier", "providerFacility" ],
+				fieldConfig: [
+						providerFacility: [ fieldFragment: "field/org.openmrs.Location" ]
+				],
 				extraFields: [
 						[ hiddenInputName: "personId", value: person.id ],
 						[ hiddenInputName: "provider.providerId", value: provider.id ]

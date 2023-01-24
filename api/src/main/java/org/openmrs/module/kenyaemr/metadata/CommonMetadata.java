@@ -26,6 +26,7 @@ import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.form;
 import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.globalProperty;
 import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.patientIdentifierType;
 import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.personAttributeType;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.providerAttributeType;
 import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.relationshipType;
 import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.visitAttributeType;
 import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.visitType;
@@ -125,6 +126,10 @@ public class CommonMetadata extends AbstractMetadataBundle {
 
 	public static final class _Provider {
 		public static final String UNKNOWN = "ae01b8ff-a4cc-4012-bcf7-72359e852e14";
+	}
+
+	public static final class _ProviderAttributeType {
+		public static final String PRIMARY_FACILITY = "5a53dddd-b382-4245-9bf1-03bce973f24b";
 	}
 
 	public static final class _RelationshipType {
@@ -304,6 +309,8 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(personAttributeType("cr ccc sync message", "CCC Sync message with national registry",
 				String.class, null, false, 4.5, _PersonAttributeType.CCC_SYNC_MESSAGE_WITH_NATIONAL_REGISTRY));
 
+		// Provider attribute types.
+		install(providerAttributeType("Primary Facility", "Default facility for a provider", LocationDatatype.class, "", 0, 9999 , _ProviderAttributeType.PRIMARY_FACILITY ));
 
 		install(relationshipType("Guardian", "Dependant", "One that guards, watches over, or protects", _RelationshipType.GUARDIAN_DEPENDANT));
 		install(relationshipType("Spouse", "Spouse", "A spouse is a partner in a marriage, civil union, domestic partnership or common-law marriage a male spouse is a husband and a female spouse is a wife", _RelationshipType.SPOUSE));
