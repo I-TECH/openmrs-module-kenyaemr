@@ -61,8 +61,8 @@
 	jq(function () {
         jq('#anc-counselling').hide();
 		jq('#counselled input').change(onANCCounselChange);
+        jq('#package-group').hide();
 		jq('#package-care').hide();
-		jq('#packege-group').hide();
 		jq('#antenatal-care input').change(onPackageChange);
 		jq('#treatment-done').hide();
 		jq('#hepatitis-b-screening input').change(onHepatitisChange);
@@ -71,7 +71,6 @@
 		jq('#ovm').hide();
 		jq('#treatmentVisit input').change(onPresumptiveChange);
         jq('#treatment-dose').hide();
-<!--        jq('#packege-group').hide();-->
         jq('.syphilis-treated').hide();
         jq('#syphilis-test-results select').change(onSyphilisResultChange);
         jq('#partner-tested select').change(onPartnerTestedChange);
@@ -105,7 +104,7 @@
         jq("#returnVisitDate input[type=hidden]").change(getPatientsBookedOnDate);
 
 		//Validation for client if already hiv positive or enrolled
-        if(PATIENT_IS_REPORTED_HIV == 703 || PATIENT_IS_ENROLLED_HIV){
+        if(PATIENT_IS_REPORTED_HIV.replace(/[^\d]/g, '') == 703 || PATIENT_IS_ENROLLED_HIV){
             jq('#tbl-known-positive').show();
             jq('#hiv-known-positive:text').val('Positive');
             jq('#tbl-hiv-test').hide();
@@ -118,9 +117,9 @@
             }else {
                 jq('#on-art:text').val('No');
             }
-        }else if(PATIENT_IS_REPORTED_HIV == 664) {
+        }else if(PATIENT_IS_REPORTED_HIV.replace(/[^\d]/g, '') == 664) {
             jq('#tbl-hiv-test').show();
-            jq('#packege-group').show();
+            jq('#package-group').show();
             jq('#tbl-unknown-status').show();
             jq('#hiv-status:text').val("Negative");
             jq('#art-and-prophylaxis').hide();
@@ -134,12 +133,6 @@
             jq('#who-staging').hide();
             jq('#vl-sample').hide();
         }
-<!--         if(HIGH_RISK_CATEGORIZATION){-->
-<!--            	jq('#packege-group').show();-->
-<!--        	}else{-->
-<!--            	jq('#packege-group').hide();-->
-
-<!--        	}-->
         if(PATIENT_IS_REPORTED_HIV == 703 &amp;&amp; !PATIENT_IS_ENROLLED_HIV){
             jq('#tbl-haart-given').show();
         }else{
@@ -1534,7 +1527,7 @@
 			</tr>
 			<tr>
 
-			<tr id="packege-group">
+			<tr id="package-group">
 				<td colspan="2">
 					<fieldset>
 						<legend>Minimum Package of Care</legend>
@@ -1542,7 +1535,7 @@
 							<tr>
 								<td>Has the client received the minimum package of Care: &#160;&#160;&#160;&#160;&#160;&#160;&#160;
 
-									<obs conceptId="63da4194-a26a-4aa5-b5d5-4125b4822cf7"
+									<obs conceptId="165302"
 										 id="antenatal-care"
 										 style="radio"
 										 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -1553,28 +1546,28 @@
 								<td colspan="6">
 									<table id="package-care" align="center" width="100%" class="tb1">
 
-										<obsgroup groupingConceptId="63da4194-a26a-4aa5-b5d5-4125b4822cf7">
+										<obsgroup groupingConceptId="161628">
 											<tr>
 												<td style="text-align: left">
 													<div style="float: left; padding-right: 50px">
-														<obs conceptId="63da4194-a26a-4aa5-b5d5-4125b4822cf7"
+														<obs conceptId="1592"
 															 answerConceptId="165275"
 															 answerLabel="Risk Reduction counselling" style="checkbox"
 														/>
 														<br />
-														<obs conceptId="63da4194-a26a-4aa5-b5d5-4125b4822cf7"
+														<obs conceptId="1592"
 															 answerConceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 															 answerLabel="HIV Testing for the Partner" style="checkbox"/>
 														<br />
-														<obs conceptId="63da4194-a26a-4aa5-b5d5-4125b4822cf7"
+														<obs conceptId="1592"
 															 answerConceptId="165190"
 															 answerLabel="STI Screening and treatment" style="checkbox"/>
 														<br />
-														<obs conceptId="63da4194-a26a-4aa5-b5d5-4125b4822cf7"
+														<obs conceptId="1592"
 															 answerConceptId="159777"
 															 answerLabel="Condom Provision" style="checkbox"/>
 														<br />
-														<obs conceptId="63da4194-a26a-4aa5-b5d5-4125b4822cf7"
+														<obs conceptId="1592"
 															 answerConceptId="161557AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 															 answerLabel="Partner Testing/HIVST" style="checkbox"/>
 														<br />
@@ -1582,24 +1575,24 @@
 												</td>
 												<td>
 													<div style="float: left; padding-right: 50px">
-														<obs conceptId="63da4194-a26a-4aa5-b5d5-4125b4822cf7"
+														<obs conceptId="1592"
 															 answerConceptId="165203"
 															 answerLabel="PrEP with emphasis on adherence"
 															 style="checkbox"/>
 														<br />
-														<obs conceptId="63da4194-a26a-4aa5-b5d5-4125b4822cf7"
+														<obs conceptId="1592"
 															 answerConceptId="165475"
 															 answerLabel="Emphasize importance of follow up ANC Visits" style="checkbox"/>
 														<br />
-														<obs conceptId="63da4194-a26a-4aa5-b5d5-4125b4822cf7"
+														<obs conceptId="1592"
 															 answerConceptId="1382"
 															 answerLabel="Postnatal FP Counselling and support" style="checkbox"/>
 														<br />
-														<obs conceptId="63da4194-a26a-4aa5-b5d5-4125b4822cf7"
+														<obs conceptId="1592"
 															 answerConceptId="162223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 															 answerLabel="Referrals for VMMC Services for partner" style="checkbox"/>
 														<br />
-														<obs conceptId="63da4194-a26a-4aa5-b5d5-4125b4822cf7"
+														<obs conceptId="1592"
 															 answerConceptId="165368"
 															 answerLabel="Referrals for OVC/DREAMS" style="checkbox"
 															 id="ovm"
