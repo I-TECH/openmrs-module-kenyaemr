@@ -60,6 +60,8 @@
 		var NO_CONCEPT_ID = 1066;
 		var WHITE_COLOR_CONCEPT_ID = 1075;
 		var OTHER_CONCEPT_ID = 5622;
+        var OTHER_FOLLOWUP_MILESTONE_CONCEPT_ID = 5622;
+        var OTHER_REFERRAL_CONCEPT_ID = 1537;
 		var patientId = <lookup expression="patient.patientId"/>;
 
 		var showOtherSpecifyFollowup = function () {
@@ -69,6 +71,7 @@
 			}
 			else {
 				jq("#tbl-other-followup").hide();
+                clearHiddenSections(jq('#tbl-other-followup'));
 			}
 		}
 
@@ -79,6 +82,7 @@
 			}
 			else {
 				jq("#tbl-other-caregiver").hide();
+                clearHiddenSections(jq('#tbl-other-caregiver'));
 			}
 		}
 
@@ -201,6 +205,39 @@
 			jq('#squint-eyes-image').html('&lt;img src="<lookup expression="ui.resourceLink('kenyaemr', '/images/htmlforms/mchcs/squint.jpg')" />" width="200" height="50" /&gt;');
 		}
 
+        function showOtherFollowMilestone(){
+            var val = jq(this).val();
+            if (val == OTHER_FOLLOWUP_MILESTONE_CONCEPT_ID) {
+                jq("#otherFollowMilestoneOther").show();
+            }
+            else {
+                jq("#otherFollowMilestoneOther").hide();
+                clearHiddenSections(jq('#otherFollowMilestoneOther'));
+            }
+		}
+
+        function showOtherFacilityReferredFrom() {
+            var val = jq(this).val();
+            if (val == OTHER_REFERRAL_CONCEPT_ID) {
+                jq("#referral-from-specify").show();
+            }
+            else {
+                jq("#referral-from-specify").hide();
+                clearHiddenSections(jq('#referral-from-specify'));
+            }
+		}
+
+        function showOtherFacilityReferredTo() {
+            var val = jq(this).val();
+            if (val == OTHER_REFERRAL_CONCEPT_ID) {
+                jq("#referral-to-specify").show();
+            }
+            else {
+                jq("#referral-to-specify").hide();
+                clearHiddenSections(jq('#referral-to-specify'));
+            }
+        }
+
 		function loadPreviousVitals() {
 			var weightKg = "<lookup expression="fn.latestObs(5089).valueNumeric"/>"
 			var heightM = "<lookup expression="fn.latestObs(5090).valueNumeric"/>"
@@ -241,6 +278,9 @@
 			var birthDate = "<lookup expression="patient.birthdate" />";
 			jq("#tbl-other-followup").hide();
 			jq("#tbl-other-caregiver").hide();
+            jq("#referral-from-specify").hide();
+            jq("#referral-to-specify").hide();
+            jq("#otherFollowMilestoneOther").hide();
 			getField('ldl.value').change(ldlSpecify);
 			jq('#age').html(displayDate(birthDate));
 			jq('#calculated-age-deworming').html(displayDate(birthDate));
@@ -255,6 +295,12 @@
 			jq('#sight-examination input').click(sightExamination);
 			//other followup
 			jq("#folloup-for :input[type=radio]").change(showOtherSpecifyFollowup);
+            //other followup milestone
+            jq("#otherFollowMilestone :input[type=radio]").change(showOtherFollowMilestone);
+            //other facility referred from
+            jq("#referralFrom :input[type=radio]").change(showOtherFacilityReferredFrom);
+            //other facility referred to
+            jq("#referralTo select").change(showOtherFacilityReferredTo);
 			//other caregiver
 			jq("#primary-caregiver select").change(showOtherSpecifyCaregiver);
 			//squint condition
@@ -418,9 +464,11 @@
 								Referred? <br /> <obs conceptId="1788AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /> <br /> <br />
 								Reason for Referral <br /> <obs conceptId="164359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> <br /><br />
 								Referral from: <br />
-								<obs conceptId="160481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Other Health facility,Community Unit" answerSeparator="&lt;br/&gt;" /><br /><br />
+								<obs id="referralFrom" conceptId="160481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Other Health facility,Community Unit" answerSeparator="&lt;br/&gt;" /><br /><br />
+								<obs conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="referral-from-specify"/> <br /><br />
 								Referral to:<br />
-								<obs conceptId="163145AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerConceptIds="1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Other Health facility,Community Unit" answerSeparator="&lt;br/&gt;" />
+								<obs id="referralTo" conceptId="163145AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerConceptIds="1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Other Health facility,Community Unit" answerSeparator="&lt;br/&gt;" /><br /><br />
+								<obs conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="referral-to-specify"/> <br /><br />
 							</td>
 						</tr>
 						</tbody>
@@ -455,7 +503,10 @@
 								</div>								</td>
 							<td><obs conceptId="1189AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6022AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,6025AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Normal(N),Delayed(D),Regressed(R)" answerSeparator="&lt;br/&gt;"/></td>
 							<td><obs conceptId="1854AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="123814AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,126598AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,114413AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Underweight(UW),Severely Underweight(SUW),Overweight(OW),Obese(O),Normal(N)" answerSeparator="&lt;br/&gt;"/></td>
-							<td><obs conceptId="159402AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="132636AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,116474AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115122AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Marasmus,Kwashiorkor,Mulnutrition,Other" answerSeparator="&lt;br/&gt;"/></td>
+							<td>
+								<obs id="otherFollowMilestone" conceptId="159402AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="132636AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,116474AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,115122AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Marasmus,Kwashiorkor,Mulnutrition,Other" answerSeparator="&lt;br/&gt;"/> <br/><br/>
+								<obs conceptId="161011AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="otherFollowMilestoneOther" />
+							</td>
 						</tr>
 					</table>
 
@@ -630,8 +681,10 @@
 					<obs conceptId="1379AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="1914AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1380AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="HIV,Nutrition" /><br />
 					Supplemented with MNPS 6-23 Months?
 					<obs conceptId="5484AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="161649AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No"/> <br />
-					Long-lasting insecticidal nets (LLIN) given to less that 1 Year old?
-					<obs conceptId="159855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="long-lasting-net" style="radio" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+					<includeIf velocityTest="$patient.age &lt; 1">
+						Long-lasting insecticidal nets (LLIN) given to less that 1 Year old?
+						<obs conceptId="159855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="long-lasting-net" style="radio" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+					</includeIf>
 				</td>
 			</tr>
 			<tr>
