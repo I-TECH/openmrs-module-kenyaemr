@@ -28,6 +28,7 @@
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
         var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
 		var IS_KDoD_SITE = <lookup expression="kenyaemr.getFacilityType()" />;
+        var IS_Recency_SITE = <lookup expression="kenyaemr.getRecencySite()" />;
         var ENROLLED_IN_HIV = GREENCARD_VELOCITY.split(",")[12].split(":")[1];
         var patientId = <lookup expression="patient.patientId"/>;
         //On Ready
@@ -58,7 +59,11 @@
             getField('weight.value').change(onWeightOrHeightChange);
             getField('height.value').change(onWeightOrHeightChange);
             onWeightOrHeightChange();
-            jq('#tbl-recency-testing').hide();
+            if(IS_Recency_SITE==true){
+                jq('#tbl-recency-testing').show();
+            } else {
+                jq('#tbl-recency-testing').hide();
+            }
             jq("#tbl-recency-id").hide();
             jq("#recency-testing input").change(recencyTestingSelected);
 
@@ -161,7 +166,9 @@
         function includePatientsRecencyIdIfExists() {
             var recencyId;
             jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/getPatientRecencyId.action', {patientId: patientId}, function (data) {
-                if (data != null || data != "") {
+               if(data == null || data == "") {
+                     //No previous recency data
+               }else{
                     recencyId = data;
                     jq("#tbl-recency-testing").show();
                     jq("#tbl-recency-id").show();
@@ -339,7 +346,11 @@
                 jq('#patient-regimen select').prop('disabled', true);
 
                 jq('#transit-patient').hide();
-                jq('#tbl-recency-testing').show();
+                if(IS_Recency_SITE==true){
+                    jq('#tbl-recency-testing').show();
+                } else {
+                    jq('#tbl-recency-testing').hide();
+                }
                 //Gender based validations  pregnancy and breastfeeding
                 if (pgender == 'M') {
                     jq('#pregnant :input').prop('disabled', true);
@@ -572,7 +583,9 @@
                             function includePatientsRecencyIdIfExists() {
                                 var recencyId;
                                 jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/getPatientRecencyId.action', {patientId: patientId}, function (data) {
-                                    if (data != null || data != "") {
+                                    if(data == null || data == "") {
+                                        //No previous recency data
+                                    }else{
                                         recencyId = data;
                                         jq("#tbl-recency-testing").show();
                                         jq("#tbl-recency-id").show();

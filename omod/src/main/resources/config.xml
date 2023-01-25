@@ -99,4 +99,13 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>kenyaemr.isRecencySite</property>
+		<defaultValue>false</defaultValue>
+		<description>
+			Defines whether facility is Recency Test site or not
+		</description>
+	</globalProperty>
+
+
 </module>

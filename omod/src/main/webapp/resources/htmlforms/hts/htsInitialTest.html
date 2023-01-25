@@ -18,6 +18,7 @@
     <link rel="stylesheet" type="text/css" href="../moduleResources/kenyaemr/styles/kenyaemr_ml_scoring.css"></link>
     <script type="text/javascript">
         var IS_KDoD_SITE = <lookup expression="kenyaemr.getFacilityType()" />;
+        var IS_Recency_SITE = <lookup expression="kenyaemr.getRecencySite()" />;
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
         var mlCaseFindingEnabled = "<lookup expression="fn.globalProperty('kenyaemrml.casefinding.feature.enabled')"/>";
         var populationTypeSelected = function () {
@@ -440,7 +441,11 @@
                 jq('#negative-referral').hide();
                 jq('#tbl-results-given').show();
                 jq('#tbl-discordant').show();
-                jq('#hts-recency-testing').show();
+                if(IS_Recency_SITE==true){
+                        jq('#hts-recency-testing').show();
+                    } else {
+                        jq('#hts-recency-testing').hide();
+                    }
 
             }
             //Invalid
@@ -668,10 +673,11 @@
                 clearHiddenSections(jq('#prev-test-location'));
                 clearHiddenSections(jq('#prev-test-date'));
             }
-
+     //Recency Testing
             jq('#hts-recency-testing').hide();
             jq("#tbl-recency-id").hide();
             jq("#recency-testing input").change(recencyTestingSelected);
+
 
             //First test
             var firstTest = getField("hiv-test1-result.value").val();
@@ -727,7 +733,11 @@
                 jq('#ccc-no input').prop("disabled", false);
                 jq('#fs-referral').show();
                 jq('#negative-referral').hide();
-                jq('#hts-recency-testing').show();
+                if(IS_Recency_SITE==true){
+                    jq('#hts-recency-testing').show();
+                } else {
+                    jq('#hts-recency-testing').hide();
+                }
             }
             //Invalid
             if(secondTest ==163611){
@@ -1212,10 +1222,13 @@
                     jq('#ccc-no input').prop("disabled", false);
                     jq('#fs-referral').show();
                     jq('#negative-referral').hide();
-                    jq('#hts-recency-testing').show();
-                    jq('#tbl-recency-id').show();
-
-                }
+                    if(IS_Recency_SITE==true){
+                            jq('#hts-recency-testing').show();
+                            jq('#tbl-recency-id').show();
+                        } else {
+                            jq('#hts-recency-testing').hide();
+                        }
+                 }
                 //Invalid
                 if(secondTest ==163611){
                     jq(".kit-name2 select").prop("disabled", false);
