@@ -10,7 +10,8 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.anc;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.anc.ANCIPTmalariaDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.anc.ANCFGMDoneDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.anc.ANCHepatitisBTreatedDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -23,10 +24,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates  Data Definition to IPT Dose
+ * Evaluates ANC Hepatitis B Treated Evaluator
  */
-@Handler(supports=ANCIPTmalariaDataDefinition.class, order=50)
-public class ANCIPTmalariaDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports= ANCHepatitisBTreatedDefinition.class, order=50)
+public class ANCHepatitisBTreatedDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -34,7 +35,9 @@ public class ANCIPTmalariaDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select encounter_id, IPT_dose_given_anc from kenyaemr_etl.etl_mch_antenatal_visit;";
+        String qry = "select v.encounter_id,\n" +
+                "  (case v.hepatitis_b_treatment  when 1065 then \"Yes\" when 1066 then \"No\" else \"\" end) as hepatitis_b_treatment\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

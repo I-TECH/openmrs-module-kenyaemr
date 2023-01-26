@@ -10,7 +10,8 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.anc;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.anc.ANCIPTmalariaDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.anc.ANCDewormedDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.anc.ANCFGMDoneDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -23,10 +24,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates  Data Definition to IPT Dose
+ * Evaluates ANC FGM Done Evaluator
  */
-@Handler(supports=ANCIPTmalariaDataDefinition.class, order=50)
-public class ANCIPTmalariaDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports= ANCFGMDoneDataDefinition.class, order=50)
+public class ANCFGMDoneDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -34,7 +35,9 @@ public class ANCIPTmalariaDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select encounter_id, IPT_dose_given_anc from kenyaemr_etl.etl_mch_antenatal_visit;";
+        String qry = "select v.encounter_id,\n" +
+                "       (case v.fgm_done when 1065 then 'Yes' else 'No' end)as fgm_done\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

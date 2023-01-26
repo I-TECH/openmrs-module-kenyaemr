@@ -105,6 +105,7 @@ public class ANCRegisterReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("Number of ANC Visits", new ANCNumberOfVisitsDataDefinition(),"");
         dsd.addColumn("Name", nameDef, "");
         dsd.addColumn("Telephone No", new PersonAttributeDataDefinition(phoneNumber), "");
+        dsd.addColumn("Village", new ANCVillageDataDefinition(), null);
         dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
         dsd.addColumn("Age", new AgeDataDefinition(), "");
         dsd.addColumn("County", new ANCCountyDataDefinition(), null);
@@ -119,8 +120,13 @@ public class ANCRegisterReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("Weight", new ANCWeightDataDefinition(),"");
         dsd.addColumn("Blood Pressure", new ANCBloodPressureDataDefinition(),"");
         dsd.addColumn("Breast Exam", new ANCBreastExamDoneDataDefinition(),"");
+        dsd.addColumn("FGM Done", new ANCFGMDoneDataDefinition(),"");
+        dsd.addColumn("FGM Complications", new ANCFGMComplicationsDataDefinition(),"");
+        dsd.addColumn("Hepatitis B Screened", new ANCHepatitisBScreenedDefinition(),"");
+        dsd.addColumn("Hepatitis B Treated", new ANCHepatitisBTreatedDefinition(),"");
         //dsd.addColumn("Counselled", new ANCCounselledDoneDataDefinition(),""); --Dropped
         dsd.addColumn("Haemoglobin", new ANCHaemoglobinDataDefinition(),"");
+        dsd.addColumn("Diabetes testing", new ANCDiabetesTestingDefinition(),"");
         dsd.addColumn("Urinalysis", new ANCUrinalysisDataDefinition(),"");
         dsd.addColumn("VDRL Done", new ANCVDRLDoneDataDefinition(),"");
         dsd.addColumn("VDRL Results", new ANCVDRLResultsDataDefinition(),"");
@@ -141,14 +147,15 @@ public class ANCRegisterReportBuilder extends AbstractReportBuilder {
        // dsd.addColumn("CaCx Screening", new ANCCaCxScreeningResultsDataDefinition(),""); d-ropped
         dsd.addColumn("Other Illnesses", new ANCOtherIllnessesDataDefinition(),"");
         dsd.addColumn("Deworming", new ANCDewormingDataDefinition(),"");
-        dsd.addColumn("IPT malaria", new ANCIPTmalariaDataDefinition(),"");
-        dsd.addColumn("TTT", new ANCTTTDataDefinition(),"");
+        dsd.addColumn("IPT Dose 1-7", new ANCIPTmalariaDataDefinition(),"");
+        dsd.addColumn("TTT Given", new ANCTTTDataDefinition(),"");
         dsd.addColumn("Suppliment", new ANCSupplimentDataDefinition(),"");
         dsd.addColumn("ITN", new ANCITNDataDefinition(),"");
         dsd.addColumn("Other Illnesses", new ANCOtherIllnessesDataDefinition(),"");
         //dsd.addColumn("ANC Excercises", new ANCExercisesDataDefinition(),""); --dropped
         dsd.addColumn("Partner Tested for HIV", new ANCPartnerTestedForHivDataDefinition(),"");
         dsd.addColumn("Partner HIV Status", new ANCPartnerHIVStatusDataDefinition(),"");
+        dsd.addColumn("Postpartum Family Planning Method Counseled", new ANCPPFPCounseledDataDefinition(),"");
         dsd.addColumn("Facility Referred From", new ANCFacilityReferredFromDataDefinition(),"");
         dsd.addColumn("Facility Referred To", new ANCFacilityReferredToDataDefinition(),"");
         //dsd.addColumn("Next Appointment Date", new ANCNextAppointmentDateDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT)); --Dropped

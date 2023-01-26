@@ -15,24 +15,24 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * First ANC IPT malaria Column
+ * ANC Hepatitis B Screened column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class ANCIPTmalariaDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class ANCHepatitisBScreenedDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public ANCIPTmalariaDataDefinition() {
+    public ANCHepatitisBScreenedDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public ANCIPTmalariaDataDefinition(String name) {
+    public ANCHepatitisBScreenedDefinition(String name) {
         super(name);
     }
 
