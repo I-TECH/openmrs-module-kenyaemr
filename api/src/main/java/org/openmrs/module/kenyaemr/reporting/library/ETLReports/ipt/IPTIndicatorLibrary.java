@@ -9,9 +9,6 @@
  */
 package org.openmrs.module.kenyaemr.reporting.library.ETLReports.ipt;
 
-import org.openmrs.module.kenyacore.report.ReportUtils;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.pmtct.anc.*;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
