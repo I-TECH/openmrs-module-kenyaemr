@@ -113,18 +113,12 @@ public class PNCRegisterReportBuilder extends AbstractReportBuilder {
         // new columns
         dsd.addColumn("PNC Number", new PNCRegisterNumberDataDefinition(), "");
         dsd.addColumn("Visit Number", new PNCVisitNumberDataDefinition(), "");
-        // dsd.addColumn("Admission Number", new PNCNumberDataDefinition(),"");
         dsd.addColumn("Name", nameDef, "");
         dsd.addColumn("Age", ageAtReportingDataDefinition, "endDate=${endDate}");
         dsd.addColumn("Sub County", new RegistrationSubcountyDataDefinition(), "");
         dsd.addColumn("Village_Estate_Landmark", new CalculationDataDefinition("Village/Estate/Landmark", new PersonAddressCalculation()), "", new RDQACalculationResultConverter());
         dsd.addColumn("Telephone No", new PersonAttributeDataDefinition(phoneNumber), "");
-        //dsd.addColumn("Date of Birth", new PNCDateOfBirthAndAgeDataDefinition(),"");
-        //dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
-        // dsd.addColumn("Age", new AgeDataDefinition(), "");
         dsd.addColumn("Delivery Date", new PNCDeliveryDateDataDefinition(), "", new DateConverter(ENC_DATE_FORMAT));
-        // dsd.addColumn("Marital Status", new KenyaEMRMaritalStatusDataDefinition(), null);
-
         dsd.addColumn("Place of Delivery", new PNCPlaceOfDeliveryDataDefinition(), "");
         dsd.addColumn("Mode of Delivery", new PNCModeOfDeliveryDataDefinition(), "");
         dsd.addColumn("Postpartum visit timing Mother", new PNCMotherPostpartumVisitTimingDataDefinition(), "");
@@ -143,7 +137,6 @@ public class PNCRegisterReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("Episiotomy", new PNCEpisiotomyDataDefinition(), "");
         dsd.addColumn("Fistula Screening", new PNCFistulaScreeningDataDefinition(), "");
         dsd.addColumn("TB Screening", new PNCTBScreeningDataDefinition(), "");
-        //dsd.addColumn("Infections", new PNCInfectionsDataDefinition(),"");
         dsd.addColumn("Prior Known HIV Status", new PNCPriorKnownStatusDataDefinition(), "");
         dsd.addColumn("Tested HIV at PNC", new PNCTestedForHIVAtPNCDataDefinition(), "");
         dsd.addColumn("Test 1 Results", new PNCTestOneResultsDataDefinition(), "");
