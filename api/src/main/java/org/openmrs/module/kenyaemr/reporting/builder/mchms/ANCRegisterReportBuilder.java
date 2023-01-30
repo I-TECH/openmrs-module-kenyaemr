@@ -168,7 +168,7 @@ public class ANCRegisterReportBuilder extends AbstractReportBuilder {
         cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
-        String indParams = "";
+        String indParams = "startDate=${startDate},endDate=${endDate}";
 
         cohortDsd.addColumn("newClients", "New Clients", ReportUtils.map(anc.newClientsANC(), indParams), "");
         cohortDsd.addColumn("revisits", "Revisit Clients", ReportUtils.map(anc.revisitsANC(), indParams), "");
