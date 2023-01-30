@@ -10,7 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.pnc;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pnc.PNCAdmissionNumberDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pnc.PNCNumberDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * PNC Admission Number column
  */
-@Handler(supports= PNCAdmissionNumberDataDefinition.class, order=50)
+@Handler(supports= PNCNumberDataDefinition.class, order=50)
 public class PNCAdmissionNumberDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
@@ -34,10 +34,9 @@ public class PNCAdmissionNumberDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select v.encounter_id, e.anc_number as admission_number\n" +
-                "from kenyaemr_etl.etl_mch_postnatal_visit v,kenyaemr_etl.etl_mch_enrollment e\n" +
-                "where v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
-                "GROUP BY v.encounter_id;\n";
+        String qry = "select v.encounter_id, v.pnc_register_no as pnc_number\n" +
+                "            from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
+                "            GROUP BY v.encounter_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

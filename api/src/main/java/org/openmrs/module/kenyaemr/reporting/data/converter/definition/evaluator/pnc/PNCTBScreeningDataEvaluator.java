@@ -10,7 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.pnc;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pnc.PNCCervicalCancerScreeningMethodDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pnc.PNCTBScreeningDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -23,10 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * PNC Cervical Cancer screening Method column
+ * PNC TB screening
  */
-@Handler(supports= PNCCervicalCancerScreeningMethodDataDefinition.class, order=50)
-public class PNCCervicalCancerScreeningMethodDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports= PNCTBScreeningDataDefinition.class, order=50)
+public class PNCTBScreeningDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -34,16 +34,16 @@ public class PNCCervicalCancerScreeningMethodDataEvaluator implements EncounterD
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select v.encounter_id,\n" +
-                "       (case v.cacx_screening_method\n" +
-                "            when 885 then 'Pap Smear'\n" +
-                "            when 162816 then 'VIA'\n" +
-                "            when 164977 then 'VILI'\n" +
-                "            when 159859 then 'HPV'\n" +
-                "            when 5622 then 'Other'\n" +
-                "            else '' end)\n" +
-                "           as cacx_method\n" +
-                "from kenyaemr_etl.etl_mch_postnatal_visit v;";
+        String qry = "select s.encounter_id,\n" +
+                "       (case s.resulting_tb_status\n" +
+                "            when 1660 then 'No TB Signs'\n" +
+                "            when 142177 then 'Presumed TB'\n" +
+                "            when 1662 then 'TB Confirmed'\n" +
+                "            when 160737 then 'TB Screening Not Done'\n" +
+                "            else '' end) as resulting_tb_status\n" +
+                "from kenyaemr_etl.etl_tb_screening s\n" +
+                "         inner join kenyaemr_etl.etl_mch_postnatal_visit v\n" +
+                "                    on s.patient_id = v.patient_id and s.encounter_id = v.encounter_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
