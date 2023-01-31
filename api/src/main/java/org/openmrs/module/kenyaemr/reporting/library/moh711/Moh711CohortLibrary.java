@@ -118,7 +118,10 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
     public CohortDefinition noOfANCClientsGivenIPT1stDoseSQL() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery = "select p.patient_id from kenyaemr_etl.etl_preventive_services p where date(p.malaria_prophylaxis_1) <= date(:endDate)\n" +
-                "                        and date(p.malaria_prophylaxis_1) between date(:startDate) and date(:endDate);";
+                "        and date(p.malaria_prophylaxis_1) between date(:startDate) and date(:endDate)\n" +
+                "union\n" +
+                "select v.patient_id from kenyaemr_etl.etl_mch_antenatal_visit v where v.IPT_dose_given_anc = 1 and\n" +
+                "      v.visit_date   between date(:startDate) and date(:endDate);";
         cd.setName("No.of Clients given IPT (1st dose)");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -146,7 +149,10 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
     public CohortDefinition noOfANCClientsGivenIPT2ndDoseSQL() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery = "select p.patient_id from kenyaemr_etl.etl_preventive_services p where date(p.malaria_prophylaxis_2) <= date(:endDate)\n" +
-                "        and date(p.malaria_prophylaxis_2) between date(:startDate) and date(:endDate);";
+                "      and date(p.malaria_prophylaxis_2) between date(:startDate) and date(:endDate)\n" +
+                "union\n" +
+                "select v.patient_id from kenyaemr_etl.etl_mch_antenatal_visit v where v.IPT_dose_given_anc = 2 and\n" +
+                "       v.visit_date   between date(:startDate) and date(:endDate);";
         cd.setName("No.of Clients given IPT (2nd dose)");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
