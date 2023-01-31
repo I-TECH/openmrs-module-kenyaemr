@@ -15,24 +15,24 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * First ANC IPT malaria Column
+ * ANC FGM Done column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class ANCIPTmalariaDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class ANCFGMDoneDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public ANCIPTmalariaDataDefinition() {
+    public ANCFGMDoneDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public ANCIPTmalariaDataDefinition(String name) {
+    public ANCFGMDoneDataDefinition(String name) {
         super(name);
     }
 

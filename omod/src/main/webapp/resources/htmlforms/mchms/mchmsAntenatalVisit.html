@@ -660,6 +660,11 @@
                                 jq('#package-care').show();
                                }
 
+                            var treatmentVisit = getValue('treatmentVisit.value');
+                            if(treatmentVisit == 1065){
+                                jq('#treatment-dose').show();
+                            }
+
                         });
 					</script>
 					</ifMode>

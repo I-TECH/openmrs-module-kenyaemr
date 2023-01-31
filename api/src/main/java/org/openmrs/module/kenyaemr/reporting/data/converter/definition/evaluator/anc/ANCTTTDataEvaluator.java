@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * Evaluates  Data Definition to ANC Exercises
+ * Evaluates  Data Definition to ANC TTT Dose
  */
 @Handler(supports=ANCTTTDataDefinition.class, order=50)
 public class ANCTTTDataEvaluator implements EncounterDataEvaluator {
