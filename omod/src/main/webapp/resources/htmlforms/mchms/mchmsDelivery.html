@@ -459,6 +459,7 @@
             var given_vitaminkTwins = getValue('given-vitamink-twins.value');
             var given_vitaminkTriplets = getValue('given-vitamink-triplets.value');
             var testing_done_maternity = getValue('testing-done-maternity.value');
+            var deliveryOutcome = getValue('delivery-outcome.value');
 
             if (gestation != null) {
                 var gestationValue = parseFloat(gestation);
@@ -533,37 +534,37 @@
             }else{
                 getField('chlorhexidine-applied.error').html('Please specify if chlorhexidine was applied.').hide();
             }
-            if (kangaroo_mother_care_single == "" ) {
+            if (deliveryOutcome ==159913 &amp;&amp; kangaroo_mother_care_single == "" ) {
                 getField('kangaroo-mother-care-single.error').html('Please specify if kangaroo mother care was given.').show();
                 return false;
             }else{
                 getField('kangaroo-mother-care-single.error').html('Please specify if kangaroo mother care was given.').hide();
             }
-            if (kangaroo_mother_care_twins == "" ) {
+            if (deliveryOutcome ==159914 &amp;&amp; kangaroo_mother_care_twins == "" ) {
                 getField('kangaroo-mother-care-twins.error').html('Please specify if kangaroo mother care was given.').show();
                 return false;
             }else{
                 getField('kangaroo-mother-care-twins.error').html('Please specify if kangaroo mother care was given.').hide();
             }
-            if (kangaroo_mother_care_triplets == "" ) {
+            if (deliveryOutcome ==159915 &amp;&amp; kangaroo_mother_care_triplets == "" ) {
                 getField('kangaroo-mother-care-triplets.error').html('Please specify if kangaroo mother care was given.').show();
                 return false;
             }else{
                 getField('kangaroo-mother-care-triplets.error').html('Please specify if kangaroo mother care was given.').hide();
             }
-            if (given_vitaminkSingle == "" ) {
+            if (deliveryOutcome ==159913 &amp;&amp; given_vitaminkSingle == "" ) {
                 getField('given-vitamink-single.error').html('Please specify if vitamin K was given.').show();
                 return false;
             }else{
                 getField('given-vitamink-single.error').html('Please specify if vitamin K was given.').hide();
             }
-            if (given_vitaminkTwins == "" ) {
+            if (deliveryOutcome ==159914 &amp;&amp; given_vitaminkTwins == "" ) {
                 getField('given-vitamink-twins.error').html('Please specify if vitamin K was given.').show();
                 return false;
             }else{
                 getField('given-vitamink-twins.error').html('Please specify if vitamin K was given.').hide();
             }
-            if (given_vitaminkTriplets == "" ) {
+            if (deliveryOutcome ==159915 &amp;&amp; given_vitaminkTriplets == "" ) {
                 getField('given-vitamink-triplets.error').html('Please specify if vitamin K was given.').show();
                 return false;
             }else{
