@@ -10,7 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.pnc;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pnc.PNCCervicalCancerScreeningMethodDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pnc.PNCBabyPostpartumVisitTimingDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -23,10 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Map;
 
 /**
- * PNC Cervical Cancer screening Method column
+ * PNC postpartum column for the baby
  */
-@Handler(supports= PNCCervicalCancerScreeningMethodDataDefinition.class, order=50)
-public class PNCCervicalCancerScreeningMethodDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports = PNCBabyPostpartumVisitTimingDataDefinition.class, order = 50)
+public class PNCBabyPostpartumVisitTimingDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -34,15 +34,7 @@ public class PNCCervicalCancerScreeningMethodDataEvaluator implements EncounterD
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select v.encounter_id,\n" +
-                "       (case v.cacx_screening_method\n" +
-                "            when 885 then 'Pap Smear'\n" +
-                "            when 162816 then 'VIA'\n" +
-                "            when 164977 then 'VILI'\n" +
-                "            when 159859 then 'HPV'\n" +
-                "            when 5622 then 'Other'\n" +
-                "            else '' end)\n" +
-                "           as cacx_method\n" +
+        String qry = "select v.encounter_id, v.visit_timing_baby\n" +
                 "from kenyaemr_etl.etl_mch_postnatal_visit v;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();

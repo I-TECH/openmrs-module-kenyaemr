@@ -15,24 +15,24 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * PNC postpartum visit timing Column
+ * PNC couple counselled
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class PNCPostpartumVisitTimingDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class PNCCoupleCounselledDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public PNCPostpartumVisitTimingDataDefinition() {
+    public PNCCoupleCounselledDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public PNCPostpartumVisitTimingDataDefinition(String name) {
+    public PNCCoupleCounselledDataDefinition(String name) {
         super(name);
     }
 
