@@ -634,10 +634,9 @@
             var tca_date = getValue('returnVisitDate.value');
             var pncNumberVisit = getValue('pnc-number-new-visit.value');
             var pncNumberRevisit = getValue('pnc-number-revisit.value');
-            var pncHivResult = getValue('pnc-hiv-result.value');
             var haartProphylaxisTreatment = getValue('haartProphylaxisTreatment.value');
-            var nvpBaby = getValue('nvp-baby.value');
-            var aztBaby = getValue('azt-baby.value');
+            var nvpBaby = getValue('nvp-dispensed.value');
+            var aztBaby = getValue('azt-dispensed.value');
             var haartMother = getValue('haartMother.value');
 
             if (pncNumberVisit =="") {
@@ -677,25 +676,25 @@
             }else{
                 getField('returnVisitDate.error').html('Return visit date should not be earlier than encounter date.').hide();
             }
-            if (pncHivResult == 703 &amp;&amp; haartProphylaxisTreatment == "") {
+            if ((PATIENT_IS_REPORTED_HIV == 703 || PATIENT_IS_ENROLLED_HIV) &amp;&amp; haartProphylaxisTreatment == "") {
                 getField('haartProphylaxisTreatment.error').html('Haart prophylaxis treatment should not be empty').show();
                 return false;
             }else{
                 getField('haartProphylaxisTreatment.error').html('Haart prophylaxis treatment should not be empty').hide();
             }
-            if (pncHivResult == 703 &amp;&amp; aztBaby == "") {
-                getField('azt-baby.error').html('AZT for baby should not be empty').show();
+            if ((PATIENT_IS_REPORTED_HIV == 703 || PATIENT_IS_ENROLLED_HIV) &amp;&amp; aztBaby == "") {
+                getField('azt-dispensed.error').html('AZT for baby should not be empty').show();
                 return false;
             }else{
-                getField('azt-baby.error').html('AZT for baby should not be empty').hide();
+                getField('azt-dispensed.error').html('AZT for baby should not be empty').hide();
             }
-            if (pncHivResult == 703 &amp;&amp; nvpBaby == "") {
-                getField('nvp-baby.error').html('NVP for baby should not be empty').show();
+            if ((PATIENT_IS_REPORTED_HIV == 703 || PATIENT_IS_ENROLLED_HIV) &amp;&amp; nvpBaby == "") {
+                getField('nvp-dispensed.error').html('NVP for baby should not be empty').show();
                 return false;
             }else{
-                getField('nvp-baby.error').html('NVP for baby should not be empty').hide();
+                getField('nvp-dispensed.error').html('NVP for baby should not be empty').hide();
             }
-            if (pncHivResult == 703 &amp;&amp; haartMother == "") {
+            if ((PATIENT_IS_REPORTED_HIV == 703 || PATIENT_IS_ENROLLED_HIV) &amp;&amp; haartMother == "") {
                 getField('haartMother.error').html('HAART for mother should not be empty').show();
                 return false;
             }else{
@@ -1470,13 +1469,6 @@
                                                      style="radio" answerLabels="Less than 6 weeks, Greater 6 weeks, Not Done"/>
                                             </td>
                                         </tr>
-                                        <!--										<tr>-->
-                                        <!--											<td>What was the HIV Result?&#160;&#160;&#160;-->
-                                        <!--												<obs id="pnc-hiv-result" conceptId="160749AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
-                                        <!--													 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1062AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
-                                        <!--													 style="radio" answerLabels="Positive,Negative,Indicative, Not Applicable"/>-->
-                                        <!--											</td>-->
-                                        <!--										</tr>-->
                                         <tr id="pncMotherProphylaxisTbl">
                                             <td>Mother’s prophylaxis given during this visit?&#160;&#160;&#160;
                                                 <obs id="pncMotherProphylaxis" conceptId="161930AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -1496,20 +1488,6 @@
                                                      style="radio" answerLabels="Less than 6 weeks, Greater 6 weeks"/>
                                             </td>
                                         </tr>
-                                        <!--										<tr id="nvpBabyTbl">-->
-                                        <!--											<td>Was NVP for Baby given ?&#160;&#160;&#160;-->
-                                        <!--												<obs id="nvp-baby" conceptId="160749AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
-                                        <!--													 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 164142AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
-                                        <!--													 style="radio" answerLabels="Yes,No,Not Applicable, Revisit"/>-->
-                                        <!--											</td>-->
-                                        <!--										</tr>-->
-                                        <!--										<tr id="aztBabyTbl">-->
-                                        <!--											<td>Was AZT for Baby given ?&#160;&#160;&#160;-->
-                                        <!--												<obs id="azt-baby" conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
-                                        <!--													 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 164142AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"-->
-                                        <!--													 style="radio" answerLabels="Yes,No,Not Applicable, Revisit"/>-->
-                                        <!--											</td>-->
-                                        <!--										</tr>-->
                                         <tr id="haartMotherTbl">
                                             <td>Was HAART for Mother given?&#160;&#160;&#160;
                                                 <obs id="haartMother" conceptId="163783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
