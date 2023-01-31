@@ -10,7 +10,8 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.maternity;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.maternity.MaternityVDRLRPRResultsDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.maternity.MaternityUterotonicGivenDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.maternity.MaternityVaginalExaminationDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
@@ -25,8 +26,8 @@ import java.util.Map;
 /**
  * Evaluates a PersonDataDefinition
  */
-@Handler(supports= MaternityVDRLRPRResultsDataDefinition.class, order=50)
-public class MaternityVDRLRPRResultsDataEvaluator implements PersonDataEvaluator {
+@Handler(supports= MaternityVaginalExaminationDataDefinition.class, order=50)
+public class MaternityVaginalExaminationDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -36,8 +37,8 @@ public class MaternityVDRLRPRResultsDataEvaluator implements PersonDataEvaluator
 
         String qry = "select\n" +
                 "  patient_id,\n" +
-                "  (case vdrl_rpr_results when 703 then \"Positive\" when 664 then \"Negative\" when 1118 then \"Not Done\" else \"\" end) as vdrl_rpr_results\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit;";
+                "  (case vaginal_examination when 132681 then \"Normal\" when 5577 then \"Episiotomy\" when 159264 then \"Vaginal Tear\" when 118935 then \"FGM\" when 139505 then \"Vaginal wart\" else \"\" end) as vaginal_examination\n" +
+                "from kenyaemr_etl.etl_mchs_delivery;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
