@@ -193,13 +193,13 @@ public class PNCRegisterReportBuilder extends AbstractReportBuilder {
 
         EmrReportingUtils.addRow(cohortDsd, "PNC clients", "", ReportUtils.map(pncIndicators.pncClients(), indParams), pncAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05"));
 
-        cohortDsd.addColumn("New PNC Visit", "", ReportUtils.map(pnc.newClientsPNC(), ""), "");
-        cohortDsd.addColumn("PNC revisits", "", ReportUtils.map(pnc.revisitsPNC(), ""), "");
-        cohortDsd.addColumn("New PNC visit within 48 hrs", "", ReportUtils.map(pnc.pncMotherNewVisitWithin48hrs(), ""), "");
-        cohortDsd.addColumn("New PNC visit between 3 days and under 6 weeks", "", ReportUtils.map(pnc.pncMotherNewVisitBetween3DaysUnder6Weeks(), ""), "");
-        cohortDsd.addColumn("New PNC visit after 6 weeks", "", ReportUtils.map(pnc.pncMotherNewVisitAfter6Weeks(), ""), "");
-        cohortDsd.addColumn("New PNC visit for babies within 48 hrs", "", ReportUtils.map(pnc.pncBabyNewVisitWithin48hrs(), ""), "");
-        cohortDsd.addColumn("New PNC visit for babies between 3 days and under 6 weeks", "", ReportUtils.map(pnc.pncBabyNewVisitBetween3DaysUnder6Weeks(), ""), "");
+        cohortDsd.addColumn("New PNC Visit", "", ReportUtils.map(pnc.newClientsPNC(), indParams), "");
+        cohortDsd.addColumn("PNC revisits", "", ReportUtils.map(pnc.revisitsPNC(), indParams), "");
+        cohortDsd.addColumn("New PNC visit within 48 hrs", "", ReportUtils.map(pnc.pncMotherNewVisitWithin48hrs(), indParams), "");
+        cohortDsd.addColumn("New PNC visit between 3 days and under 6 weeks", "", ReportUtils.map(pnc.pncMotherNewVisitBetween3DaysUnder6Weeks(), indParams), "");
+        cohortDsd.addColumn("New PNC visit after 6 weeks", "", ReportUtils.map(pnc.pncMotherNewVisitAfter6Weeks(), indParams), "");
+        cohortDsd.addColumn("New PNC visit for babies within 48 hrs", "", ReportUtils.map(pnc.pncBabyNewVisitWithin48hrs(), indParams), "");
+        cohortDsd.addColumn("New PNC visit for babies between 3 days and under 6 weeks", "", ReportUtils.map(pnc.pncBabyNewVisitBetween3DaysUnder6Weeks(), indParams), "");
         cohortDsd.addColumn("New PNC visit for babies after 6 weeks", "", ReportUtils.map(pnc.pncBabyNewVisitAfter6Weeks(), indParams), "");
         cohortDsd.addColumn("Initial test at PNC", "", ReportUtils.map(pnc.initialTestsAtPNC(), indParams), "");
         cohortDsd.addColumn("HIV Positive result at PNC", "", ReportUtils.map(pnc.hivPositiveResultAtPNC(), indParams), "");

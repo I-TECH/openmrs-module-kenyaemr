@@ -30,35 +30,35 @@ public class PNCIndicatorLibrary {
     }
 
     public CohortIndicator newClientsPNC() {
-        return cohortIndicator("New Clients", ReportUtils.<CohortDefinition>map(pncCohorts.newPNCClients(), ""));
+        return cohortIndicator("New Clients", ReportUtils.<CohortDefinition>map(pncCohorts.newPNCClients(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     public CohortIndicator revisitsPNC() {
-        return cohortIndicator("Revisit Clients", ReportUtils.<CohortDefinition>map(pncCohorts.revisitsPNC(), ""));
+        return cohortIndicator("Revisit Clients", ReportUtils.<CohortDefinition>map(pncCohorts.revisitsPNC(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     public CohortIndicator pncMotherNewVisitWithin48hrs() {
-        return cohortIndicator("New PNC visit for mothers within 48 hrs", ReportUtils.<CohortDefinition>map(pncCohorts.pncMotherNewVisitWithin48hrs(), ""));
+        return cohortIndicator("New PNC visit for mothers within 48 hrs", ReportUtils.<CohortDefinition>map(pncCohorts.pncMotherNewVisitWithin48hrs(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     public CohortIndicator pncMotherNewVisitBetween3DaysUnder6Weeks() {
-        return cohortIndicator("New PNC visit for mothers between 3 days and under 6 weeks", ReportUtils.<CohortDefinition>map(pncCohorts.pncMotherNewVisitBtwn3DaysUnder6Weeks(), ""));
+        return cohortIndicator("New PNC visit for mothers between 3 days and under 6 weeks", ReportUtils.<CohortDefinition>map(pncCohorts.pncMotherNewVisitBtwn3DaysUnder6Weeks(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     public CohortIndicator pncMotherNewVisitAfter6Weeks() {
-        return cohortIndicator("New PNC visit for mothers after 6 weeks", ReportUtils.<CohortDefinition>map(pncCohorts.pncMotherNewVisitAfter6Weeks(), ""));
+        return cohortIndicator("New PNC visit for mothers after 6 weeks", ReportUtils.<CohortDefinition>map(pncCohorts.pncMotherNewVisitAfter6Weeks(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     public CohortIndicator pncBabyNewVisitWithin48hrs() {
-        return cohortIndicator("New PNC visit for babies within 48 hrs", ReportUtils.<CohortDefinition>map(pncCohorts.pncBabyNewVisitWithin48hrs(), ""));
+        return cohortIndicator("New PNC visit for babies within 48 hrs", ReportUtils.<CohortDefinition>map(pncCohorts.pncBabyNewVisitWithin48hrs(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     public CohortIndicator pncBabyNewVisitBetween3DaysUnder6Weeks() {
-        return cohortIndicator("New PNC visit for babies between 3 days and under 6 weeks", ReportUtils.<CohortDefinition>map(pncCohorts.pncBabyNewVisitBtwn3DaysUnder6Weeks(), ""));
+        return cohortIndicator("New PNC visit for babies between 3 days and under 6 weeks", ReportUtils.<CohortDefinition>map(pncCohorts.pncBabyNewVisitBtwn3DaysUnder6Weeks(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     public CohortIndicator pncBabyNewVisitAfter6Weeks() {
-        return cohortIndicator("New PNC visit for babies after 6 weeks", ReportUtils.<CohortDefinition>map(pncCohorts.pncBabyNewVisitAfter6Weeks(), ""));
+        return cohortIndicator("New PNC visit for babies after 6 weeks", ReportUtils.<CohortDefinition>map(pncCohorts.pncBabyNewVisitAfter6Weeks(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     public CohortIndicator initialTestsAtPNC() {

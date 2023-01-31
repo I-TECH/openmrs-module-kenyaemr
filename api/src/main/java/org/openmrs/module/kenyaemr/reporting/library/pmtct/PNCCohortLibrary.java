@@ -43,9 +43,9 @@ public class PNCCohortLibrary {
                 "where v.pnc_visit_no = 1;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("New PNC clients");
-        cd.setQuery(sqlQuery);/*
+        cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));*/
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("New PNC clients within period");
         return cd;
     }
@@ -56,9 +56,9 @@ public class PNCCohortLibrary {
                 "where v.pnc_visit_no > 1;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("PNC revisit clients");
-        cd.setQuery(sqlQuery);/*
+        cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));*/
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("PNC revisit clients within period");
         return cd;
     }
@@ -69,9 +69,9 @@ public class PNCCohortLibrary {
                 "where v.pnc_visit_no = 1 and v.visit_timing_mother = 1721;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("New PNC visit for mothers within 48 hrs");
-        cd.setQuery(sqlQuery);/*
+        cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));*/
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("New PNC visit for mothers within 48 hrs");
         return cd;
     }
@@ -82,9 +82,9 @@ public class PNCCohortLibrary {
                 "where v.pnc_visit_no = 1 and v.visit_timing_mother = 1722;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("New PNC visit for mothers between 3 days and under 6 weeks");
-        cd.setQuery(sqlQuery);/*
+        cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));*/
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("New PNC visit for mothers between 3 days and under 6 weeks");
         return cd;
     }
@@ -95,9 +95,9 @@ public class PNCCohortLibrary {
                 "where v.pnc_visit_no = 1 and v.visit_timing_mother = 1723;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("New PNC visit for mothers after 6 weeks");
-        cd.setQuery(sqlQuery);/*
+        cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));*/
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("New PNC visit for mothers after 6 weeks");
         return cd;
     }
@@ -108,9 +108,9 @@ public class PNCCohortLibrary {
                 "where v.pnc_visit_no = 1 and v.visit_timing_baby = 167012;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("New PNC visit for babies within 48 hrs");
-        cd.setQuery(sqlQuery);/*
+        cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));*/
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("New PNC visit for babies within 48 hrs");
         return cd;
     }
@@ -121,9 +121,9 @@ public class PNCCohortLibrary {
                 "where v.pnc_visit_no = 1 and v.visit_timing_mother = 167013;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("New PNC visit for babies between 3 days and under 6 weeks");
-        cd.setQuery(sqlQuery);/*
+        cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));*/
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("New PNC visit for babies between 3 days and under 6 weeks");
         return cd;
     }
@@ -134,9 +134,9 @@ public class PNCCohortLibrary {
                 "where v.pnc_visit_no = 1 and v.visit_timing_mother = 167015;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("New PNC visit for mothers after 6 weeks");
-        cd.setQuery(sqlQuery);/*
+        cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));*/
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("New PNC visit for mothers after 6 weeks");
         return cd;
     }
