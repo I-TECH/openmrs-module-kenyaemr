@@ -247,7 +247,7 @@
                             </td>
                         </tr>
                     </includeIf>
-                    <includeIf velocityTest="($patient.gender == 'F') &amp;&amp; ($patient.age &gt; 9) &amp;&amp; ($patient.age &lt; 14)">
+                    <includeIf velocityTest="($patient.gender == 'F') &amp;&amp; ($patient.age &gt; 8) &amp;&amp; ($patient.age &lt; 15)">
                         <tr id="hpv-vaccine">
                             <td>Client Vaccinated against HPV? &#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
                             <td>  <obs  align="right" conceptId="160325AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -261,7 +261,7 @@
             </td>
         </fieldset>
 
-        <includeIf velocityTest="$patient.gender == 'F'  &amp;&amp; ($patient.age &gt; 10)" >
+        <includeIf velocityTest="$patient.gender == 'F'  &amp;&amp; ($patient.age &gt; 9)" >
             <fieldset id="pregnancy-screening">
                 <legend>Pregnancy Screening</legend>
                 <table>
