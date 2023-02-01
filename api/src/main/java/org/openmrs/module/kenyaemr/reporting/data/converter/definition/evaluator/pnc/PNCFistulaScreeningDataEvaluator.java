@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -36,10 +37,14 @@ public class PNCFistulaScreeningDataEvaluator implements EncounterDataEvaluator 
 
         String qry = "select v.encounter_id,\n" +
                 "(case v.fistula_screening when 1107 then \"None\" when 49 then \"VVF\" when 127847 then \"RVF\" when 1118 then \"Not done\" else \"\" end) as \"Fistula Screening\"\n" +
-                "from kenyaemr_etl.etl_mch_postnatal_visit v;";
+                "from kenyaemr_etl.etl_mch_postnatal_visit v where date(v.visit_date) between date(:startDate) and date(:endDate);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;

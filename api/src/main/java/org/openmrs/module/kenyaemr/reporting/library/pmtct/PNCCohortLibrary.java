@@ -40,12 +40,12 @@ public class PNCCohortLibrary {
         String sqlQuery="select v.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
                 "         inner join kenyaemr_etl.etl_mch_enrollment e on e.patient_id = v.patient_id\n" +
-                "where v.pnc_visit_no = 1;";
+                "where v.pnc_visit_no = 1 and date(v.visit_date) between date(:startDate) and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("New PNC clients");
-        cd.setQuery(sqlQuery);/*
+        cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));*/
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("New PNC clients within period");
         return cd;
     }
@@ -53,12 +53,12 @@ public class PNCCohortLibrary {
         String sqlQuery="select v.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
                 "         inner join kenyaemr_etl.etl_mch_enrollment e on e.patient_id = v.patient_id\n" +
-                "where v.pnc_visit_no > 1;";
+                "where v.pnc_visit_no > 1 and date(v.visit_date) between date(:startDate) and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("PNC revisit clients");
-        cd.setQuery(sqlQuery);/*
+        cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));*/
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("PNC revisit clients within period");
         return cd;
     }
@@ -66,12 +66,12 @@ public class PNCCohortLibrary {
         String sqlQuery="select v.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
                 "         inner join kenyaemr_etl.etl_mch_enrollment e on e.patient_id = v.patient_id\n" +
-                "where v.pnc_visit_no = 1 and v.visit_timing_mother = 1721;";
+                "where v.pnc_visit_no = 1 and v.visit_timing_mother = 1721 and date(v.visit_date) between date(:startDate) and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("New PNC visit for mothers within 48 hrs");
-        cd.setQuery(sqlQuery);/*
+        cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));*/
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("New PNC visit for mothers within 48 hrs");
         return cd;
     }
@@ -79,12 +79,12 @@ public class PNCCohortLibrary {
         String sqlQuery="select v.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
                 "         inner join kenyaemr_etl.etl_mch_enrollment e on e.patient_id = v.patient_id\n" +
-                "where v.pnc_visit_no = 1 and v.visit_timing_mother = 1722;";
+                "where v.pnc_visit_no = 1 and v.visit_timing_mother = 1722 and date(v.visit_date) between date(:startDate) and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("New PNC visit for mothers between 3 days and under 6 weeks");
-        cd.setQuery(sqlQuery);/*
+        cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));*/
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("New PNC visit for mothers between 3 days and under 6 weeks");
         return cd;
     }
@@ -92,12 +92,12 @@ public class PNCCohortLibrary {
         String sqlQuery="select v.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
                 "         inner join kenyaemr_etl.etl_mch_enrollment e on e.patient_id = v.patient_id\n" +
-                "where v.pnc_visit_no = 1 and v.visit_timing_mother = 1723;";
+                "where v.pnc_visit_no = 1 and v.visit_timing_mother = 1723 and date(v.visit_date) between date(:startDate) and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("New PNC visit for mothers after 6 weeks");
-        cd.setQuery(sqlQuery);/*
+        cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));*/
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("New PNC visit for mothers after 6 weeks");
         return cd;
     }
@@ -105,12 +105,12 @@ public class PNCCohortLibrary {
         String sqlQuery="select v.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
                 "         inner join kenyaemr_etl.etl_mch_enrollment e on e.patient_id = v.patient_id\n" +
-                "where v.pnc_visit_no = 1 and v.visit_timing_baby = 167012;";
+                "where v.pnc_visit_no = 1 and v.visit_timing_baby = 167012 and date(v.visit_date) between date(:startDate) and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("New PNC visit for babies within 48 hrs");
-        cd.setQuery(sqlQuery);/*
+        cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));*/
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("New PNC visit for babies within 48 hrs");
         return cd;
     }
@@ -118,12 +118,12 @@ public class PNCCohortLibrary {
         String sqlQuery="select v.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
                 "         inner join kenyaemr_etl.etl_mch_enrollment e on e.patient_id = v.patient_id\n" +
-                "where v.pnc_visit_no = 1 and v.visit_timing_mother = 167013;";
+                "where v.pnc_visit_no = 1 and v.visit_timing_mother = 167013 and date(v.visit_date) between date(:startDate) and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("New PNC visit for babies between 3 days and under 6 weeks");
-        cd.setQuery(sqlQuery);/*
+        cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));*/
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("New PNC visit for babies between 3 days and under 6 weeks");
         return cd;
     }
@@ -131,12 +131,12 @@ public class PNCCohortLibrary {
         String sqlQuery="select v.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
                 "         inner join kenyaemr_etl.etl_mch_enrollment e on e.patient_id = v.patient_id\n" +
-                "where v.pnc_visit_no = 1 and v.visit_timing_mother = 167015;";
+                "where v.pnc_visit_no = 1 and v.visit_timing_mother = 167015 and date(v.visit_date) between date(:startDate) and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("New PNC visit for mothers after 6 weeks");
-        cd.setQuery(sqlQuery);/*
+        cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));*/
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("New PNC visit for mothers after 6 weeks");
         return cd;
     }
@@ -148,7 +148,7 @@ public class PNCCohortLibrary {
                 "     (select v.patient_id\n" +
                 "      from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
                 "      where v.test_1_result is not null\n" +
-                "        and date(v.visit_date between date(:startDate) and date(:endDate))) v\n" +
+                "        and date(v.visit_date) between date(:startDate) and date(:endDate)) v\n" +
                 "     on e.patient_id = v.patient_id\n" +
                 "         left join\n" +
                 "     (select t.patient_id\n" +
@@ -156,8 +156,8 @@ public class PNCCohortLibrary {
                 "      where t.test_type = 1\n" +
                 "        and t.hts_entry_point = 1623\n" +
                 "        and date(t.visit_date) between date(:startDate) and date(:endDate)) t on e.patient_id = t.patient_id\n" +
-                "where v.patient_id is not null\n" +
-                "   or t.patient_id is not null;";
+                "where (v.patient_id is not null\n" +
+                "   or t.patient_id is not null);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("Initial test at PNC");
         cd.setQuery(sqlQuery);
@@ -174,7 +174,7 @@ public class PNCCohortLibrary {
                 "     (select v.patient_id\n" +
                 "      from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
                 "      where v.final_test_result ='Positive'\n" +
-                "        and date(v.visit_date between date(:startDate) and date(:endDate))) v\n" +
+                "        and date(v.visit_date) between date(:startDate) and date(:endDate)) v\n" +
                 "     on e.patient_id = v.patient_id\n" +
                 "         left join\n" +
                 "     (select t.patient_id\n" +
@@ -183,8 +183,8 @@ public class PNCCohortLibrary {
                 "        and t.hts_entry_point = 1623\n" +
                 "        and t.final_test_result = 'Positive'\n" +
                 "        and date(t.visit_date) between date(:startDate) and date(:endDate)) t on e.patient_id = t.patient_id\n" +
-                "where v.patient_id is not null\n" +
-                "   or t.patient_id is not null;";
+                "where (v.patient_id is not null\n" +
+                "   or t.patient_id is not null);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HIV positive result at PNC");
         cd.setQuery(sqlQuery);
@@ -222,7 +222,7 @@ public class PNCCohortLibrary {
         String sqlQuery="select v.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
                 "where (v.baby_azt_dispensed = 160123 or v.baby_nvp_dispensed = 80586)\n" +
-                "  and date(v.visit_date between date(:startDate) and date(:endDate));";
+                "  and date(v.visit_date) between date(:startDate) and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("Infant ARV Prophylaxis given");
         cd.setQuery(sqlQuery);
@@ -294,7 +294,7 @@ public class PNCCohortLibrary {
                 "                  (select v.patient_id\n" +
                 "                   from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
                 "                   where v.test_1_result ='Negative'\n" +
-                "                     and date(v.visit_date between date(:startDate) and date(:endDate))) v\n" +
+                "                     and date(v.visit_date) between date(:startDate) and date(:endDate)) v\n" +
                 "                  on e.patient_id = v.patient_id\n" +
                 "                      left join\n" +
                 "                  (select t.patient_id\n" +
@@ -320,7 +320,7 @@ public class PNCCohortLibrary {
                 "                  (select v.patient_id\n" +
                 "                   from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
                 "                   where v.test_1_result ='Positive'\n" +
-                "                     and date(v.visit_date between date(:startDate) and date(:endDate))) v\n" +
+                "                     and date(v.visit_date) between date(:startDate) and date(:endDate)) v\n" +
                 "                  on e.patient_id = v.patient_id\n" +
                 "                      left join\n" +
                 "                  (select t.patient_id\n" +
@@ -346,7 +346,7 @@ public class PNCCohortLibrary {
                 "                  (select v.patient_id\n" +
                 "                   from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
                 "                   where v.test_1_result ='Invalid'\n" +
-                "                     and date(v.visit_date between date(:startDate) and date(:endDate))) v\n" +
+                "                     and date(v.visit_date) between date(:startDate) and date(:endDate)) v\n" +
                 "                  on e.patient_id = v.patient_id\n" +
                 "                      left join\n" +
                 "                  (select t.patient_id\n" +
@@ -372,7 +372,7 @@ public class PNCCohortLibrary {
                 "                  (select v.patient_id\n" +
                 "                   from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
                 "                   where v.test_1_result ='Inconclusive'\n" +
-                "                     and date(v.visit_date between date(:startDate) and date(:endDate))) v\n" +
+                "                     and date(v.visit_date) between date(:startDate) and date(:endDate)) v\n" +
                 "                  on e.patient_id = v.patient_id\n" +
                 "                      left join\n" +
                 "                  (select t.patient_id\n" +
@@ -398,7 +398,7 @@ public class PNCCohortLibrary {
                 "                  (select v.patient_id\n" +
                 "                   from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
                 "                   where v.test_2_result ='Negative'\n" +
-                "                     and date(v.visit_date between date(:startDate) and date(:endDate))) v\n" +
+                "                     and date(v.visit_date) between date(:startDate) and date(:endDate)) v\n" +
                 "                  on e.patient_id = v.patient_id\n" +
                 "                      left join\n" +
                 "                  (select t.patient_id\n" +
@@ -424,7 +424,7 @@ public class PNCCohortLibrary {
                 "                  (select v.patient_id\n" +
                 "                   from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
                 "                   where v.test_2_result ='Positive'\n" +
-                "                     and date(v.visit_date between date(:startDate) and date(:endDate))) v\n" +
+                "                     and date(v.visit_date) between date(:startDate) and date(:endDate)) v\n" +
                 "                  on e.patient_id = v.patient_id\n" +
                 "                      left join\n" +
                 "                  (select t.patient_id\n" +
@@ -450,7 +450,7 @@ public class PNCCohortLibrary {
                 "                  (select v.patient_id\n" +
                 "                   from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
                 "                   where v.test_2_result ='Invalid'\n" +
-                "                     and date(v.visit_date between date(:startDate) and date(:endDate))) v\n" +
+                "                     and date(v.visit_date) between date(:startDate) and date(:endDate)) v\n" +
                 "                  on e.patient_id = v.patient_id\n" +
                 "                      left join\n" +
                 "                  (select t.patient_id\n" +
@@ -476,7 +476,7 @@ public class PNCCohortLibrary {
                 "                  (select v.patient_id\n" +
                 "                   from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
                 "                   where v.test_2_result ='Inconclusive'\n" +
-                "                     and date(v.visit_date between date(:startDate) and date(:endDate))) v\n" +
+                "                     and date(v.visit_date) between date(:startDate) and date(:endDate)) v\n" +
                 "                  on e.patient_id = v.patient_id\n" +
                 "                      left join\n" +
                 "                  (select t.patient_id\n" +

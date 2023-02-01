@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -39,10 +40,14 @@ public class PNCTestedForHIVAtPNCDataEvaluator implements EncounterDataEvaluator
                 "       (case (SELECT count(encounter_id)  FROM kenyaemr_etl.etl_mch_postnatal_visit WHERE\n" +
                 "           encounter_id != (SELECT MAX(v1.encounter_id) FROM kenyaemr_etl.etl_mch_postnatal_visit v1)\n" +
                 "           and  final_test_result = \"Negative\")  when 0 then \"Initial\" else \"Retest\" end)\n" +
-                "from kenyaemr_etl.etl_mch_postnatal_visit v;";
+                "from kenyaemr_etl.etl_mch_postnatal_visit v where date(v.visit_date) between date(:startDate) and date(:endDate);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;

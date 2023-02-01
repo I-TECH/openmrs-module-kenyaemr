@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -35,16 +36,24 @@ public class PNCPriorKnownStatusDataEvaluator implements EncounterDataEvaluator 
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select v.encounter_id,\n" +
-                "       (case v.mother_hiv_status when v.mother_hiv_status=1067 then \"Unknown\"\n" +
-                "                                 when v.mother_hiv_status=664 then \"NEGATIVE\" when e.hiv_status=703\n" +
-                "                  then \"Known Positive\" when (e.hiv_status!=703 and v.mother_hiv_status = 703) then \"Positive\"\n" +
-                "                                 else \"\" end) as mother_hiv_status\n" +
-                "from kenyaemr_etl.etl_mch_postnatal_visit v inner join kenyaemr_etl.etl_mch_enrollment e\n" +
-                "         on v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
-                "GROUP BY v.encounter_id;";
+                "       (case v.mother_hiv_status\n" +
+                "            when v.mother_hiv_status = 1067 then 'Unknown'\n" +
+                "            when v.mother_hiv_status = 664 then 'NEGATIVE'\n" +
+                "            when e.hiv_status = 703\n" +
+                "                then 'Known Positive'\n" +
+                "            when (e.hiv_status != 703 and v.mother_hiv_status = 703) then 'Positive'\n" +
+                "            else '' end) as mother_hiv_status\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
+                "         inner join kenyaemr_etl.etl_mch_enrollment e\n" +
+                "                    on v.patient_id = e.patient_id\n" +
+                "where date(v.visit_date) between date(:startDate) and date(:endDate);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;
