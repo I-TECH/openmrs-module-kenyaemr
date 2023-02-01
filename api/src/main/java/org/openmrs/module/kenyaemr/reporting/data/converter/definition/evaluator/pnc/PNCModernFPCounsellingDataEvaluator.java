@@ -10,7 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.pnc;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pnc.PNCModernFPWithin6WeeksDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pnc.PNCModernFPCounsellingDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -24,10 +24,10 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * PNC Modern FP <=6 weeks column
+ * PNC Modern FP counselling column
  */
-@Handler(supports= PNCModernFPWithin6WeeksDataDefinition.class, order=50)
-public class PNCModernFPWithin6WeeksDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports= PNCModernFPCounsellingDataDefinition.class, order=50)
+public class PNCModernFPCounsellingDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -36,23 +36,11 @@ public class PNCModernFPWithin6WeeksDataEvaluator implements EncounterDataEvalua
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select v.encounter_id,\n" +
-                "       (case v.family_planning_method\n" +
-                "            when 160570 then \"Yes\"\n" +
-                "            when 780 then \"Yes\"\n" +
-                "            when 5279 then \"Yes\"\n" +
-                "            when 1359 then \"Yes\"\n" +
-                "            when 5275 then \"Yes\"\n" +
-                "            when 136163 then \"Yes\"\n" +
-                "            when 5278 then \"Yes\"\n" +
-                "            when 5277 then \"Yes\"\n" +
-                "            when 1472 then \"Yes\"\n" +
-                "            when 190 then \"Yes\"\n" +
-                "            when 1489 then \"Yes\"\n" +
-                "            when 162332 then \"No\"\n" +
-                "            else \"\" end) as Modern_FP_Within_6Weeks\n" +
+                "       case v.family_planning_counseling\n" +
+                "           when 1065 then 'Yes'\n" +
+                "           when 1066 then 'No' end as modern_fp_counselling_post_partum\n" +
                 "from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
-                "where date(v.visit_date) between date(:startDate) and date(:endDate)\n" +
-                "  and timestampdiff(week, date(v.delivery_date), date(v.visit_date)) between 0 and 6;";
+                "where date(v.visit_date) between date(:startDate) and date(:endDate);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -35,13 +36,20 @@ public class PNCPartnerHIVResultsDataEvaluator implements EncounterDataEvaluator
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select v.encounter_id,\n" +
-                "(case v.partner_hiv_status when v.partner_hiv_status = 664 then \"Negative\" when v.partner_hiv_status = 703 then \"Positive\" when v.partner_hiv_status = 1067 then \"Unknown\" else \" \" end) as partner_hiv_status\n" +
-                " from kenyaemr_etl.etl_mch_postnatal_visit v,kenyaemr_etl.etl_mch_enrollment e\n" +
-                "where v.patient_id = e.patient_id and e.date_of_discontinuation IS NULL\n" +
-                "GROUP BY v.encounter_id;";
+                "       (case v.partner_hiv_status\n" +
+                "            when v.partner_hiv_status = 664 then 'Negative'\n" +
+                "            when v.partner_hiv_status = 703 then 'Positive'\n" +
+                "            when v.partner_hiv_status = 1067 then 'Unknown'\n" +
+                "            else '' end) as partner_hiv_status\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
+                "where date(v.visit_date) between date(:startDate) and date(:endDate);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;

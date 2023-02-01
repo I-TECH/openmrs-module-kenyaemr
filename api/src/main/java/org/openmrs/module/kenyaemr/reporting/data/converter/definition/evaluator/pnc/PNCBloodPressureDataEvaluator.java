@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -35,10 +36,15 @@ public class PNCBloodPressureDataEvaluator implements EncounterDataEvaluator {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select v.encounter_id,\n" +
-                "       concat_ws('/',v.systolic_bp,v.diastolic_bp) as Blood_pressure from kenyaemr_etl.etl_mch_postnatal_visit v;";
+                "     concat_ws('/',v.systolic_bp,v.diastolic_bp) as Blood_pressure from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
+                "where date(v.visit_date) between date(:startDate) and date(:endDate);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;

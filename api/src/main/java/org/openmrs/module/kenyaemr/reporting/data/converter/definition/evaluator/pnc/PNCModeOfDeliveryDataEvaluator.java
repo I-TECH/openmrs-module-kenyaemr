@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -36,10 +37,14 @@ public class PNCModeOfDeliveryDataEvaluator implements EncounterDataEvaluator {
 
         String qry = "select v.encounter_id,\n" +
                 "(case v.mode_of_delivery when 1170 then \"SVD\" when 1171 then \"CS\" when 1172 then \"Breech\" when 118159 then \"AVD\" else \"\" end) as mode_of_delivery\n" +
-                "from kenyaemr_etl.etl_mch_postnatal_visit v;";
+                "from kenyaemr_etl.etl_mch_postnatal_visit v where date(v.visit_date) between date(:startDate) and date(:endDate);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;

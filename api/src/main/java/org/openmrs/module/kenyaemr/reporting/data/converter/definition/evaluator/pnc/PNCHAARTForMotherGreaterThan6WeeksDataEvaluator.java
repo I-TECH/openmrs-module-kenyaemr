@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -34,14 +35,17 @@ public class PNCHAARTForMotherGreaterThan6WeeksDataEvaluator implements Encounte
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select d.encounter_id,\n" +
-                "  (case de.date_started when \"\" then \"No\" else \"Yes\" end)as HAART_For_Mother_At_PNC_Over_6Weeks\n" +
-                "from kenyaemr_etl.etl_drug_event de\n" +
-                "  join kenyaemr_etl.etl_mchs_delivery d on d.patient_id = de.patient_id\n" +
-                "where de.program = 'HIV' and timestampdiff(week,d.date_of_delivery,date(de.date_started))>6 ;";
+        String qry = "select p.encounter_id,case p.mother_haart_given when 1065 then 'Yes' when 1066 then 'No' when 1175 then 'N/A' when 164142 then 'Revisit' end as mother_haart_given\n" +
+                "                     from kenyaemr_etl.etl_mch_postnatal_visit p\n" +
+                "                       where date(p.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "  and timestampdiff(WEEK, date(p.delivery_date), date(p.visit_date)) > 6;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;

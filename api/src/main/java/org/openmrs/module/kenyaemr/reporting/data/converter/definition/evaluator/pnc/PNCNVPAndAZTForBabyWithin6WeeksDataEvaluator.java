@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -35,14 +36,21 @@ public class PNCNVPAndAZTForBabyWithin6WeeksDataEvaluator implements EncounterDa
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select v.encounter_id,\n" +
-                "       (case v.baby_azt_dispensed when (v.baby_azt_dispensed = 160123 or v.baby_nvp_dispensed = 80586) then \"Yes\" when (v.baby_azt_dispensed=1066 or v.baby_nvp_dispensed = 1066) then \"No\"\n" +
-                "                             when (v.baby_azt_dispensed = 1175 or v.baby_nvp_dispensed = 1175) then \"N/A\" else \"\" end) as azt_nvp_dispensed\n" +
+                "       (case v.baby_azt_dispensed\n" +
+                "            when (v.baby_azt_dispensed = 160123 or v.baby_nvp_dispensed = 80586) then \"Yes\"\n" +
+                "            when (v.baby_azt_dispensed = 1066 or v.baby_nvp_dispensed = 1066) then \"No\"\n" +
+                "            when (v.baby_azt_dispensed = 1175 or v.baby_nvp_dispensed = 1175) then \"N/A\"\n" +
+                "            else \"\" end) as azt_nvp_dispensed\n" +
                 "from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
-                "       join kenyaemr_etl.etl_mchs_delivery d on d.patient_id = v.patient_id\n" +
-                "where timestampdiff(week,d.date_of_delivery,date(v.visit_date))>6;";
+                "where date(v.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "  and timestampdiff(week, date(v.delivery_date), date(v.visit_date)) > 6;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;
