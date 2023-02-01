@@ -36,8 +36,8 @@ public class MaternityNumberOfANCVisitsDataEvaluator implements PersonDataEvalua
 
         String qry = "select\n" +
                 "  patient_id,\n" +
-                " Max(anc_visit_number)\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit;";
+                " number_of_anc_visits\n" +
+                "from kenyaemr_etl.etl_mchs_delivery;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

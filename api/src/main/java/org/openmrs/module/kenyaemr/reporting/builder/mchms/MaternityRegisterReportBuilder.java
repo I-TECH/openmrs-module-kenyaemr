@@ -127,7 +127,7 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 		dsd.addColumn("Gestation at Birth in weeks", new MaternityGestationAtBirthDataDefinition(),"");
 		dsd.addColumn("Mode of Delivery", new MaternityDeliveryModeDataDefinition(),"");
 		dsd.addColumn("Placenta Complete", new MaternityPlacentaCompleteDataDefinition(),"");
-		dsd.addColumn("Uterotonic Given", new MaternityUterotonicGivenDataDefinition(),"");
+		dsd.addColumn("Uterotonic given", new MaternityUterotonicGivenDataDefinition(),"");
 		dsd.addColumn("Vaginal Examination", new MaternityVaginalExaminationDataDefinition(),"");
 		dsd.addColumn("Blood Loss", new MaternityBloodLossDataDefinition(),"");
 		dsd.addColumn("Condition after delivery", new MaternityConditionAfterDeliveryDataDefinition(),"");
@@ -141,7 +141,6 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 		dsd.addColumn("TEO Given at Birth", new MaternityTEOGivenAtBirthDataDefinition(),"");
 		dsd.addColumn("Chlorhexidine applied on cord stump", new MaternityTEOGivenAtBirthDataDefinition(),"");
 		dsd.addColumn("Baby with deformity", new MaternityBabyWithDeformityDataDefinition(),"");
-		dsd.addColumn("Given Vitamin K", new MaternityGivenVitaminKDataDefinition(),"");
 		dsd.addColumn("Given Vitamin K", new MaternityGivenVitaminKDataDefinition(),"");
 		dsd.addColumn("APGAR Score", new MaternityApgarScoreDataDefinition(),"");
 		dsd.addColumn("VDRL/RPR Results", new MaternityVDRLRPRResultsDataDefinition(),"");
@@ -163,6 +162,7 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 		dsd.addColumn("Status of Baby at Discharge", new MaternityStatusOfBabyDataDefinition(),"");
 		dsd.addColumn("Referred From", new MaternityReferredFromDataDefinition(),"");
 		dsd.addColumn("Referred To", new MaternityReferredToDataDefinition(),"");
+		dsd.addColumn("Reasons for referral", new MaternityReasonForReferralDataDefinition(),"");
 		dsd.addColumn("Comments", new MaternityCommentsDataDefinition(),"");
 
 		return dsd;
