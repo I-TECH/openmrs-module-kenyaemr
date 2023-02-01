@@ -141,6 +141,7 @@ public class Moh711IndicatorLibrary {
 	public CohortIndicator ancClientsWithFGMRelatedComplications() {
 		return cohortIndicator("No.of pregnant women presenting in ANC with complication associated with FGM", ReportUtils.map(moh711Cohorts.ancClientsWithFGMRelatedComplications(), "startDate=${startDate},endDate=${endDate}"));
 	}
+
 	/**
 	 * No.screened for cacx during ANC
 	 */
@@ -183,6 +184,19 @@ public class Moh711IndicatorLibrary {
 	public CohortIndicator cacxScreenedAndHIVPositive() {
 		return cohortIndicator("No. HIV Positive mothers screened for cacx", map(moh711Cohorts.cacxScreenedAndHIVPositive(), "startDate=${startDate},endDate=${endDate}"));
 	}
+
+	/**
+	 * Number of Mothers given uterotonics-oxytocin within 1 minute
+	 */
+	public CohortIndicator clientsGivenUterotonics() {
+		return cohortIndicator("No. Mothers given uterotonics-oxytocin within 1 minute", map(moh711Cohorts.clientsGivenOxytocin(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * Number of Mothers given uterotonics-carbatosin within 1 minute
+	 */
+	public CohortIndicator clientsGivenCarbatosin() {
+		return cohortIndicator("No. Mothers given uterotonics-carbatosin within 1 minute", map(moh711Cohorts.clientsGivenCarbatosin(), "startDate=${startDate},endDate=${endDate}"));
+	}
 	/**
 	 * No.of New PNC Clients (First ANC visit)
 	 * @return the indicator
@@ -210,6 +224,21 @@ public class Moh711IndicatorLibrary {
 	 */
 	public CohortIndicator motherPPCAfter6weeks() {
 		return cohortIndicator("Mothers received PostParturm care after 6 weeks", ReportUtils.map(moh711Cohorts.motherPPCAfter6weeks(), "startDate=${startDate},endDate=${endDate}"));
+	}
+
+	/**
+	 * PNC Mothers counselled on Post Partum Family Planning
+	 * @return
+	 */
+	public CohortIndicator pncMothersPPCounsellingFP() {
+		return cohortIndicator("Mothers counselled PostParturm FP", ReportUtils.map(moh711Cohorts.pncMothersPPCounsellingFP(), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * PNC Mothers received Post Partum Family Planning
+	 * @return
+	 */
+	public CohortIndicator pncMothersReceivedPPFP() {
+		return cohortIndicator("Mothers received PostParturm FP", ReportUtils.map(moh711Cohorts.pncMothersReceivedPPFP(), "startDate=${startDate},endDate=${endDate}"));
 	}
 	/**
 	 * Babies received PostParturm care within 48 hrs
@@ -324,6 +353,14 @@ public class Moh711IndicatorLibrary {
 	 */
 	public CohortIndicator chlorhexidineForCordCaregiven() {
 		return cohortIndicator("No.of babies applied chlorhexidine for cord care", ReportUtils.map(moh711Cohorts.chlorhexidineForCordCaregiven(), "startDate=${startDate},endDate=${endDate}"));
+	}
+
+	/**
+	 * No. of Neonatal initiated on Kangaroo Mother Care
+	 * @return
+	 */
+	public CohortIndicator initiatedKangarooMotherCare() {
+		return cohortIndicator("No. of Neonatal initiated on Kangaroo Mother Care", ReportUtils.map(moh711Cohorts.initiatedKangarooMotherCare(), "startDate=${startDate},endDate=${endDate}"));
 	}
 	/**
 	 * No of neonates 0 -28 days put on Continous Positive Airway Pressure(CPAP)
@@ -619,4 +656,6 @@ public class Moh711IndicatorLibrary {
 	public CohortIndicator clientTbNotScreened() {
 		return cohortIndicator("Total Number of people not screened", ReportUtils.map(moh711Cohorts.clientsNotScreenedForTB(), "startDate=${startDate},endDate=${endDate}"));
 	}
+
+
 }

@@ -179,7 +179,10 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
     public CohortDefinition noOfANCClientsGivenIPT3rdDoseSQL() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery = "select p.patient_id from kenyaemr_etl.etl_preventive_services p where date(p.malaria_prophylaxis_3) <= date(:endDate)\n" +
-                "        and date(p.malaria_prophylaxis_3) between date(:startDate) and date(:endDate);";
+                "     and date(p.malaria_prophylaxis_3) between date(:startDate) and date(:endDate)\n" +
+                "union\n" +
+                "select v.patient_id from kenyaemr_etl.etl_mch_antenatal_visit v where v.IPT_dose_given_anc = 3 and\n" +
+                "        v.visit_date   between date(:startDate) and date(:endDate);";
         cd.setName("No.of Clients given IPT (3rd dose)");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -241,7 +244,8 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
      */
     public CohortDefinition distributedLLINsUnder1Year() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "";
+        String sqlQuery = "select hf.patient_id from kenyaemr_etl.etl_hei_follow_up_visit hf where hf.LLIN = 1065\n" +
+                "           and date(hf.visit_date) between date(:startDate) and date(:endDate);";
         cd.setName("No.LLINs distributed to under 1 year");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -569,7 +573,9 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
      */
     public CohortDefinition ancClientsWithFGMRelatedComplications() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "";
+        String sqlQuery = "select v.patient_id from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
+                "where v.fgm_complications in (122949,136308,141615,111633) and\n" +
+                "      v.visit_date   between date(:startDate) and date(:endDate);";
         cd.setName("ancClientsWithFGMRelatedComplications");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -843,6 +849,42 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
 
         return cd;
     }
+
+    /**
+     * Number of Mothers given uterotonics - Oxytocin within 1 minute
+     * @return
+     */
+    public CohortDefinition clientsGivenOxytocin(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery ="select ld.patient_id from kenyaemr_etl.etl_mchs_delivery ld\n" +
+                "where ld.uterotonic_given = 81369 and\n" +
+                "      ld.visit_date   between date(:startDate) and date(:endDate);";
+        cd.setName("Mothers given uterotonics-Oxytocin within 1 minute");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Number of Mothers given uterotonics-Oxytocin within 1 minute");
+
+        return cd;
+    }
+
+    /**
+     * Number of Mothers given uterotonics - Carbatosin within 1 minute
+     * @return
+     */
+    public CohortDefinition clientsGivenCarbatosin(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery ="select ld.patient_id from kenyaemr_etl.etl_mchs_delivery ld\n" +
+                "where ld.uterotonic_given = 104590 and\n" +
+                "      ld.visit_date   between date(:startDate) and date(:endDate);";
+        cd.setName("Mothers given uterotonics-Carbatosin within 1 minute");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Number of Mothers given uterotonics-Carbatosin within 1 minute");
+
+        return cd;
+    }
     /**
      * Enrolled in HIV
      * @return
@@ -1042,6 +1084,40 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
         return cd;
     }
     /**
+     * Mothers Done PP FP counselling
+     * @return
+     */
+    public CohortDefinition pncMothersPPCounsellingFP() {
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select pnc.patient_id from kenyaemr_etl.etl_mch_postnatal_visit pnc\n" +
+                "where pnc.family_planning_counseling = 1065 and\n" +
+                "      pnc.visit_date   between date(:startDate) and date(:endDate);";
+        cd.setName("clientsDonePostPartumFpCounseling");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("No.of women done Post Partum Counselling");
+        return cd;
+    }
+    /**
+     * Mothers Received PP FP
+     * @return
+     */
+    public CohortDefinition pncMothersReceivedPPFP() {
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select pnc.patient_id from kenyaemr_etl.etl_mch_postnatal_visit pnc\n" +
+                "where pnc.family_planning_status = 965 and\n" +
+                "      pnc.visit_date   between date(:startDate) and date(:endDate);";
+        cd.setName("clientsReceivedPostPartumFp");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("No. of women received Post Partum FP");
+        return cd;
+    }
+
+
+    /**
      * Babies received PostParturm care within 48 hrs
      * @return
      */
@@ -1193,7 +1269,9 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
      */
     public CohortDefinition givenVitaminK(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =";";
+        String sqlQuery ="select ld.patient_id from kenyaemr_etl.etl_mchs_delivery ld\n" +
+                "where ld.vitamin_K_given =1065 and\n" +
+                "      ld.visit_date   between date(:startDate) and date(:endDate);";
         cd.setName("No.of neonates given  Vit K");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1208,12 +1286,31 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
      */
     public CohortDefinition chlorhexidineForCordCaregiven(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery ="";
+        String sqlQuery ="select ld.patient_id from kenyaemr_etl.etl_mchs_delivery ld\n" +
+                "where ld.chlohexidine_applied_on_code_stump =1065 and\n" +
+                "      ld.visit_date   between date(:startDate) and date(:endDate);";
         cd.setName("No.of babies applied chlorhexidine for cord care");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("No.of babies applied chlorhexidine for cord care");
+
+        return cd;
+    }
+    /**
+     *  No. of Neonatal initiated on Kangaroo Mother Care
+     * @return
+     */
+    public CohortDefinition initiatedKangarooMotherCare(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery ="select ld.patient_id from kenyaemr_etl.etl_mchs_delivery ld\n" +
+                "where ld.kangaroo_mother_care_given =1065 and\n" +
+                "      ld.visit_date   between date(:startDate) and date(:endDate);";
+        cd.setName("No.of babies initiated on Kangaroo Mother Care");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("No.of babies initiated on Kangaroo Mother Care");
 
         return cd;
     }
