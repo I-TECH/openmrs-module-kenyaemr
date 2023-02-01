@@ -135,7 +135,7 @@ public class Moh711ReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("Clients given IPT (3rd dose)", "", ReportUtils.map(moh711Indicators.noOfANCClientsGivenIPT3rdDose(), indParams), "");
         dsd.addColumn("Clients with Hb less than 11 g per dl", "", ReportUtils.map(moh711Indicators.noOfANCClientsLowHB(), indParams), "");
         dsd.addColumn("Clients completed 4 Antenatal Visits", "", ReportUtils.map(moh711Indicators.ancClientsCompleted4Visits(), indParams), "");
-        //dsd.addColumn("LLINs distributed to under 1 year", "", ReportUtils.map(moh711Indicators.distributedLLINsUnder1Year(), indParams), "");
+        dsd.addColumn("LLINs distributed to under 1 year", "", ReportUtils.map(moh711Indicators.distributedLLINsUnder1Year(), indParams), "");
         dsd.addColumn("LLINs distributed to ANC clients", "", ReportUtils.map(moh711Indicators.distributedLLINsToANCClients(), indParams), "");
 
         dsd.addColumn("Clients tested for Syphilis", "", ReportUtils.map(moh711Indicators.ancClientsTestedForSyphillis(), indParams), "");
@@ -146,7 +146,8 @@ public class Moh711ReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("Clients issued with Iron", "", ReportUtils.map(moh711Indicators.ancClientsIssuedWithIron(), indParams), "");
         dsd.addColumn("Clients issued with Folic", "", ReportUtils.map(moh711Indicators.ancClientsIssuedWithFolic(), indParams), "");
         dsd.addColumn("Clients issued with Combined Ferrous Folate", "", ReportUtils.map(moh711Indicators.ancClientsIssuedWithFerrousFolic(), indParams), "");
-        //dsd.addColumn("Pregnant women presenting in ANC with complication associated with FGM", "", ReportUtils.map(moh711Indicators.ancClientsWithFGMRelatedComplications(), indParams), "");
+        dsd.addColumn("Pregnant women presenting in ANC FGM complications", "", ReportUtils.map(moh711Indicators.ancClientsWithFGMRelatedComplications(), indParams), "");
+
 
         return dsd;
     }
@@ -193,6 +194,8 @@ public class Moh711ReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("Mothers received PostParturm care within 48 hrs", "", ReportUtils.map(moh711Indicators.motherPPCWithin48hrs(), indParams), "");
         dsd.addColumn("Mothers received PostParturm care btw 3 days and 6 weeks", "", ReportUtils.map(moh711Indicators.motherPPCbtw3And42Days(), indParams), "");
         dsd.addColumn("Mothers received PostParturm care after 6 weeks", "", ReportUtils.map(moh711Indicators.motherPPCAfter6weeks(), indParams), "");
+        dsd.addColumn("Mothers counselled PostParturm FP", "", ReportUtils.map(moh711Indicators.pncMothersPPCounsellingFP(), indParams), "");
+        dsd.addColumn("Mothers received PostParturm FP", "", ReportUtils.map(moh711Indicators.pncMothersReceivedPPFP(), indParams), "");
 
         dsd.addColumn("Babies received PostParturm care within 48 hrs", "", ReportUtils.map(moh711Indicators.babyPPCWithin48hrs(), indParams), "");
         dsd.addColumn("Babies received PostParturm care btw 3 days and 6 weeks", "", ReportUtils.map(moh711Indicators.babyPPCbtw3And42Days(), indParams), "");
@@ -224,8 +227,9 @@ public class Moh711ReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("Live Births", "", ReportUtils.map(moh711Indicators.liveBirths(), indParams), "");
         dsd.addColumn("Low birth weight Babies (below 2500 grams)", "", ReportUtils.map(moh711Indicators.lowBirthWeight(), indParams), "");
         dsd.addColumn("Births with deformities", "", ReportUtils.map(moh711Indicators.deformities(), indParams), "");
-        //dsd.addColumn("Neonates given Vit K", "", ReportUtils.map(moh711Indicators.givenVitaminK(), indParams), "");
-        //dsd.addColumn("Babies applied chlorhexidine for cord care", "", ReportUtils.map(moh711Indicators.chlorhexidineForCordCaregiven(), indParams), "");
+        dsd.addColumn("Neonates given Vit K", "", ReportUtils.map(moh711Indicators.givenVitaminK(), indParams), "");
+        dsd.addColumn("Babies applied chlorhexidine", "", ReportUtils.map(moh711Indicators.chlorhexidineForCordCaregiven(), indParams), "");
+        dsd.addColumn("Infants initiated on Kangaroo Mother Care", "", ReportUtils.map(moh711Indicators.initiatedKangarooMotherCare(), indParams), "");
         //dsd.addColumn("Neonates 0-28 days put on Continous Positive Airway Pressure(CPAP)", "", ReportUtils.map(moh711Indicators.continousPositiveAirwayPressureAt0To28Days(), indParams), "");
         dsd.addColumn("Babies given tetracycline at birth", "", ReportUtils.map(moh711Indicators.givenTetracyclineAtBirth(), indParams), "");
         dsd.addColumn("Pre-Term babies", "", ReportUtils.map(moh711Indicators.preTermBabies(), indParams), "");
@@ -250,8 +254,10 @@ public class Moh711ReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("Obstructed Labour Dead", "", ReportUtils.map(moh711Indicators.obstructedLabour(134612), indParams), "");
         dsd.addColumn("Sepsis Alive", "", ReportUtils.map(moh711Indicators.sepsis(160429), indParams), "");
         dsd.addColumn("Sepsis Dead", "", ReportUtils.map(moh711Indicators.sepsis(134612), indParams), "");
-        //dsd.addColumn("Number of Mothers with delivery complications associated with FGM", "Alive", ReportUtils.map(moh711Indicators.fgmRelatedComplicatiobs(), indParams), "");
-        //dsd.addColumn("Number of Mothers with delivery complications associated with FGM", "Dead", ReportUtils.map(moh711Indicators.fgmRelatedComplicatiobs(), indParams), "");
+        //dsd.addColumn("Number of Mothers with delivery complications associated with FGM", "Alive", ReportUtils.map(moh711Indicators.ancClientsWithFGMRelatedComplications(), indParams), "");
+        //dsd.addColumn("Number of Mothers with delivery complications associated with FGM", "Dead", ReportUtils.map(moh711Indicators.ancClientsWithFGMRelatedComplications(), indParams), "");
+        dsd.addColumn("Number of Mothers given uterotonics-oxytocin", "", ReportUtils.map(moh711Indicators.clientsGivenUterotonics(), indParams), "");
+        dsd.addColumn("Number of Mothers given uterotonics-carbatosin", "", ReportUtils.map(moh711Indicators.clientsGivenCarbatosin(), indParams), "");
 
         return dsd;
     }
