@@ -37,7 +37,7 @@ public class MaternityVDRLRPRResultsDataEvaluator implements PersonDataEvaluator
         String qry = "select\n" +
                 "  patient_id,\n" +
                 "  (case vdrl_rpr_results when 703 then \"Positive\" when 664 then \"Negative\" when 1118 then \"Not Done\" else \"\" end) as vdrl_rpr_results\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit;";
+                "from kenyaemr_etl.etl_mchs_delivery;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

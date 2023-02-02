@@ -111,5 +111,4 @@ public class MaternityIndicatorLibrary {
         return cohortIndicator("Assisted Vaginal Deliveries",ReportUtils.<CohortDefinition>map(new AssistedVaginalDeliveriesCohortDefinition(),""));
     }
 
-
 }
