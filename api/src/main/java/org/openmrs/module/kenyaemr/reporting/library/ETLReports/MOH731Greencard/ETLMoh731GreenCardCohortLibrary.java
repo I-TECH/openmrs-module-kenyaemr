@@ -1754,7 +1754,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "                       and mid(max(concat(t.visit_date, t.final_test_result)), 11) is not null) t\n" +
                 "                   on ld.patient_id = t.patient_id\n" +
                 "where date(ld.visit_date) between date(:startDate) and date(:endDate)\n" +
-                "  and ld.final_test_result in (664, 703, 1138)\n" +
+                "  and ld.final_test_result in ('Positive', 'Negative', 'Inconclusive')\n" +
                 "  and a.patient_id is null and (t.patient_id is null or date(ld.visit_date) < date(t.visit_date));";
 
         cd.setName("Initial Test at Labour and Delivery");
@@ -1793,7 +1793,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "                       and mid(max(concat(t.visit_date, t.final_test_result)), 11) is not null) t\n" +
                 "                   on p.patient_id = t.patient_id\n" +
                 "where date(p.visit_date) between date(:startDate) and date(:endDate)\n" +
-                "  and p.final_test_result in (664, 703, 1138)\n" +
+                "  and p.final_test_result in ('Positive', 'Negative','Inconclusive')\n" +
                 "  and timestampdiff(WEEK,date(p.delivery_date),date(p.visit_date)) between 0 and 6\n" +
                 "  and (a.patient_id is null and ld.patient_id is null and (date(p.visit_date) < date(t.visit_date) or t.patient_id is null));";
 
@@ -1854,7 +1854,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "                       and mid(max(concat(t.visit_date, t.final_test_result)), 11) is not null) t\n" +
                 "                   on p.patient_id = t.patient_id\n" +
                 "where date(p.visit_date) between date(:startDate) and date(:endDate)\n" +
-                "  and p.final_test_result in (664, 703, 1138)\n" +
+                "  and p.final_test_result in ('Positive', 'Negative','Inconclusive')\n" +
                 "  and timestampdiff(WEEK,date(p.delivery_date),date(p.visit_date)) between 0 and 6\n" +
                 "  and (a.patient_id is not null or t.patient_id is not null or ld.patient_id is not null);";
 
@@ -1944,7 +1944,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "from kenyaemr_etl.etl_mch_enrollment e\n" +
                 "         left outer join (select ld.patient_id, ld.visit_date\n" +
                 "                          from kenyaemr_etl.etl_mchs_delivery ld\n" +
-                "                          where ld.final_test_result = 703\n" +
+                "                          where ld.final_test_result = 'Positive'\n" +
                 "                            and date(ld.visit_date) between date(:startDate) and date(:endDate)\n" +
                 "                          group by ld.patient_id\n" +
                 "                          having max(date(ld.visit_date))) ld\n" +
@@ -2055,11 +2055,19 @@ public class ETLMoh731GreenCardCohortLibrary {
     //On HAART at 1st ANC  HV02-16
     public CohortDefinition totalOnHAARTAtFirstANC(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "select distinct v.patient_id\n" +
+        String sqlQuery =  "select v.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
-                "inner join kenyaemr_etl.etl_drug_event d on d.patient_id=v.patient_id\n" +
-                "where d.program = 'HIV' and date(v.visit_date) BETWEEN date(:startDate) and date(:endDate)\n" +
-                "and d.date_started < v.visit_date and v.anc_visit_number =1;";
+                "         left join (select patient_id,\n" +
+                "                           max(visit_date)                                         as last_reg_date,\n" +
+                "                           mid(max(concat(date(visit_date), regimen_stopped)), 11) as stopped_art\n" +
+                "                    from kenyaemr_etl.etl_drug_event d\n" +
+                "                    where program = 'HIV'\n" +
+                "                      and d.date_started <= date(:endDate)\n" +
+                "                    GROUP BY patient_id) d on v.patient_id = d.patient_id\n" +
+                "where date(v.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "  and (date(v.date_given_haart) < date(v.visit_date) or\n" +
+                "       (d.last_reg_date < date(v.visit_date) and d.stopped_art is null))\n" +
+                "  and v.anc_visit_number = 1;";
 
         cd.setName("totalOnHAARTAtFirstANC");
         cd.setQuery(sqlQuery);
@@ -2073,11 +2081,11 @@ public class ETLMoh731GreenCardCohortLibrary {
     //  Start HAART during ANC  HV02-17
     public CohortDefinition startedHAARTAtANC(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "select distinct a.patient_id\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit a\n" +
-                "inner join kenyaemr_etl.etl_drug_event d on a.patient_id=d.patient_id\n" +
-                "where d.program = 'HIV' and date(a.visit_date) between date(:startDate) and date(:endDate)\n" +
-                "and d.date_started >= a.visit_date;";
+        String sqlQuery =  "select v.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
+                "where v.haart_given = 1 and date(v.date_given_haart) = date(v.visit_date)\n" +
+                "  and date(v.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "  and v.anc_visit_number = 1;";
 
         cd.setName("totalStartedOnHAARTAtANC");
         cd.setQuery(sqlQuery);
@@ -2767,11 +2775,14 @@ public class ETLMoh731GreenCardCohortLibrary {
     public CohortDefinition exclusiveBFAt6Months(){
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "Select distinct hv.patient_id\n" +
-                "from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
-                "join kenyaemr_etl.etl_patient_demographics d on d.patient_id = hv.patient_id\n" +
-                "where  timestampdiff(month,d.dob,date(:endDate))>=6 and hv.infant_feeding=5526 and\n" +
-                "date(hv.visit_date) between date(:startDate) and date(:endDate);";
+        String sqlQuery =  "Select e.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "         inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
+                "         inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+                "where f.infant_feeding = 5526\n" +
+                "  and date(e.visit_date) <= date(:endDate)\n" +
+                "  and date(f.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "  and timestampdiff(month, d.dob, date(f.visit_date)) = 6;";
 
         cd.setName("exclusiveBFAt6Months");
         cd.setQuery(sqlQuery);
@@ -2786,11 +2797,14 @@ public class ETLMoh731GreenCardCohortLibrary {
     public CohortDefinition exclusiveRFAt6Months(){
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "Select distinct hv.patient_id\n" +
-                "from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
-                "join kenyaemr_etl.etl_patient_demographics d on d.patient_id = hv.patient_id\n" +
-                "where  timestampdiff(month,d.dob,date(:endDate))>=6 and hv.infant_feeding=1595 and\n" +
-                "date(hv.visit_date) between date(:startDate) and date(:endDate) ;";
+        String sqlQuery =  "Select e.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "         inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
+                "         inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+                "where f.infant_feeding = 1595\n" +
+                "  and date(e.visit_date) <= date(:endDate)\n" +
+                "  and timestampdiff(month, d.dob, date(f.visit_date)) = 6\n" +
+                "  and date(f.visit_date) between date(:startDate) and date(:endDate);";
 
         cd.setName("exclusiveRFAt6Months");
         cd.setQuery(sqlQuery);
@@ -2805,11 +2819,14 @@ public class ETLMoh731GreenCardCohortLibrary {
     public CohortDefinition mixedFeedingAt6Months(){
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "Select distinct hv.patient_id\n" +
-                "from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
-                "join kenyaemr_etl.etl_patient_demographics d on d.patient_id = hv.patient_id\n" +
-                "where  timestampdiff(month,d.dob,date(:endDate))>=6 and hv.infant_feeding=6046 and\n" +
-                "date(hv.visit_date) between date(:startDate) and date(:endDate);";
+        String sqlQuery =  "Select e.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "         inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
+                "         inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+                "where f.infant_feeding = 6046\n" +
+                "  and date(e.visit_date) <= date(:endDate)\n" +
+                "  and date(f.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "  and timestampdiff(month, d.dob, date(f.visit_date)) = 6;";
 
         cd.setName("mixedFeedingAt6Months");
         cd.setQuery(sqlQuery);
@@ -2830,8 +2847,8 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "         inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
                 "where f.infant_feeding in (5632,5526, 6046)\n" +
                 "  and date(e.visit_date) <= date(:endDate)\n" +
-                "  and timestampdiff(month, d.dob, date(:endDate)) = 12\n" +
-                "  and date(f.visit_date) between date(:startDate) and date(:endDate);";
+                "  and date(f.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "  and timestampdiff(month, d.dob, date(f.visit_date)) = 12;";
 
         cd.setName("breastFeedingAt12Months");
         cd.setQuery(sqlQuery);
@@ -2852,7 +2869,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "         inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
                 "where f.infant_feeding in (164478,1595)\n" +
                 "  and date(e.visit_date) <= date(:endDate)\n" +
-                "  and timestampdiff(month, d.dob, date(:endDate)) = 12\n" +
+                "  and timestampdiff(month, d.dob, date(f.visit_date)) = 12\n" +
                 "  and date(f.visit_date) between date(:startDate) and date(:endDate);";
 
         cd.setName("notBreastFeedingAt12Months");
@@ -2868,12 +2885,14 @@ public class ETLMoh731GreenCardCohortLibrary {
     public CohortDefinition breastFeedingAt18Months(){
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "Select distinct e.patient_id \n" +
+        String sqlQuery =  "Select e.patient_id\n" +
                 "from kenyaemr_etl.etl_hei_enrollment e\n" +
-                "join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
-                "where  e.mother_breastfeeding=1065 and \n" +
-                "timestampdiff(month,d.dob,date(:endDate))>=18 and\n" +
-                "date(e.visit_date) between date(:startDate) and date(:endDate);";
+                "         inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
+                "         inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+                "where f.infant_feeding in (5632,5526, 6046)\n" +
+                "  and date(e.visit_date) <= date(:endDate)\n" +
+                "  and date(f.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "  and timestampdiff(month, d.dob, date(f.visit_date)) = 18;";
 
         cd.setName("breastFeedingAt18Months");
         cd.setQuery(sqlQuery);
@@ -2894,7 +2913,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "         inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
                 "where f.infant_feeding in (164478,1595)\n" +
                 "  and date(e.visit_date) <= date(:endDate)\n" +
-                "  and timestampdiff(month, d.dob, date(:endDate)) = 18\n" +
+                "  and timestampdiff(month, d.dob, date(f.visit_date)) = 18\n" +
                 "  and date(f.visit_date) between date(:startDate) and date(:endDate);";
 
         cd.setName("notBreastFeedingAt18Months");
@@ -2965,7 +2984,7 @@ public class ETLMoh731GreenCardCohortLibrary {
     /**
      * VMMC
      * HV04-16
-     *Number of males circumcised with severe Adverse Events post procedutre
+     *Number of males circumcised with severe Adverse Events post procedure
      * @return
      */
     public CohortDefinition circumcisedWithSevereAEPostProcedure() {
