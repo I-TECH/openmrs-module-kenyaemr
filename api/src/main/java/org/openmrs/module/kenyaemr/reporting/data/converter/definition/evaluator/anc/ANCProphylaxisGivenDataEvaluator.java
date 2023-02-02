@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -35,13 +36,17 @@ public class ANCProphylaxisGivenDataEvaluator implements EncounterDataEvaluator 
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select\n" +
-                "  v.encounter_id,\n" +
-                "  (case prophylaxis_given when 105281 then \"SULFAMETHOXAZOLE\" when 74250 then \"DAPSONE\" when 1107 then \"None\" else \"\" end) as prophylaxis_given\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
+                "   v.encounter_id,\n" +
+                "   (case prophylaxis_given when 105281 then 'SULFAMETHOXAZOLE' when 74250 then 'DAPSONE' when 1107 then 'None' else '' end) as prophylaxis_given\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v where date(v.visit_date) between date(:startDate) and date(:endDate)\n" +
                 "GROUP BY v.encounter_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;

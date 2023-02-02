@@ -21,6 +21,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -36,12 +37,17 @@ public class ANCUrinalysisDataEvaluator implements EncounterDataEvaluator {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select v.encounter_id,if(v.urine_microscopy is not null or v.urinary_albumin is not null or v.glucose_measurement is not null\n" +
-                "                            or v.urine_ph is not null or v.urine_gravity is not null or v.urine_nitrite_test is not null\n" +
-                "                            or v.urine_dipstick_for_blood is not null or v.urine_leukocyte_esterace_test is not null or v.urinary_ketone is not null\n" +
-                "                            or v.urine_bile_pigment_test is not null or v.urine_bile_salt_test is not null or v.urine_colour is not null or v.urine_turbidity is not null,'Y','N') as urinalysis from kenyaemr_etl.etl_mch_antenatal_visit v;";
+                "     or v.urine_ph is not null or v.urine_gravity is not null or v.urine_nitrite_test is not null\n" +
+                "     or v.urine_dipstick_for_blood is not null or v.urine_leukocyte_esterace_test is not null or v.urinary_ketone is not null\n" +
+                "     or v.urine_bile_pigment_test is not null or v.urine_bile_salt_test is not null or v.urine_colour is not null or v.urine_turbidity is not null,'Y','N') as urinalysis\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v where date(v.visit_date) between date(:startDate) and date(:endDate);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;

@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -36,11 +37,15 @@ public class ANCPartnerTestedForHivDataEvaluator implements EncounterDataEvaluat
 
         String qry = "select\n" +
                 "  v.encounter_id,\n" +
-                "  (case v.partner_hiv_tested when 1065 then \"Yes\" when 1066 then \"No\" else \"\" end) as partner_hiv_tested\n" +
-                "  from kenyaemr_etl.etl_mch_antenatal_visit v;";
+                "  (case v.partner_hiv_tested when 1065 then 'Yes' when 1066 then 'No' else '' end) as partner_hiv_tested\n" +
+                " from kenyaemr_etl.etl_mch_antenatal_visit v where date(visit_date) between date(:startDate) and date(:endDate);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;
