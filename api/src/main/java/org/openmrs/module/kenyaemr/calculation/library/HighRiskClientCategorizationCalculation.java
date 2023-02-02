@@ -35,8 +35,8 @@ import java.util.*;
  * There is a need to categorize high-risk PMTCT Client
  */
 
-public class HighRiskClientCatogorizationCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
-    protected static final Log log = LogFactory.getLog(HighRiskClientCatogorizationCalculation.class);
+public class HighRiskClientCategorizationCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
+    protected static final Log log = LogFactory.getLog(HighRiskClientCategorizationCalculation.class);
 
     @Override
     public String getFlagMessage() {
@@ -56,8 +56,8 @@ public class HighRiskClientCatogorizationCalculation extends AbstractPatientCalc
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
         Set<Integer> alive = Filters.alive(cohort, context);
         Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
-        Program mchcsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHCS);
-        Set<Integer> inMchcsProgram = Filters.inProgram(mchcsProgram, cohort, context);
+        Program mchmsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHMS);
+        Set<Integer> inMchmsProgram = Filters.inProgram(mchmsProgram, cohort, context);
         CalculationResultMap inHivProgram = Calculations.activeEnrollment(hivProgram, alive, context);
         Program ovcDreamProgram = MetadataUtils.existing(Program.class, OVCMetadata._Program.OVC);
         PatientService patientService = Context.getPatientService();
@@ -81,16 +81,18 @@ public class HighRiskClientCatogorizationCalculation extends AbstractPatientCalc
                 Double vl = EmrCalculationUtils.numericObsResultForPatient(lastVLObs, ptId);
                 Date transferInDateValue = EmrCalculationUtils.datetimeResultForPatient(transferInDate, ptId);
                 // PMTCT client enrolled in MCH
-                if (!inMchcsProgram.contains(ptId)) {
+                if (!inMchmsProgram.contains(ptId)) {
                     result = false;
                 } else {
+
                     // Check new HIV+ clients enrolled in the past one month
                     if(patientProgramHiv !=null) {
                         Date hivEnrolmentDate = patientProgramHiv.getDateEnrolled();
                         hivEnrollmentDiffDays = daysBetween(currentDate, hivEnrolmentDate);
                     if (hivEnrollmentDiffDays <= 31) {
                         result = true;
-                    }}
+                         }
+                    }
                     //All infected AGYW < 19 including OVC & DREAM girls
                     if (patient.getGender().equals("F") && patient.getAge() >= 10 && patient.getAge() <= 19 || inOvcDreamProgram.contains(ptId)) {
                         result = true;
@@ -105,8 +107,6 @@ public class HighRiskClientCatogorizationCalculation extends AbstractPatientCalc
                         result = true;
                     }
                 }
-
-
 
             ret.put(ptId, new BooleanResult(result, this));
         }
