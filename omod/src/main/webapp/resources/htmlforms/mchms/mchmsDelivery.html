@@ -94,6 +94,29 @@
                 getField('lmp-date.value').val("");
             }
 
+
+            jq('#referredTo select').change(referredToChange);
+            var referredReasonToTransfer = jq('#referredTo select').val();
+            if (referredReasonToTransfer == 1175) {
+                jq("#reasonsForReferral").hide();
+                clearHiddenSections(jq('#reasonsForReferral'));
+            }
+            if(referredReasonToTransfer == 1537 || referredReasonToTransfer == 163488){
+                jq("#reasonsForReferral").show();
+            }
+
+             //on ready end
+            function referredToChange() {
+                var referredReasonToTransfer = jq('#referredTo select').val();
+                if (referredReasonToTransfer == 1175) {
+                   jq("#reasonsForReferral").hide();
+                   clearHiddenSections(jq('#reasonsForReferral'));
+                }
+                if(referredReasonToTransfer == 1537 || referredReasonToTransfer == 163488){
+                    jq("#reasonsForReferral").show();
+                }
+            }
+
             //Delivery complications
             jq('#delivery-complications select').change(complicationsChange);
             var motherComplications = jq('#delivery-complications select').val();
@@ -1498,10 +1521,10 @@
                                     <obs conceptId="163145AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          style="dropdown"
                                          answerConceptIds="1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163488AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerLabels="Another Health Facility,Community Unit,N/A"/>
+                                         answerLabels="Another Health Facility,Community Unit,N/A" id="referredTo"/>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr id="reasonsForReferral">
                                 <td>Reasons for referral? &#160;&#160;&#160;&#160;&#160;&#160;&#160;
                                     <obs conceptId="164359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                                 </td>
