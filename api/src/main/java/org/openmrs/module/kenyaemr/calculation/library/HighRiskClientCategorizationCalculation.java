@@ -57,60 +57,58 @@ public class HighRiskClientCategorizationCalculation extends AbstractPatientCalc
         Set<Integer> alive = Filters.alive(cohort, context);
         Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
         Program mchmsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHMS);
-        Set<Integer> inMchmsProgram = Filters.inProgram(mchmsProgram, cohort, context);
-        CalculationResultMap inHivProgram = Calculations.activeEnrollment(hivProgram, alive, context);
         Program ovcDreamProgram = MetadataUtils.existing(Program.class, OVCMetadata._Program.OVC);
-        PatientService patientService = Context.getPatientService();
-        Set<Integer> inHivProgram1 = Filters.inProgram(hivProgram, alive, context);
-        CalculationResultMap transferInDate = calculate(new TransferInDateCalculation(), cohort, context);
 
+        PatientService patientService = Context.getPatientService();
+
+        Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
+        Set<Integer> inMchmsProgram = Filters.inProgram(mchmsProgram, cohort, context);
         Set<Integer> inOvcDreamProgram = Filters.inProgram(ovcDreamProgram, alive, context);
+
+        CalculationResultMap transferInDate = calculate(new TransferInDateCalculation(), cohort, context);
+        CalculationResultMap inHivProgramResultMap = Calculations.activeEnrollment(hivProgram, alive, context);
         CalculationResultMap ret = new CalculationResultMap();
 
         Concept latestVL = Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD);
-        CalculationResultMap lastVLObs = Calculations.lastObs(latestVL, inHivProgram1, context);
-
+        CalculationResultMap lastVLObs = Calculations.lastObs(latestVL, inHivProgram, context);
 
         for (Integer ptId : cohort) {
             boolean result = false;
             Integer hivEnrollmentDiffDays = 0;
             Date currentDate = new Date();
-            PatientProgram patientProgramHiv = EmrCalculationUtils.resultForPatient(inHivProgram, ptId);
+            Patient patient = patientService.getPatient(ptId);
+            Double vl = EmrCalculationUtils.numericObsResultForPatient(lastVLObs, ptId);
+            Date transferInDateValue = EmrCalculationUtils.datetimeResultForPatient(transferInDate, ptId);
+            // PMTCT client enrolled in MCH
+            if (inMchmsProgram.contains(ptId) && inHivProgram.contains(ptId)) {
 
-                Patient patient = patientService.getPatient(ptId);
-                Double vl = EmrCalculationUtils.numericObsResultForPatient(lastVLObs, ptId);
-                Date transferInDateValue = EmrCalculationUtils.datetimeResultForPatient(transferInDate, ptId);
-                // PMTCT client enrolled in MCH
-                if (!inMchmsProgram.contains(ptId)) {
-                    result = false;
-                } else {
-
-                    // Check new HIV+ clients enrolled in the past one month
-                    if(patientProgramHiv !=null) {
-                        Date hivEnrolmentDate = patientProgramHiv.getDateEnrolled();
-                        hivEnrollmentDiffDays = daysBetween(currentDate, hivEnrolmentDate);
-                    if (hivEnrollmentDiffDays <= 31) {
-                        result = true;
-                         }
-                    }
-                    //All infected AGYW < 19 including OVC & DREAM girls
-                    if (patient.getGender().equals("F") && patient.getAge() >= 10 && patient.getAge() <= 19 || inOvcDreamProgram.contains(ptId)) {
-                        result = true;
-                    }
-                    /// All clients with detectable VL > 200 copies/ml at baseline for known positive or anytime in the PMTCT followUP period
-                    if (vl != null && vl >= 200.0) {
-                        result = true;
-                    }
-
-                    //All transfer in clients
-                    if (transferInDateValue != null) {
-                        result = true;
-                    }
+                PatientProgram patientProgramHiv = EmrCalculationUtils.resultForPatient(inHivProgramResultMap, ptId);
+                Date hivEnrolmentDate = patientProgramHiv.getDateEnrolled();
+                hivEnrollmentDiffDays = daysBetween(currentDate, hivEnrolmentDate);
+                // Check new HIV+ clients enrolled in the past one month
+                if (hivEnrollmentDiffDays <= 31) {
+                    result = true;
                 }
+                //All infected AGYW >10 and < 19
+                if (patient.getAge() >= 10 && patient.getAge() <= 19){
+                    result = true;
+                }
+                //All infected in OVC & DREAM girls
+                if (inOvcDreamProgram.contains(ptId)) {
+                    result = true;
+                }
+                /// All clients with detectable VL > 200 copies/ml
+                if (vl != null && vl >= 200.0) {
+                    result = true;
+                }
+                //All transfer in clients
+                if (transferInDateValue != null) {
+                    result = true;
+                }
+            }
 
             ret.put(ptId, new BooleanResult(result, this));
         }
-
         return ret;
     }
 
