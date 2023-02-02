@@ -505,6 +505,7 @@
     var kit1Selected = function () {
         var val = jq(this).val();
         if (val == 165351 ){   //Dual kit selected
+            jq('#dual-results-1').show();
             $("#kit-name-2 option[value='164961']").add();
             $("#kit-name-2 option[value='164960']").remove();
             $("#kit-name-2 option[value='165351']").remove();
@@ -638,6 +639,7 @@
                             //show syphilis results if they exist
                             var testKit1 = getField('kit-name-1.value').val();
                             if (testKit1 == 165351 ){   //Dual kit selected
+                                jq('#dual-results-1').show();
                                 $("#kit-name-2 option[value='164961']").add();
                                 $("#kit-name-2 option[value='164960']").remove();
                                 $("#kit-name-2 option[value='165351']").remove();
@@ -663,6 +665,11 @@
                             var treatmentVisit = getValue('treatmentVisit.value');
                             if(treatmentVisit == 1065){
                                 jq('#treatment-dose').show();
+                            }
+
+                            var syphylisTest1Results = getField("syphilis-test-results-1.value").val();
+                            if(syphylisTest1Results != ""){
+                                jq('#dual-results-1').show();
                             }
 
                         });
@@ -929,6 +936,14 @@
 													 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163611AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 													 style="dropdown" answerLabels="Positive,Negative,Invalid"/>
 
+											</td>
+											<td>
+												<div id="dual-results-1" style="display:none;" >&#160;&#160;&#160;&#160; Syphilis Results
+													<obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+														 id="syphilis-test-results-1"
+														 answerConceptIds="1229AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1228AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+														 answerLabels="Negative,Positive"/>
+												</div>
 											</td>
 										</tr>
 									</obsgroup>
