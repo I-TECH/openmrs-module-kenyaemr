@@ -76,6 +76,7 @@
             jq('#baby-condition-single select').change(onSingleBabyOutcomeChange);
             jq('#baby-condition-twins select').change(onTwinsBabyOutcomeChange);
             jq('#baby-condition-triplets select').change(onTripletsBabyOutcomeChange);
+            jq('#testing-done-maternity :input').prop('disabled', true);
             //LMP and EDD details
             var lmpDate = getValue('lmp-date.value');
             var formattedlmp=moment(moment(lmpDate, 'YYYY-MM-DD').toDate()).format('DD-MMM-YYYY');
@@ -126,6 +127,7 @@
             if(PATIENT_IS_REPORTED_HIV == 703 || PATIENT_IS_ENROLLED_HIV){
                 jq('#tbl-known-positive').show();
                 jq('#hiv-known-positive:text').val('Positive');
+                jq('#testing-done-maternity input[value=703]').prop("checked", true);
                 jq('#tbl-hiv-test').hide();
                 jq('#art-and-prophylaxis').show();
                 jq('#who-staging').show();
@@ -141,6 +143,7 @@
                 jq('#tbl-hiv-test').show();
                 jq('#tbl-unknown-status').show();
                 jq('#hiv-status:text').val("Negative");
+                jq('#testing-done-maternity input[value=664]').prop("checked", true);
                 jq('#art-and-prophylaxis').hide();
                 jq('#who-staging').hide();
                 jq('#vl-sample').hide();
@@ -148,6 +151,7 @@
                 jq('#tbl-hiv-test').show();
                 jq('#tbl-unknown-status').show();
                 jq('#hiv-status:text').val("Reported unknown");
+                jq('#testing-done-maternity input[value=1067]').prop("checked", true);
                 jq('#art-and-prophylaxis').hide();
                 jq('#who-staging').hide();
                 jq('#vl-sample').hide();
@@ -458,7 +462,7 @@
             var given_vitaminkSingle = getValue('given-vitamink-single.value');
             var given_vitaminkTwins = getValue('given-vitamink-twins.value');
             var given_vitaminkTriplets = getValue('given-vitamink-triplets.value');
-            var testing_done_maternity = getValue('testing-done-maternity.value');
+
             var deliveryOutcome = getValue('delivery-outcome.value');
 
             if (gestation != null) {
@@ -1397,7 +1401,7 @@
                             </tr>
                             <tr>
                                 <td>HIV Status:
-                                    <obs id="testing-done-maternity" conceptId="1396AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    <obs class="testing-done-maternity" conceptId="1396AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="testing-done-maternity"
                                          answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 164817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerLabels="Positive, Negative, Unknown, Known Positive"
                                          style="radio" />
