@@ -315,7 +315,7 @@ public class ETLMoh731GreenCardIndicatorLibrary {
      *
      * @return the indicator
      */
-    public CohortIndicator testedHivPositiveInANCWithin6Weeks() {
+    public CohortIndicator testedHivPositiveInPNCWithin6Weeks() {
         return cohortIndicator(null,
                 map(moh731Cohorts.testedHivPositiveInPNCWithin6Weeks(), "startDate=${startDate},endDate=${endDate}")
         );
