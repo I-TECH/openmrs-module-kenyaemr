@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -35,15 +36,18 @@ public class ANCBloodPressureDataEvaluator implements EncounterDataEvaluator {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select\n" +
-                "  v.encounter_id,\n" +
-                "  coalesce(concat(v.systolic_bp, \"/\" ,v.diastolic_bp),concat(t.systolic_pressure, \"/\" ,t.diastolic_pressure)) as blood_pressure\n" +
+                "   v.encounter_id,\n" +
+                "   coalesce(concat(v.systolic_bp, '/',v.diastolic_bp),concat(t.systolic_pressure, '/' ,t.diastolic_pressure)) as blood_pressure\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
-                "  LEFT JOIN kenyaemr_etl.etl_patient_triage t\n" +
-                "    ON v.patient_id = t.patient_id AND\n" +
-                "       date(v.visit_date) = date(t.visit_date);";
+                "  LEFT JOIN kenyaemr_etl.etl_patient_triage t ON v.patient_id = t.patient_id AND date(v.visit_date) = date(t.visit_date)\n" +
+                "where date(v.visit_date) between date(:startDate) and date(:endDate);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;

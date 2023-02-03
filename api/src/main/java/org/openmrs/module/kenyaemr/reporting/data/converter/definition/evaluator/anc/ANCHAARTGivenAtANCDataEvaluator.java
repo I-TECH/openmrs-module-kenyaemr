@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -35,16 +36,21 @@ public class ANCHAARTGivenAtANCDataEvaluator implements EncounterDataEvaluator {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select\n" +
-                "  v.encounter_id,\n" +
-                "(case d.date_started when \"\" then \"No\" else \"Yes\" end) as on_arv_at_anc\n" +
+                "     v.encounter_id,\n" +
+                "   (case d.date_started when '' then 'No' else 'Yes' end) as on_arv_at_anc\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
                 "  inner join kenyaemr_etl.etl_drug_event d on d.patient_id= v.patient_id\n" +
                 "  inner join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id= v.patient_id\n" +
                 "  inner join kenyaemr_etl.etl_mch_enrollment e on e.patient_id = v.patient_id\n" +
-                "where d.date_started >= e.visit_date and d.date_started <=  ld.visit_date ;";
+                "where d.date_started >= e.visit_date and d.date_started <=  ld.visit_date\n" +
+                "and date(v.visit_date) between date(:startDate) and date(:endDate);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;

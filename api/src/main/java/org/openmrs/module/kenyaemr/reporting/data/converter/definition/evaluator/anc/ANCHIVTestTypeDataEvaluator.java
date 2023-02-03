@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -35,14 +36,17 @@ public class ANCHIVTestTypeDataEvaluator implements EncounterDataEvaluator {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "SELECT\n" +
-                "  encounter_id,\n" +
-                "  case when COUNT(*) = 1 then \"Initial\" else \"Retest\" end as test_type\n" +
-                "FROM kenyaemr_etl.etl_mch_antenatal_visit\n" +
-                "  WHERE final_test_result !=\"\"\n" +
-                "GROUP BY patient_id;";
+                "    encounter_id,\n" +
+                "    case when COUNT(*) = 1 then 'Initial' else 'Retest' end as test_type\n" +
+                "FROM kenyaemr_etl.etl_mch_antenatal_visit  WHERE final_test_result !='' and date(visit_date) between date(:startDate) and date(:endDate)\n" +
+                "GROUP BY patient_id;\n";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;
