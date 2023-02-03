@@ -401,6 +401,7 @@
                 jq('#initiated-arv-prophylaxis').hide();
                 jq('#initiated-arv-prophylaxis-twins').hide();
                 jq('#initiated-arv-prophylaxis-triplets').hide();
+                clearHiddenSections(jq('#started-haart-anc'));
             }
         }
 
@@ -1443,23 +1444,24 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>AZT for the baby dispensed?</td>
+                                <td>Mother issued with ART prophylaxis at maternity?</td>
                                 <td>
-                                    <obs class ="azt-prescribed"
-                                         conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerConceptIds="160123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    <obs class ="art-prophylaxis-at-maternity"
+                                         conceptId="166665AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerLabels="Yes,No,N/A"
-                                         style="radio" id="azt-dispensed" />
+                                         style="radio" id="art-prophylaxis-at-maternity" />
                                 </td>
                             </tr>
+
                             <tr>
-                                <td>NVP for the baby dispensed?</td>
+                                <td>Mother issued with ART prophylaxis from ANC</td>
                                 <td>
-                                    <obs class ="nvp-prescribed"
-                                         conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerConceptIds="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    <obs class ="art-prophylaxis-from-anc"
+                                         conceptId="1149AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerLabels="Yes,No,N/A"
-                                         style="radio" id="nvp-dispensed" />
+                                         style="radio" id="art-prophylaxis-from-anc" />
                                 </td>
                             </tr>
                             <tr>
@@ -1481,6 +1483,26 @@
                                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                             answerLabels="Yes,No,N/A"
                                             style="radio"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>AZT for the baby dispensed?</td>
+                                <td>
+                                    <obs class ="azt-prescribed"
+                                         conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerConceptIds="160123AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabels="Yes,No,N/A"
+                                         style="radio" id="azt-dispensed" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>NVP for the baby dispensed?</td>
+                                <td>
+                                    <obs class ="nvp-prescribed"
+                                         conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerConceptIds="80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabels="Yes,No,N/A"
+                                         style="radio" id="nvp-dispensed" />
                                 </td>
                             </tr>
                         </table>
