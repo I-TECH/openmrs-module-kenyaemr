@@ -55,11 +55,7 @@
             jq('#single').show();
             jq('#twins').hide();
             jq('#triplets').hide();
-            jq('#started-haart-anc').hide();
-            jq('#initiated-arv-prophylaxis').hide();
-            jq('#initiated-arv-prophylaxis-twins').hide();
-            jq('#initiated-arv-prophylaxis-triplets').hide();
-            jq("#haart-anc input").change(onMotherHaartChange);
+
             getField('delivery-outcome.value').prop("selectedIndex", 1);
             jq('#delivery-outcome select').change(onDeliveryOutcomeChange);
             jq('#tr-maternal-death-audited').hide();
@@ -386,22 +382,6 @@
                 jq(".lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
                 getField('hiv-final-result.value').val(1138);
-            }
-        }
-        // mother on HAART during ANC
-
-        function onMotherHaartChange() {
-            if (getValue('haart-anc.value') == 1065) {
-                jq('#started-haart-anc').show();
-                jq('#initiated-arv-prophylaxis').show();
-                jq('#initiated-arv-prophylaxis-twins').show();
-                jq('#initiated-arv-prophylaxis-triplets').show();
-            }else{
-                jq('#started-haart-anc').hide();
-                jq('#initiated-arv-prophylaxis').hide();
-                jq('#initiated-arv-prophylaxis-twins').hide();
-                jq('#initiated-arv-prophylaxis-triplets').hide();
-                clearHiddenSections(jq('#started-haart-anc'));
             }
         }
 
@@ -1035,13 +1015,6 @@
                                 <td><obs conceptId="161543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="initiated-bf-single"
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
                             </tr>
-                            <tr id="initiated-arv-prophylaxis">
-                                <td>Infant provided with Infant ARV prophylaxis</td>
-                                <td>
-                                    <obs conceptId="161930"
-                                         answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes, No, N/A" style="radio"/>
-                                </td>
-                            </tr>
                             <tr id="apgar-score-single">
                                 <td>Apgar Score (1 min):&#160;&#160;&#160;&#160;&#160;
                                     <obs conceptId="159603AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
@@ -1133,13 +1106,6 @@
                                 <td><obs conceptId="161543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="initiated-bf-twins"
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
                             </tr>
-                            <tr id="initiated-arv-prophylaxis-twins">
-                                <td>Infant provided with Infant ARV prophylaxis</td>
-                                <td>
-                                    <obs conceptId="161930"
-                                         answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes, No, N/A" style="radio"/>
-                                </td>
-                            </tr>
                             <tr id="apgar-score-twins" >
                                 <td>Apgar Score (1 min):&#160;&#160;&#160;&#160;&#160;
                                     <obs conceptId="159603AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
@@ -1230,13 +1196,6 @@
                                 <td>Initiated BF in less than 1 hour:</td>
                                 <td><obs conceptId="161543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="initiated-bf-triplets"
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
-                            </tr>
-                            <tr id="initiated-arv-prophylaxis-triplets">
-                                <td>Infant provided with Infant ARV prophylaxis</td>
-                                <td>
-                                    <obs conceptId="161930"
-                                         answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes, No, N/A" style="radio"/>
-                                </td>
                             </tr>
                             <tr id="apgar-score-triplets">
                                 <td>Apgar Score (1 min):&#160;&#160;&#160;&#160;&#160;
@@ -1444,24 +1403,12 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>Mother issued with ART prophylaxis at maternity?</td>
+                                <td>Mother started on HAART at maternity ?</td>
                                 <td>
-                                    <obs class ="art-prophylaxis-at-maternity"
-                                         conceptId="166665AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                    <obs conceptId="166665AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerLabels="Yes,No,N/A"
                                          style="radio" id="art-prophylaxis-at-maternity" />
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>Mother issued with ART prophylaxis from ANC</td>
-                                <td>
-                                    <obs class ="art-prophylaxis-from-anc"
-                                         conceptId="1149AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerLabels="Yes,No,N/A"
-                                         style="radio" id="art-prophylaxis-from-anc" />
                                 </td>
                             </tr>
                             <tr>
@@ -1472,17 +1419,6 @@
                                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                             answerLabels="Yes,No,N/A"
                                             style="radio" id="haart-anc" />
-                                </td>
-                            </tr>
-
-                            <tr id="started-haart-anc" >
-                                <td>Started on HAART?</td>
-                                <td>
-                                    <obs
-                                            conceptId="163783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                            answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                            answerLabels="Yes,No,N/A"
-                                            style="radio"/>
                                 </td>
                             </tr>
                             <tr>
