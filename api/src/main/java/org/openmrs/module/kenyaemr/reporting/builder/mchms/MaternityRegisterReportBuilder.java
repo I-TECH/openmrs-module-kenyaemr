@@ -197,7 +197,11 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
         cohortDsd.addColumn("caesareanSections", "Caesarean Sections", ReportUtils.map(maternityIndicatorLibrary.caesareanSections(), indParams), "");
         cohortDsd.addColumn("breechDeliveries", "Breech Deliveries", ReportUtils.map(maternityIndicatorLibrary.breechDeliveries(), indParams), "");
         cohortDsd.addColumn("assistedVaginalDeliveries", "Assisted Vaginal Deliveries", ReportUtils.map(maternityIndicatorLibrary.assistedVaginalDeliveries(), indParams), "");
+        cohortDsd.addColumn("uterotonicGiven", "Uterotonic Given", ReportUtils.map(maternityIndicatorLibrary.uterotonicGiven(), indParams), "");
+        cohortDsd.addColumn("carbetocin", "Carbetocin", ReportUtils.map(maternityIndicatorLibrary.carbetocin(), indParams), "");
+        cohortDsd.addColumn("oxytocin", "Oxytocin", ReportUtils.map(maternityIndicatorLibrary.oxytocin(), indParams), "");
 
 		return cohortDsd;
 	}
 }
+
