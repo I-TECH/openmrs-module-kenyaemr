@@ -37,11 +37,12 @@ public class ANCHAARTGivenBeforeFirstANCDataEvaluator implements EncounterDataEv
 
         String qry = "select\n" +
                 "      v.encounter_id,\n" +
-                "      (case d.date_started when '' then 'No' else 'Yes' end) as on_arv_before_first_anc\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
-                "  inner join kenyaemr_etl.etl_drug_event d on d.patient_id=v.patient_id\n" +
-                "  inner join kenyaemr_etl.etl_mch_enrollment e on e.patient_id = v.patient_id\n" +
-                "where d.date_started < e.visit_date and date(v.visit_date) between date(:startDate) and date(:endDate);";
+                "      (case coalesce(d.date_started,e.ti_date_started_art) when '' then 'No' else 'Yes' end) as on_arv_before_first_anc\n" +
+                "   from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
+                "     inner join kenyaemr_etl.etl_mch_enrollment e on e.patient_id = v.patient_id\n" +
+                "     left join kenyaemr_etl.etl_drug_event d on d.patient_id=v.patient_id\n" +
+                "   where date(v.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "       and (d.date_started < v.visit_date and v.anc_visit_number =1) or e.ti_date_started_art < e.visit_date;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
