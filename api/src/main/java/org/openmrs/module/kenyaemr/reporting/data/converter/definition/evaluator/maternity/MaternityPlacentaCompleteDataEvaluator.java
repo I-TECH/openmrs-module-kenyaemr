@@ -36,7 +36,7 @@ public class MaternityPlacentaCompleteDataEvaluator implements PersonDataEvaluat
 
         String qry = "select\n" +
                 "  patient_id,\n" +
-                "  (case placenta_complete when 163455 then \"Complete placenta at delivery\" when 163456 then \"Incomplete placenta at delivery\" else \"\" end) as placenta_complete\n" +
+                "  (case placenta_complete when 703 then \"Yes\" when 664 then \"No\" when 1501 then \"Baby born before arrival\" else \"\" end) as placenta_complete\n" +
                 "from kenyaemr_etl.etl_mchs_delivery;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();

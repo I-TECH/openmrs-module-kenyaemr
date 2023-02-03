@@ -36,7 +36,7 @@ public class MaternityARVProphylaxisIssuedAtMaternityDataEvaluator implements Pe
 
         String qry = "select\n" +
                 "       patient_id,\n" +
-                "       (case prophylaxis_given when 105281 then \"SULFAMETHOXAZOLE / TRIMETHOPRIM\" when 74250 then \"DAPSONE\"  when 1107 then \"None\" else \"\" end) as prophylaxis_given\n" +
+                "       (case mother_on_haart_during_anc when 1065 then \"Yes\" when 1066 then \"No\"  when 1067 then \"N/A\" else \"\" end) as mother_on_haart_during_anc\n" +
                 "from kenyaemr_etl.etl_mchs_delivery;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();

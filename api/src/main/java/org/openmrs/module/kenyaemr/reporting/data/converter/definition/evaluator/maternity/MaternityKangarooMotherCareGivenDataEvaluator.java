@@ -10,7 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.maternity;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.maternity.MaternityARVProphylaxisIssuedFromANCDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.maternity.MaternityKangarooMotherCareGivenDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
@@ -25,8 +25,8 @@ import java.util.Map;
 /**
  * Evaluates a PersonDataDefinition
  */
-@Handler(supports= MaternityARVProphylaxisIssuedFromANCDataDefinition.class, order=50)
-public class MaternityARVProphylaxisIssuedFromANCDataEvaluator implements PersonDataEvaluator {
+@Handler(supports= MaternityKangarooMotherCareGivenDataDefinition.class, order=50)
+public class MaternityKangarooMotherCareGivenDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -35,8 +35,8 @@ public class MaternityARVProphylaxisIssuedFromANCDataEvaluator implements Person
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select\n" +
-                "       patient_id,\n" +
-                "       (case infant_provided_with_arv_prophylaxis when 1065 then \"Yes\" when 1066 then \"No\" when 1067 then \"N/A\" else \"\" end) as infant_provided_with_arv_prophylaxis\n" +
+                "  patient_id,\n" +
+                "  (case kangaroo_mother_care_given when 1065 then \"Yes\" when 1066 then \"No\" when 1175 then \"N/A\" else \"\" end) as kangaroo_mother_care_given\n" +
                 "from kenyaemr_etl.etl_mchs_delivery;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();

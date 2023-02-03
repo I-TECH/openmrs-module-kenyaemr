@@ -127,6 +127,8 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 		dsd.addColumn("Gestation at Birth in weeks", new MaternityGestationAtBirthDataDefinition(),"");
 		dsd.addColumn("Mode of Delivery", new MaternityDeliveryModeDataDefinition(),"");
 		dsd.addColumn("Placenta Complete", new MaternityPlacentaCompleteDataDefinition(),"");
+		dsd.addColumn("Uterotonic given", new MaternityUterotonicGivenDataDefinition(),"");
+		dsd.addColumn("Vaginal Examination", new MaternityVaginalExaminationDataDefinition(),"");
 		dsd.addColumn("Blood Loss", new MaternityBloodLossDataDefinition(),"");
 		dsd.addColumn("Condition after delivery", new MaternityConditionAfterDeliveryDataDefinition(),"");
 		dsd.addColumn("Deaths Audited", new MaternityDeathAuditedDataDefinition(),"");
@@ -135,8 +137,11 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 		dsd.addColumn("Birth weight", new MaternityBirthWeightDataDefinition(),"");
 		dsd.addColumn("Baby Condition", new MaternityBabyConditionDataDefinition(),"");
 		dsd.addColumn("Initiated BF <1 Hr", new MaternityInitiatedBFWithinOneHourDataDefinition(),"");
+		dsd.addColumn("Kangaroo Mother care given", new MaternityKangarooMotherCareGivenDataDefinition(),"");
 		dsd.addColumn("TEO Given at Birth", new MaternityTEOGivenAtBirthDataDefinition(),"");
+		dsd.addColumn("Chlorhexidine applied on cord stump", new MaternityTEOGivenAtBirthDataDefinition(),"");
 		dsd.addColumn("Baby with deformity", new MaternityBabyWithDeformityDataDefinition(),"");
+		dsd.addColumn("Given Vitamin K", new MaternityGivenVitaminKDataDefinition(),"");
 		dsd.addColumn("APGAR Score", new MaternityApgarScoreDataDefinition(),"");
 		dsd.addColumn("VDRL/RPR Results", new MaternityVDRLRPRResultsDataDefinition(),"");
 		dsd.addColumn("HIV Status at ANC", new MaternityHIVStatusAtANCDataDefinition(),"");
@@ -157,6 +162,7 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 		dsd.addColumn("Status of Baby at Discharge", new MaternityStatusOfBabyDataDefinition(),"");
 		dsd.addColumn("Referred From", new MaternityReferredFromDataDefinition(),"");
 		dsd.addColumn("Referred To", new MaternityReferredToDataDefinition(),"");
+		dsd.addColumn("Reasons for referral", new MaternityReasonForReferralDataDefinition(),"");
 		dsd.addColumn("Comments", new MaternityCommentsDataDefinition(),"");
 
 		return dsd;
@@ -191,7 +197,11 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
         cohortDsd.addColumn("caesareanSections", "Caesarean Sections", ReportUtils.map(maternityIndicatorLibrary.caesareanSections(), indParams), "");
         cohortDsd.addColumn("breechDeliveries", "Breech Deliveries", ReportUtils.map(maternityIndicatorLibrary.breechDeliveries(), indParams), "");
         cohortDsd.addColumn("assistedVaginalDeliveries", "Assisted Vaginal Deliveries", ReportUtils.map(maternityIndicatorLibrary.assistedVaginalDeliveries(), indParams), "");
+        cohortDsd.addColumn("uterotonicGiven", "Uterotonic Given", ReportUtils.map(maternityIndicatorLibrary.uterotonicGiven(), indParams), "");
+        cohortDsd.addColumn("carbetocin", "Carbetocin", ReportUtils.map(maternityIndicatorLibrary.carbetocin(), indParams), "");
+        cohortDsd.addColumn("oxytocin", "Oxytocin", ReportUtils.map(maternityIndicatorLibrary.oxytocin(), indParams), "");
 
 		return cohortDsd;
 	}
 }
+

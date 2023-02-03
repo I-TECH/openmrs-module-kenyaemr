@@ -112,4 +112,17 @@ public class MaternityIndicatorLibrary {
     }
 
 
+
+    public CohortIndicator uterotonicGiven() {
+        return cohortIndicator("Uterotonic Given",ReportUtils.<CohortDefinition>map(new UterotonicGivenCohortDefinition(),""));
+    }
+
+    public CohortIndicator carbetocin() {
+        return cohortIndicator("Carbetocin",ReportUtils.<CohortDefinition>map(new CarbetocinCohortDefinition(),""));
+    }
+
+    public CohortIndicator oxytocin() {
+        return cohortIndicator("Oxytocin",ReportUtils.<CohortDefinition>map(new OxytocinCohortDefinition(),""));
+    }
+
 }
