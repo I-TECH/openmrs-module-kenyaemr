@@ -103,15 +103,9 @@ kenyaemrApp.controller('PatientSearchResults', ['$scope', '$http', function($sco
      */
     $scope.refresh = function() {
         if(!$scope.query && $scope.which == "checked-in") {
-            $scope.checkedInSelected= true;
-            $scope.allSelected = false;
-            $http.get(ui.fragmentActionLink('kenyaemr', 'search', 'patients', { appId: $scope.appId, q: $scope.query, which: $scope.which })).
-            success(function(data) {
-                if($scope.checkedInSelected) {
-                    $scope.results =  data;
-                    $scope.showLoader = false;
-                }
-            });
+            $scope.allSelected= false;
+            $scope.results = [];
+            $scope.showLoader = false;
         }
 
         if($scope.query && $scope.which == "checked-in") {
