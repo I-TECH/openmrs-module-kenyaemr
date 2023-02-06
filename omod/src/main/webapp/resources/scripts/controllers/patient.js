@@ -44,10 +44,33 @@ kenyaemrApp.controller('PatientSearchForm', ['$scope', 'PatientService','$timeou
         };
     })();
 
+    $scope.onQueryChange = function() {
+        if($scope.query === '') {
+            $scope.updateSearch();
+        } 
+    };
+
     $scope.updateSearch = function() {
         patientService.updateSearch($scope.query, $scope.which);
     };
 }]);
+
+/**
+ * Directive for key press on patient search form
+ */
+kenyaemrApp.directive('ngEnter', function () {
+    return function (scope, element, attrs) {
+        element.bind("keydown keypress", function (event) {
+            if(event.which === 13) {
+                scope.$apply(function (){
+                    scope.$eval(attrs.ngEnter);
+                });
+
+                event.preventDefault();
+            }
+        });
+    };
+});
 
 /**
  * Controller for peer search form
