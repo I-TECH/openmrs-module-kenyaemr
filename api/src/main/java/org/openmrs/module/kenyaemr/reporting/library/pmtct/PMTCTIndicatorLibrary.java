@@ -215,6 +215,15 @@ public class PMTCTIndicatorLibrary {
         return cohortIndicator("Assisted Vaginal Deliveries", ReportUtils.<CohortDefinition>map(pmtctCohorts.assistedVaginalDeliveries(), "startDate=${startDate},endDate=${endDate}"));
     }
 
+    public CohortIndicator uterotonicGiven() {
+        return cohortIndicator("Uterotonic given", ReportUtils.<CohortDefinition>map(pmtctCohorts.uterotonicGiven(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator carbetocin() {
+        return cohortIndicator("Cabertocin given", ReportUtils.<CohortDefinition>map(pmtctCohorts.carbetocin(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator oxytocin() {
+        return cohortIndicator("oxytocin given", ReportUtils.<CohortDefinition>map(pmtctCohorts.oxytocin(), "startDate=${startDate},endDate=${endDate}"));
+    }
     //PNC INDICTORS
     public CohortIndicator pncClients() {
         return cohortIndicator("PNC Clients", ReportUtils.<CohortDefinition>map(pmtctCohorts.pncClients(), "startDate=${startDate},endDate=${endDate}"));

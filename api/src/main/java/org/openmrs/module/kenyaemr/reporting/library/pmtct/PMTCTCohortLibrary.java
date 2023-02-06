@@ -804,6 +804,36 @@ public class PMTCTCohortLibrary {
         cd.setDescription("Assisted vaginal delivery");
         return cd;
     }
+    public CohortDefinition uterotonicGiven() {
+        String sqlQuery = "select ld.patient_id from kenyaemr_etl.etl_mchs_delivery ld where ld.uterotonic_given in(81369,104590) and date(ld.visit_date) between date(:startDate) and date(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("Uterotonic given");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Uterotonic given");
+        return cd;
+    }
+    public CohortDefinition carbetocin() {
+        String sqlQuery = "select ld.patient_id from kenyaemr_etl.etl_mchs_delivery ld where ld.uterotonic_given =104590 and date(ld.visit_date) between date(:startDate) and date(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("Cabertocin given");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Cabertocin given");
+        return cd;
+    }
+    public CohortDefinition oxytocin() {
+        String sqlQuery = "select ld.patient_id from kenyaemr_etl.etl_mchs_delivery ld where ld.uterotonic_given =81369 and date(ld.visit_date) between date(:startDate) and date(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("oxytocin given");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("oxytocin given");
+        return cd;
+    }
 
     //PNC COHORTS
     public  CohortDefinition pncClients() {
