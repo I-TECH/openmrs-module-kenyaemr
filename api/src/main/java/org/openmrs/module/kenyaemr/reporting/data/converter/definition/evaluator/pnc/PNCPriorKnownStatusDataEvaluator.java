@@ -35,18 +35,25 @@ public class PNCPriorKnownStatusDataEvaluator implements EncounterDataEvaluator 
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select v.encounter_id,\n" +
-                "       (case v.mother_hiv_status\n" +
-                "            when v.mother_hiv_status = 1067 then 'Unknown'\n" +
-                "            when v.mother_hiv_status = 664 then 'NEGATIVE'\n" +
-                "            when e.hiv_status = 703\n" +
-                "                then 'Known Positive'\n" +
-                "            when (e.hiv_status != 703 and v.mother_hiv_status = 703) then 'Positive'\n" +
-                "            else '' end) as mother_hiv_status\n" +
-                "from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
-                "         inner join kenyaemr_etl.etl_mch_enrollment e\n" +
-                "                    on v.patient_id = e.patient_id\n" +
-                "where date(v.visit_date) between date(:startDate) and date(:endDate);";
+        String qry = "select a.enc_id,\n" +
+                "       if(a.mother_hiv_status != 'Known Positive', a.pnv_status,a.mother_hiv_status) as status\n" +
+                "from (select e.mother_hiv_status, v.pnv_status, e.patient_id,v.enc_id\n" +
+                "      from (select e.patient_id,\n" +
+                "                   (case e.hiv_status\n" +
+                "                        when 1067 then 'Unknown'\n" +
+                "                        when 664 then 'Negative'\n" +
+                "                        when 703 then 'Known Positive'\n" +
+                "                       end) as mother_hiv_status\n" +
+                "            from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "            where date(e.visit_date) <= date(:endDate)) e\n" +
+                "               inner join (select v.patient_id,v.encounter_id as enc_id,\n" +
+                "                                  case v.mother_hiv_status\n" +
+                "                                      when 1067 then 'Unknown'\n" +
+                "                                      when 703 then 'Positive'\n" +
+                "                                      when 664 then 'Negative' end as pnv_status\n" +
+                "                           from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
+                "                           where date(v.visit_date) between date(:startDate) and date(:endDate)) v\n" +
+                "                          on v.patient_id = e.patient_id) a;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

@@ -2055,19 +2055,18 @@ public class ETLMoh731GreenCardCohortLibrary {
     //On HAART at 1st ANC  HV02-16
     public CohortDefinition totalOnHAARTAtFirstANC(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "select v.patient_id\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
+        String sqlQuery =  "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "         inner join kenyaemr_etl.etl_mch_antenatal_visit v on e.patient_id = v.patient_id\n" +
                 "         left join (select patient_id,\n" +
-                "                           max(visit_date)                                         as last_reg_date,\n" +
-                "                           mid(max(concat(date(visit_date), regimen_stopped)), 11) as stopped_art\n" +
+                "                           max(visit_date)                                         as last_reg_date\n" +
                 "                    from kenyaemr_etl.etl_drug_event d\n" +
                 "                    where program = 'HIV'\n" +
                 "                      and d.date_started <= date(:endDate)\n" +
                 "                    GROUP BY patient_id) d on v.patient_id = d.patient_id\n" +
                 "where date(v.visit_date) between date(:startDate) and date(:endDate)\n" +
-                "  and (date(v.date_given_haart) < date(v.visit_date) or\n" +
-                "       (d.last_reg_date < date(v.visit_date) and d.stopped_art is null))\n" +
-                "  and v.anc_visit_number = 1;";
+                "  and (date(e.ti_date_started_art) < date(v.visit_date) or\n" +
+                "       (d.last_reg_date < date(v.visit_date)));";
 
         cd.setName("totalOnHAARTAtFirstANC");
         cd.setQuery(sqlQuery);
@@ -2078,21 +2077,33 @@ public class ETLMoh731GreenCardCohortLibrary {
         return cd;
     }
 
-    //  Start HAART during ANC  HV02-17
-    public CohortDefinition startedHAARTAtANC(){
+    //  Given HAART during ANC
+    public CohortDefinition givenHAARTAtANC(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery =  "select v.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
-                "where v.haart_given = 1 and date(v.date_given_haart) = date(v.visit_date)\n" +
-                "  and date(v.visit_date) between date(:startDate) and date(:endDate)\n" +
-                "  and v.anc_visit_number = 1;";
-
-        cd.setName("totalStartedOnHAARTAtANC");
+                "where v.haart_given = 1\n" +
+                "  and date(v.visit_date) between date(:startDate) and date(:endDate);";
+        cd.setName("givenHAARTAtANC");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Started HAART At ANC");
+        cd.setDescription("Given HAART At ANC");
 
+        return cd;
+    }
+
+    /**
+     * Started HAART at during ANC
+     * @return
+     */
+    public CohortDefinition startedHAARTAtANC() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("givenHAARTAtANC",ReportUtils.map(givenHAARTAtANC(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("totalOnHAARTAtFirstANC",ReportUtils.map(totalOnHAARTAtFirstANC(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("givenHAARTAtANC AND NOT totalOnHAARTAtFirstANC");
         return cd;
     }
 

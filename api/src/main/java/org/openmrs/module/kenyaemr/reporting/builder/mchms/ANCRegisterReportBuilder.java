@@ -21,10 +21,10 @@ import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQACalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ANCRegisterCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.*;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.KenyaEMRMaritalStatusDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.anc.*;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.AgeAtReportingDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.library.pmtct.ANCIndicatorLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.pmtct.PMTCTIndicatorLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.SortCriteria;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -57,7 +57,7 @@ public class ANCRegisterReportBuilder extends AbstractReportBuilder {
     public static final String DATE_FORMAT = "dd/MM/yyyy";
 
     @Autowired
-    private ANCIndicatorLibrary anc;
+    private PMTCTIndicatorLibrary anc;
 
     @Override
     protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {
@@ -231,7 +231,7 @@ public class ANCRegisterReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("Number of ANC Visits", new ANCNumberOfVisitsDataDefinition(),"");
         dsd.addColumn("Name", nameDef, "");
         dsd.addColumn("Telephone No", new PersonAttributeDataDefinition(phoneNumber), "");
-        dsd.addColumn("Village", new CalculationDataDefinition("Village/Estate/Landmark", new PersonAddressCalculation()), "");
+        dsd.addColumn("Village", new CalculationDataDefinition("Village/Estate/Landmark", new PersonAddressCalculation()), "",new RDQACalculationResultConverter());
         dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
         dsd.addColumn("Age",  ageAtReportingDataDefinition, "endDate=${endDate}");
         dsd.addColumn("County", new ANCCountyDataDefinition(), null);

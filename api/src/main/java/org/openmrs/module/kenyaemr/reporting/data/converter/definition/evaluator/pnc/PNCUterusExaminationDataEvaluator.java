@@ -36,7 +36,7 @@ public class PNCUterusExaminationDataEvaluator implements EncounterDataEvaluator
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select v.encounter_id,\n" +
-                "v.uterus_examination\n" +
+                "(case v.uterus_examination when 163750 then 'Contracted' when 148220 then 'Not contracted' when 5622 then 'Other' else '' end) as uterus_examination\n" +
                 "from kenyaemr_etl.etl_mch_postnatal_visit v where date(v.visit_date) between date(:startDate) and date(:endDate);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();

@@ -18,11 +18,10 @@ import org.openmrs.module.kenyacore.report.builder.AbstractHybridReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.HEIRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.MaternityRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.*;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.maternity.*;
-import org.openmrs.module.kenyaemr.reporting.library.pmtct.MaternityIndicatorLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.pmtct.PMTCTIndicatorLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -53,7 +52,7 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 	public static final String DATE_FORMAT = "dd/MM/yyyy";
 
 	@Autowired
-	MaternityIndicatorLibrary maternityIndicatorLibrary;
+	PMTCTIndicatorLibrary maternityIndicatorLibrary;
 
 	@Override
 	protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {dsd.setName("maternityRegister");

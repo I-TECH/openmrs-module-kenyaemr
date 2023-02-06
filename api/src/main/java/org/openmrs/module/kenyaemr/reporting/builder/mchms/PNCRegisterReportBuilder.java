@@ -26,9 +26,8 @@ import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQACalculati
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.PNCRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.AgeAtReportingDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.RegistrationSubcountyDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pnc.*;
-import org.openmrs.module.kenyaemr.reporting.library.pmtct.PNCIndicatorLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.pmtct.PMTCTIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonDimensionLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.SortCriteria;
@@ -64,13 +63,13 @@ public class PNCRegisterReportBuilder extends AbstractReportBuilder {
     public static final String DATE_FORMAT = "dd/MM/yyyy";
 
     @Autowired
-    private PNCIndicatorLibrary pnc;
+    private PMTCTIndicatorLibrary pnc;
 
     @Autowired
     private CommonDimensionLibrary commonDimensions;
 
     @Autowired
-    private PNCIndicatorLibrary pncIndicators;
+    private PMTCTIndicatorLibrary pncIndicators;
 
     @Override
     protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {

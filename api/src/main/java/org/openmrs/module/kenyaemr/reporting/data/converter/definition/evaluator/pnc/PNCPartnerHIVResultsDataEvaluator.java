@@ -37,10 +37,9 @@ public class PNCPartnerHIVResultsDataEvaluator implements EncounterDataEvaluator
 
         String qry = "select v.encounter_id,\n" +
                 "       (case v.partner_hiv_status\n" +
-                "            when v.partner_hiv_status = 664 then 'Negative'\n" +
-                "            when v.partner_hiv_status = 703 then 'Positive'\n" +
-                "            when v.partner_hiv_status = 1067 then 'Unknown'\n" +
-                "            else '' end) as partner_hiv_status\n" +
+                "            when 664 then 'Negative'\n" +
+                "            when 703 then 'Positive'\n" +
+                "            when 1067 then 'Unknown' end) as partner_hiv_status\n" +
                 "from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
                 "where date(v.visit_date) between date(:startDate) and date(:endDate);";
 
