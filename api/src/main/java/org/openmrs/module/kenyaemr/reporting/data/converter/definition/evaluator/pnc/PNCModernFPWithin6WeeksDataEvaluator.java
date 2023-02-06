@@ -36,20 +36,8 @@ public class PNCModernFPWithin6WeeksDataEvaluator implements EncounterDataEvalua
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select v.encounter_id,\n" +
-                "       (case v.family_planning_method\n" +
-                "            when 160570 then \"Yes\"\n" +
-                "            when 780 then \"Yes\"\n" +
-                "            when 5279 then \"Yes\"\n" +
-                "            when 1359 then \"Yes\"\n" +
-                "            when 5275 then \"Yes\"\n" +
-                "            when 136163 then \"Yes\"\n" +
-                "            when 5278 then \"Yes\"\n" +
-                "            when 5277 then \"Yes\"\n" +
-                "            when 1472 then \"Yes\"\n" +
-                "            when 190 then \"Yes\"\n" +
-                "            when 1489 then \"Yes\"\n" +
-                "            when 162332 then \"No\"\n" +
-                "            else \"\" end) as Modern_FP_Within_6Weeks\n" +
+                "       if(v.family_planning_method in\n" +
+                "          (160570, 780,5279,1359, 5275,136163, 5278, 5277,1472,190,1489), 'Yes', if(v.family_planning_method = 162332, 'No', NULL)) as Modern_FP_Within_6Weeks\n" +
                 "from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
                 "where date(v.visit_date) between date(:startDate) and date(:endDate)\n" +
                 "  and timestampdiff(week, date(v.delivery_date), date(v.visit_date)) between 0 and 6;";

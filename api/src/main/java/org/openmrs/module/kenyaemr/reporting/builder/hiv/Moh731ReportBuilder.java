@@ -246,7 +246,7 @@ public class Moh731ReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "HV03", "Starting ART", ReportUtils.map(moh731GreenCardIndicators.startedOnArt(), indParams), standardDisaggregationAgeAndSex, Arrays.asList("016", "017", "018", "019", "020", "021", "022", "023", "024", "025", "026"));
 
         // 3.3 (KPs starting ART)
-        cohortDsd.addColumn( "HV03-27", "KPs Starting ART", ReportUtils.map(moh731GreenCardIndicators.kpsStartedOnART(), indParams), "");
+        cohortDsd.addColumn( "HV03-027", "KPs Starting ART", ReportUtils.map(moh731GreenCardIndicators.kpsStartedOnART(), indParams), "");
 
         // 3.4 (Currently on ART [All])
         EmrReportingUtils.addRow(cohortDsd, "HV03", "Current on ART", ReportUtils.map(moh731GreenCardIndicators.currentlyOnArt(), indParams), standardDisaggregationAgeAndSex, Arrays.asList("028", "029", "030", "031", "032", "033", "034", "035", "036", "037", "038"));

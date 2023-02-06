@@ -36,14 +36,9 @@ public class PNCNVPAndAZTForBabyWithin6WeeksDataEvaluator implements EncounterDa
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select v.encounter_id,\n" +
-                "       (case v.baby_azt_dispensed\n" +
-                "            when (v.baby_azt_dispensed = 160123 or v.baby_nvp_dispensed = 80586) then \"Yes\"\n" +
-                "            when (v.baby_azt_dispensed = 1066 or v.baby_nvp_dispensed = 1066) then \"No\"\n" +
-                "            when (v.baby_azt_dispensed = 1175 or v.baby_nvp_dispensed = 1175) then \"N/A\"\n" +
-                "            else \"\" end) as azt_nvp_dispensed\n" +
+                "       (case v.infant_prophylaxis_timing when 1065 then 'Yes' when 1066 then 'No' else 'NA' end) as infant_prophylaxis_timing\n" +
                 "from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
-                "where date(v.visit_date) between date(:startDate) and date(:endDate)\n" +
-                "  and timestampdiff(week, date(v.delivery_date), date(v.visit_date)) > 6;";
+                "    where date(v.visit_date) between date(:startDate) and date(:endDate);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

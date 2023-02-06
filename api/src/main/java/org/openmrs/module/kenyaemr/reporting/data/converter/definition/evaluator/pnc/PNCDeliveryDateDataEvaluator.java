@@ -37,8 +37,7 @@ public class PNCDeliveryDateDataEvaluator implements EncounterDataEvaluator {
 
         String qry = "select v.encounter_id,\n" +
                 "       v.delivery_date\n" +
-                "from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
-                "where date(v.visit_date) between date(:startDate) and date(:endDate);";
+                "from kenyaemr_etl.etl_mch_postnatal_visit v;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
