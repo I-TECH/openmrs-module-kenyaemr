@@ -57,7 +57,7 @@
         <htmlformentryVersion>3.9.2</htmlformentryVersion>
         <htmlwidgetsVersion>1.10.0</htmlwidgetsVersion>
         <idgenVersion>4.5.0</idgenVersion>
-        <kenyacoreVersion>3.0.0</kenyacoreVersion>
+        <kenyacoreVersion>3.0.1</kenyacoreVersion>
         <kenyadqVersion>1.4.0</kenyadqVersion>
         <kenyauiVersion>3.0.0</kenyauiVersion>
         <kenyaemrOrderentryVersion>1.4.0</kenyaemrOrderentryVersion>
@@ -70,6 +70,7 @@
         <reportingVersion>1.22.0</reportingVersion>
         <serializationxstreamVersion>0.2.14</serializationxstreamVersion>
         <uiframeworkVersion>3.15.0</uiframeworkVersion>
+        <webservicesRestVersion>2.26.0</webservicesRestVersion>
         <reportingcompatibilityVersion>2.0.7</reportingcompatibilityVersion>
         <legacyUiVersion>1.5.0</legacyUiVersion>
         <bahmniAppointmentsVersion>1.5.0-SNAPSHOT</bahmniAppointmentsVersion>
@@ -240,6 +241,37 @@
             <artifactId>appointments-api</artifactId>
             <version>${bahmniAppointmentsVersion}</version>
             <scope>provided</scope>
+        </dependency>
+         <dependency>
+
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>webservices.rest-omod</artifactId>
+            <version>${webservicesRestVersion}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>webservices.rest-omod-common</artifactId>
+            <version>${webservicesRestVersion}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>webservices.rest-omod-1.8</artifactId>
+            <version>${webservicesRestVersion}</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>webservices.rest-omod-common</artifactId>
+            <version>${webservicesRestVersion}</version>
+            <classifier>tests</classifier>
+            <scope>test</scope>
         </dependency>
 
 <!--        <dependency>
