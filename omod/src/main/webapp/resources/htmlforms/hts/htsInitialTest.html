@@ -14,8 +14,8 @@
 -->
 <htmlform>
 
-    <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
-    <link rel="stylesheet" type="text/css" href="../moduleResources/kenyaemr/styles/kenyaemr_ml_scoring.css"></link>
+    <ifMode mode="VIEW" include="false"><script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script></ifMode>
+    <ifMode mode="VIEW" include="false"><link rel="stylesheet" type="text/css" href="../moduleResources/kenyaemr/styles/kenyaemr_ml_scoring.css"></link></ifMode>
     <script type="text/javascript">
         var IS_KDoD_SITE = <lookup expression="kenyaemr.getFacilityType()" />;
         var IS_Recency_SITE = <lookup expression="kenyaemr.getRecencySite()" />;
@@ -296,6 +296,7 @@
         var consentSelected = function () {
             var val = jq(this).val();
             if (val == 'true' ){
+                
                 jq('#couple-testing input').prop("disabled", false);
                 jq('#hiv-test1-result select').prop("disabled", false);
                 jq('.kit-name select').prop("disabled", false);
@@ -920,9 +921,10 @@
 
         var mlFormattedDate = moment(new Date()).format('YYYY-MM-DD');
         var modelConfigs = {
-            "modelId":"hts_xgb_0323_jul_2022",
+            "modelId":"hts_xgb_1211_jan_2023",
             "encounterDate":mlFormattedDate,
-		    "facilityId":""
+		    "facilityId":"",
+            "debug": "true"
         }
         var mlScoringRequestPayload = {
             modelConfigs: modelConfigs,
@@ -938,44 +940,45 @@
                 data: JSON.stringify(mlScoringRequestPayload),
                 async: false,
                 success: function (response, textStatus, jqXHR) {
-                var probabilityForPositivity = response.result["probability(1)"];
-                var lowRiskThreshold = 0.002625179;
-                var mediumRiskThreshold = 0.010638781;
-                var highRiskThreshold = 0.028924102;
+                    var probabilityForPositivity = response.result.predictions["probability(1)"];
 
-                var highestRiskConcept = 167164;
-                var highRiskConcept = 1408;
-                var mediumRiskConcept = 1499;
-                var lowRiskConcept = 1407;
+                    var lowRiskThreshold = 0.002625179;
+                    var mediumRiskThreshold = 0.010638781;
+                    var highRiskThreshold = 0.028924102;
 
-                setValue('algorithm_result_score.value', probabilityForPositivity);
+                    var highestRiskConcept = 167164;
+                    var highRiskConcept = 1408;
+                    var mediumRiskConcept = 1499;
+                    var lowRiskConcept = 1407;
 
-                var className = jq('#ml-prediction-risk-category').attr("class");
-                if (probabilityForPositivity &gt; highRiskThreshold) {
-                    jq('#ml-prediction-risk-category').html('Highest Risk Client');
-                    jq('#ml-prediction-risk-category').removeClass(className);
-                    jq('#ml-prediction-risk-category').addClass('ke-ml-very-high-risk');
-                    jq('#ml-prediction-desc').html('This client has a very high probability of a HIV positive test result. Testing is strongly recommended');
-                    setValue('algorithm_result_category.value', highestRiskConcept);
-                }   else if (probabilityForPositivity &lt;= highRiskThreshold &amp;&amp; probabilityForPositivity &gt; mediumRiskThreshold) {
-                    jq('#ml-prediction-risk-category').html('High Risk Client');
-                    jq('#ml-prediction-risk-category').removeClass(className);
-                    jq('#ml-prediction-risk-category').addClass('ke-ml-very-high-risk');
-                    jq('#ml-prediction-desc').html('This client has a high probability of a HIV positive test result. Testing is strongly recommended');
-                    setValue('algorithm_result_category.value', highRiskConcept);
-                } else if (probabilityForPositivity &lt;= mediumRiskThreshold &amp;&amp; probabilityForPositivity &gt; lowRiskThreshold ) {
-                    jq('#ml-prediction-risk-category').html('Medium Risk Client');
-                    jq('#ml-prediction-risk-category').removeClass(className);
-                    jq('#ml-prediction-risk-category').addClass('ke-ml-medium-risk');
-                    jq('#ml-prediction-desc').html('This client has a medium probability of a HIV positive test result. Testing is recommended');
-                    setValue('algorithm_result_category.value', mediumRiskConcept);
-                } else if(probabilityForPositivity &lt;= lowRiskThreshold) {
-                    jq('#ml-prediction-risk-category').html('Low Risk Client');
-                    jq('#ml-prediction-risk-category').removeClass(className);
-                    jq('#ml-prediction-risk-category').addClass('ke-ml-low-risk');
-                    jq('#ml-prediction-desc').html('This client has a low probability of a HIV positive test result. Testing may not be recommended');
-                    setValue('algorithm_result_category.value', lowRiskConcept);
-                }
+                    setValue('algorithm_result_score.value', probabilityForPositivity);
+
+                    var className = jq('#ml-prediction-risk-category').attr("class");
+                    if (probabilityForPositivity &gt; highRiskThreshold) {
+                        jq('#ml-prediction-risk-category').html('Highest Risk Client');
+                        jq('#ml-prediction-risk-category').removeClass(className);
+                        jq('#ml-prediction-risk-category').addClass('ke-ml-very-high-risk');
+                        jq('#ml-prediction-desc').html('This client has a very high probability of a HIV positive test result. Testing is strongly recommended');
+                        setValue('algorithm_result_category.value', highestRiskConcept);
+                    } else if (probabilityForPositivity &lt;= highRiskThreshold &amp;&amp; probabilityForPositivity &gt; mediumRiskThreshold) {
+                        jq('#ml-prediction-risk-category').html('High Risk Client');
+                        jq('#ml-prediction-risk-category').removeClass(className);
+                        jq('#ml-prediction-risk-category').addClass('ke-ml-very-high-risk');
+                        jq('#ml-prediction-desc').html('This client has a high probability of a HIV positive test result. Testing is strongly recommended');
+                        setValue('algorithm_result_category.value', highRiskConcept);
+                    } else if (probabilityForPositivity &lt;= mediumRiskThreshold &amp;&amp; probabilityForPositivity &gt; lowRiskThreshold ) {
+                        jq('#ml-prediction-risk-category').html('Medium Risk Client');
+                        jq('#ml-prediction-risk-category').removeClass(className);
+                        jq('#ml-prediction-risk-category').addClass('ke-ml-medium-risk');
+                        jq('#ml-prediction-desc').html('This client has a medium probability of a HIV positive test result. Testing is recommended');
+                        setValue('algorithm_result_category.value', mediumRiskConcept);
+                    } else if(probabilityForPositivity &lt;= lowRiskThreshold) {
+                        jq('#ml-prediction-risk-category').html('Low Risk Client');
+                        jq('#ml-prediction-risk-category').removeClass(className);
+                        jq('#ml-prediction-risk-category').addClass('ke-ml-low-risk');
+                        jq('#ml-prediction-desc').html('This client has a low probability of a HIV positive test result. Testing may not be recommended');
+                        setValue('algorithm_result_category.value', lowRiskConcept);
+                    }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     var msg = '';
@@ -986,6 +989,7 @@
                     } else {
                         msg = 'System error: ' + jqXHR.responseText;
                     }
+                    
                     jq('#ml-prediction-desc').html(msg);
                 }
             });
@@ -1626,7 +1630,7 @@
                 </tr>
             </table>
             <br/>
-            <div id="div-ml-prediction">
+            <div id="div-ml-prediction" style="display: none">
                 <table>
                     <tr>
                         <td>

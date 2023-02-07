@@ -19,7 +19,7 @@
 	</parent>
 
 	<artifactId>kenyaemr-omod</artifactId>
-    <version>18.4.1</version>
+    <version>18.4.2</version>
 	<packaging>jar</packaging>
 	<name>KenyaEMR Module OMOD</name>
 	<description>OMOD project for KenyaEMR Module</description>
