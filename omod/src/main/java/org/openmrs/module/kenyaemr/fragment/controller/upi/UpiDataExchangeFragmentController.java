@@ -44,6 +44,7 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.ui.framework.SimpleObject;
@@ -209,7 +210,7 @@ public class UpiDataExchangeFragmentController  {
 	 * Get IPRS Verification error clients and error description        *
 	 * @return
 	 */
-	public SimpleObject pullVerificationErrorsFromCR() {
+	public String pullVerificationErrorsFromCR() {
 		UpiUtilsDataExchange upiUtilsDataExchange = new UpiUtilsDataExchange();
 		String authToken = upiUtilsDataExchange.getToken();
 		GlobalProperty globalGetUrl = Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_GET_END_POINT);
@@ -217,6 +218,7 @@ public class UpiDataExchangeFragmentController  {
 		Location location = Context.getService(KenyaEmrService.class).getDefaultLocation();
 		String facilityMfl = getDefaultLocationMflCode(location);
 		SimpleObject responseObj = new SimpleObject();
+		String sucess = "";
 		try {
 			String getUrl = strGetUrl + "/validation-results/kmfl/" + facilityMfl;
 			System.out.println("Using NUPI GET URL: " + getUrl);
@@ -246,13 +248,13 @@ public class UpiDataExchangeFragmentController  {
 				String stringResponse = response.toString();
 				System.out.println("Got the Response as: " + stringResponse);
 
-				responseObj = processIPRSVerificationErrorsResponse(stringResponse);
+				 sucess = processIPRSVerificationErrorsResponse(stringResponse);
 				System.out.println("Response Object to UI: " + responseObj);
 			}
 
 			} catch (Exception ex) {
 		}
-		return responseObj;
+		return sucess;
 
 	}
 
@@ -262,13 +264,12 @@ public class UpiDataExchangeFragmentController  {
 	 * @param stringResponse the NUPI payload
 	 * @return SimpleObject the processed data
 	 */
-	public static SimpleObject processIPRSVerificationErrorsResponse(String stringResponse) throws IOException {
+	public  String processIPRSVerificationErrorsResponse(String stringResponse) throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		ObjectNode objectNode = null;
 		String clientNumber = "";
 		String errorDescription = "";
-		SimpleObject responseObj = new SimpleObject();
-		List<SimpleObject> errorData = new ArrayList<SimpleObject>();
+		String success = "false";
 		try {
 			objectNode = (ObjectNode) mapper.readTree(stringResponse);
 			if (objectNode != null) {
@@ -284,28 +285,20 @@ public class UpiDataExchangeFragmentController  {
 						// Get client by clientNumber: NUPI Identifier type
 						PatientIdentifierType nupiIdentifierType = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER);
 							System.out.println("Identifier Type: " + nupiIdentifierType);
-
-					List<Patient> patients = Context.getPatientService().getPatients(null, clientNumber.trim(), Arrays.asList(nupiIdentifierType), false);
+						PatientService patientService = Context.getPatientService();
+					    List<Patient> patients = patientService.getPatients(null, clientNumber.trim(), Arrays.asList(nupiIdentifierType), false);
 						System.out.println("Current patient size: " + patients.size());
 						if (patients.size() > 0) {
 							System.out.println("Got atleast one patient ID as: " + patients.size());
 							Patient patient = patients.get(0);
 						   		System.out.println("Got the right patient ID as: " + patient.getPatientId());
-									errorData.add(SimpleObject.create(
-											"id", patient.getPatientId() != null ? patient.getPatientId() : "",
-											"givenName", patient.getGivenName() != null ? patient.getGivenName() : "",
-											"middleName", patient.getMiddleName() != null ? patient.getMiddleName() : "",
-											"familyName", patient.getFamilyName() != null ? patient.getFamilyName() : "",
-											"id", patient.getPatientId() != null ? patient.getPatientId() : "",
-											"birthdate", patient.getBirthdate(),
-											"gender", patient.getGender(),
-											"clientNumber", clientNumber != null ? clientNumber : "",
-											"errorDescription", errorDescription != null ? errorDescription : ""
-									));
-									responseObj.put("errorData", errorData);
-									responseObj.put("errorDataCount", errorData.size());
-									System.out.println("ErrorData to response Object: " + errorData);
-									System.out.println("ErrorCount to response Object: " + errorData.size());
+							PatientWrapper wrapper = new PatientWrapper(patient);
+							wrapper.setCRVerificationStatus(getAttributeSubstring("Failed IPRS Check"));
+							wrapper.setCRIPRSVerificationErrorDescription(getAttributeSubstring(errorDescription));
+							patientService.savePatient(patient);
+							System.out.println("Successfully persisted CR status attribute and error Description");
+							System.out.println("For patientID ==> "+patient.getPatientId());
+							success = "true";
 						}
 
 					}
@@ -315,7 +308,20 @@ public class UpiDataExchangeFragmentController  {
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		return responseObj;
+  return success;
+	}
+	/**
+	 * This gets a substring of max 50 chars for PersonAttribute which is a limitation in the DB
+	 * @param input
+	 * @return
+	 */
+	public String getAttributeSubstring(String input) {
+		String output = "";
+		if(input != null) {
+			int endIndex = (input.length()) > 50 ? 50 : (input.length());
+			output = input.substring(0, endIndex);
+		}
+		return(output);
 	}
 
 }
