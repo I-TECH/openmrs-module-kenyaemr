@@ -44,10 +44,33 @@ kenyaemrApp.controller('PatientSearchForm', ['$scope', 'PatientService','$timeou
         };
     })();
 
+    $scope.onQueryChange = function() {
+        if($scope.query === '') {
+            $scope.updateSearch();
+        } 
+    };
+
     $scope.updateSearch = function() {
         patientService.updateSearch($scope.query, $scope.which);
     };
 }]);
+
+/**
+ * Directive for key press on patient search form
+ */
+kenyaemrApp.directive('ngEnter', function () {
+    return function (scope, element, attrs) {
+        element.bind("keydown keypress", function (event) {
+            if(event.which === 13) {
+                scope.$apply(function (){
+                    scope.$eval(attrs.ngEnter);
+                });
+
+                event.preventDefault();
+            }
+        });
+    };
+});
 
 /**
  * Controller for peer search form
@@ -103,15 +126,9 @@ kenyaemrApp.controller('PatientSearchResults', ['$scope', '$http', function($sco
      */
     $scope.refresh = function() {
         if(!$scope.query && $scope.which == "checked-in") {
-            $scope.checkedInSelected= true;
-            $scope.allSelected = false;
-            $http.get(ui.fragmentActionLink('kenyaemr', 'search', 'patients', { appId: $scope.appId, q: $scope.query, which: $scope.which })).
-            success(function(data) {
-                if($scope.checkedInSelected) {
-                    $scope.results =  data;
-                    $scope.showLoader = false;
-                }
-            });
+            $scope.allSelected= false;
+            $scope.results = [];
+            $scope.showLoader = false;
         }
 
         if($scope.query && $scope.which == "checked-in") {
