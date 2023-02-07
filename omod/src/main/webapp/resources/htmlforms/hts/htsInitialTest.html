@@ -296,7 +296,7 @@
         var consentSelected = function () {
             var val = jq(this).val();
             if (val == 'true' ){
-                console.log("Testing Consent is given");
+                
                 jq('#couple-testing input').prop("disabled", false);
                 jq('#hiv-test1-result select').prop("disabled", false);
                 jq('.kit-name select').prop("disabled", false);
@@ -309,16 +309,13 @@
                 jq("#tb-screening input").prop("disabled", false);
 
                 if(mlCaseFindingEnabled === 'true') {
-                    console.log("ML case finding is enabled. Enable score button");
 		            jq('#div-ml-prediction').show();
                 } else {
-                    console.log("ML case finding is disabled. Disable score button");
                     jq('#div-ml-prediction').hide();
                 }
 
             }
             if (val == 'false' ){
-                console.log("Testing Consent is NOT given. ML disabled");
                 jq('#couple-testing input').prop("disabled", true);
                 jq('#hiv-test1-result select').prop("disabled", true);
                 jq('.kit-name select').prop("disabled", true);
@@ -764,7 +761,6 @@
 
     // handle ML prediction button
 	jq("#btn-ml-prediction").click(function () {
-        console.log("Prediction Button Clicked");
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
 		var casefindingURL = "<lookup expression="fn.globalProperty('kenyaemrml.casefinding.endpoint')"/>";
 		var latestMaritalStatus = "<lookup expression="fn.latestObs(1054).getValueCoded()"/>";
@@ -780,7 +776,6 @@
         var monthsSinceLastTestInt = parseInt(monthsSinceLastTest);
 
         if (populationType == '' || isDisabled == '' || everTested == '' || entryPoint == '' || testStrategy == '' || tbScreening == '' || selfTested == '' || testedAs == '') {
-            console.log("Please ensure that you have provided answers to all questions above");
             jq('#ml-prediction-desc').html('Please ensure that you have provided answers to all questions above');
             return;
         }
@@ -936,8 +931,6 @@
             variableValues: predictionVariables
         }
 
-        console.log("Prediction Payload: " + JSON.stringify(mlScoringRequestPayload));
-
         var predResponse = '';
         if (casefindingURL !='') {
             jq.ajax({
@@ -948,7 +941,7 @@
                 async: false,
                 success: function (response, textStatus, jqXHR) {
                     var probabilityForPositivity = response.result.predictions["probability(1)"];
-                    console.log("Success. Got probability as: " + probabilityForPositivity);
+
                     var lowRiskThreshold = 0.002625179;
                     var mediumRiskThreshold = 0.010638781;
                     var highRiskThreshold = 0.028924102;
@@ -996,7 +989,7 @@
                     } else {
                         msg = 'System error: ' + jqXHR.responseText;
                     }
-                    console.log("Error: " + msg);
+                    
                     jq('#ml-prediction-desc').html(msg);
                 }
             });
