@@ -82,6 +82,8 @@ public class EmrActivator implements ModuleActivator {
 	public void started() {
 		// Context.getService(ReportService.class).deleteOldReportRequests();
 		log.info("KenyaEMR started");
+		Context.getAdministrationService().executeSQL("UPDATE form SET published = 1 where retired = 0", false);
+
 	}
 
 	/**
