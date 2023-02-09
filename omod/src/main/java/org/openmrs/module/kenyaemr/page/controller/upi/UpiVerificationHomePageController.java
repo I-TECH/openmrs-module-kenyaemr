@@ -56,9 +56,10 @@ public class UpiVerificationHomePageController {
         List<SimpleObject> verifiedWithErrors = new ArrayList<SimpleObject>();
         Integer verifiedCount = 0;
         Integer verifiedOnART = 0;
+        String errorDescription = "";
         PersonAttributeType verificationStatusPA = Context.getPersonService().getPersonAttributeTypeByUuid(CommonMetadata._PersonAttributeType.VERIFICATION_STATUS_WITH_NATIONAL_REGISTRY);
         PersonAttributeType verificationMessagePA = Context.getPersonService().getPersonAttributeTypeByUuid(CommonMetadata._PersonAttributeType.VERIFICATION_MESSAGE_WITH_NATIONAL_REGISTRY);
-        PersonAttributeType verificationErrorDescrptionPA = Context.getPersonService().getPersonAttributeTypeByUuid(CommonMetadata._PersonAttributeType.VERIFICATION_DESCRIPTION_FOR_IPRS_ERROR);
+        PersonAttributeType verificationErrorDescriptionPA = Context.getPersonService().getPersonAttributeTypeByUuid(CommonMetadata._PersonAttributeType.VERIFICATION_DESCRIPTION_FOR_IPRS_ERROR);
         List<Patient> allPatients = Context.getPatientService().getAllPatients();
         Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 
@@ -89,7 +90,8 @@ public class UpiVerificationHomePageController {
                 }
                 // Has successfully verified but IPR has returned errors on verification   : Already has a NUPI but IPRS returned errors
                 if (patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Failed IPRS Check")) {
-                    String errorDescription = patient.getAttribute(verificationErrorDescrptionPA).getValue().trim();
+                  errorDescription = patient.getAttribute(verificationErrorDescriptionPA).getValue().trim() != null ? patient.getAttribute(verificationErrorDescriptionPA).getValue().trim() : "";
+
                     SimpleObject errorVerificationObject = SimpleObject.create(
                             "id", patient.getId(),
                             "uuid", patient.getUuid(),

@@ -164,7 +164,7 @@ tr:nth-child(even) {background-color: #f2f2f2;}
                     </tr>
                     <tr>
                         <td width="15%"> <button id="pullVerificationErrors">Pull Verification Errors</button></td>
-                        <td> <div class="wait-loading"></div></td>
+                        <td> <div class="wait-loading"></div> <div class="text-wrap" align="center" id="pull-msgBox"></div></td>
 
                         <td width="15%">Failed IPRS verification</td>
                         <td>${numberOfVerificationErrorSize}</td>
@@ -281,8 +281,10 @@ tr:nth-child(even) {background-color: #f2f2f2;}
     //On ready
     jq = jQuery;
     jq(function () {
-        // apply pagination
 
+        jQuery("#pull-msgBox").hide();
+
+        // apply pagination
         var errorPaginationDiv = jq('#errorPagination');
         var queuePaginationDiv = jq('#queuePagination');
 
@@ -362,20 +364,33 @@ tr:nth-child(even) {background-color: #f2f2f2;}
         // handle click event of the fetch IPRS verification errors
        jq("#pullVerificationErrors").click( function() {
             //Run the fetch task
+           jQuery("#pull-msgBox").hide();
             console.log('Starting the fetch task!');
            // show spinner
            display_loading_validate_identifier(true);
            jQuery.getJSON('${ ui.actionLink("kenyaemr", "upi/upiDataExchange", "pullVerificationErrorsFromCR")}')
                .success(function (data) {
                    console.log("Received error data ==>" + JSON.stringify(data));
-                   // Hide spinner
-                   display_loading_validate_identifier(false);
+                   console.log("Received error stringified ==>" + JSON.stringify(data.success));
+                    if(data.success === "true") {
+                       // Hide spinner
+                       display_loading_validate_identifier(false);
+                       jQuery("#pull-msgBox").text("Successfully pulled error records");
+                       jQuery("#pull-msgBox").show();
+                   }else{
+                       display_loading_validate_identifier(false);
+                       jQuery("#pull-msgBox").text("Error pulling verification errors: Check your network");
+                       jQuery("#pull-msgBox").show();
+                   }
                })
                .fail(function (err) {
                        // Hide spinner
                        console.log("Error fetching verification errors: " + JSON.stringify(err));
                    // Hide spinner
                    display_loading_validate_identifier(false);
+                   jQuery("#pull-msgBox").text("Could not pull error records");
+                   jQuery("#pull-msgBox").show();
+
                    }
                )
         });

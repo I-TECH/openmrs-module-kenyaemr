@@ -1577,7 +1577,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
             "nextOfKins": []
         }
 
-
+        console.log("Params here ==>" + JSON.stringify(params));
         //Using fragment action to post
         jQuery.getJSON('${ ui.actionLink("kenyaemr", "upi/upiDataExchange", "postUpiClientRegistrationInfoToCR")}',
             {
@@ -1588,7 +1588,9 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 display_loading_post_registration(false);
 
                 responseData = data;
-                
+                console.log("Return object ==>" +data);
+                console.log("Return message ==>"+JSON.stringify(data));
+
                 if(data.status == 200) {
                     if(data.clientNumber) {
                         jQuery("input[name='nationalUniquePatientNumber']").val(data.clientNumber);

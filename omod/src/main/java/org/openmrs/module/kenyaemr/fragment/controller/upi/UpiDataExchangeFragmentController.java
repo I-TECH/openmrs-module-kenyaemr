@@ -40,8 +40,10 @@ import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
@@ -109,8 +111,15 @@ public class UpiDataExchangeFragmentController  {
 
 	}
 
-	public static SimpleObject postUpiClientRegistrationInfoToCR(@RequestParam("postParams") String params ) throws IOException, NoSuchAlgorithmException, KeyManagementException {
-		return sendPOST(params);
+	public SimpleObject postUpiClientRegistrationInfoToCR(@RequestParam("postParams") String params) throws IOException, NoSuchAlgorithmException, KeyManagementException {
+	    //Check whether this client already has NUPI number hence this is an error verification
+			  String clientNupi = nationalUniquePatientNumberForClient(params);
+		     System.out.println("Patient Nupi ==> "+clientNupi);
+			if (!clientNupi.trim().equalsIgnoreCase("")) {
+			     return sendPUT(params,clientNupi);
+		     } else {
+			     return sendPOST(params);
+	     	}
 	}
 
 	private static SimpleObject sendPOST(String params) throws IOException, NoSuchAlgorithmException, KeyManagementException {
@@ -201,6 +210,98 @@ public class UpiDataExchangeFragmentController  {
 		//return responseObj;
 	}
 
+	private static SimpleObject sendPUT(String params, String clientNupi) throws IOException, NoSuchAlgorithmException, KeyManagementException {
+		String stringResponse= "";
+
+		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+				return null;
+			}
+
+			public void checkClientTrusted(X509Certificate[] certs, String authType) {
+			}
+
+			public void checkServerTrusted(X509Certificate[] certs, String authType) {
+			}
+		} };
+
+
+		SSLContext sc = SSLContext.getInstance("SSL");
+		sc.init(null, trustAllCerts, new java.security.SecureRandom());
+		HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+		GlobalProperty globalPostUrl = Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_UPDATE_END_POINT);
+		String strPostUrl = globalPostUrl.getPropertyValue();
+	     //https://afyakenyaapi.health.go.ke/partners/registry/{clientNumber}/update
+		String putUrl = strPostUrl + "/" + clientNupi + "/update";
+		System.out.println("Using NUPI UPDATE URL: " + putUrl);
+
+		URL url = new URL(putUrl);
+
+
+		HttpsURLConnection con =(HttpsURLConnection) url.openConnection();
+		con.setRequestMethod("PUT");
+
+		UpiUtilsDataExchange upiUtils = new UpiUtilsDataExchange();
+		String authToken = upiUtils.getToken();
+
+		con.setRequestProperty("Authorization", "Bearer " + authToken);
+		con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+		con.setRequestProperty("Accept", "application/json");
+		con.setConnectTimeout(10000); // set timeout to 10 seconds
+
+		con.setDoOutput(true);
+		OutputStream os = con.getOutputStream();
+		os.write(params.getBytes());
+		os.flush();
+		os.close();
+
+		int responseCode = con.getResponseCode();
+		SimpleObject responseObj = null;
+
+		if (responseCode == HttpURLConnection.HTTP_OK) { //success
+			BufferedReader in = null;
+			in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			String inputLine;
+			StringBuffer response = new StringBuffer();
+
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			in.close();
+
+			stringResponse = response.toString();
+
+			responseObj = upiUtils.processUpiResponse(stringResponse);
+			responseObj.put("status", responseCode);
+
+			return(responseObj);
+
+		} else {
+			if (con != null && con.getErrorStream() != null) {
+				BufferedReader in = null;
+				// BufferedReader in = new BufferedReader(new InputStreamReader(
+				// 		con.getErrorStream()));
+				in = new BufferedReader(new InputStreamReader(con.getErrorStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
+
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				in.close();
+
+				stringResponse = response.toString();
+			}
+
+			responseObj = new SimpleObject();
+			responseObj.put("status", responseCode);
+			responseObj.put("message", stringResponse);
+			return(responseObj);
+		}
+		//return responseObj;
+	}
+
 	public static String getAuthToken() throws IOException, NoSuchAlgorithmException, KeyManagementException {
 		UpiUtilsDataExchange upiUtils = new UpiUtilsDataExchange();
 		return(upiUtils.getToken());
@@ -210,7 +311,7 @@ public class UpiDataExchangeFragmentController  {
 	 * Get IPRS Verification error clients and error description        *
 	 * @return
 	 */
-	public String pullVerificationErrorsFromCR() {
+	public SimpleObject pullVerificationErrorsFromCR() {
 		UpiUtilsDataExchange upiUtilsDataExchange = new UpiUtilsDataExchange();
 		String authToken = upiUtilsDataExchange.getToken();
 		GlobalProperty globalGetUrl = Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_GET_END_POINT);
@@ -218,7 +319,7 @@ public class UpiDataExchangeFragmentController  {
 		Location location = Context.getService(KenyaEmrService.class).getDefaultLocation();
 		String facilityMfl = getDefaultLocationMflCode(location);
 		SimpleObject responseObj = new SimpleObject();
-		String sucess = "";
+		String success = "";
 		try {
 			String getUrl = strGetUrl + "/validation-results/kmfl/" + facilityMfl;
 			System.out.println("Using NUPI GET URL: " + getUrl);
@@ -248,13 +349,16 @@ public class UpiDataExchangeFragmentController  {
 				String stringResponse = response.toString();
 				System.out.println("Got the Response as: " + stringResponse);
 
-				 sucess = processIPRSVerificationErrorsResponse(stringResponse);
+				success = processIPRSVerificationErrorsResponse(stringResponse);
 				System.out.println("Response Object to UI: " + responseObj);
+			}else{
+				System.out.println("Http connection response code ==> "+ responseCode);
+				System.out.println("Error fetching verification erors from CRS !!");
 			}
 
 			} catch (Exception ex) {
 		}
-		return sucess;
+		return SimpleObject.create("success", success );
 
 	}
 
@@ -309,6 +413,66 @@ public class UpiDataExchangeFragmentController  {
 			e.printStackTrace();
 		}
   return success;
+	}
+
+	/**
+	 * Processes POST Request to determine if client already has NUPI
+	 *
+	 * @param params the POST payload
+	 * @return NUPI from the processed data
+	 */
+	public  String nationalUniquePatientNumberForClient(String params) throws IOException {
+		System.out.println("Processing hasNationalUniquePatientNumber");
+		ObjectMapper mapper = new ObjectMapper();
+		ObjectNode objectNode = null;
+		String identificationType = "";
+		String identificationNumber = "";
+		String nupiNumber = "";
+		try {
+			objectNode = (ObjectNode) mapper.readTree(params);
+			if (objectNode != null) {
+				ArrayNode resultsArrayNode = (ArrayNode) objectNode.get("identifications");
+				if (resultsArrayNode.size() > 0) {
+					for (int i = 0; i < resultsArrayNode.size(); i++) {
+
+						identificationType = resultsArrayNode.get(i).get("identificationType").asText();
+						identificationNumber = resultsArrayNode.get(i).get("identificationNumber").asText();
+
+						System.out.println("Got the identificationType as: " + identificationType);
+						System.out.println("Got the eidentificationNumber as: " + identificationNumber);
+						// Get client by identificationType:  Identifier type used
+						PatientIdentifierType natIdentifierType = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.NATIONAL_ID);
+						PatientIdentifierType birtCertIdentifierType = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.BIRTH_CERTIFICATE_NUMBER);
+
+						PatientService patientService = Context.getPatientService();
+						List<Patient> patients = patientService.getPatients(null, identificationNumber.trim(), Arrays.asList(natIdentifierType,birtCertIdentifierType), false);
+						System.out.println("Current patient size: " + patients.size());
+						if (patients.size() > 0) {
+							System.out.println("Got atleast one patient ID as: " + patients.size());
+							Patient patient = patients.get(0);
+							System.out.println("Got the right patient ID as: " + patient.getPatientId());
+
+							// Got patient
+							// Check whether patient already has NUPI
+							PatientIdentifierType nupiIdentifierType = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER);
+							PatientIdentifier nupiObject = patient.getPatientIdentifier(nupiIdentifierType);
+
+							  nupiNumber = nupiObject.getIdentifier();
+							  System.out.println("Got the nupi number : " + nupiNumber);
+
+
+							}
+
+						}
+
+					}
+				}
+
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("Has nupi number as: " + nupiNumber);
+		return nupiNumber;
 	}
 	/**
 	 * This gets a substring of max 50 chars for PersonAttribute which is a limitation in the DB
