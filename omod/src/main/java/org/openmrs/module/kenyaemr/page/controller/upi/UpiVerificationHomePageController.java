@@ -90,8 +90,10 @@ public class UpiVerificationHomePageController {
                 }
                 // Has successfully verified but IPR has returned errors on verification   : Already has a NUPI but IPRS returned errors
                 if (patient.getAttribute(verificationStatusPA).getValue().trim().equalsIgnoreCase("Failed IPRS Check")) {
-                  errorDescription = patient.getAttribute(verificationErrorDescriptionPA).getValue().trim() != null ? patient.getAttribute(verificationErrorDescriptionPA).getValue().trim() : "";
-
+                     // Check error description
+                    if(patient.getAttribute(verificationErrorDescriptionPA) != null) {
+                        errorDescription = patient.getAttribute(verificationErrorDescriptionPA).getValue().trim();
+                    }
                     SimpleObject errorVerificationObject = SimpleObject.create(
                             "id", patient.getId(),
                             "uuid", patient.getUuid(),

@@ -114,7 +114,6 @@ public class UpiDataExchangeFragmentController  {
 	public SimpleObject postUpiClientRegistrationInfoToCR(@RequestParam("postParams") String params) throws IOException, NoSuchAlgorithmException, KeyManagementException {
 	    //Check whether this client already has NUPI number hence this is an error verification
 			  String clientNupi = nationalUniquePatientNumberForClient(params);
-		     System.out.println("Patient Nupi ==> "+clientNupi);
 			if (!clientNupi.trim().equalsIgnoreCase("")) {
 			     return sendPUT(params,clientNupi);
 		     } else {
@@ -347,13 +346,10 @@ public class UpiDataExchangeFragmentController  {
 				in.close();
 
 				String stringResponse = response.toString();
-				System.out.println("Got the Response as: " + stringResponse);
-
 				success = processIPRSVerificationErrorsResponse(stringResponse);
-				System.out.println("Response Object to UI: " + responseObj);
+
 			}else{
 				System.out.println("Http connection response code ==> "+ responseCode);
-				System.out.println("Error fetching verification erors from CRS !!");
 			}
 
 			} catch (Exception ex) {
@@ -383,25 +379,16 @@ public class UpiDataExchangeFragmentController  {
 
 						clientNumber = resultsArrayNode.get(i).get("clientNumber").asText();
 						errorDescription = resultsArrayNode.get(i).get("errorDescription").asText();
-
-						System.out.println("Got the client number as: " + clientNumber);
-						System.out.println("Got the error Description number as: " + errorDescription);
 						// Get client by clientNumber: NUPI Identifier type
 						PatientIdentifierType nupiIdentifierType = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER);
-							System.out.println("Identifier Type: " + nupiIdentifierType);
 						PatientService patientService = Context.getPatientService();
 					    List<Patient> patients = patientService.getPatients(null, clientNumber.trim(), Arrays.asList(nupiIdentifierType), false);
-						System.out.println("Current patient size: " + patients.size());
 						if (patients.size() > 0) {
-							System.out.println("Got atleast one patient ID as: " + patients.size());
 							Patient patient = patients.get(0);
-						   		System.out.println("Got the right patient ID as: " + patient.getPatientId());
 							PatientWrapper wrapper = new PatientWrapper(patient);
 							wrapper.setCRVerificationStatus(getAttributeSubstring("Failed IPRS Check"));
 							wrapper.setCRIPRSVerificationErrorDescription(getAttributeSubstring(errorDescription));
 							patientService.savePatient(patient);
-							System.out.println("Successfully persisted CR status attribute and error Description");
-							System.out.println("For patientID ==> "+patient.getPatientId());
 							success = "true";
 						}
 
@@ -422,7 +409,6 @@ public class UpiDataExchangeFragmentController  {
 	 * @return NUPI from the processed data
 	 */
 	public  String nationalUniquePatientNumberForClient(String params) throws IOException {
-		System.out.println("Processing hasNationalUniquePatientNumber");
 		ObjectMapper mapper = new ObjectMapper();
 		ObjectNode objectNode = null;
 		String identificationType = "";
@@ -438,19 +424,15 @@ public class UpiDataExchangeFragmentController  {
 						identificationType = resultsArrayNode.get(i).get("identificationType").asText();
 						identificationNumber = resultsArrayNode.get(i).get("identificationNumber").asText();
 
-						System.out.println("Got the identificationType as: " + identificationType);
-						System.out.println("Got the eidentificationNumber as: " + identificationNumber);
 						// Get client by identificationType:  Identifier type used
 						PatientIdentifierType natIdentifierType = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.NATIONAL_ID);
 						PatientIdentifierType birtCertIdentifierType = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.BIRTH_CERTIFICATE_NUMBER);
 
 						PatientService patientService = Context.getPatientService();
 						List<Patient> patients = patientService.getPatients(null, identificationNumber.trim(), Arrays.asList(natIdentifierType,birtCertIdentifierType), false);
-						System.out.println("Current patient size: " + patients.size());
+
 						if (patients.size() > 0) {
-							System.out.println("Got atleast one patient ID as: " + patients.size());
 							Patient patient = patients.get(0);
-							System.out.println("Got the right patient ID as: " + patient.getPatientId());
 
 							// Got patient
 							// Check whether patient already has NUPI
@@ -458,8 +440,6 @@ public class UpiDataExchangeFragmentController  {
 							PatientIdentifier nupiObject = patient.getPatientIdentifier(nupiIdentifierType);
 
 							  nupiNumber = nupiObject.getIdentifier();
-							  System.out.println("Got the nupi number : " + nupiNumber);
-
 
 							}
 
@@ -471,7 +451,6 @@ public class UpiDataExchangeFragmentController  {
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("Has nupi number as: " + nupiNumber);
 		return nupiNumber;
 	}
 	/**

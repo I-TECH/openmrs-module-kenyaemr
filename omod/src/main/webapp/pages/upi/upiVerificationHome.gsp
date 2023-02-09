@@ -370,8 +370,6 @@ tr:nth-child(even) {background-color: #f2f2f2;}
            display_loading_validate_identifier(true);
            jQuery.getJSON('${ ui.actionLink("kenyaemr", "upi/upiDataExchange", "pullVerificationErrorsFromCR")}')
                .success(function (data) {
-                   console.log("Received error data ==>" + JSON.stringify(data));
-                   console.log("Received error stringified ==>" + JSON.stringify(data.success));
                     if(data.success === "true") {
                        // Hide spinner
                        display_loading_validate_identifier(false);
@@ -428,9 +426,6 @@ tr:nth-child(even) {background-color: #f2f2f2;}
 
     function generate_verification_errors_table(displayRecords, displayObject, tableId) {
         var tr;
-        console.log("DisplayRecords ==>" +displayRecords);
-        console.log("DisplayObject ==>"+displayObject);
-        console.log("DisplayObject ==>"+tableId);
         displayObject.html('');
         for (var i = 0; i < displayRecords.length; i++) {
 
