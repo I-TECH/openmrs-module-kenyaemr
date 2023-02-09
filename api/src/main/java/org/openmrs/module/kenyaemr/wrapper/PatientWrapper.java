@@ -503,5 +503,19 @@ public class PatientWrapper extends AbstractPatientWrapper {
 	public void setCRcccSyncMessage(String value) {
 		setAsAttribute(CommonMetadata._PersonAttributeType.CCC_SYNC_MESSAGE_WITH_NATIONAL_REGISTRY, value);
 	}
+	/**
+	 * Gets the CR IPRS verification error descrption
+	 * @return the IPRS verification error message
+	 */
+	public String getCRIPRSVerificationErrorDescription() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.VERIFICATION_DESCRIPTION_FOR_IPRS_ERROR);
+	}
 
+	/**
+	 * Sets the CR IPRS verification error descrption
+	 * @return the IPRS verification error message
+	 */
+	public void setCRIPRSVerificationErrorDescription(String value) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.VERIFICATION_DESCRIPTION_FOR_IPRS_ERROR, value);
+	}
 }

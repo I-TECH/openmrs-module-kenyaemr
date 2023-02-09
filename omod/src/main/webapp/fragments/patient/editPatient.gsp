@@ -1588,7 +1588,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
                 display_loading_post_registration(false);
 
                 responseData = data;
-                
+
                 if(data.status == 200) {
                     if(data.clientNumber) {
                         jQuery("input[name='nationalUniquePatientNumber']").val(data.clientNumber);

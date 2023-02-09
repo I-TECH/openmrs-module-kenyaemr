@@ -46,6 +46,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 	public static final String GP_CLIENT_VERIFICATION_OAUTH2_SCOPE = "kenyaemr.client.registry.oath2.scope";
 	public static final String GP_CLIENT_VERIFICATION_QUERY_UPI_END_POINT = "kenyaemr.client.registry.query.upi.api";
 	public static final String GP_CLIENT_VERIFICATION_QUERY_CCC_END_POINT = "kenyaemr.client.registry.query.ccc.api";
+	public static final String GP_CLIENT_VERIFICATION_UPDATE_END_POINT = "kenyaemr.client.registry.update.api";
 
 	public static final class _EncounterType {
 		public static final String CONSULTATION = "465a92f2-baf8-42e9-9612-53064be868e8";
@@ -122,6 +123,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String VERIFICATION_MESSAGE_WITH_NATIONAL_REGISTRY = "752a0331-5293-4aa5-bf46-4d51aaf2cdc5";
 		public static final String CCC_SYNC_STATUS_WITH_NATIONAL_REGISTRY = "4dfa195f-8420-424d-8275-d60cf115303d";
 		public static final String CCC_SYNC_MESSAGE_WITH_NATIONAL_REGISTRY = "9bc43f7e-ff05-4afb-8dc4-710d245a927c";
+		public static final String VERIFICATION_DESCRIPTION_FOR_IPRS_ERROR = "a45d0a45-4e7a-4d3e-a550-2d482628d930";
 	}
 
 	public static final class _Provider {
@@ -224,6 +226,9 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		if(Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_QUERY_CCC_END_POINT) == null) {
 			install(globalProperty(GP_CLIENT_VERIFICATION_QUERY_CCC_END_POINT, "A GET API for getting client information at the client registry using CCC number", "https://afyakenyaapi.health.go.ke/partners/registry/search/ccc"));
 		}
+		if(Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_UPDATE_END_POINT) == null) {
+			install(globalProperty(GP_CLIENT_VERIFICATION_UPDATE_END_POINT, "A PUT API for updating client information at the client registry", "https://dhpstagingapi.health.go.ke/partners/registry"));
+		}
 
 		install(patientIdentifierType("Old Identification Number", "Identifier given out prior to OpenMRS",
 				null, null, null,
@@ -308,6 +313,9 @@ public class CommonMetadata extends AbstractMetadataBundle {
 
 		install(personAttributeType("cr ccc sync message", "CCC Sync message with national registry",
 				String.class, null, false, 4.5, _PersonAttributeType.CCC_SYNC_MESSAGE_WITH_NATIONAL_REGISTRY));
+
+		install(personAttributeType("cr verification iprs error description ", "CR Verification error description from IPRS",
+				String.class, null, false, 4.5, _PersonAttributeType.VERIFICATION_DESCRIPTION_FOR_IPRS_ERROR));
 
 		// Provider attribute types.
 		install(providerAttributeType("Primary Facility", "Default facility for a provider", LocationDatatype.class, "", 0, 9999 , _ProviderAttributeType.PRIMARY_FACILITY ));

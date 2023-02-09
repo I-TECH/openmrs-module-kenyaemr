@@ -47,6 +47,13 @@ tr:nth-child(even) {background-color: #f2f2f2;}
 #queue-pager li{
     display: inline-block;
 }
+#verifiedPager li{
+    display: inline-block;
+}
+
+#queue-pager li{
+    display: inline-block;
+}
 #chk-select-all {
     display: block;
     margin-left: auto;
@@ -109,7 +116,10 @@ tr:nth-child(even) {background-color: #f2f2f2;}
     background-color: steelblue;
     color: white;
 }
-
+.wait-loading {
+    margin-right: 5px;
+    margin-left: 5px;
+}
 .page-content{
     background: #eee;
     display: inline-block;
@@ -141,18 +151,24 @@ tr:nth-child(even) {background-color: #f2f2f2;}
                     <tr>
                         <td width="15%">Total attempted verification</td>
                         <td>${totalAttemptedVerification}</td>
-                    </tr>
-                    <tr>
+
                         <td width="15%">Total verified</td>
                         <td>${patientVerifiedListSize}</td>
                     </tr>
                     <tr>
                         <td width="15%">Verified currently on ART</td>
                         <td>${patientVerifiedOnARTListSize}</td>
-                    </tr>
-                    <tr>
+
                         <td width="15%">Total pending verification</td>
                         <td>${patientPendingListSize}</td>
+                    </tr>
+                    <tr>
+                        <td width="15%"> <button id="pullVerificationErrors">Pull Verification Errors</button></td>
+                        <td> <div class="wait-loading"></div> <div class="text-wrap" align="center" id="pull-msgBox"></div></td>
+
+                        <td width="15%">Failed IPRS verification</td>
+                        <td>${numberOfVerificationErrorSize}</td>
+
                     </tr>
                     </tbody>
                 </table>
@@ -162,7 +178,10 @@ tr:nth-child(even) {background-color: #f2f2f2;}
 
     <div id="program-tabs" class="ke-tabs">
         <div class="ke-tabmenu">
-            <div class="ke-tabmenu-item" data-tabid="pending_queue">Patient list</div>
+
+                <div class="ke-tabmenu-item" data-tabid="pending_queue">Patient list</div>
+
+                <div class="ke-tabmenu-item" data-tabid="verified_with_errors_queue">Verified with Errors</div>
 
         </div>
 
@@ -186,7 +205,7 @@ tr:nth-child(even) {background-color: #f2f2f2;}
                                             <th class="sampleTypeColumn">Last Name</th>
                                             <th class="dateRequestColumn">Sex</th>
                                             <th class="sampleStatusColumn">DOB</th>
-                                            <th class="sampleStatusColumn">ERROR</th>
+                                            <th class="sampleStatusColumn">Error</th>
                                             <th class="actionColumn">
                                                 Action
                                             </th>
@@ -208,19 +227,64 @@ tr:nth-child(even) {background-color: #f2f2f2;}
                 </tr>
             </table>
         </div>
+
+        <div class="ke-tab" data-tabid="verified_with_errors_queue">
+            <table id="verified-with-errors-queue-data" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                    <td style="width: 99%; vertical-align: top">
+                        <div class="ke-panel-frame">
+                            <div class="ke-panel-heading">Verification errors</div>
+
+                            <div class="ke-panel-content">
+                                <fieldset>
+                                    <legend></legend>
+                                    <table class="simple-table" width="100%">
+                                        <thead>
+
+                                        <tr>
+                                            <th class="clientNameColumn">First Name</th>
+                                            <th class="cccNumberColumn">Middle Name</th>
+                                            <th class="sampleTypeColumn">Last Name</th>
+                                            <th class="dateRequestColumn">Sex</th>
+                                            <th class="sampleStatusColumn">DOB</th>
+                                            <th class="sampleStatusColumn">IPRS Error</th>
+                                            <th class="actionColumn">
+                                                Action
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="verifiedErrorList">
+
+                                        </tbody>
+
+                                    </table>
+
+                                    <div id="verifiedPager">
+                                        <ul id="verifiedErrorPagination" class="pagination-sm"></ul>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 
 
 </div>
 
 <script type="text/javascript">
-
+    var loadingImageURL = ui.resourceLink("kenyaemr", "images/loading.gif");
+    var showLoadingImage = '<span style="padding:2px; display:inline-block;"> <img src="' + loadingImageURL + '" /> </span>';
     var selectedErrors = [];
     //On ready
     jq = jQuery;
     jq(function () {
-        // apply pagination
 
+        jQuery("#pull-msgBox").hide();
+
+        // apply pagination
         var errorPaginationDiv = jq('#errorPagination');
         var queuePaginationDiv = jq('#queuePagination');
 
@@ -234,7 +298,6 @@ tr:nth-child(even) {background-color: #f2f2f2;}
 
         var recPerPage = 10;
         var errorStartPage = 1;
-        var queueStartPage = 1;
         var totalErrorPages = Math.ceil(numberOfErrorRecords / recPerPage);
 
         var visibleErrorPages = 1;
@@ -247,13 +310,38 @@ tr:nth-child(even) {background-color: #f2f2f2;}
         } else {
             visibleErrorPages = 5;
         }
-
-
-
-
         if (numberOfErrorRecords > 0) {
             apply_pagination(errorPaginationDiv, errorListDisplayArea, totalErrorPages, visibleErrorPages, errorRecords, errorDataDisplayRecords, 'error', errorStartPage); // records in error
         }
+
+        // apply pagination for verification errors
+         var verificationErrorPaginationDiv = jq('#verifiedErrorPagination');
+         var verificationQueuePaginationDiv = jq('#verificationQueuePagination');
+         var verificationErrorListDisplayArea = jq('#verifiedErrorList');
+
+        var numberOfVerificationErrorRecords = ${ numberOfVerificationErrorSize };
+        var verificationErrorRecords = ${ patientVerifiedWithErrorsList };
+
+         var verifiedErrorDataDisplayRecords = [];
+
+         var verifiedErrorRecPerPage = 10;
+         var verifiedErrorStartPage = 1;
+         var verificationTotalErrorPages = Math.ceil(numberOfVerificationErrorRecords / verifiedErrorRecPerPage);
+
+         var visibleVerificationErrorPages = 1;
+         var visibleQueuePages = 1;
+
+         var payloadEditor = {};
+
+          if (verificationTotalErrorPages <= 5) {
+              visibleVerificationErrorPages = verificationTotalErrorPages;
+                } else {
+              visibleVerificationErrorPages = 5;
+               }
+
+            if (numberOfVerificationErrorRecords > 0) {
+                apply_pagination(verificationErrorPaginationDiv, verificationErrorListDisplayArea, verificationTotalErrorPages, visibleVerificationErrorPages, verificationErrorRecords, verifiedErrorDataDisplayRecords, 'error', verifiedErrorStartPage); // records in verification error
+                    }
 
         function apply_pagination(paginationDiv, recordsDisplayArea, totalPages, visiblePages, allRecords, recordsToDisplay, tableId, page) {
             paginationDiv.twbsPagination({
@@ -272,6 +360,39 @@ tr:nth-child(even) {background-color: #f2f2f2;}
         jq(document).on('click','.verifyButton',function(){
             ui.navigate('kenyaemr', 'registration/editPatient', { patientId: jq(this).val(),  returnUrl: location.href });
         });
+
+        // handle click event of the fetch IPRS verification errors
+       jq("#pullVerificationErrors").click( function() {
+            //Run the fetch task
+           jQuery("#pull-msgBox").hide();
+            console.log('Starting the fetch task!');
+           // show spinner
+           display_loading_validate_identifier(true);
+           jQuery.getJSON('${ ui.actionLink("kenyaemr", "upi/upiDataExchange", "pullVerificationErrorsFromCR")}')
+               .success(function (data) {
+                    if(data.success === "true") {
+                       // Hide spinner
+                       display_loading_validate_identifier(false);
+                       jQuery("#pull-msgBox").text("Successfully pulled error records");
+                       jQuery("#pull-msgBox").show();
+                   }else{
+                       display_loading_validate_identifier(false);
+                       jQuery("#pull-msgBox").text("Error pulling verification errors: Check your network");
+                       jQuery("#pull-msgBox").show();
+                   }
+               })
+               .fail(function (err) {
+                       // Hide spinner
+                       console.log("Error fetching verification errors: " + JSON.stringify(err));
+                   // Hide spinner
+                   display_loading_validate_identifier(false);
+                   jQuery("#pull-msgBox").text("Could not pull error records");
+                   jQuery("#pull-msgBox").show();
+
+                   }
+               )
+        });
+
     });
 
     function generate_table(displayRecords, displayObject, tableId) {
@@ -303,5 +424,41 @@ tr:nth-child(even) {background-color: #f2f2f2;}
         }
     }
 
+    function generate_verification_errors_table(displayRecords, displayObject, tableId) {
+        var tr;
+        displayObject.html('');
+        for (var i = 0; i < displayRecords.length; i++) {
+
+            tr = jq('<tr/>');
+            tr.append("<td>" + displayRecords[i].givenName + "</td>");
+
+            tr.append("<td>" + displayRecords[i].middleName + "</td>");
+            tr.append("<td>" + displayRecords[i].familyName + "</td>");
+            tr.append("<td>" + displayRecords[i].gender + "</td>");
+            tr.append("<td>" + displayRecords[i].birthdate + "</td>");
+            tr.append("<td>" + displayRecords[i].error + "</td>");
+
+            var actionTd = jq('<td/>');
+
+            var btnView = jq('<button/>', {
+                text: 'Verify client',
+                class: 'verifyButton',
+                value: displayRecords[i].id
+            });
+
+            actionTd.append(btnView);
+
+            tr.append(actionTd);
+            displayObject.append(tr);
+        }
+    }
+    function display_loading_validate_identifier(status) {
+        if(status) {
+            jq('.wait-loading').empty();
+            jq('.wait-loading').append(showLoadingImage);
+        } else {
+            jq('.wait-loading').empty();
+        }
+    }
 
 </script>
