@@ -58,23 +58,39 @@
 </style>
 <script type="text/javascript">
     jq = jQuery;
-	function getO3URL() {
-		var patientID = "${ currentPatient.id }";
-        var patientUUID = "${ currentPatient.uuid }";
+	function getO3ServiceQueuesURL() {
 		var getUrl = window.location;
         var baseUrl = getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
-        baseUrl = baseUrl + "/spa"
-        if(isEmpty(patientUUID) == false) {
-            // Sample: http://localhost:8080/openmrs/spa/patient/49ceb938-bac0-4514-b712-7452121a8c24/chart/Patient%20Summary
-            baseUrl = baseUrl + "/patient/" + patientUUID + "/chart/Patient%20Summary"
-        }
+        baseUrl = baseUrl + "/spa/outpatient/home"
         var spaUrl = new URL(baseUrl);
         window.location.replace(spaUrl);
-
-        function isEmpty(value) {
-            return (value === null || value === undefined || value.length === 0);
-        }
 		return(spaUrl);
+    }
+
+    function getO3AppointmentsURL() {
+        var getUrl = window.location;
+        var baseUrl = getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
+        baseUrl = baseUrl + "/spa/appointments"
+        var spaUrl = new URL(baseUrl);
+        window.location.replace(spaUrl);
+        return(spaUrl);
+    }
+    function getO3URL() {
+    		var patientID = "${ currentPatient.id }";
+            var patientUUID = "${ currentPatient.uuid }";
+    		var getUrl = window.location;
+            var baseUrl = getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
+            baseUrl = baseUrl + "/spa"
+            if(isEmpty(patientUUID) == false) {
+                // Sample: http://localhost:8080/openmrs/spa/patient/49ceb938-bac0-4514-b712-7452121a8c24/chart/Patient%20Summary
+                baseUrl = baseUrl + "/patient/" + patientUUID + "/chart/Patient%20Summary"
+            }
+            var spaUrl = new URL(baseUrl);
+            window.location.replace(spaUrl);
+            function isEmpty(value) {
+                return (value === null || value === undefined || value.length === 0);
+            }
+    		return(spaUrl);
     }
 </script>
 <div class="action-container">
@@ -133,15 +149,23 @@
 			</li>
 			<li class="float-left" style="margin-top: 7px">
 				<a href="javascript:getO3URL()" class="float-left">
-					<i class="fa fa fa-cog fa-2x"></i>
-					KenyaEMR on 3.x
+				  <i class="fa fa fa-cog fa-2x"></i>
+					3.x New Patient Chart
 				</a>
 			</li>
-
+			<li class="float-left" style="margin-top: 7px">
+				<a href="javascript:getO3ServiceQueuesURL()" class="float-left">
+					<i class="fa fa fa-cog fa-2x"></i>
+					3.x New Service Queue Module
+				</a>
+			</li>
+			<li class="float-left" style="margin-top: 7px">
+				  <a href="javascript:getO3AppointmentsURL()" class="float-left">
+					  <i class="fa fa fa-cog fa-2x"></i>
+					  3.x New Appointment Module
+				  </a>
+			</li>
 		</ul>
-
-
-
 	</div>
 
 </div>
