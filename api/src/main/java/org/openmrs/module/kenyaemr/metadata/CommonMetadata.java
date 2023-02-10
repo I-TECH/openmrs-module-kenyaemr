@@ -20,6 +20,7 @@ import org.openmrs.module.kenyaemr.datatype.FormDatatype;
 import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle;
 import org.springframework.stereotype.Component;
+import org.openmrs.customdatatype.datatype.FreeTextDatatype;
 
 import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.encounterType;
 import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.form;
@@ -146,6 +147,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 
 	public static final class _VisitAttributeType {
 		public static final String SOURCE_FORM = "8bfab185-6947-4958-b7ab-dfafae1a3e3d";
+		public static final String VISIT_QUEUE_NUMBER = "c61ce16f-272a-41e7-9924-4c555d0932c5";
 	}
 
 	public static final class _VisitType {
@@ -331,6 +333,8 @@ public class CommonMetadata extends AbstractMetadataBundle {
 
 		install(visitAttributeType("Source form", "The form whose submission created the visit",
 				FormDatatype.class, null, 0, 1, _VisitAttributeType.SOURCE_FORM));
+
+		install(visitAttributeType("Visit queue number", "The visit queue number assigned to a visit when they are added to the queue", FreeTextDatatype.class, null, 0, 1, _VisitAttributeType.VISIT_QUEUE_NUMBER));
 
 		install(visitType("Outpatient", "Visit where the patient is not admitted to the hospital", _VisitType.OUTPATIENT));
 		uninstall(possible(PersonAttributeType.class, "73d34479-2f9e-4de3-a5e6-1f79a17459bb"), "Became patient identifier"); // National ID attribute type
