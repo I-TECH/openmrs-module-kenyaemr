@@ -146,7 +146,7 @@
             if(PATIENT_IS_REPORTED_HIV == 703 || PATIENT_IS_ENROLLED_HIV){
                 jq('#tbl-known-positive').show();
                 jq('#hiv-known-positive:text').val('Positive');
-                jq('#testing-done-maternity input[value=703]').prop("checked", true);
+                jq('#testing-done-maternity input[value=164817]').prop("checked", true);
                 jq('#tbl-hiv-test').hide();
                 jq('#art-and-prophylaxis').show();
                 jq('#who-staging').show();
@@ -577,12 +577,6 @@
                 return false;
             }else{
                 getField('given-vitamink-triplets.error').html('Please specify if vitamin K was given.').hide();
-            }
-            if (testing_done_maternity == "" ) {
-                getField('testing-done-maternity.error').html('Please specify if testing was done in the maternity.').show();
-                return false;
-            }else{
-                getField('testing-done-maternity.error').html('Please specify if testing was done in the maternity.').hide();
             }
 
             return true;
