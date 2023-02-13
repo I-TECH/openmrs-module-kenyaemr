@@ -784,15 +784,10 @@ public class ETLMoh731GreenCardCohortLibrary {
 
     public CohortDefinition hivCareVisitsTotal() {
 
-        String sqlQuery = " select  patient_id \n" +
-                "from (\n" +
-                "select f1.patient_id,max(f1.visit_date) as visit_date, max(f2.next_appointment_date) as next_appointment_date \n" +
-                "from kenyaemr_etl.etl_patient_hiv_followup f1\n" +
-                "join kenyaemr_etl.etl_patient_hiv_followup f2 on f1.visit_date>f2.visit_date\n" +
-                "and f1.patient_id=f2.patient_id\n" +
-                "join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=f1.patient_id\n" +
-                "where date(f1.visit_date) between date(:startDate) and date(:endDate)\n" +
-                "group by f1.patient_id, f1.visit_date)vis";
+        String sqlQuery = "select f.patient_id\n" +
+                "from kenyaemr_etl.etl_patient_hiv_followup f\n" +
+                "         join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id = f.patient_id\n" +
+                "where date(f.visit_date) between date(:startDate) and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("hivCareVisitsTotal");
         cd.setQuery(sqlQuery);
