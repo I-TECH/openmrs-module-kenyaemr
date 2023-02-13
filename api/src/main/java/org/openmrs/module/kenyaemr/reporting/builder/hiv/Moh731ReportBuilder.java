@@ -71,7 +71,7 @@ public class Moh731ReportBuilder extends AbstractReportBuilder {
 
     ColumnParameters m_15_to_19 = new ColumnParameters(null, "15-19, Male", "gender=M|age=15-19");
     ColumnParameters f_15_to_19 = new ColumnParameters(null, "15-19, Female", "gender=F|age=15-19");
-
+    ColumnParameters f_18Plus = new ColumnParameters(null, "18+, Female", "gender=F|age=18+");
     ColumnParameters m_20_to_24 = new ColumnParameters(null, "20-24, Male", "gender=M|age=20-24");
     ColumnParameters f_20_to_24 = new ColumnParameters(null, "20-24, Female", "gender=F|age=20-24");
 
@@ -108,7 +108,7 @@ public class Moh731ReportBuilder extends AbstractReportBuilder {
 
     List<ColumnParameters> preARTDisaggregation = Arrays.asList(
             adult_0_to_14,  adult_15_and_above , colTotal);
-
+    List<ColumnParameters> females18PlusDisaggregation = Arrays.asList(f_18Plus);
     List<ColumnParameters> vmmcDisaggregation = Arrays.asList(
             maleInfants, m_1_to_9, m_10_to_14, m_15_to_19, m_20_to_24, m_25_and_above, colTotal);
 
@@ -287,7 +287,7 @@ public class Moh731ReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("HV03-084", "TB total on HAART", ReportUtils.map(moh731GreenCardIndicators.tbTotalOnHAART(), indParams),"");
         // 3.12
         cohortDsd.addColumn("HV03-087", "Screen Cacx new F18+", ReportUtils.map(moh731GreenCardIndicators.screenedforCaCx(), indParams),"");
-        cohortDsd.addColumn("HV03-088", "Clinical Visits (F18+)", ReportUtils.map(moh731GreenCardIndicators.hivCareVisitsTotal(), indParams),"");
+        EmrReportingUtils.addRow(cohortDsd, "HV03-088","Clinical Visits (F18+)", ReportUtils.map(moh731GreenCardIndicators.hivCareVisitsTotal(), indParams),females18PlusDisaggregation, Arrays.asList("01"));
         cohortDsd.addColumn("HV03-089", "Modern contraceptive methods", ReportUtils.map(moh731GreenCardIndicators.modernContraceptivesProvided(), indParams), "");
         return cohortDsd;
 
