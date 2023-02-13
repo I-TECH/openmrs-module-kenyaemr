@@ -56,6 +56,8 @@
         jq('#ancStar').hide();
         jq('#lmpStar').hide();
         jq('#hivStar').hide();
+        jq('#ti-art-details').hide();
+        jq('#ti-facility-details').hide();
 
         jq('#service-type input').change(onServiceTypeChange);
 	    //Gravida validations
@@ -306,6 +308,17 @@
 		}
 		var isMismatch = ((patientHivStatus == UNKNOWN || patientHivStatus == "") &amp;&amp; PATIENT_IS_ENROLLED_HIV);
 		jq('#patient-hiv-status-mismatch').toggle(isMismatch);
+
+        if (!PATIENT_IS_ENROLLED_HIV &amp;&amp; patientHivStatus == HIV_POSITIVE ) {
+            jq('#ti-art-details').show();
+            jq('#ti-facility-details').show();
+        }else{
+            jq('#ti-art-details').hide();
+            jq('#ti-facility-details').hide();
+            getField('art-start-date.value').val("");
+            getField('patient-regimen.value').val("");
+            getField('care-facility.value').val("");
+		}
 	}
 
 	/**
@@ -463,6 +476,47 @@
 				<td>
 					<obs id="patient-hiv-test-date" conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 				</td>
+			</tr>
+			<tr id="ti-art-details">
+				<td>Date started ART:</td>
+				<td>
+					<obs conceptId="159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id ="art-start-date"/>
+				</td>
+				<td width="250">Current regimen:</td>
+				<td>
+					<obs id="patient-regimen" conceptId="164855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerConceptIds="164968,164969,164970,164505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							                       162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                     162563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerLabels="AZT/3TC/DTG,
+								               TDF/3TC/DTG,
+								               ABC/3TC/DTG,
+								               TDF-3TC-EFV,
+								               D4T/3TC/NVP,
+											   AZT/3TC/EFV,
+											   D4T/3TC/EFV,
+											   3TC/NVP/AZT,
+											   EDF/3TC/EFV,
+											   EFV/FTC/TDF,
+											   3TC/LPV/TDF/r,
+											   ABC/3TC/AZT,
+										       ABC/NVP/3TC,
+											   3TC/ABC/LPV/r,
+							                   3TC/NVP/TDF,
+                                               3TC/NVP/AZT,
+                                               3TC/AZT/LPV/r,
+                                               AZT-3TC-ATV/r,
+                                               TDF-3TC-ATV/r,
+                                               3TC/D4T/LPV/r,
+                                               3TC/ABC/EFV,
+                                               ABC/LPV/R/TDF,
+                                               ABC/DDI/LPV/r"
+					/>
+				</td>
+			</tr>
+			<tr id="ti-facility-details">
+				<td>Facility receiving HIV care</td>
+				<td><obs conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="care-facility"/></td>
 			</tr>
 			<tr>
 				<td>Partner HIV Status:</td>
