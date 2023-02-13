@@ -44,7 +44,7 @@ public class EmrConstants {
 	public static final String APP_LAB_MANIFEST = MODULE_ID + ".labmanifest";
 	public static final String APP_ADHERENCE_COUNSELOR = MODULE_ID + ".counselling";
 	public static final String APP_UPI_VERIFICATION = MODULE_ID + ".upiVerification";
-
+	public static final String APP_O3_SHORTCUT = MODULE_ID + ".openmrs3Shortcut";
 
 	/**
 	 * Global property names
