@@ -224,6 +224,45 @@ public class PMTCTIndicatorLibrary {
     public CohortIndicator oxytocin() {
         return cohortIndicator("oxytocin given", ReportUtils.<CohortDefinition>map(pmtctCohorts.oxytocin(), "startDate=${startDate},endDate=${endDate}"));
     }
+    public CohortIndicator maternityClients() {
+        return cohortIndicator("Maternity clients", ReportUtils.<CohortDefinition>map(pmtctCohorts.maternityClients(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator deformity() {
+        return cohortIndicator("Deformity", ReportUtils.<CohortDefinition>map(pmtctCohorts.deformity(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator maceratedStillbirth() {
+        return cohortIndicator("Macerated Stillbirth", ReportUtils.<CohortDefinition>map(pmtctCohorts.maceratedStillbirth(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator lowApgar() {
+        return cohortIndicator("Low Apgar", ReportUtils.<CohortDefinition>map(pmtctCohorts.lowApgar(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    public CohortIndicator deaths10to14Years() {
+        return cohortIndicator("Maternal deaths 10-14Years", ReportUtils.<CohortDefinition>map(pmtctCohorts.deaths10to14Years(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator deaths15to19Years() {
+        return cohortIndicator("Maternal deaths 15-19Years", ReportUtils.<CohortDefinition>map(pmtctCohorts.deaths15to19Years(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator deaths20toplus() {
+        return cohortIndicator("Maternal deaths 20 years plus", ReportUtils.<CohortDefinition>map(pmtctCohorts.deaths20toplus(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    public CohortIndicator deathAudited() {
+        return cohortIndicator("Maternal death audited", ReportUtils.<CohortDefinition>map(pmtctCohorts.deathAudited(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator appliedChlorhexidine() {
+        return cohortIndicator("Babies applied chlorhexidine for cord care", ReportUtils.<CohortDefinition>map(pmtctCohorts.appliedChlorhexidine(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator givenTetracycline() {
+        return cohortIndicator("Babies given tetracycline at birth ", ReportUtils.<CohortDefinition>map(pmtctCohorts.givenTetracycline(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator infantsIntiatiedOnBreastfeeding() {
+        return cohortIndicator("Infants intiatied on breastfeeding within 1 hour after birth", ReportUtils.<CohortDefinition>map(pmtctCohorts.infantsIntiatiedOnBreastfeeding(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator vitaminK() {
+        return cohortIndicator("Vitamin K given", ReportUtils.<CohortDefinition>map(pmtctCohorts.vitaminK(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
     //PNC INDICTORS
     public CohortIndicator pncClients() {
         return cohortIndicator("PNC Clients", ReportUtils.<CohortDefinition>map(pmtctCohorts.pncClients(), "startDate=${startDate},endDate=${endDate}"));
@@ -332,4 +371,6 @@ public class PMTCTIndicatorLibrary {
     public CohortIndicator hivWastedTest2() {
         return cohortIndicator("HIV wasted Test-2", ReportUtils.<CohortDefinition>map(pmtctCohorts.hivWastedTest2(), "startDate=${startDate},endDate=${endDate}"));
     }
+    //MATERNITY INDICTORS
+
 }

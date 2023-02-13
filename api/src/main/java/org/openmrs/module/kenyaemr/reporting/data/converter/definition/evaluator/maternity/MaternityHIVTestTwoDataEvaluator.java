@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -36,10 +37,14 @@ public class MaternityHIVTestTwoDataEvaluator implements PersonDataEvaluator {
 
         String qry = "select v.patient_id,\n" +
                 "  CONCAT_WS ('\\r\\n',v.test_2_kit_name,v.test_2_kit_lot_no,v.test_2_kit_expiry,v.test_2_result) as Test_two_results\n" +
-                "from kenyaemr_etl.etl_mchs_delivery v;";
+                "from kenyaemr_etl.etl_mchs_delivery v where date(v.visit_date) between date(:startDate) and date(:endDate);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;

@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -35,15 +36,20 @@ public class MaternityBabyConditionDataEvaluator implements PersonDataEvaluator 
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select\n" +
-                "       patient_id,\n" +
-                "       (case baby_condition when 135436 then \"Macerated Stillbirth\" when 159916 then \"Fresh stillbirth\" when 151849 then \"Liveborn, Unspecified Whether Single, Twin, or Multiple \"\n" +
+                "       v.patient_id,\n" +
+                "       (case v.baby_condition when 135436 then \"Macerated Stillbirth\" when 159916 then \"Fresh stillbirth\" when 151849 then \"Liveborn, Unspecified Whether Single, Twin, or Multiple \"\n" +
                 "                            when 125872 then \"STILLBIRTH\" when 126127 then \"Spontaneous abortion\"\n" +
                 "                            when 164815 then \"Live birth, died before arrival at facility\"\n" +
                 "                            when 164816 then \"Live birth, died after arrival or delivery in facility\" else \"\" end) as baby_condition\n" +
-                "from kenyaemr_etl.etl_mchs_delivery;";
+                "from kenyaemr_etl.etl_mchs_delivery v where date(v.visit_date) between date(:startDate) and date(:endDate);";
+
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;
