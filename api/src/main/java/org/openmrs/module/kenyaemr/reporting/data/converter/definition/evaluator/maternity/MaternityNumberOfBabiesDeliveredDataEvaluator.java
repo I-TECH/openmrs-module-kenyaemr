@@ -10,7 +10,8 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.maternity;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.maternity.MaternityBabySexDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.maternity.MaternityDeliveryModeDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.maternity.MaternityNumberOfBabieDeliveredDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
 import org.openmrs.module.reporting.data.person.evaluator.PersonDataEvaluator;
@@ -26,8 +27,8 @@ import java.util.Map;
 /**
  * Evaluates a PersonDataDefinition
  */
-@Handler(supports= MaternityBabySexDataDefinition.class, order=50)
-public class MaternityBabySexDataEvaluator implements PersonDataEvaluator {
+@Handler(supports= MaternityNumberOfBabieDeliveredDataDefinition.class, order=50)
+public class MaternityNumberOfBabiesDeliveredDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -35,12 +36,12 @@ public class MaternityBabySexDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select\n" +
-                "  v.patient_id,\n" +
-                "  (case v.baby_sex when 1534 then \"M\" when 1535 then \"F\" else \"\" end) as baby_sex\n" +
-                "from kenyaemr_etl.etl_mchs_delivery v where date(v.visit_date) between date(:startDate) and date(:endDate);";
-
-
+        String qry = "SELECT\n" +
+                "patient_id,\n" +
+                "mode_of_delivery\n" +
+                "FROM kenyaemr_etl.etl_mchs_delivery \n" +
+                "WHERE DATE(visit_date) BETWEEN DATE(:startDate) AND DATE(:endDate)\n" +
+                "GROUP BY patient_id;";
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
         Date startDate = (Date)context.getParameterValue("startDate");

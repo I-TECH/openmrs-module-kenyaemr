@@ -36,10 +36,9 @@ public class MaternityDischargeDateDataEvaluator implements PersonDataEvaluator 
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select\n" +
-                "  v.patient_id,\n" +
-                " v.discharge_date\n" +
-                "from kenyaemr_etl.etl_mchs_discharge v where date(v.visit_date) between date(:startDate) and date(:endDate);";
-
+                "  patient_id,\n" +
+                " discharge_date\n" +
+                "from kenyaemr_etl.etl_mchs_discharge;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

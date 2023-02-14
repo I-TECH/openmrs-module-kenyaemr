@@ -539,8 +539,11 @@ public class PMTCTCohortLibrary {
     }
 
     public  CohortDefinition clientsWithAPH() {
-        String sqlQuery="select patient_id from kenyaemr_etl.etl_mchs_delivery where coded_delivery_complications =228 and date(visit_date)\n" +
-                "between date(:startDate) and date(:endDate);";
+        String sqlQuery="SELECT patient_id\n" +
+                "    FROM kenyaemr_etl.etl_mchs_delivery\n" +
+                "    WHERE coded_delivery_complications = 228\n" +
+                "    AND condition_of_mother = 160429\n" +
+                "    AND DATE(visit_date) BETWEEN DATE(:startDate) AND DATE(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("Clients with APH");
         cd.setQuery(sqlQuery);
@@ -549,9 +552,41 @@ public class PMTCTCohortLibrary {
         cd.setDescription("Clients with APH");
         return cd;
     }
+    public  CohortDefinition clientsWithAPHDead() {
+        String sqlQuery="SELECT patient_id\n" +
+                "    FROM kenyaemr_etl.etl_mchs_delivery\n" +
+                "    WHERE coded_delivery_complications = 228\n" +
+                "    AND condition_of_mother = 134612\n" +
+                "    AND DATE(visit_date) BETWEEN DATE(:startDate) AND DATE(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("Clients with APH");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Clients with APH");
+        return cd;
+    }
+
     public  CohortDefinition clientsWithPPH() {
-        String sqlQuery="select patient_id from kenyaemr_etl.etl_mchs_delivery where coded_delivery_complications =230 and date(visit_date)\n" +
-                "between date(:startDate) and date(:endDate);";
+        String sqlQuery="SELECT patient_id\n" +
+                "    FROM kenyaemr_etl.etl_mchs_delivery\n" +
+                "    WHERE coded_delivery_complications = 230\n" +
+                "    AND condition_of_mother = 160429\n" +
+                "    AND DATE(visit_date) BETWEEN DATE(:startDate) AND DATE(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("Clients with PPH");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Clients with PPH");
+        return cd;
+    }
+    public  CohortDefinition clientsWithPPHDead() {
+        String sqlQuery="SELECT patient_id\n" +
+                "    FROM kenyaemr_etl.etl_mchs_delivery\n" +
+                "    WHERE coded_delivery_complications = 230\n" +
+                "    AND condition_of_mother = 134612\n" +
+                "    AND DATE(visit_date) BETWEEN DATE(:startDate) AND DATE(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("Clients with PPH");
         cd.setQuery(sqlQuery);
@@ -561,7 +596,25 @@ public class PMTCTCohortLibrary {
         return cd;
     }
     public  CohortDefinition clientsWithEclampsia() {
-        String sqlQuery="select patient_id from kenyaemr_etl.etl_mchs_delivery where coded_delivery_complications =118744 and visit_date between date(:startDate) and date(:endDate);";
+        String sqlQuery="SELECT patient_id\n" +
+                "    FROM kenyaemr_etl.etl_mchs_delivery\n" +
+                "    WHERE coded_delivery_complications = 118744\n" +
+                "    AND condition_of_mother = 160429\n" +
+                "    AND DATE(visit_date) BETWEEN DATE(:startDate) AND DATE(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("Clients with Eclampsia");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Clients with Eclampsia");
+        return cd;
+    }
+    public  CohortDefinition clientsWithEclampsiaDead() {
+        String sqlQuery="SELECT patient_id\n" +
+                "    FROM kenyaemr_etl.etl_mchs_delivery\n" +
+                "    WHERE coded_delivery_complications = 118744\n" +
+                "    AND condition_of_mother = 134612\n" +
+                "    AND DATE(visit_date) BETWEEN DATE(:startDate) AND DATE(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("Clients with Eclampsia");
         cd.setQuery(sqlQuery);
@@ -572,8 +625,25 @@ public class PMTCTCohortLibrary {
     }
 
     public  CohortDefinition clientsWithRapturedUterus() {
-        String sqlQuery="select patient_id from kenyaemr_etl.etl_mchs_delivery where coded_delivery_complications =113195 and date(visit_date)\n" +
-                "between date(:startDate) and date(:endDate)";
+        String sqlQuery="SELECT patient_id\n" +
+                "    FROM kenyaemr_etl.etl_mchs_delivery\n" +
+                "    WHERE coded_delivery_complications = 113195\n" +
+                "    AND condition_of_mother = 160429\n" +
+                "    AND DATE(visit_date) BETWEEN DATE(:startDate) AND DATE(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("Clients with raptured uterus");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Clients with raptured uterus");
+        return cd;
+    }
+    public  CohortDefinition clientsWithRapturedUterusDead() {
+        String sqlQuery="SELECT patient_id\n" +
+                "    FROM kenyaemr_etl.etl_mchs_delivery\n" +
+                "    WHERE coded_delivery_complications = 113195\n" +
+                "    AND condition_of_mother = 134612\n" +
+                "    AND DATE(visit_date) BETWEEN DATE(:startDate) AND DATE(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("Clients with raptured uterus");
         cd.setQuery(sqlQuery);
@@ -584,8 +654,25 @@ public class PMTCTCohortLibrary {
     }
 
     public  CohortDefinition clientsWithObstructedLabour() {
-        String sqlQuery="select patient_id from kenyaemr_etl.etl_mchs_delivery where coded_delivery_complications =115036 and date(visit_date)\n" +
-                "    between date(:startDate) and date(:endDate);";
+        String sqlQuery="SELECT patient_id\n" +
+                "    FROM kenyaemr_etl.etl_mchs_delivery\n" +
+                "    WHERE coded_delivery_complications = 115036\n" +
+                "    AND condition_of_mother = 160429\n" +
+                "    AND DATE(visit_date) BETWEEN DATE(:startDate) AND DATE(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("Clients with obstructed labour");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Clients with obstructed labour");
+        return cd;
+    }
+    public  CohortDefinition clientsWithObstructedLabourDead() {
+        String sqlQuery="SELECT patient_id\n" +
+                "    FROM kenyaemr_etl.etl_mchs_delivery\n" +
+                "    WHERE coded_delivery_complications = 115036\n" +
+                "    AND condition_of_mother = 134612\n" +
+                "    AND DATE(visit_date) BETWEEN DATE(:startDate) AND DATE(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("Clients with obstructed labour");
         cd.setQuery(sqlQuery);
@@ -596,8 +683,25 @@ public class PMTCTCohortLibrary {
     }
 
     public  CohortDefinition clientsWithSepsis() {
-        String sqlQuery="select patient_id from kenyaemr_etl.etl_mchs_delivery where coded_delivery_complications =130 and date(visit_date)\n" +
-                "    between date(:startDate) and date(:endDate);";
+        String sqlQuery="SELECT patient_id\n" +
+                "    FROM kenyaemr_etl.etl_mchs_delivery\n" +
+                "    WHERE coded_delivery_complications = 130\n" +
+                "    AND condition_of_mother = 160429\n" +
+                "    AND DATE(visit_date) BETWEEN DATE(:startDate) AND DATE(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("Clients with sepsis");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Clients with sepsis");
+        return cd;
+    }
+    public  CohortDefinition clientsWithSepsisDead() {
+        String sqlQuery="SELECT patient_id\n" +
+                "    FROM kenyaemr_etl.etl_mchs_delivery\n" +
+                "    WHERE coded_delivery_complications = 130\n" +
+                "    AND condition_of_mother = 134612\n" +
+                "    AND DATE(visit_date) BETWEEN DATE(:startDate) AND DATE(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("Clients with sepsis");
         cd.setQuery(sqlQuery);
@@ -932,6 +1036,20 @@ public class PMTCTCohortLibrary {
         cd.setDescription("Macerated Stillbirth");
         return cd;
     }
+    public CohortDefinition noHIVpositiveDeliveries() {
+        String sqlQuery = "select distinct v.patient_id  from kenyaemr_etl.etl_mchs_delivery v\n" +
+                "        inner join kenyaemr_etl.etl_mch_enrollment e on e.patient_id= v.patient_id\n" +
+                "        inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = v.patient_id\n" +
+                "        where timestampdiff(year,d.DOB,v.visit_date) BETWEEN 10 AND 14 and\n" +
+                "        v.condition_of_mother = 134612 and v.visit_date between date(:startDate) AND date(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("No. HIV positive deliveries");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("No. HIV positive deliveries");
+        return cd;
+    }
     public CohortDefinition deaths10to14Years() {
         String sqlQuery = "select distinct v.patient_id  from kenyaemr_etl.etl_mchs_delivery v\n" +
                 "        inner join kenyaemr_etl.etl_mch_enrollment e on e.patient_id= v.patient_id\n" +
@@ -939,11 +1057,11 @@ public class PMTCTCohortLibrary {
                 "        where timestampdiff(year,d.DOB,v.visit_date) BETWEEN 10 AND 14 and\n" +
                 "        v.condition_of_mother = 134612 and v.visit_date between date(:startDate) AND date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("adolescentsTestedPositive_10_19_AtANCCohortDefinition");
+        cd.setName("Maternal deaths 10-14Years");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Adolescents Tested Positive 10-19 at ANC within the reporting period");
+        cd.setDescription("Maternal deaths 10-14Years");
         return cd;
     }
     public CohortDefinition deaths15to19Years() {
@@ -953,11 +1071,11 @@ public class PMTCTCohortLibrary {
                 "        where timestampdiff(year,d.DOB,v.visit_date) BETWEEN 15 AND 19 and\n" +
                 "        v.condition_of_mother = 134612 and v.visit_date between date(:startDate) AND date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("adolescentsTestedPositive_10_19_AtANCCohortDefinition");
+        cd.setName("Maternal deaths 15-19Years");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Adolescents Tested Positive 10-19 at ANC within the reporting period");
+        cd.setDescription("Maternal deaths 15-19Years");
         return cd;
     }
 
@@ -1116,7 +1234,70 @@ public class PMTCTCohortLibrary {
         cd.setDescription("Initial test at PNC");
         return cd;
     }
+    public CohortDefinition noOfBabiesDischargedAlive() {
+        String sqlQuery = "select ld.patient_id from kenyaemr_etl.etl_mchs_delivery ld where ld.condition_of_mother = 160429 and date(visit_date)\n" +
+                "        between date(:startDate) and date(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("No. of babies discharged alive");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("No. of babies discharged alive");
+        return cd;
+    }
+   public CohortDefinition earlyNeonatalDeaths() {
+        String sqlQuery = "SELECT DISTINCT v.patient_id\n" +
+                "FROM kenyaemr_etl.etl_mchs_delivery v\n" +
+                "INNER JOIN kenyaemr_etl.etl_mch_enrollment e ON e.patient_id = v.patient_id\n" +
+                "INNER JOIN kenyaemr_etl.etl_patient_demographics d ON d.patient_id = v.patient_id\n" +
+                "WHERE DATEDIFF(v.visit_date, d.DOB) BETWEEN 0 AND 7\n" +
+                "AND v.condition_of_mother = 134612\n" +
+                "AND v.visit_date BETWEEN DATE(:startDate) AND DATE(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("Early Neonatal deaths (0-7days)");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Early Neonatal deaths (0-7days)");
+        return cd;
+    }
+   public CohortDefinition lateNeonatalDeaths() {
+       String sqlQuery = "SELECT DISTINCT v.patient_id\n" +
+               "FROM kenyaemr_etl.etl_mchs_delivery v\n" +
+               "INNER JOIN kenyaemr_etl.etl_mch_enrollment e ON e.patient_id = v.patient_id\n" +
+               "INNER JOIN kenyaemr_etl.etl_patient_demographics d ON d.patient_id = v.patient_id\n" +
+               "WHERE DATEDIFF(v.visit_date, d.DOB) BETWEEN 8 AND 28\n" +
+               "AND v.condition_of_mother = 134612\n" +
+               "AND v.visit_date BETWEEN DATE(:startDate) AND DATE(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("Late Neonatal deaths (8-28days)");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Late Neonatal deaths (8-28days)");
+        return cd;
+    }
+    public CohortDefinition initialTestLD() {
+        String sqlQuery = "select ld.patient_id from kenyaemr_etl.etl_mchs_delivery ld where ld.final_test_result in(703,664,1138) and date(ld.visit_date) between date(:startDate) and date(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("Babies given tetracycline at birth");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Babies given tetracycline at birth");
+        return cd;
+    }
 
+    public CohortDefinition positiveResultsLD() {
+        String sqlQuery = "select ld.patient_id from kenyaemr_etl.etl_mchs_delivery ld where ld.final_test_result = 703 and date(ld.visit_date) between date(:startDate) and date(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("Babies given tetracycline at birth");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Babies given tetracycline at birth");
+        return cd;
+    }
     public  CohortDefinition hivPositiveResultAtPNC() {
         String sqlQuery="select e.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_enrollment e\n" +

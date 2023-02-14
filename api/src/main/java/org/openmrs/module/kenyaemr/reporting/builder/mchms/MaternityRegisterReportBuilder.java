@@ -16,11 +16,14 @@ import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractHybridReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
+import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.CountyAddressCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.mchcs.PersonAddressCalculation;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.MaternityRegCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQACalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.MaternityRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.KenyaEMRMaritalStatusDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.maternity.*;
@@ -38,7 +41,6 @@ import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDat
 import org.openmrs.module.reporting.data.person.definition.*;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -75,7 +77,8 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
     @Override
     protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor descriptor, ReportDefinition report) {
 
-        DataSetDefinition allPatients = maternityDataSetDefinition();
+        PatientDataSetDefinition allPatients = maternityDataSetDefinition();
+		allPatients.addRowFilter(allPatientsCohort());
         DataSetDefinition allPatientsDSD = allPatients;
 
 
@@ -94,9 +97,8 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 		);
 	}
 
-	protected DataSetDefinition maternityDataSetDefinition() {
-        EncounterDataSetDefinition dsd = new EncounterDataSetDefinition();
-        dsd.setName("maternityAllClients");
+	protected PatientDataSetDefinition maternityDataSetDefinition() {
+        PatientDataSetDefinition dsd = new PatientDataSetDefinition("maternityAllClients");
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 		PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
@@ -165,6 +167,10 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 		MaternityDeliveryModeDataDefinition maternityDeliveryModeDataDefinition = new MaternityDeliveryModeDataDefinition();
 		maternityDeliveryModeDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityDeliveryModeDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+
+		MaternityNumberOfBabieDeliveredDataDefinition maternityNumberOfBabiesDelivered = new MaternityNumberOfBabieDeliveredDataDefinition();
+		maternityNumberOfBabiesDelivered.addParameter(new Parameter("endDate", "End Date", Date.class));
+		maternityNumberOfBabiesDelivered.addParameter(new Parameter("startDate", "Start Date", Date.class));
 
 		MaternityPlacentaCompleteDataDefinition maternityPlacentaCompleteDataDefinition  = new MaternityPlacentaCompleteDataDefinition();
 		maternityPlacentaCompleteDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -329,6 +335,8 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 		dsd.addColumn("Telephone No", new PersonAttributeDataDefinition(phoneNumber), "");
 		dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
 		dsd.addColumn("Age", new AgeDataDefinition(), "");
+		dsd.addColumn("County of Residence", new CalculationDataDefinition("County", new CountyAddressCalculation()), "", null);
+		dsd.addColumn("Village_Estate_Landmark", new CalculationDataDefinition("Village/Estate/Landmark", new PersonAddressCalculation()), "", new RDQACalculationResultConverter());
 		dsd.addColumn("Marital Status", kenyaEMRMaritalStatusDataDefinition, paramMapping);
 		dsd.addColumn("Parity", maternityANCParityDataDefinition, paramMapping);
 		dsd.addColumn("Gravida", maternityGravidaDataDefinition, paramMapping);
@@ -340,6 +348,7 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 		dsd.addColumn("Delivery Time", maternityDeliveryTimeDataDefinition, paramMapping);
 		dsd.addColumn("Gestation at Birth in weeks", maternityGestationAtBirthDataDefinition, paramMapping);
 		dsd.addColumn("Mode of Delivery", maternityDeliveryModeDataDefinition, paramMapping);
+		dsd.addColumn("Number of babies delivered", maternityNumberOfBabiesDelivered, paramMapping);
 		dsd.addColumn("Placenta Complete", maternityPlacentaCompleteDataDefinition, paramMapping);
 		dsd.addColumn("Uterotonic given", maternityUterotonicGivenDataDefinition, paramMapping);
 		dsd.addColumn("Vaginal Examination", maternityVaginalExaminationDataDefinition, paramMapping);
@@ -372,19 +381,12 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 		dsd.addColumn("Counselled on Infant Feeding", maternityCounselledOnInfantFeedingDataDefinition, paramMapping);
 		dsd.addColumn("Delivery Conducted by", maternityDeliveryConductedByDataDefinition, paramMapping);
 		dsd.addColumn("Birth Notification Number", maternityBirthNotificationNumberDataDefinition, paramMapping);
-		dsd.addColumn("Discharged Date", maternityDischargeDateDataDefinition, paramMapping);
+		dsd.addColumn("Discharged Date", maternityDischargeDateDataDefinition, paramMapping, new DateConverter(DATE_FORMAT));
 		dsd.addColumn("Status of Baby at Discharge", maternityStatusOfBabyDataDefinition, paramMapping);
 		dsd.addColumn("Referred From", maternityReferredFromDataDefinition, paramMapping);
 		dsd.addColumn("Referred To", maternityReferredToDataDefinition, paramMapping);
 		dsd.addColumn("Reasons for referral", maternityReasonForReferralDataDefinition, paramMapping);
 		dsd.addColumn("Comments", maternityCommentsDataDefinition, paramMapping);
-
-
-        MaternityRegCohortDefinition cd = new MaternityRegCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-//
-        dsd.addRowFilter(cd, paramMapping);
         return dsd;
 	}
 
@@ -409,11 +411,17 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 
 		EmrReportingUtils.addRow(cohortDsd, "Maternity clients", "", ReportUtils.map(pmtctMATIndicators.maternityClients(), indParams), maternityAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05"));
 		cohortDsd.addColumn("clientsWithAPH", "Clients With APH", ReportUtils.map(pmtctMATIndicators.clientsWithAPH(), indParams), "");
+		cohortDsd.addColumn("clientsWithAPHDead", "Clients With APH (Dead)", ReportUtils.map(pmtctMATIndicators.clientsWithAPHDead(), indParams), "");
 		cohortDsd.addColumn("clientsWithPPH", "Clients With PPH", ReportUtils.map(pmtctMATIndicators.clientsWithPPH(), indParams), "");
+		cohortDsd.addColumn("clientsWithPPHDead", "Clients With PPH Dead", ReportUtils.map(pmtctMATIndicators.clientsWithPPHDead(), indParams), "");
 		cohortDsd.addColumn("clientsWithEclampsia", "Clients With Eclampsia", ReportUtils.map(pmtctMATIndicators.clientsWithEclampsia(), indParams), "");
+		cohortDsd.addColumn("clientsWithEclampsiaDead", "Clients With Eclampsia (Dead)", ReportUtils.map(pmtctMATIndicators.clientsWithEclampsiaDead(), indParams), "");
 		cohortDsd.addColumn("clientsWithRapturedUterus", "Clients With Raptured Uterus", ReportUtils.map(pmtctMATIndicators.clientsWithRapturedUterus(), indParams), "");
+		cohortDsd.addColumn("clientsWithRapturedUterusDead", "Clients With Raptured Uterus (Dead)", ReportUtils.map(pmtctMATIndicators.clientsWithRapturedUterusDead(), indParams), "");
 		cohortDsd.addColumn("clientsWithObstructedLabour", "Clients With Obstructed Labour", ReportUtils.map(pmtctMATIndicators.clientsWithObstructedLabour(), indParams), "");
+		cohortDsd.addColumn("clientsWithObstructedLabourDead", "Clients With Obstructed Labour(Dead)", ReportUtils.map(pmtctMATIndicators.clientsWithObstructedLabourDead(), indParams), "");
 		cohortDsd.addColumn("clientsWithSepsis", "Clients With Sepsis", ReportUtils.map(pmtctMATIndicators.clientsWithSepsis(), indParams), "");
+		cohortDsd.addColumn("clientsWithSepsisDead", "Clients With Sepsis(Dead)", ReportUtils.map(pmtctMATIndicators.clientsWithSepsisDead(), indParams), "");
 		cohortDsd.addColumn("clientsAlive", "Clients Alive", ReportUtils.map(pmtctMATIndicators.clientsAlive(), indParams), "");
 		cohortDsd.addColumn("clientsDead", "Clients Dead", ReportUtils.map(pmtctMATIndicators.clientsDead(), indParams), "");
 		cohortDsd.addColumn("preTermBabies", "Pre-term Babies", ReportUtils.map(pmtctMATIndicators.preTermBabies(), indParams), "");
@@ -436,6 +444,12 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 		cohortDsd.addColumn("deformity", "Deformity", ReportUtils.map(pmtctMATIndicators.deformity(), indParams), "");
 		cohortDsd.addColumn("maceratedStillbirth", "Macerated Stillbirth", ReportUtils.map(pmtctMATIndicators.maceratedStillbirth(), indParams), "");
 		cohortDsd.addColumn("apgar", "Apgar", ReportUtils.map(pmtctMATIndicators.lowApgar(), indParams), "");
+		cohortDsd.addColumn("noOfBabiesDischargedAlive", "No. of babies discharged alive", ReportUtils.map(pmtctMATIndicators.noOfBabiesDischargedAlive(), indParams), "");
+		cohortDsd.addColumn("earlyNeonatalDeaths", "Early Neonatal deaths (0-7days)", ReportUtils.map(pmtctMATIndicators.earlyNeonatalDeaths(), indParams), "");
+		cohortDsd.addColumn("lateNeonatalDeaths", "Late Neonatal deaths (8-28days)", ReportUtils.map(pmtctMATIndicators.lateNeonatalDeaths(), indParams), "");
+		cohortDsd.addColumn("initialTestLD", "Initial test at L&D", ReportUtils.map(pmtctMATIndicators.initialTestLD(), indParams), "");
+		cohortDsd.addColumn("positiveResultsLD", "Positive Results L&D", ReportUtils.map(pmtctMATIndicators.positiveResultsLD(), indParams), "");
+		cohortDsd.addColumn("noHIVpositiveDeliveries", "No. HIV positive deliveries", ReportUtils.map(pmtctMATIndicators.noHIVpositiveDeliveries(), indParams), "");
 		cohortDsd.addColumn("deaths10to14Years", "Maternal deaths 10-14Years", ReportUtils.map(pmtctMATIndicators.deaths10to14Years(), indParams), "");
 		cohortDsd.addColumn("deaths15to19Years", "Maternal deaths 15-19Years", ReportUtils.map(pmtctMATIndicators.deaths15to19Years(), indParams), "");
 		cohortDsd.addColumn("deaths20toplus", "Maternal deaths 20 years plus", ReportUtils.map(pmtctMATIndicators.deaths20toplus(), indParams), "");

@@ -130,25 +130,44 @@ public class PMTCTIndicatorLibrary {
     public CohortIndicator clientsWithAPH() {
         return cohortIndicator("Clients with APH", ReportUtils.<CohortDefinition>map(pmtctCohorts.clientsWithAPH(), "startDate=${startDate},endDate=${endDate}"));
     }
+    public CohortIndicator clientsWithAPHDead() {
+        return cohortIndicator("Clients with APH (Dead)", ReportUtils.<CohortDefinition>map(pmtctCohorts.clientsWithAPHDead(), "startDate=${startDate},endDate=${endDate}"));
+    }
 
     public CohortIndicator clientsWithPPH() {
         return cohortIndicator("Clients with PPH", ReportUtils.<CohortDefinition>map(pmtctCohorts.clientsWithPPH(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator clientsWithPPHDead() {
+        return cohortIndicator("Clients with PPH (Dead)", ReportUtils.<CohortDefinition>map(pmtctCohorts.clientsWithPPHDead(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     public CohortIndicator clientsWithEclampsia() {
         return cohortIndicator("Clients with Eclampsia", ReportUtils.<CohortDefinition>map(pmtctCohorts.clientsWithEclampsia(), "startDate=${startDate},endDate=${endDate}"));
     }
+    public CohortIndicator clientsWithEclampsiaDead() {
+        return cohortIndicator("Clients with Eclampsia (Dead)", ReportUtils.<CohortDefinition>map(pmtctCohorts.clientsWithEclampsiaDead(), "startDate=${startDate},endDate=${endDate}"));
+    }
 
+    public CohortIndicator clientsWithRapturedUterusDead() {
+        return cohortIndicator("Clients with raptured uterus (Dead)", ReportUtils.<CohortDefinition>map(pmtctCohorts.clientsWithRapturedUterusDead(), "startDate=${startDate},endDate=${endDate}"));
+    }
     public CohortIndicator clientsWithRapturedUterus() {
         return cohortIndicator("Clients with raptured uterus", ReportUtils.<CohortDefinition>map(pmtctCohorts.clientsWithRapturedUterus(), "startDate=${startDate},endDate=${endDate}"));
     }
 
+
     public CohortIndicator clientsWithObstructedLabour() {
         return cohortIndicator("Clients with obstructed Labour", ReportUtils.<CohortDefinition>map(pmtctCohorts.clientsWithObstructedLabour(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator clientsWithObstructedLabourDead() {
+        return cohortIndicator("Clients with obstructed Labour(Dead)", ReportUtils.<CohortDefinition>map(pmtctCohorts.clientsWithObstructedLabourDead(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     public CohortIndicator clientsWithSepsis() {
         return cohortIndicator("Clients with Sepsis", ReportUtils.<CohortDefinition>map(pmtctCohorts.clientsWithSepsis(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator clientsWithSepsisDead() {
+        return cohortIndicator("Clients with Sepsis(Dead)", ReportUtils.<CohortDefinition>map(pmtctCohorts.clientsWithSepsisDead(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     public CohortIndicator clientsAlive() {
@@ -236,9 +255,26 @@ public class PMTCTIndicatorLibrary {
     public CohortIndicator lowApgar() {
         return cohortIndicator("Low Apgar", ReportUtils.<CohortDefinition>map(pmtctCohorts.lowApgar(), "startDate=${startDate},endDate=${endDate}"));
     }
-
+    public CohortIndicator noOfBabiesDischargedAlive() {
+        return cohortIndicator("No. of babies discharged alive", ReportUtils.<CohortDefinition>map(pmtctCohorts.noOfBabiesDischargedAlive(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator earlyNeonatalDeaths() {
+        return cohortIndicator("Early Neonatal deaths (0-7days)", ReportUtils.<CohortDefinition>map(pmtctCohorts.earlyNeonatalDeaths(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator lateNeonatalDeaths() {
+        return cohortIndicator("Initial test at L&D", ReportUtils.<CohortDefinition>map(pmtctCohorts.lateNeonatalDeaths(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator initialTestLD() {
+        return cohortIndicator("Initial test at L&D", ReportUtils.<CohortDefinition>map(pmtctCohorts.initialTestLD(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator positiveResultsLD() {
+        return cohortIndicator("Positive Results L&D", ReportUtils.<CohortDefinition>map(pmtctCohorts.positiveResultsLD(), "startDate=${startDate},endDate=${endDate}"));
+    }
     public CohortIndicator deaths10to14Years() {
         return cohortIndicator("Maternal deaths 10-14Years", ReportUtils.<CohortDefinition>map(pmtctCohorts.deaths10to14Years(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator noHIVpositiveDeliveries() {
+        return cohortIndicator("No. HIV positive deliveries", ReportUtils.<CohortDefinition>map(pmtctCohorts.noHIVpositiveDeliveries(), "startDate=${startDate},endDate=${endDate}"));
     }
     public CohortIndicator deaths15to19Years() {
         return cohortIndicator("Maternal deaths 15-19Years", ReportUtils.<CohortDefinition>map(pmtctCohorts.deaths15to19Years(), "startDate=${startDate},endDate=${endDate}"));
