@@ -287,7 +287,7 @@ public class Moh731ReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("HV03-084", "TB total on HAART", ReportUtils.map(moh731GreenCardIndicators.tbTotalOnHAART(), indParams),"");
         // 3.12
         cohortDsd.addColumn("HV03-087", "Screen Cacx new F18+", ReportUtils.map(moh731GreenCardIndicators.screenedforCaCx(), indParams),"");
-        EmrReportingUtils.addRow(cohortDsd, "HV03-088","Clinical Visits (F18+)", ReportUtils.map(moh731GreenCardIndicators.hivCareVisitsTotal(), indParams),females18PlusDisaggregation, Arrays.asList("01"));
+        EmrReportingUtils.addRow(cohortDsd, "HV03-088","Clinical Visits", ReportUtils.map(moh731GreenCardIndicators.hivCareVisitsTotal(), indParams),females18PlusDisaggregation, Arrays.asList("01"));
         cohortDsd.addColumn("HV03-089", "Modern contraceptive methods", ReportUtils.map(moh731GreenCardIndicators.modernContraceptivesProvided(), indParams), "");
         return cohortDsd;
 
