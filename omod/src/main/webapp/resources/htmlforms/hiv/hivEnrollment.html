@@ -723,6 +723,7 @@
 					<td>Facility where confirmation done</td>
 					<td><obs conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="facility-confirmed"/></td><td>  <input type="checkbox" name="default-facility" id="default-location" /> This facility</td>
 				</tr>
+				<includeIf velocityTest="$patient.age &gt; 14">
 				<tr id="tbl-recency-testing">
 					<td>Has recency test been done?   </td>
 					<td>
@@ -739,6 +740,7 @@
 					      <span id="rtError" class="error"></span>
 				</td>
 				</tr>
+				</includeIf>
 				<tr>
 					<td>WHO Stage <strong><span id="patient-age-group"></span></strong> </td>
 					<td>

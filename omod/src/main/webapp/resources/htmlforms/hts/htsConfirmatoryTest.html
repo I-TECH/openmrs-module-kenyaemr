@@ -1926,6 +1926,7 @@
                 </tr>
             </table>
         </fieldset>
+        <includeIf velocityTest="$patient.age &gt; 14">
         <fieldset id="hts-recency-testing">
             <legend>Recency Testing</legend>
             <table id="tbl-recency-testing">
@@ -1945,6 +1946,7 @@
                 </tr>
             </table>
         </fieldset>
+        </includeIf>
         <fieldset>
             <legend>Remarks </legend>
             <table id="tbl-remarks">
