@@ -19,6 +19,7 @@
     <script type="text/javascript">
         var IS_KDoD_SITE = <lookup expression="kenyaemr.getFacilityType()" />;
         var IS_Recency_SITE = <lookup expression="kenyaemr.getRecencySite()" />;
+        var mflCode = <lookup expression="kenyaemr.currentFacilityMFLCode()" />;
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
         var mlCaseFindingEnabled = "<lookup expression="fn.globalProperty('kenyaemrml.casefinding.feature.enabled')"/>";
         var patientId = <lookup expression="patient.patientId"/>;
@@ -1057,6 +1058,7 @@
             var val = jq(this).val();
             if (val == 1065) {
                 jq("#tbl-recency-id").show();
+                jq('#rt-id input[type=text]').val("REC"+mflCode+"-");
             }else{
                 jq("#tbl-recency-id").hide();
                 jq('#rt-id input[type=text]').val('');
