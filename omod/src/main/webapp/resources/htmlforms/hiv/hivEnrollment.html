@@ -29,6 +29,7 @@
         var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
 		var IS_KDoD_SITE = <lookup expression="kenyaemr.getFacilityType()" />;
         var IS_Recency_SITE = <lookup expression="kenyaemr.getRecencySite()" />;
+        var mflCode = <lookup expression="kenyaemr.currentFacilityMFLCode()" />;
         var ENROLLED_IN_HIV = GREENCARD_VELOCITY.split(",")[12].split(":")[1];
         var patientId = <lookup expression="patient.patientId"/>;
         //On Ready
@@ -539,6 +540,7 @@
             var val = jq(this).val();
             if (val == 1065) {
                 jq("#tbl-recency-id").show();
+                jq('#rt-id input[type=text]').val("REC"+mflCode+"-");
             }else{
                 jq("#tbl-recency-id").hide();
                 jq('#rt-id input[type=text]').val('');
@@ -723,6 +725,7 @@
 					<td>Facility where confirmation done</td>
 					<td><obs conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="facility-confirmed"/></td><td>  <input type="checkbox" name="default-facility" id="default-location" /> This facility</td>
 				</tr>
+				<includeIf velocityTest="$patient.age &gt; 14">
 				<tr id="tbl-recency-testing">
 					<td>Has recency test been done?   </td>
 					<td>
@@ -739,6 +742,7 @@
 					      <span id="rtError" class="error"></span>
 				</td>
 				</tr>
+				</includeIf>
 				<tr>
 					<td>WHO Stage <strong><span id="patient-age-group"></span></strong> </td>
 					<td>

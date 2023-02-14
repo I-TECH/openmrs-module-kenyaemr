@@ -238,6 +238,20 @@ public class EmrVelocityFunctions {
 		return "Unknown Location";
 	}
 
+	/**
+	 * Gets MFL number for current facility
+	 * From global property
+	 * @return the MFL code
+	 */
+	public String currentFacilityMFLCode() {
+		AdministrationService administrationService = org.openmrs.api.context.Context.getAdministrationService();
+		GlobalProperty globalProperty = administrationService.getGlobalPropertyObject("facility.mflcode");
+		if (globalProperty.getValue() != null) {
+			return globalProperty.getPropertyValue();
+		}
+		return "";
+	}
+
 	public List<Obs> allObs(String conceptIdentifier) {
 		if (session.getPatient() == null)
 			return new ArrayList<Obs>();
