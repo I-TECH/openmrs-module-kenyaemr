@@ -32,18 +32,6 @@ import org.openmrs.util.OpenmrsUtil;
 public class O3HomePageController {
 
     public void get(@SpringBean KenyaUiUtils kenyaUi, UiUtils ui, PageModel model) {
-        System.err.println("o3 shortcut Page get is hit : " + model.getAttribute("currentPatient"));
-        // Get apps for the current user
-		List<AppDescriptor> apps = Context.getService(AppFrameworkService.class).getAppsForCurrentUser();
-
-		// Sort by order property
-		Collections.sort(apps, new Comparator<AppDescriptor>() {
-			@Override
-			public int compare(AppDescriptor left, AppDescriptor right) {
-				return OpenmrsUtil.compareWithNullAsGreatest(left.getOrder(), right.getOrder());
-			}
-		});
-
 		SimpleObject ret = new SimpleObject();
 		Patient patient = (Patient) model.getAttribute("currentPatient");
 		if(patient != null) {
@@ -57,22 +45,9 @@ public class O3HomePageController {
 		}
 
         model.addAttribute("patientDetails", ui.toJson(ret));
-		model.addAttribute("apps", apps);
     }
 
     public String controller(PageModel model, UiUtils ui, HttpSession session, @SpringBean KenyaUiUtils kenyaUi) {
-        System.err.println("o3 shortcut Page controller is hit : " + model.getAttribute("currentPatient"));
-		// Get apps for the current user
-		List<AppDescriptor> apps = Context.getService(AppFrameworkService.class).getAppsForCurrentUser();
-
-		// Sort by order property
-		Collections.sort(apps, new Comparator<AppDescriptor>() {
-			@Override
-			public int compare(AppDescriptor left, AppDescriptor right) {
-				return OpenmrsUtil.compareWithNullAsGreatest(left.getOrder(), right.getOrder());
-			}
-		});
-
         SimpleObject ret = new SimpleObject();
 		Patient patient = (Patient) model.getAttribute("currentPatient");
 		if(patient != null) {
@@ -86,7 +61,6 @@ public class O3HomePageController {
 		}
 
         model.addAttribute("patientDetails", ui.toJson(ret));
-		model.addAttribute("apps", apps);
 
 		return null;
 	}
