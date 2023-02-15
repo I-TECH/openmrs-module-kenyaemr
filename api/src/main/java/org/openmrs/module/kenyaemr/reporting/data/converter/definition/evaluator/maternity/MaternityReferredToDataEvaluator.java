@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -35,12 +36,16 @@ public class MaternityReferredToDataEvaluator implements PersonDataEvaluator {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select\n" +
-                "  patient_id,\n" +
-                "  (case referred_to when 1537 then \"Another Health Facility\" when 163488 then \"Community Unit\" when 1175 then \"N/A\" else \"\" end) as referred_to\n" +
-                "from kenyaemr_etl.etl_mchs_discharge;";
+                "  v.patient_id,\n" +
+                "  (case v.referred_to when 1537 then \"Another Health Facility\" when 163488 then \"Community Unit\" when 1175 then \"N/A\" else \"\" end) as referred_to\n" +
+                "from kenyaemr_etl.etl_mchs_discharge v where date(v.visit_date) between date(:startDate) and date(:endDate);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;

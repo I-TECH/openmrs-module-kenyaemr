@@ -20,6 +20,7 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -35,15 +36,20 @@ public class MaternityARVProphylaxisToBabyAtMaternityDataEvaluator implements Pe
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = " select\n" +
-                "                 patient_id,\n" +
-                "               (case when etl_mchs_delivery.baby_azt_dispensed = 1 then \"Yes\" when etl_mchs_delivery.baby_azt_dispensed  = 0 then \"No\"\n" +
-                "             when  etl_mchs_delivery.baby_nvp_dispensed = 1 then \"Yes\" when etl_mchs_delivery.baby_nvp_dispensed = 0 then \"No\"  else \" \" end) as baby_prophlyaxis_given\n" +
-                "from kenyaemr_etl.etl_mchs_delivery;";
+                "                 v.patient_id,\n" +
+                "               (case when v.baby_azt_dispensed = 1 then \"Yes\" when v.baby_azt_dispensed  = 0 then \"No\"\n" +
+                "             when  v.baby_nvp_dispensed = 1 then \"Yes\" when v.baby_nvp_dispensed = 0 then \"No\"  else \" \" end) as baby_prophlyaxis_given\n" +
+                "from kenyaemr_etl.etl_mchs_delivery v where date(v.visit_date) between date(:startDate) and date(:endDate);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);
         return c;
     }
 }
+
