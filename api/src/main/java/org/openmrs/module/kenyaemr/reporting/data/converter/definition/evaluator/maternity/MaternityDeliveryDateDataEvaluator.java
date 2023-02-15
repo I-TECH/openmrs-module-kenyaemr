@@ -38,7 +38,7 @@ public class MaternityDeliveryDateDataEvaluator implements PersonDataEvaluator {
         String qry = "select\n" +
                 "  v.patient_id,\n" +
                 "  date(v.date_of_delivery)\n" +
-                "from kenyaemr_etl.etl_mchs_delivery v;";
+                 "from kenyaemr_etl.etl_mchs_delivery v where date(v.visit_date) between date(:startDate) and date(:endDate);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
