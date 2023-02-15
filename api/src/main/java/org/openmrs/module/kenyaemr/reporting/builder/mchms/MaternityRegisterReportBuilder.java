@@ -115,211 +115,159 @@ public class MaternityRegisterReportBuilder extends AbstractHybridReportBuilder 
 		MaternityAdmissionNumberDataDefinition maternityAdmissionNumberDataDefinition = new MaternityAdmissionNumberDataDefinition();
 		maternityAdmissionNumberDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityAdmissionNumberDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityAdmissionDateDataDefinition maternityAdmissionDateDataDefinition = new MaternityAdmissionDateDataDefinition();
 		maternityAdmissionDateDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityAdmissionDateDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityNumberOfANCVisitsDataDefinition maternityNumberOfANCVisitsDataDefinition = new MaternityNumberOfANCVisitsDataDefinition();
 		maternityNumberOfANCVisitsDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityNumberOfANCVisitsDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		KenyaEMRMaritalStatusDataDefinition kenyaEMRMaritalStatusDataDefinition = new KenyaEMRMaritalStatusDataDefinition();
 		kenyaEMRMaritalStatusDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		kenyaEMRMaritalStatusDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityANCParityDataDefinition maternityANCParityDataDefinition = new MaternityANCParityDataDefinition();
 		maternityANCParityDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityANCParityDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityGravidaDataDefinition maternityGravidaDataDefinition = new MaternityGravidaDataDefinition();
 		maternityGravidaDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityGravidaDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityLMPDateDataDefinition maternityLMPDateDataDefinition = new MaternityLMPDateDataDefinition();
 		maternityLMPDateDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityLMPDateDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityEDDUltrasoundDateDataDefinition maternityEDDUltrasoundDateDataDefinition = new MaternityEDDUltrasoundDateDataDefinition();
 		maternityEDDUltrasoundDateDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityEDDUltrasoundDateDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityDiagnosisDataDefinition maternityDiagnosisDataDefinition = new MaternityDiagnosisDataDefinition();
 		maternityDiagnosisDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityDiagnosisDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityDurationOfLabourDataDefinition maternityDurationOfLabourDataDefinition = new MaternityDurationOfLabourDataDefinition();
 		maternityDurationOfLabourDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityDurationOfLabourDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityDeliveryDateDataDefinition maternityDeliveryDateDataDefinition = new MaternityDeliveryDateDataDefinition();
 		maternityDeliveryDateDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityDeliveryDateDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityDeliveryTimeDataDefinition maternityDeliveryTimeDataDefinition = new MaternityDeliveryTimeDataDefinition();
 		maternityDeliveryTimeDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityDeliveryTimeDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityGestationAtBirthDataDefinition maternityGestationAtBirthDataDefinition = new MaternityGestationAtBirthDataDefinition();
 		maternityGestationAtBirthDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityGestationAtBirthDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityDeliveryModeDataDefinition maternityDeliveryModeDataDefinition = new MaternityDeliveryModeDataDefinition();
 		maternityDeliveryModeDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityDeliveryModeDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityNumberOfBabieDeliveredDataDefinition maternityNumberOfBabiesDelivered = new MaternityNumberOfBabieDeliveredDataDefinition();
 		maternityNumberOfBabiesDelivered.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityNumberOfBabiesDelivered.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityPlacentaCompleteDataDefinition maternityPlacentaCompleteDataDefinition  = new MaternityPlacentaCompleteDataDefinition();
 		maternityPlacentaCompleteDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityPlacentaCompleteDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityUterotonicGivenDataDefinition maternityUterotonicGivenDataDefinition = new MaternityUterotonicGivenDataDefinition();
 		maternityUterotonicGivenDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityUterotonicGivenDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityVaginalExaminationDataDefinition maternityVaginalExaminationDataDefinition = new MaternityVaginalExaminationDataDefinition();
 		maternityVaginalExaminationDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityVaginalExaminationDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityBloodLossDataDefinition maternityBloodLossDataDefinition = new MaternityBloodLossDataDefinition();
 		maternityBloodLossDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityBloodLossDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityConditionAfterDeliveryDataDefinition maternityConditionAfterDeliveryDataDefinition  = new MaternityConditionAfterDeliveryDataDefinition();
 		maternityConditionAfterDeliveryDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityConditionAfterDeliveryDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityDeathAuditedDataDefinition maternityDeathAuditedDataDefinition = new MaternityDeathAuditedDataDefinition();
 		maternityDeathAuditedDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityDeathAuditedDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityOtherDeliveryComplicationsDataDefinition maternityOtherDeliveryComplicationsDataDefinition = new MaternityOtherDeliveryComplicationsDataDefinition();
 		maternityOtherDeliveryComplicationsDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityOtherDeliveryComplicationsDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityBabySexDataDefinition maternityBabySexDataDefinition = new MaternityBabySexDataDefinition();
 		maternityBabySexDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityBabySexDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityBirthWeightDataDefinition maternityBirthWeightDataDefinition = new MaternityBirthWeightDataDefinition();
 		maternityBirthWeightDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityBirthWeightDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityBabyConditionDataDefinition maternityBabyConditionDataDefinition = new MaternityBabyConditionDataDefinition();
 		maternityBabyConditionDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityBabyConditionDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityInitiatedBFWithinOneHourDataDefinition maternityInitiatedBFWithinOneHourDataDefinition = new MaternityInitiatedBFWithinOneHourDataDefinition();
 		maternityInitiatedBFWithinOneHourDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityInitiatedBFWithinOneHourDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityKangarooMotherCareGivenDataDefinition maternityKangarooMotherCareGivenDataDefinition = new MaternityKangarooMotherCareGivenDataDefinition();
 		maternityKangarooMotherCareGivenDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityKangarooMotherCareGivenDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityTEOGivenAtBirthDataDefinition maternityTEOGivenAtBirthDataDefinition  = new MaternityTEOGivenAtBirthDataDefinition();
 		maternityTEOGivenAtBirthDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityTEOGivenAtBirthDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityChlorhexidineAppliedOnCordStumpDataDefinition maternityChlorhexidineAppliedOnCordStumpDataDefinition = new MaternityChlorhexidineAppliedOnCordStumpDataDefinition();
 		maternityChlorhexidineAppliedOnCordStumpDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityChlorhexidineAppliedOnCordStumpDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityBabyWithDeformityDataDefinition maternityBabyWithDeformityDataDefinition = new MaternityBabyWithDeformityDataDefinition();
 		maternityBabyWithDeformityDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityBabyWithDeformityDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityGivenVitaminKDataDefinition maternityGivenVitaminKDataDefinition = new MaternityGivenVitaminKDataDefinition();
 		maternityGivenVitaminKDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityGivenVitaminKDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityApgarScoreDataDefinition maternityApgarScoreDataDefinition  = new MaternityApgarScoreDataDefinition();
 		maternityApgarScoreDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityApgarScoreDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityVDRLRPRResultsDataDefinition maternityVDRLRPRResultsDataDefinition = new MaternityVDRLRPRResultsDataDefinition();
 		maternityVDRLRPRResultsDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityVDRLRPRResultsDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityHIVStatusAtANCDataDefinition maternityHIVStatusAtANCDataDefinition = new MaternityHIVStatusAtANCDataDefinition();
 		maternityHIVStatusAtANCDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityHIVStatusAtANCDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityHIVTestOneDataDefinition maternityHIVTestOneDataDefinition = new MaternityHIVTestOneDataDefinition();
 		maternityHIVTestOneDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityHIVTestOneDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityHIVTestTwoDataDefinition maternityHIVTestTwoDataDefinition = new MaternityHIVTestTwoDataDefinition();
 		maternityHIVTestTwoDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityHIVTestTwoDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityHIVFinalResultsDataDefinition maternityHIVFinalResultsDataDefinition = new MaternityHIVFinalResultsDataDefinition();
 		maternityHIVFinalResultsDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityHIVFinalResultsDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityARVProphylaxisIssuedFromANCDataDefinition maternityARVProphylaxisIssuedFromANCDataDefinition = new MaternityARVProphylaxisIssuedFromANCDataDefinition();
 		maternityARVProphylaxisIssuedFromANCDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityARVProphylaxisIssuedFromANCDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityARVProphylaxisIssuedAtMaternityDataDefinition maternityARVProphylaxisIssuedAtMaternityDataDefinition = new MaternityARVProphylaxisIssuedAtMaternityDataDefinition();
 		maternityARVProphylaxisIssuedAtMaternityDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityARVProphylaxisIssuedAtMaternityDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityARVProphylaxisToBabyAtMaternityDataDefinition maternityARVProphylaxisToBabyAtMaternityDataDefinition = new MaternityARVProphylaxisToBabyAtMaternityDataDefinition();
 		maternityARVProphylaxisToBabyAtMaternityDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityARVProphylaxisToBabyAtMaternityDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityCTXToMotherDataDefinition maternityCTXToMotherDataDefinition = new MaternityCTXToMotherDataDefinition();
 		maternityCTXToMotherDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityCTXToMotherDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityVitaminADataDefinition maternityVitaminADataDefinition = new MaternityVitaminADataDefinition();
 		maternityVitaminADataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityVitaminADataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityPartnerTestedForHIVDataDefinition maternityPartnerTestedForHIVDataDefinition = new MaternityPartnerTestedForHIVDataDefinition();
 		maternityPartnerTestedForHIVDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityPartnerTestedForHIVDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityPartnerHIVTestResultsDataDefinition maternityPartnerHIVTestResultsDataDefinition = new MaternityPartnerHIVTestResultsDataDefinition();
 		maternityPartnerHIVTestResultsDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityPartnerHIVTestResultsDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityCounselledOnInfantFeedingDataDefinition maternityCounselledOnInfantFeedingDataDefinition = new MaternityCounselledOnInfantFeedingDataDefinition();
 		maternityCounselledOnInfantFeedingDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityCounselledOnInfantFeedingDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityDeliveryConductedByDataDefinition maternityDeliveryConductedByDataDefinition = new MaternityDeliveryConductedByDataDefinition();
 		maternityDeliveryConductedByDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityDeliveryConductedByDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityBirthNotificationNumberDataDefinition maternityBirthNotificationNumberDataDefinition = new MaternityBirthNotificationNumberDataDefinition();
 		maternityBirthNotificationNumberDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityBirthNotificationNumberDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityDischargeDateDataDefinition maternityDischargeDateDataDefinition = new MaternityDischargeDateDataDefinition();
 		maternityDischargeDateDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityDischargeDateDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityStatusOfBabyDataDefinition maternityStatusOfBabyDataDefinition = new MaternityStatusOfBabyDataDefinition();
 		maternityStatusOfBabyDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityStatusOfBabyDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityReferredFromDataDefinition maternityReferredFromDataDefinition = new MaternityReferredFromDataDefinition();
 		maternityReferredFromDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityReferredFromDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityReferredToDataDefinition  maternityReferredToDataDefinition = new MaternityReferredToDataDefinition();
 		maternityReferredToDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityReferredToDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityReasonForReferralDataDefinition maternityReasonForReferralDataDefinition = new MaternityReasonForReferralDataDefinition();
 		maternityReasonForReferralDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityReasonForReferralDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-
 		MaternityCommentsDataDefinition maternityCommentsDataDefinition = new MaternityCommentsDataDefinition();
 		maternityCommentsDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		maternityCommentsDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
