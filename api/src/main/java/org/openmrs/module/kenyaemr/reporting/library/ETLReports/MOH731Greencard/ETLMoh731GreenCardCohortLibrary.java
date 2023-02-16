@@ -13,10 +13,9 @@ import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.RevisedDatim.DatimCohortLibrary;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -1180,62 +1179,113 @@ public class ETLMoh731GreenCardCohortLibrary {
     }
     /**
      * HIV testing cohort. includes all those who tested Positive and Linked during the reporting period
-     * excluding pmtct tests        *
+     * excluding pmtct tests
      * @return
      */
     protected CohortDefinition htsNumberTestedPositiveAndLinked() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("htsAllNumberTestedPositiveAndLinked", ReportUtils.map(htsAllNumberTestedPositiveAndLinked(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("testedPmtct",
-                ReportUtils.map(datimCohortLibrary.testedPmtct(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("(htsAllNumberTestedPositiveAndLinked AND NOT testedPmtct");
+        cd.addSearch("referredAndLinkedSinceThreeMonthsAgo", ReportUtils.map(referredAndLinkedSinceThreeMonthsAgo(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("enrolledToHIVAndOnDrugsSinceThreeMonthsAgo", ReportUtils.map(enrolledToHIVAndOnDrugsSinceThreeMonthsAgo(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("htsNumberTestedPositiveThreeMonthsAgo",ReportUtils.map(htsNumberTestedPositiveThreeMonthsAgo(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(htsNumberTestedPositiveThreeMonthsAgo AND (referredAndLinkedSinceThreeMonthsAgo or enrolledToHIVAndOnDrugsSinceThreeMonthsAgo)");
         return cd;
     }
     /**
-     * HIV testing cohort. includes all those who tested Positive and Linked during the reporting period
-     * Composition for htsNumberTestedPositiveAndLinked     *
+     * Clients who were referred and linked since 3 months ago. Must be on drugs
      * @return
      */
-    public CohortDefinition htsAllNumberTestedPositiveAndLinked() {
-        String sqlQuery = "select distinct r.patient_id \n" +
-                " from kenyaemr_etl.etl_hts_referral_and_linkage r \n" +
-                "  inner join kenyaemr_etl.etl_hts_test t on r.patient_id = t.patient_id and t.final_test_result = 'Positive' \n" +
-                " where (r.ccc_number !='' or r.ccc_number IS NOT NULL) and (r.facility_linked_to !='' or r.facility_linked_to IS NOT NULL) \n" +
-                "      and t.visit_date between date_sub(:endDate , interval 3 MONTH) and  :endDate ;";
+    public CohortDefinition referredAndLinkedSinceThreeMonthsAgo() {
+        String sqlQuery = "select r.patient_id\n" +
+                "from kenyaemr_etl.etl_hts_referral_and_linkage r\n" +
+                "where (r.ccc_number != '' or r.ccc_number IS NOT NULL)\n" +
+                "  and (r.facility_linked_to != '' or r.facility_linked_to IS NOT NULL)\n" +
+                "  and (r.art_start_date is not null or r.art_start_date != '')\n" +
+                "  and (r.enrollment_date is not null or r.enrollment_date != '')\n" +
+                "  and r.visit_date between date_sub(date(DATE_SUB(date(:endDate), INTERVAL DAYOFMONTH(date(:endDate)) - 1 DAY)),\n" +
+                "                                    interval 3 MONTH) and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("htsNumberTestedPositiveAndLinked");
+        cd.setName("referredAndLinked");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Hiv Number Tested Positive and Linked");
+        cd.setDescription("Referred and linked since 3 months ago");
+        return cd;
+
+    }
+
+    /**
+     * Clients enrolled to HIV program since three months ago and started on drugs
+     * @return
+     */
+    public CohortDefinition enrolledToHIVAndOnDrugsSinceThreeMonthsAgo() {
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_hiv_enrollment e\n" +
+                "         inner join kenyaemr_etl.etl_drug_event d on e.patient_id = d.patient_id and d.program = 'HIV'\n" +
+                "where date(e.visit_date) >= date_sub(date(DATE_SUB(date(:endDate), INTERVAL DAYOFMONTH(date(:endDate)) - 1 DAY)),\n" +
+                "                                     interval 3 MONTH)\n" +
+                "  and date(d.date_started) between date_sub(date(DATE_SUB(date(:endDate), INTERVAL DAYOFMONTH(date(:endDate)) - 1 DAY)),\n" +
+                "                                            interval 3 MONTH) and date(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("enrolledToHIVAndOnDrugsSinceThreeMonthsAgo");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Enrolled to HIV program since three months ago and started on drugs");
         return cd;
 
     }
     /**
-     * HIV testing cohort. includes all those who tested Positive in the last 3 months
+     * HIV testing cohort. includes all those who tested Positive 3 months ago
      * excluding pmtct tests        *
      * @return
      */
-    protected CohortDefinition htsNumberTestedPositiveInLastThreeMonths() {
+    protected CohortDefinition htsNumberTestedPositiveThreeMonthsAgo() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("htsAllNumberTestedPositiveInLastThreeMonths", ReportUtils.map(htsAllNumberTestedPositiveInLastThreeMonths(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("testedPmtct",
-                ReportUtils.map(datimCohortLibrary.testedPmtct(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("(htsAllNumberTestedPositiveInLastThreeMonths AND NOT testedPmtct");
+        cd.addSearch("htsAllNumberTestedPositiveThreeMonthsAgo", ReportUtils.map(htsAllNumberTestedPositiveThreeMonthsAgo(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(htsAllNumberTestedPositiveThreeMonthsAgo");
         return cd;
     }
+
+    /**
+     * Tested in PMTCT 3 months ago
+     * @return
+     */
+    private CohortDefinition testedPmtct3MonthsAgo() {
+        String sqlQuery = "select hts.patient_id\n" +
+                "from kenyaemr_etl.etl_hts_test hts\n" +
+                "where hts.hts_entry_point in (160538, 160456, 1623)\n" +
+                "  and hts.patient_given_result = 'Yes'\n" +
+                "  and hts.voided = 0\n" +
+                "  and hts.visit_date\n" +
+                "    between date_sub(date(DATE_SUB(date(:endDate), INTERVAL DAYOFMONTH(date(:endDate)) - 1 DAY)),\n" +
+                "                     interval 3 MONTH)\n" +
+                "    and date_sub(date(:endDate), interval 3 MONTH);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("testedPmtct3MonthsAgo");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Hiv Number Tested in PMTCT Three Months AGO");
+        return cd;
+    }
+
     /**
      * HIV testing cohort. includes all those who tested Positive in the last 3 months
      * Composition for htsNumberTestedPositiveInLastThreeMonths     *
      * @return
      */
-    public CohortDefinition htsAllNumberTestedPositiveInLastThreeMonths() {
-        String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test t where test_type in (1, 2) and voided = 0 \n" +
-                " and final_test_result ='Positive' and t.visit_date between date_sub(:endDate , interval 3 MONTH) and :endDate;";
+    public CohortDefinition htsAllNumberTestedPositiveThreeMonthsAgo() {
+        String sqlQuery = "select patient_id\n" +
+                "from kenyaemr_etl.etl_hts_test t\n" +
+                "where test_type = 1\n" +
+                "  and final_test_result = 'Positive'\n" +
+                "  and t.visit_date between date_sub(date(DATE_SUB(date(:endDate), INTERVAL DAYOFMONTH(date(:endDate)) - 1 DAY)),\n" +
+                "                                    interval 3 MONTH)\n" +
+                "    and date_sub(date(:endDate), interval 3 MONTH);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedPositiveInLastThreeMonths");
         cd.setQuery(sqlQuery);

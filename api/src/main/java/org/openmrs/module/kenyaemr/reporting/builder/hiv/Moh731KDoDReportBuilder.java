@@ -309,7 +309,7 @@ public class Moh731KDoDReportBuilder extends AbstractReportBuilder {
 
         // number linked
         EmrReportingUtils.addRow(cohortDsd, "HV01", "Linked", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedPositiveAndLinked(), indParams), kdodDisaggregation, Arrays.asList("47", "48", "49", "50", "51", "52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69"));
-        EmrReportingUtils.addRow(cohortDsd,"HV01-36", "Total tested positive (3 months ago)", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedPositiveInLastThreeMonths(), indParams),kdodCadreWithAge,Arrays.asList("79","80","81","82","83","84","85","86","87","88","89","90","91"));
+        EmrReportingUtils.addRow(cohortDsd,"HV01-36", "Total tested positive (3 months ago)", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedPositiveThreeMonthsAgo(), indParams),kdodCadreWithAge,Arrays.asList("79","80","81","82","83","84","85","86","87","88","89","90","91"));
 
         return cohortDsd;
 
