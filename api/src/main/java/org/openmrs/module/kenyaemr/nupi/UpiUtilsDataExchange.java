@@ -321,14 +321,11 @@ public class UpiUtilsDataExchange {
         PatientIdentifierType nupi = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER);
 
 		for (Patient patient : patientsGroup) {
-			System.err.println("NUPI CCC Update; Got the patient as: " + patient.getPatientId() + " : " + ret  + "/" + patientsGroup.size());
 			try {
 				PatientIdentifier piccc = patient.getPatientIdentifier(ccc);
 				String cccNum = piccc.getIdentifier();
-				System.err.println("Got the ccc as: " + cccNum);
 				PatientIdentifier pinupi = patient.getPatientIdentifier(nupi);
 				String nupiNum = pinupi.getIdentifier();
-				System.err.println("Got the nupi as: " + nupiNum);
 				String authToken = getToken();
 				GlobalProperty globalPostUrl = Context.getAdministrationService().getGlobalPropertyObject(CommonMetadata.GP_CLIENT_VERIFICATION_POST_END_POINT);
 				String strUpdateCCCUrl = globalPostUrl.getPropertyValue();
