@@ -160,8 +160,8 @@ public class ETLMoh731GreenCardIndicatorLibrary {
      *
      * @return indicator
      */
-    public CohortIndicator htsNumberTestedPositiveInLastThreeMonths() {
-        return cohortIndicator("tested Positive in last 3 months", map(moh731Cohorts.htsNumberTestedPositiveInLastThreeMonths(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator htsNumberTestedPositiveThreeMonthsAgo() {
+        return cohortIndicator("tested Positive 3 months ago", map(moh731Cohorts.htsNumberTestedPositiveThreeMonthsAgo(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
