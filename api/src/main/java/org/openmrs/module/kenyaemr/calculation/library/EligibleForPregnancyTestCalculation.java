@@ -27,30 +27,36 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Calculates the eligibility for pregnancy test of female patients
+ * Calculates the eligibility for pregnancy test flag for female patients
+ *
+ * @should calculate null for deceased patients
+ * @should calculate null for patients with no recorded status
+ * @should not have abstained from sex
+ * @should not have had LMP in last 7 days
+ * @should not be on FP
+ * @should not have had a miscarriage
+ * @should not have had a recent baby
+ * @should not have referred for pregnancy test
  */
+
 
         public class EligibleForPregnancyTestCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
         protected static final Log log = LogFactory.getLog(EligibleForPregnancyTestCalculation.class);
 
        public static final EncounterType triageEncType = MetadataUtils.existing(EncounterType.class, CommonMetadata._EncounterType.TRIAGE);
-       public static final Form triageScreeningForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.TRIAGE);
+       public static final Form triageForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.TRIAGE);
 
         @Override
         public String getFlagMessage() {
         return "Eligible for Pregnancy Test";
         }
         Integer SEXUAL_ABSTAINED = 160109;
-        Integer LMP = 48;
+        Integer LMP = 162877;
         Integer FAMILY_PLANNING = 160653;
-        Integer MISCARIAGE = 1657;
-        Integer NEGATIVE = 1066;
-        /**
-         * Evaluates the calculation
-         * @should calculate null for deceased patients
-         * @should calculate null for patients with no recorded status
-         * @should calculate last recorded pregnancy status for all patients
-         */
+        Integer MISCARRIAGE  = 48;
+        Integer RECENT_BIRTH  = 1657;
+        Integer REFERRED_FOR_PREGNANCY_TEST = 1282;
+        Integer NO = 1066;
 
         @Override
         public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
@@ -68,20 +74,25 @@ import java.util.Set;
                 result = false;
                }else {
 
-                Encounter lastTriageEnc = EmrUtils.lastEncounter(patient, triageEncType, triageScreeningForm);
+                Encounter lastTriageEnc = EmrUtils.lastEncounter(patient, triageEncType, triageForm);
 
                 ConceptService cs = Context.getConceptService();
                 Concept sexualAbstainedResult = cs.getConcept(SEXUAL_ABSTAINED);
                 Concept lmpResult = cs.getConcept(LMP);
                 Concept familyPlanningResult = cs.getConcept(FAMILY_PLANNING);
-                Concept miscariageResult = cs.getConcept(MISCARIAGE);
-                Concept negative = cs.getConcept(NEGATIVE);
-                boolean patientSexualAbstainedResult = lastTriageEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastTriageEnc, sexualAbstainedResult, negative) : false;
-                boolean pantientLmpResult = lastTriageEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastTriageEnc, lmpResult, negative) : false;
-                boolean patientFamilyPlanningResult = lastTriageEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastTriageEnc, familyPlanningResult, negative) : false;
-                boolean patientMiscariageResultTestResult = lastTriageEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastTriageEnc, miscariageResult, negative) : false;
+                Concept miscarriageResult = cs.getConcept(MISCARRIAGE);
+                Concept recentBirthResult = cs.getConcept(RECENT_BIRTH);
+                Concept referredForPregnancyTest = cs.getConcept(REFERRED_FOR_PREGNANCY_TEST);
+                Concept no = cs.getConcept(NO);
 
-                if (patientSexualAbstainedResult && pantientLmpResult && patientFamilyPlanningResult && patientMiscariageResultTestResult) {
+                boolean patientSexualAbstainedResult = lastTriageEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastTriageEnc, sexualAbstainedResult, no) : false;
+                boolean pantientLmpResult = lastTriageEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastTriageEnc, lmpResult, no) : false;
+                boolean patientFamilyPlanningResult = lastTriageEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastTriageEnc, familyPlanningResult, no) : false;
+                boolean patientMiscariageResultTestResult = lastTriageEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastTriageEnc, miscarriageResult, no) : false;
+                boolean patientRecentBirthResult = lastTriageEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastTriageEnc, recentBirthResult, no) : false;
+                boolean referredForPregnancyTestResult = lastTriageEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastTriageEnc, referredForPregnancyTest, no) : false;
+
+                if (patientSexualAbstainedResult && pantientLmpResult && patientFamilyPlanningResult && patientMiscariageResultTestResult && patientRecentBirthResult && referredForPregnancyTestResult) {
                     result = true;
                 }
 

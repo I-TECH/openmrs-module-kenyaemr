@@ -72,7 +72,7 @@
                 jq('#pregnancy-screening').hide();
                 jq('#triage-notes').hide();
              }else{
-                jp('#pregnancy-screening').show();
+                jq('#pregnancy-screening').show();
                 jq('#triage-notes').show();
              }
             jQuery('#rsn').keypress(function(event) {
@@ -83,7 +83,7 @@
             });
 
             function onMiscariageChange() {
-                if (getValue('miscariage.value') == 1065) {
+                if (getValue('miscariage.value') == 1066) {
                     jq('#baby-last-week').show();
                 }else{
                     jq('#baby-last-week').hide();
@@ -123,7 +123,18 @@
     }
 
     </script>
-
+    <ifMode mode="EDIT">
+        <script type="text/javascript">
+            jq(function(){
+                if (getValue('miscariage.value') == 1066) {
+                    jq('#baby-last-week').show();
+                }else{
+                    jq('#baby-last-week').hide();
+                    clearHiddenSections(jq('#baby-last-week'));
+                }
+            });
+        </script>
+    </ifMode>
     <div class="ke-form-header">
         <table style="width: 100%">
             <tr>
