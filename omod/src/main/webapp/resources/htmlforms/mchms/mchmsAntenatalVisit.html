@@ -57,6 +57,7 @@
     var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
     var REGIMEN_NAME = GREENCARD_VELOCITY.split(",")[4].split(":")[1];
     var HIGH_RISK_CATEGORIZATION = "<lookup expression="kenyaemr.HighRiskClientCategorization()" />";
+    var LATEST_LMP_DATE =  "<lookup expression="fn.latestObs(1427).getValueDatetime()"/>";
     //Start on ready
 	jq(function () {
         jq('#anc-counselling').hide();
@@ -243,6 +244,21 @@
         }else{
             jq("#nvp-dispensed input[value=80586]").prop("checked", false);
 		}
+
+        //Prepopulate maturity from last LMP if added in previous mch forms
+        if(LATEST_LMP_DATE !="" || LATEST_LMP_DATE != null) {
+            var encounterDate = getValue('encounter-date.value');
+            var latestLMPFormatted = moment(LATEST_LMP_DATE, 'DD/MMM/YYYY').format('YYYY-MM-DD');
+            var formattedEncounterDate = moment(encounterDate, 'YYYY-MM-DD').format('YYYY-MM-DD');
+            var diff = moment.duration(moment(formattedEncounterDate).diff(latestLMPFormatted));
+            var diffInWeeks = diff.asWeeks().toFixed(0);
+            if(diffInWeeks &gt; 42){
+                jq('#maturity').html("Check encounter and LMP dates for maturity greater than 42 weeks");
+            }else {
+                setValue('maturity.value', diffInWeeks);
+            }
+
+        }
 	});
 //End on ready
 
@@ -871,7 +887,7 @@
 						<tr>
 							<td>Maturity in weeks:</td>
 							<td>
-								<obs conceptId="1438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								<obs conceptId="1438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="maturity"/>
 							</td>
 							<td>Fundal Height (Weeks):</td>
 							<td>
