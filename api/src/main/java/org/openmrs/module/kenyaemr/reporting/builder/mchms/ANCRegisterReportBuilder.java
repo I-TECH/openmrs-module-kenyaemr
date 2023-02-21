@@ -209,6 +209,9 @@ public class ANCRegisterReportBuilder extends AbstractReportBuilder {
         ANCClinicalNotesDataDefinition ancClinicalNotesDataDefinition = new ANCClinicalNotesDataDefinition();
         ancClinicalNotesDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
         ancClinicalNotesDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        ANCPPFPCounseledDataDefinition ancPPFPCounseledDataDefinition = new ANCPPFPCounseledDataDefinition();
+        ancPPFPCounseledDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+        ancPPFPCounseledDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
 
         AgeAtReportingDataDefinition ageAtReportingDataDefinition = new AgeAtReportingDataDefinition();
         ageAtReportingDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -281,6 +284,7 @@ public class ANCRegisterReportBuilder extends AbstractReportBuilder {
         //dsd.addColumn("ANC Excercises", new ANCExercisesDataDefinition(),""); --dropped
         dsd.addColumn("Partner Tested for HIV", ancPartnerTestedForHivDataDefinition, paramMapping);
         dsd.addColumn("Partner HIV Status", ancPartnerHIVStatusDataDefinition, paramMapping);
+        dsd.addColumn("PPFP Counselling", ancPPFPCounseledDataDefinition, paramMapping);
         dsd.addColumn("Facility Referred From", ancFacilityReferredFromDataDefinition, paramMapping);
         dsd.addColumn("Facility Referred To", ancFacilityReferredToDataDefinition, paramMapping);
         //dsd.addColumn("Next Appointment Date", new ANCNextAppointmentDateDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT)); --Dropped
