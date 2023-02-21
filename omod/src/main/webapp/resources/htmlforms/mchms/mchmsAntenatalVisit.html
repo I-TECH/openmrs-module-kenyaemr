@@ -99,6 +99,8 @@
         jq("#hiv-test2-result select").change(secondTestSelected);
         //test kit expiry
         jq("#expiry-date input").change(expiryDateSelected);
+        //Dual kit syphilis results entered
+        jq("#syphilis-test-results-1 select").change(dualKitSyphilisResultsSelected);
         //Show number of clients already booked on tca date
         jq('#showNumberBooked').hide();
         jq("#returnVisitDate input[type=hidden]").change(getPatientsBookedOnDate);
@@ -540,6 +542,14 @@
             getField('expiry-date.error').html('HIV Test Kit expiry date should not be later than encounter Date').hide();
         }
     }
+    var dualKitSyphilisResultsSelected  = function () {
+        var syphilisResults = getField("syphilis-test-results-1.value").val();
+        if(syphilisResults == 1229){
+            getField('syphilis-test-results.value').prop("selectedIndex", 1);
+        }else if (syphilisResults == 1228){
+            getField('syphilis-test-results.value').prop("selectedIndex", 2);
+        }
+    }
     function onEncounterDateChange() {
         var patientId = <lookup expression="patient.patientId"/>;
         var encDate = getValue('encounter-date.value');
@@ -679,6 +689,13 @@
                             var syphylisTest1Results = getField("syphilis-test-results-1.value").val();
                             if(syphylisTest1Results != ""){
                                 jq('#dual-results-1').show();
+                            }
+
+                            var syphilisResults = getField("syphilis-test-results-1.value").val();
+                            if(syphilisResults == 1229){
+                                getField('syphilis-test-results.value').prop("selectedIndex", 1);
+                            }else if (syphilisResults == 1228){
+                                getField('syphilis-test-results.value').prop("selectedIndex", 2);
                             }
 
                         });

@@ -45,6 +45,8 @@
     var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.earliestObs(159427).getValueCoded()"/>";
 	var ANC_START_DATE =  "<lookup expression="fn.latestObs(163547).getValueDatetime()"/>";
 	var HIV_TEST_DATE =  "<lookup expression="fn.latestObs(160554).getValueDatetime()"/>";
+	var LATEST_LMP_DATE =  "<lookup expression="fn.latestObs(1427).getValueDatetime()"/>";
+	var LATEST_LMP_OBSDATE =  "<lookup expression="fn.latestObs(1427).getObsDatetime()"/>";
 
     var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
     var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
@@ -72,6 +74,7 @@
 		getField('lmp.value').change(onLmpChange);
 		getField('patient-hiv-status.value').change(onPatientHivStatusChange);
 		getField('partner-hiv-status.value').change(onPartnerHivStatusChange);
+
 		//First ANC visit date validation
         if(ANC_START_DATE !="" || ANC_START_DATE != null){
             getField('first-anc-date.value').val(ANC_START_DATE);
@@ -99,6 +102,19 @@
 
 
         jq('#first-anc-today').click(defaultFirstAncDateChange);
+
+        //Prepopulate last LMP if added in previous forms
+        if(LATEST_LMP_DATE !="" || LATEST_LMP_DATE != null) {
+            var encounterDate = getValue('encounter-date.value');
+            var formattedEncDate = moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD');
+            var lmpObsDate = moment(moment(LATEST_LMP_OBSDATE, 'DD/MMM/YYYY').toDate()).format('YYYY-MM-DD');
+            var latestLMPAddedOnSameEncounterDate = moment(formattedEncDate).isSame(lmpObsDate, 'day');
+            if (latestLMPAddedOnSameEncounterDate) {
+                setValue('lmp.value', moment(moment(LATEST_LMP_DATE, 'DD/MMM/YYYY').toDate()).format('YYYY-MM-DD'));
+            }
+        }
+
+
 	});
 	//End on ready
     function onServiceTypeChange() {
@@ -213,17 +229,23 @@
         var ancNumber = getValue('anc-number.value');
         var lmpDate = getValue('lmp.value');
         var patientHivStatus = getValue('patient-hiv-status.value');
+        var encounterDate = getValue('encounter-date.value');
+        var formattedEncDate = moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD');
+        var lmpObsDate = moment(moment(LATEST_LMP_OBSDATE, 'DD/MMM/YYYY').toDate()).format('YYYY-MM-DD');
+        var latestLMPAddedOnSameEncounterDate = moment(formattedEncDate).isSame(lmpObsDate,'day');
+
         //ANC
         if (serviceType == ANC_CLIENT &amp;&amp; ancNumber == "") {
             getField('anc-number.error').html('ANC Number should not be empty').show();
             return false;
         }
-        if (serviceType == ANC_CLIENT &amp;&amp; lmpDate == "") {
+        if (serviceType == ANC_CLIENT &amp;&amp; lmpDate == "" &amp;&amp; latestLMPAddedOnSameEncounterDate == false)
+        {
             getField('lmp.error').html('LMP date should not be empty').show();
             return false;
         }
         if (serviceType == ANC_CLIENT &amp;&amp; patientHivStatus == "") {
-            getField('lmp.error').html('HIV status should not be empty').show();
+            getField('patient-hiv-status.error').html('HIV status should not be empty').show();
             return false;
         }
 		if (parity &gt; gravida) {
