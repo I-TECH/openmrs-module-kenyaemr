@@ -80,7 +80,6 @@
             var expectedDeliveryDate = moment(formattedlmp, "DD-MMM-YYYY").add(280, 'days').format('DD-MMM-YYYY');
             var formattedRecentlmp=moment(moment(recentLMP, 'DD-MMM-YYYY').toDate()).format('DD-MMM-YYYY');
             var expectedDeliveryDateByRecentLMP = moment(formattedRecentlmp, "DD-MMM-YYYY").add(280, 'days').format('DD-MMM-YYYY');
-            console.log("EDD  ==>"+expectedDeliveryDateByRecentLMP);
             if(recentLMP !=""){
                getField('lmp-date.value').val(formattedRecentlmp);
                 setValue('patient-edd.value',moment(formattedRecentlmp, "DD-MMM-YYYY").add(280, 'days').format('YYYY-MM-DD'));
