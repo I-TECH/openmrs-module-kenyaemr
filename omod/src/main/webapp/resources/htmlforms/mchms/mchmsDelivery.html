@@ -43,6 +43,7 @@
         var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
         var REGIMEN_NAME = GREENCARD_VELOCITY.split(",")[4].split(":")[1];
         var recentLMP = "<lookup expression="fn.latestObs(1427).getValueDatetime()"/>";
+        var LATEST_LMP_OBSDATE =  "<lookup expression="fn.latestObs(1427).getObsDatetime()"/>";
         var recentEDD = "<lookup expression="fn.latestObs(5596).getValueDatetime()"/>";
 
         //Using recent LMP
@@ -79,18 +80,12 @@
             var expectedDeliveryDate = moment(formattedlmp, "DD-MMM-YYYY").add(280, 'days').format('DD-MMM-YYYY');
             var formattedRecentlmp=moment(moment(recentLMP, 'DD-MMM-YYYY').toDate()).format('DD-MMM-YYYY');
             var expectedDeliveryDateByRecentLMP = moment(formattedRecentlmp, "DD-MMM-YYYY").add(280, 'days').format('DD-MMM-YYYY');
+            console.log("EDD  ==>"+expectedDeliveryDateByRecentLMP);
+            if(recentLMP !=""){
+               getField('lmp-date.value').val(formattedRecentlmp);
+                setValue('patient-edd.value',moment(formattedRecentlmp, "DD-MMM-YYYY").add(280, 'days').format('YYYY-MM-DD'));
 
-            if(recentEDD != "" &amp;&amp; recentLMP !=""){
-                getField('patient-edd.value').val(recentEDD);
-                getField('lmp-date.value').val(formattedRecentlmp);
-            }else if (lmpDate !="" &amp;&amp; recentEDD == ""){
-                getField('patient-edd.value').val(expectedDeliveryDateByRecentLMP);
-                getField('lmp-date.value').val(formattedRecentlmp);
-            }else{
-                getField('patient-edd.value').val("");
-                getField('lmp-date.value').val("");
             }
-
 
             jq('#referredTo select').change(referredToChange);
             var referredReasonToTransfer = jq('#referredTo select').val();
@@ -761,7 +756,7 @@
                             <td>
                                 <table>
                                     <tr>
-                                        <td> Number of ANC Visits:</td>
+                                        <td> Number of ANC Visits: <span style="color:red;"><strong>*</strong></span></td>
                                         <td>
                                             <obs conceptId="1590AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="anc-visits"/>
                                         </td>
@@ -788,7 +783,7 @@
                             <td>
                                 <obs id="lmp-date" conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" />
                             </td>
-                            <td>VDRL/RPR Results</td>
+                            <td>VDRL/RPR Results <span style="color:red;"><strong>*</strong></span></td>
                             <td>
                                 <obs id="vdrl-rpr" conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -799,13 +794,13 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>Estimated date of Delivery</td>
+                            <td>Estimated date of Delivery <span style="color:red;"><strong>*</strong></span></td>
                             <td>
                                 <obs id="patient-edd" conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
                             </td>
 
 
-                            <td>Placenta Complete?</td>
+                            <td>Placenta Complete? <span style="color:red;"><strong>*</strong></span></td>
                             <td>
                                 <obs id="placenta-complete" conceptId="163454AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -816,7 +811,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>Vagina Examination</td>
+                            <td>Vagina Examination <span style="color:red;"><strong>*</strong></span></td>
                             <td>
                                 <obs id="vagina-examination" conceptId="160704AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="132681AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -827,13 +822,13 @@
                                      answerLabels="Normal, Episiotomy, Vaginal tear, FGM, Vaginal warts"
                                      style="radio" />
                             </td>
-                            <td>Uterotonic given</td>
+                            <td>Uterotonic given <span style="color:red;"><strong>*</strong></span></td>
                             <td>
                                 <obs id="uterotonic-given" conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA "
                                      answerConceptIds="81369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                     104590AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                    1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,"
-                                     answerLabels="Oxytocin, Carbetocin, None"
+                                                    1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerLabels="Oxytocin,Carbetocin,None"
                                      style="radio" />
                             </td>
                         </tr>
@@ -950,7 +945,7 @@
                                      answerConceptIds="159913AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159914AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159915AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerLabels="Single,Twins,Triplets"/>
                             </td>
-                            <td>Chlorhexidine applied on cord stump:</td>
+                            <td>Chlorhexidine applied on cord stump: <span style="color:red;"><strong>*</strong></span></td>
                             <td>
                                 <obs id="chlorhexidine-applied" conceptId="159369AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -1013,7 +1008,7 @@
                                             answerLabels="Yes,No,N/A"
                                             style="dropdown" />
                                 </td>
-                                <td>Given Vitamin K</td>
+                                <td>Given Vitamin K <span style="color:red;"><strong>*</strong></span></td>
                                 <td>
                                     <obs id="given-vitamink-single" conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -1023,7 +1018,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>Kangaroo Mother care given:</td>
+                                <td>Kangaroo Mother care given: <span style="color:red;"><strong>*</strong></span></td>
                                 <td>
                                     <obs id="kangaroo-mother-care-single" conceptId="161094AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -1104,7 +1099,7 @@
                                             answerLabels="Yes,No,N/A"
                                             style="dropdown" />
                                 </td>
-                                <td>Given Vitamin K</td>
+                                <td>Given Vitamin K <span style="color:red;"><strong>*</strong></span></td>
                                 <td>
                                     <obs id="given-vitamink-twins" conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -1114,7 +1109,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>Kangaroo Mother care given:</td>
+                                <td>Kangaroo Mother care given: <span style="color:red;"><strong>*</strong></span></td>
                                 <td>
                                     <obs id="kangaroo-mother-care-twins" conceptId="161094AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -1195,7 +1190,7 @@
                                             answerLabels="Yes,No,N/A"
                                             style="dropdown" />
                                 </td>
-                                <td>Given Vitamin K</td>
+                                <td>Given Vitamin K <span style="color:red;"><strong>*</strong></span></td>
                                 <td>
                                     <obs id="given-vitamink-triplets" conceptId="984AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -1205,7 +1200,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>Kangaroo Mother care given:</td>
+                                <td>Kangaroo Mother care given: <span style="color:red;"><strong>*</strong></span></td>
                                 <td>
                                     <obs id="kangaroo-mother-care-triplets" conceptId="161094AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
