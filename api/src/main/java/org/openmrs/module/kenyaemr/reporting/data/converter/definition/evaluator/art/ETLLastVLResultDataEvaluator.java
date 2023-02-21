@@ -35,9 +35,13 @@ public class ETLLastVLResultDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select patient_id, mid(max(concat(visit_date, if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, 'LDL','')), '' )),11) as vl_result\n" +
-                "from kenyaemr_etl.etl_laboratory_extract where coalesce(date(date_test_requested),date(visit_date)) <= date(:endDate)\n" +
-                "GROUP BY patient_id;";
+        String qry = "select patient_id,\n" +
+                "                     mid(max(concat(date(visit_date),\n" +
+                "                                    if(lab_test = 856, test_result, if(lab_test = 1305 and test_result = 1302, 'LDL', '')), '')),\n" +
+                "                         11) as vl_result\n" +
+                "             from kenyaemr_etl.etl_laboratory_extract\n" +
+                "             where date(visit_date) <= date(:endDate) and lab_test in (1305, 856)\n" +
+                "             GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

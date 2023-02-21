@@ -36,9 +36,12 @@ public class ETLLastVLResultValidityDataEvaluator implements PersonDataEvaluator
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select patient_id,\n" +
-                "  if(timestampdiff(MONTH,(mid(max(concat(date(visit_date),\n" +
-                "                          coalesce(date(date_test_requested),date(visit_date)))),11)),date(:endDate)) <= 12,'Valid','Invalid') as validity\n" +
-                "   from kenyaemr_etl.etl_laboratory_extract GROUP BY patient_id having mid(max(concat(visit_date,lab_test)),11) in (1305,856);";
+                "       if(timestampdiff(MONTH, coalesce(mid(max(concat(date(visit_date),date(date_test_requested))),11), max(date(visit_date))),\n" +
+                "                        date(:endDate))<= 12, 'Valid', 'Invalid') as validity\n" +
+                "from kenyaemr_etl.etl_laboratory_extract\n" +
+                "where lab_test in (1305, 856)\n" +
+                "and date(visit_date) <= date(:endDate)\n" +
+                "GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
