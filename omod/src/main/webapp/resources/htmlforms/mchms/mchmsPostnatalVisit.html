@@ -102,8 +102,6 @@
             var testDateDiffRaw = moment.duration(moment(finalResultDateFormatted).diff(deliveryDateFormatted));
             var testDateDiff = testDateDiffRaw.asWeeks().toFixed(0);
 
-            console.log("date comparison", finalResultDateFormatted &gt; deliveryDateFormatted)
-
             if(finalResultDateFormatted &gt; deliveryDateFormatted) {
                 if(testDateDiff &lt; 6) {
                     jq('#pncMotherHivTest input[value=16208]').prop("checked", true);
@@ -227,8 +225,6 @@
             }else{
                 getField('delivery-date.value').val("");
             }
-            console.log("PLACE_OF_DELIVERY ==>"+PLACE_OF_DELIVERY);
-            console.log("MODE_OF_DELIVERY ==>"+MODE_OF_DELIVERY);
 
             if(PLACE_OF_DELIVERY.replace(/[^\d]/g, '') == 1536){
                 getField('delivery-place.value').prop("selectedIndex", 1);
