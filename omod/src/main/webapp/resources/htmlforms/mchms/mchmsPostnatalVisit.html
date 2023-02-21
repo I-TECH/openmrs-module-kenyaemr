@@ -227,16 +227,30 @@
             }else{
                 getField('delivery-date.value').val("");
             }
-            if(PLACE_OF_DELIVERY !=""){
-                getField('delivery-place.value').val(PLACE_OF_DELIVERY);
-            }else{
-                getField('delivery-place.value').val("");
+            console.log("PLACE_OF_DELIVERY ==>"+PLACE_OF_DELIVERY);
+            console.log("MODE_OF_DELIVERY ==>"+MODE_OF_DELIVERY);
+
+            if(PLACE_OF_DELIVERY.replace(/[^\d]/g, '') == 1536){
+                getField('delivery-place.value').prop("selectedIndex", 1);
+            }else if(PLACE_OF_DELIVERY.replace(/[^\d]/g, '') == 1589){
+                getField('delivery-place.value').prop("selectedIndex", 2);
+            }else if(PLACE_OF_DELIVERY.replace(/[^\d]/g, '') == 1601){
+                getField('delivery-place.value').prop("selectedIndex", 3);
+            }else {
+                getField('delivery-place.value').prop("selectedIndex", 0);
             }
-            if(MODE_OF_DELIVERY !=""){
-                getField('delivery-mode.value').val(MODE_OF_DELIVERY);
-                getDeliveryModeChange();
-            }else{
-                getField('delivery-mode.value').val("");
+
+
+            if(MODE_OF_DELIVERY.replace(/[^\d]/g, '') == 1170){
+                getField('delivery-mode.value').prop("selectedIndex", 1);
+            }else if(MODE_OF_DELIVERY.replace(/[^\d]/g, '') == 1171){
+                getField('delivery-mode.value').prop("selectedIndex", 2);
+            }else if(MODE_OF_DELIVERY.replace(/[^\d]/g, '') == 1172){
+                getField('delivery-mode.value').prop("selectedIndex", 3);
+            }else if(MODE_OF_DELIVERY.replace(/[^\d]/g, '') == 118159){
+                getField('delivery-mode.value').prop("selectedIndex", 4);
+            }else {
+                getField('delivery-mode.value').prop("selectedIndex", 0);
             }
             //FP skip pattern
             jq("#fplanning select ").change(function () {
