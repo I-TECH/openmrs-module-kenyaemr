@@ -307,6 +307,7 @@
                 jq("#expiry-date2 input").prop("disabled", false);
                 getField('hiv-final-result.value').val(703);
                 jq('#ccc-no input').prop("disabled", false);
+                jq('#art-and-prophylaxis').show();
             }
             //Invalid
             if(secondTest ==163611){
@@ -526,6 +527,7 @@
                 clearHiddenSections(jq('#hiv-final-result'));
                 getField('hiv-final-result.value').val(1138);
                 jq('#ccc-no input').prop("disabled", true);
+                jq('#art-and-prophylaxis').hide();
             }
             //Positive
             if(secondTest ==703){
@@ -536,6 +538,7 @@
                 jq("#expiry-date2 input").prop("disabled", false);
                 getField('hiv-final-result.value').val(703);
                 jq('#ccc-no input').prop("disabled", false);
+                jq('#art-and-prophylaxis').show();
             }
             //Invalid
             if(secondTest ==163611){
@@ -545,6 +548,7 @@
                 jq(".lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
                 getField('hiv-final-result.value').val(1138);
+                jq('#art-and-prophylaxis').hide();
             }
             //Invalid
             if(secondTest ==1175){
@@ -554,6 +558,7 @@
                 jq(".lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
                 getField('hiv-final-result.value').val(1138);
+                jq('#art-and-prophylaxis').hide();
             }
         }
 
