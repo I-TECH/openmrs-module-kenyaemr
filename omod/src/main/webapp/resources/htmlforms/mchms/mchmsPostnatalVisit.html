@@ -102,8 +102,6 @@
             var testDateDiffRaw = moment.duration(moment(finalResultDateFormatted).diff(deliveryDateFormatted));
             var testDateDiff = testDateDiffRaw.asWeeks().toFixed(0);
 
-            console.log("date comparison", finalResultDateFormatted &gt; deliveryDateFormatted)
-
             if(finalResultDateFormatted &gt; deliveryDateFormatted) {
                 if(testDateDiff &lt; 6) {
                     jq('#pncMotherHivTest input[value=16208]').prop("checked", true);
@@ -227,16 +225,28 @@
             }else{
                 getField('delivery-date.value').val("");
             }
-            if(PLACE_OF_DELIVERY !=""){
-                getField('delivery-place.value').val(PLACE_OF_DELIVERY);
-            }else{
-                getField('delivery-place.value').val("");
+
+            if(PLACE_OF_DELIVERY.replace(/[^\d]/g, '') == 1536){
+                getField('delivery-place.value').prop("selectedIndex", 1);
+            }else if(PLACE_OF_DELIVERY.replace(/[^\d]/g, '') == 1589){
+                getField('delivery-place.value').prop("selectedIndex", 2);
+            }else if(PLACE_OF_DELIVERY.replace(/[^\d]/g, '') == 1601){
+                getField('delivery-place.value').prop("selectedIndex", 3);
+            }else {
+                getField('delivery-place.value').prop("selectedIndex", 0);
             }
-            if(MODE_OF_DELIVERY !=""){
-                getField('delivery-mode.value').val(MODE_OF_DELIVERY);
-                getDeliveryModeChange();
-            }else{
-                getField('delivery-mode.value').val("");
+
+
+            if(MODE_OF_DELIVERY.replace(/[^\d]/g, '') == 1170){
+                getField('delivery-mode.value').prop("selectedIndex", 1);
+            }else if(MODE_OF_DELIVERY.replace(/[^\d]/g, '') == 1171){
+                getField('delivery-mode.value').prop("selectedIndex", 2);
+            }else if(MODE_OF_DELIVERY.replace(/[^\d]/g, '') == 1172){
+                getField('delivery-mode.value').prop("selectedIndex", 3);
+            }else if(MODE_OF_DELIVERY.replace(/[^\d]/g, '') == 118159){
+                getField('delivery-mode.value').prop("selectedIndex", 4);
+            }else {
+                getField('delivery-mode.value').prop("selectedIndex", 0);
             }
             //FP skip pattern
             jq("#fplanning select ").change(function () {
@@ -681,6 +691,18 @@
             }else{
                 getField('returnVisitDate.error').html('Return visit date should not be earlier than encounter date.').hide();
             }
+
+            var formattedEncDate = moment(encounterDate, 'YYYY-MM-DD').format('YYYY-MM-DD');
+            var formattedTCA = moment(tca_date, 'YYYY-MM-DD').format('YYYY-MM-DD');
+            var tcaDateSameAsEncounterDate = moment(formattedEncDate).isSame(formattedTCA,'day');
+            if (tcaDateSameAsEncounterDate) {
+                getField('returnVisitDate.error').html('Return visit date should be greater than encounter date.').show();
+                return false;
+            }else{
+                getField('returnVisitDate.error').html('Return visit date should be greater than encounter date.').hide();
+            }
+
+
             if ((PATIENT_IS_REPORTED_HIV == 703 || PATIENT_IS_ENROLLED_HIV) &amp;&amp; haartProphylaxisTreatment == "") {
                 getField('haartProphylaxisTreatment.error').html('Haart prophylaxis treatment should not be empty').show();
                 return false;

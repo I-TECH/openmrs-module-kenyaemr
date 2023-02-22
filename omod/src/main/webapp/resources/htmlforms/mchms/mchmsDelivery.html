@@ -487,6 +487,16 @@
             }else{
                 getField('returnVisitDate.error').html('Return visit date should not be earlier than encounter date.').hide();
             }
+            var formattedEncDate = moment(encounterDate, 'YYYY-MM-DD').format('YYYY-MM-DD');
+            var formattedTCA = moment(tca_date, 'YYYY-MM-DD').format('YYYY-MM-DD');
+            var tcaDateSameAsEncounterDate = moment(formattedEncDate).isSame(formattedTCA,'day');
+            if (tcaDateSameAsEncounterDate) {
+                getField('returnVisitDate.error').html('Return visit date should be greater than encounter date.').show();
+                return false;
+            }else{
+                getField('returnVisitDate.error').html('Return visit date should be greater than encounter date.').hide();
+            }
+
             if (anc_visits == "" ) {
                 getField('anc-visits.error').html('Please specify number of ANC visits.').show();
                 return false;
