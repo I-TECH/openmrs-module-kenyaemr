@@ -11,6 +11,7 @@ package org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731Greencard
 
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.RevisedDatim.DatimCohortLibrary;
+import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -608,14 +609,14 @@ public class ETLMoh731GreenCardIndicatorLibrary {
     }
 
     /**
-     * Number of infants due for penta 1
-     * Total due for penta 1 HV02-37
+     * Number of infants given penta 1
+     * Total given penta 1 HV02-37
      *
      * @return the indicator
      */
-    public CohortIndicator totalDueForPenta1() {
-        return cohortIndicator("totalDueForPenta1",
-                map(moh731Cohorts.totalDueForPenta1(), "startDate=${startDate},endDate=${endDate}")
+    public CohortIndicator totalGivenPenta1() {
+        return cohortIndicator("totalGivenPenta1",
+                map(moh731Cohorts.totalGivenPenta1(), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
@@ -1301,7 +1302,15 @@ public class ETLMoh731GreenCardIndicatorLibrary {
      * @return indicator
      */
     public CohortIndicator followedUpWithin14daysOfVMMCProcedure() {
-        return cohortIndicator("Number circumcised have a followup visit withn 14 days post procedutre", map(datimCohorts.followedUpWithin14daysOfVMMCProcedure(), "startDate=${startDate},endDate=${endDate}"));
+        return cohortIndicator("Number circumcised have a followup visit within 14 days post procedutre", map(datimCohorts.followedUpWithin14daysOfVMMCProcedure(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * HV02-42: Total Infant ARV prophylaxis
+     * @return
+     */
+    public CohortIndicator totalInfantARVProphylaxis() {
+        return cohortIndicator("Total Infant ARV prophylaxis", map(moh731Cohorts.totalInfantARVProphylaxis(), "startDate=${startDate},endDate=${endDate}"));
     }
 }
 

@@ -193,7 +193,7 @@ public class Moh731KDoDReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(indicatorDsd,"HV02-36", "Adolescents started on HAART", ReportUtils.map(moh731GreenCardIndicators.adolescentsStartedOnHAART(), indParams), cadreDisaggregation,Arrays.asList("1","2","3"));
         //Infant HIV Exposure status at Penta 1
         EmrReportingUtils.addRow(indicatorDsd,"HV02-37", "Known Exposure at Penta 1", ReportUtils.map(moh731GreenCardIndicators.knownExposureAtPenta1(), indParams), cadreDisaggregation,Arrays.asList("1","2","3"));
-        EmrReportingUtils.addRow(indicatorDsd,"HV02-38", "Total due for Penta 1", ReportUtils.map(moh731GreenCardIndicators.totalDueForPenta1(), indParams), cadreDisaggregation,Arrays.asList("1","2","3"));
+        EmrReportingUtils.addRow(indicatorDsd,"HV02-38", "Total due for Penta 1", ReportUtils.map(moh731GreenCardIndicators.totalGivenPenta1(), indParams), cadreDisaggregation,Arrays.asList("1","2","3"));
         //Infant ARV Prophylaxis
         EmrReportingUtils.addRow(indicatorDsd,"HV02-39", "Infant ARV Prophylaxis at ANC", ReportUtils.map(moh731GreenCardIndicators.infantArvProphylaxisANC(), indParams), cadreDisaggregation,Arrays.asList("1","2","3"));
         EmrReportingUtils.addRow(indicatorDsd,"HV02-40", "Infant ARV Prophylaxis at Labour and Delivery", ReportUtils.map(moh731GreenCardIndicators.infantArvProphylaxisLabourAndDelivery(), indParams), cadreDisaggregation,Arrays.asList("1","2","3"));
