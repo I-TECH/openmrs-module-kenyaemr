@@ -71,6 +71,7 @@ public class Moh731ReportBuilder extends AbstractReportBuilder {
 
     ColumnParameters m_15_to_19 = new ColumnParameters(null, "15-19, Male", "gender=M|age=15-19");
     ColumnParameters f_15_to_19 = new ColumnParameters(null, "15-19, Female", "gender=F|age=15-19");
+    ColumnParameters f10_to_19 = new ColumnParameters(null, "10-19, Female", "gender=F|age=10-19");
     ColumnParameters f_18Plus = new ColumnParameters(null, "18+, Female", "gender=F|age=18+");
     ColumnParameters m_20_to_24 = new ColumnParameters(null, "20-24, Male", "gender=M|age=20-24");
     ColumnParameters f_20_to_24 = new ColumnParameters(null, "20-24, Female", "gender=F|age=20-24");
@@ -112,6 +113,8 @@ public class Moh731ReportBuilder extends AbstractReportBuilder {
     List<ColumnParameters> vmmcDisaggregation = Arrays.asList(
             maleInfants, m_1_to_9, m_10_to_14, m_15_to_19, m_20_to_24, m_25_and_above, colTotal);
 
+    List<ColumnParameters> adolescentWomenAgeDisagregation = Arrays.asList(f10_to_19,colTotal);
+
     @Override
     protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {
         return Arrays.asList(
@@ -142,6 +145,8 @@ public class Moh731ReportBuilder extends AbstractReportBuilder {
         dsd.setDescription("Prevention of Mother-to-Child Transmission");
         dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        dsd.addDimension("age", ReportUtils.map(commonDimensions.moh731GreenCardAgeGroups(), "onDate=${endDate}"));
+        dsd.addDimension("gender", ReportUtils.map(commonDimensions.gender()));
 
         String indParams = "startDate=${startDate},endDate=${endDate}";
 //Updates
@@ -179,17 +184,17 @@ public class Moh731ReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("HV02-32", "Initial Test at PNC Male", ReportUtils.map(moh731GreenCardIndicators.initialTestAtPNCForMale(), indParams), "");
         //dsd.addColumn("HV02-32", "Total Known status Male", ReportUtils.map(moh731GreenCardIndicators.totalKnownHIVStatusMale(), indParams), "");
         /*Adolescents (10-19 years) Testing results*/
-        dsd.addColumn("HV02-34", "1st ANC KP Adolescent (10-19)", ReportUtils.map(moh731GreenCardIndicators.firstANCKPAdolescents(), indParams), "");
-        dsd.addColumn("HV02-35", "HIV Positive Adolescents", ReportUtils.map(moh731GreenCardIndicators.adolescentsHIVPositive(), indParams), "");
-        dsd.addColumn("HV02-36", "Adolescents started on HAART", ReportUtils.map(moh731GreenCardIndicators.adolescentsStartedOnHAART(), indParams), "");
+        EmrReportingUtils.addRow(dsd, "HV02-34","1st ANC KP Adolescent", ReportUtils.map(moh731GreenCardIndicators.firstANCKPAdolescents(), indParams), adolescentWomenAgeDisagregation, Arrays.asList("01", "02"));
+        EmrReportingUtils.addRow(dsd, "HV02-35", "HIV Positive Adolescents", ReportUtils.map(moh731GreenCardIndicators.adolescentsHIVPositive(), indParams), adolescentWomenAgeDisagregation, Arrays.asList("01", "02"));
+        EmrReportingUtils.addRow(dsd, "HV02-36", "Adolescents started on HAART", ReportUtils.map(moh731GreenCardIndicators.adolescentsStartedOnHAART(), indParams), adolescentWomenAgeDisagregation, Arrays.asList("01", "02"));
         /*Infant HIV Exposure status at Penta 1*/
         dsd.addColumn("HV02-37", "Known Exposure at Penta 1", ReportUtils.map(moh731GreenCardIndicators.knownExposureAtPenta1(), indParams), "");
-        dsd.addColumn("HV02-38", "Total due for Penta 1", ReportUtils.map(moh731GreenCardIndicators.totalDueForPenta1(), indParams), "");
+        dsd.addColumn("HV02-38", "Total given Penta 1", ReportUtils.map(moh731GreenCardIndicators.totalGivenPenta1(), indParams), "");
         /*Infant ARV Prophylaxis*/
         dsd.addColumn("HV02-39", "Infant ARV Prophylaxis at ANC", ReportUtils.map(moh731GreenCardIndicators.infantArvProphylaxisANC(), indParams), "");
         dsd.addColumn("HV02-40", "Infant ARV Prophylaxis at Labour and Delivery", ReportUtils.map(moh731GreenCardIndicators.infantArvProphylaxisLabourAndDelivery(), indParams), "");
         dsd.addColumn("HV02-41", "Infant ARV Prophylaxis <8 weeks PNC", ReportUtils.map(moh731GreenCardIndicators.infantArvProphylaxisPNCLessThan8Weeks(), indParams), "");
-        //dsd.addColumn("HV02-41", "Total ARV Prophylaxis", ReportUtils.map(moh731GreenCardIndicators.totalARVProphylaxis(), indParams), "");
+        dsd.addColumn("HV02-42", "Total Infant ARV Prophylaxis", ReportUtils.map(moh731GreenCardIndicators.totalInfantARVProphylaxis(), indParams), "");
         dsd.addColumn("HV02-43", "HEI CTS/DDS Start <2 months", ReportUtils.map(moh731GreenCardIndicators.heiDDSCTXStartLessThan2Months(), indParams), "");
         dsd.addColumn("HV02-44", "Initial PCR <8 weeks", ReportUtils.map(moh731GreenCardIndicators.initialPCRLessThan8Weeks(), indParams), "");
         dsd.addColumn("HV02-45", "Initial PCR >8 weeks to 12 months", ReportUtils.map(moh731GreenCardIndicators.initialPCROver8WeeksTo12Months(), indParams), "");
@@ -200,13 +205,13 @@ public class Moh731ReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("HV02-50", "Net Cohort HEI in 24 months", ReportUtils.map(moh731GreenCardIndicators.netCohortHeiIn24Months(), indParams), "");
         dsd.addColumn("HV02-51", "Mother-baby pairs in 24 months", ReportUtils.map(moh731GreenCardIndicators.motherBabyPairsIn24Months(), indParams), "");
         dsd.addColumn("HV02-52", "Pair net cohort in 24 months", ReportUtils.map(moh731GreenCardIndicators.pairNetCohortIn24Months(), indParams), "");
-        dsd.addColumn("HV02-53", "Exclusive Breastfeeding at 6 months", ReportUtils.map(moh731GreenCardIndicators.exclusiveBFAt6Months(), indParams), "");
-        dsd.addColumn("HV02-54", "Exclusive Replacement Feeding at 6 months", ReportUtils.map(moh731GreenCardIndicators.exclusiveRFAt6Months(), indParams), "");
-        dsd.addColumn("HV02-55", "Mixed Feeding at 6 months", ReportUtils.map(moh731GreenCardIndicators.mixedFeedingAt6Months(), indParams), "");
-        dsd.addColumn("HV02-56", "Breast Feeding at 12 months", ReportUtils.map(moh731GreenCardIndicators.breastFeedingAt12Months(), indParams), "");
-        dsd.addColumn("HV02-57", "Not Breast Feeding at 12 months", ReportUtils.map(moh731GreenCardIndicators.notBreastFeedingAt12Months(), indParams), "");
-        dsd.addColumn("HV02-58", "Breast Feeding at 18 months", ReportUtils.map(moh731GreenCardIndicators.breastFeedingAt18Months(), indParams), "");
-        dsd.addColumn("HV02-59", "Not Breast Feeding at 18 months", ReportUtils.map(moh731GreenCardIndicators.notBreastFeedingAt18Months(), indParams), "");
+        dsd.addColumn("HV02-53", "Exclusive Breastfeeding at 6 months", ReportUtils.map(moh731GreenCardIndicators.exclusiveBFAt6Months12MonthCohort(), indParams), "");
+        dsd.addColumn("HV02-54", "Exclusive Replacement Feeding at 6 months", ReportUtils.map(moh731GreenCardIndicators.exclusiveRFAt6Months12MonthCohort(), indParams), "");
+        dsd.addColumn("HV02-55", "Mixed Feeding at 6 months", ReportUtils.map(moh731GreenCardIndicators.mixedFeedingAt6Months12MonthCohort(), indParams), "");
+        dsd.addColumn("HV02-56", "Breast Feeding at 12 months", ReportUtils.map(moh731GreenCardIndicators.breastFeedingAt12Months12MonthCohort(), indParams), "");
+        dsd.addColumn("HV02-57", "Not Breast Feeding at 12 months", ReportUtils.map(moh731GreenCardIndicators.notBreastFeedingAt12Months12MonthCohort(), indParams), "");
+        dsd.addColumn("HV02-58", "Breast Feeding at 18 months", ReportUtils.map(moh731GreenCardIndicators.breastFeedingAt18Months24MonthCohort(), indParams), "");
+        dsd.addColumn("HV02-59", "Not Breast Feeding at 18 months", ReportUtils.map(moh731GreenCardIndicators.notBreastFeedingAt18Months24MonthCohort(), indParams), "");
 
         //End updates
 
