@@ -75,10 +75,12 @@ public class Moh731ReportBuilder extends AbstractReportBuilder {
     ColumnParameters f_18Plus = new ColumnParameters(null, "18+, Female", "gender=F|age=18+");
     ColumnParameters m_20_to_24 = new ColumnParameters(null, "20-24, Male", "gender=M|age=20-24");
     ColumnParameters f_20_to_24 = new ColumnParameters(null, "20-24, Female", "gender=F|age=20-24");
-
+    ColumnParameters m_25_to_29 = new ColumnParameters(null, "25-29, Male", "gender=M|age=25-29");
+    ColumnParameters f_25_to_29 = new ColumnParameters(null, "25-29, Female", "gender=F|age=25-29");
     ColumnParameters m_25_and_above = new ColumnParameters(null, "25+, Male", "gender=M|age=25+");
     ColumnParameters f_25_and_above = new ColumnParameters(null, "25+, Female", "gender=F|age=25+");
-
+    ColumnParameters m_30_and_above = new ColumnParameters(null, "30+, Male", "gender=M|age=30+");
+    ColumnParameters f_30_and_above = new ColumnParameters(null, "30+, Female", "gender=F|age=30+");
     ColumnParameters m_1_to_9 = new ColumnParameters(null, "1-9, Male", "gender=M|age=1-9");
 
     ColumnParameters colTotal = new ColumnParameters(null, "Total", "");
@@ -95,9 +97,8 @@ public class Moh731ReportBuilder extends AbstractReportBuilder {
             colInfants, children_1_to_9,  adult_10_to_14, adult_15_to_19,
             adult_20_to_24, adult_25_and_above , colTotal);
 
-    List<ColumnParameters> standardDisaggregationWithoutInfants = Arrays.asList(
-            children_1_to_9,  m_10_to_14, f_10_to_14,m_15_to_19, f_15_to_19,
-            m_20_to_24,f_20_to_24,m_25_and_above, f_25_and_above , colTotal);
+    List<ColumnParameters> hivAssessmentDisaggregations = Arrays.asList(
+             m_15_to_19, m_20_to_24, m_25_to_29, m_30_and_above, f_15_to_19, f_20_to_24, f_25_to_29, f_30_and_above, colTotal);
 
     List<ColumnParameters> disaggregationWithInfants = Arrays.asList(
             children_0_to_9,  m_10_to_14, f_10_to_14,m_15_to_19, f_15_to_19,
@@ -329,7 +330,7 @@ public class Moh731ReportBuilder extends AbstractReportBuilder {
         // number linked
         EmrReportingUtils.addRow(cohortDsd, "HV01", "Linked", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedPositiveAndLinked(), indParams), standardAgeOnlyDisaggregation, Arrays.asList("30", "31", "32", "33", "34", "35"));
         cohortDsd.addColumn("HV01-36", "Total tested positive (3 months ago)", ReportUtils.map(moh731GreenCardIndicators.htsNumberTestedPositiveThreeMonthsAgo(), indParams),"");
-
+        EmrReportingUtils.addRow(cohortDsd, "HV01", "Number assessed for HIV risk", ReportUtils.map(moh731GreenCardIndicators.numberAssessedForHIVRisk(), indParams), hivAssessmentDisaggregations, Arrays.asList("37", "38", "39", "40", "41", "42", "43", "44","45"));
         return cohortDsd;
 
     }

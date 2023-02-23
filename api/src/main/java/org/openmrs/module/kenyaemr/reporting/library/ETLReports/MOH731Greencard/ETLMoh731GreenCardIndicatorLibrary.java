@@ -165,6 +165,14 @@ public class ETLMoh731GreenCardIndicatorLibrary {
     }
 
     /**
+     * Assessed for HIV risk
+     * @return
+     */
+    public CohortIndicator numberAssessedForHIVRisk() {
+        return cohortIndicator("Assessed for HIV risk", map(moh731Cohorts.numberAssessedForHIVRisk(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
      * Number of patients who did First ANC visit during that period {@link org.openmrs.module.kenyaemr.PregnancyStage}
      * First ANC visit  HV02-01
      *

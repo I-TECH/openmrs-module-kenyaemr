@@ -1243,6 +1243,50 @@ public class ETLMoh731GreenCardCohortLibrary {
     }
 
     /**
+     * Ever tested HIV positive
+     * @return
+     */
+    public CohortDefinition everTestedHIVPositive() {
+        String sqlQuery = "select t.patient_id from kenyaemr_etl.etl_hts_test t where t.final_test_result = 'Positive' and date(t.visit_date) <= date(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("Ever tested positive for HIV");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Ever tested positive for HIV");
+        return cd;
+    }
+
+    /**
+     * Assessed for HIV risk within the period
+     * @return
+     */
+    public CohortDefinition assessedForHIVRiskWithinPeriod() {
+        String sqlQuery = "select a.patient_id from kenyaemr_etl.etl_prep_behaviour_risk_assessment a where date(a.visit_date) between date(:startDate) and date(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("Assessed for HIV risk within the period");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Assessed for HIV risk within the period");
+        return cd;
+    }
+
+    /**
+     * Assessed for HIV risk. Excludes anyone ever tested HIV positive as of reporting period
+     * @return
+     */
+    protected CohortDefinition numberAssessedForHIVRisk() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("assessedForHIVRiskWithinPeriod", ReportUtils.map(assessedForHIVRiskWithinPeriod(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("everTestedHIVPositive", ReportUtils.map(everTestedHIVPositive(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("assessedForHIVRiskWithinPeriod AND NOT everTestedHIVPositive");
+        return cd;
+    }
+
+    /**
      * Tested in PMTCT 3 months ago
      * @return
      */
