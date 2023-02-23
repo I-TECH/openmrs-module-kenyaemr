@@ -446,9 +446,9 @@ public class ETLMoh731GreenCardIndicatorLibrary {
      *
      * @return the indicator
      */
-    public CohortIndicator syphilisScreenedAt1stANC() {
-        return cohortIndicator("Screened for Syphilis at 1st ANC",
-                map(moh731Cohorts.syphilisScreenedAt1stANC(), "startDate=${startDate},endDate=${endDate}")
+    public CohortIndicator syphilisScreenedAtANC() {
+        return cohortIndicator("Screened for Syphilis at ANC",
+                map(moh731Cohorts.syphilisScreenedAtANC(), "startDate=${startDate},endDate=${endDate}")
         );
     }
 

@@ -173,7 +173,7 @@ public class Moh731ReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("HV02-21", "Started HAART from 7 weeks to 6 months", ReportUtils.map(moh731GreenCardIndicators.onHAARTFrom7WeeksTo6Months(), indParams), "");
         dsd.addColumn("HV02-22", "On HAART Upto 12 months", ReportUtils.map(moh731GreenCardIndicators.onHAARTUpto12Months(), indParams), "");
         dsd.addColumn("HV02-23", "Net Cohort at 12 months", ReportUtils.map(moh731GreenCardIndicators.netCohortAt12Months(), indParams), "");
-        dsd.addColumn("HV02-24", "Syphilis screened at 1st ANC", ReportUtils.map(moh731GreenCardIndicators.syphilisScreenedAt1stANC(), indParams), "");
+        dsd.addColumn("HV02-24", "Syphilis screened at ANC", ReportUtils.map(moh731GreenCardIndicators.syphilisScreenedAtANC(), indParams), "");
         dsd.addColumn("HV02-25", "Syphilis screened Positive", ReportUtils.map(moh731GreenCardIndicators.syphilisScreenedPositive(), indParams), "");
         dsd.addColumn("HV02-26", "Syphilis Treated", ReportUtils.map(moh731GreenCardIndicators.syphilisTreated(), indParams), "");
         dsd.addColumn("HV02-27", "HIV+ on Modern FP at 6 weeks", ReportUtils.map(moh731GreenCardIndicators.HIVPositiveOnModernFPUpto6Weeks(), indParams), "");
