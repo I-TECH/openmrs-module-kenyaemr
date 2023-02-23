@@ -2752,23 +2752,67 @@ public class ETLMoh731GreenCardCohortLibrary {
         return cd;
     }
 
-    //HEI CTX/DDS Start <2 months	HV02-42
-    public CohortDefinition heiDDSCTXStartLessThan2Months(){
+    /**
+     * 12 Month cohort
+     * @return
+     */
+    public CohortDefinition twelveMonthCohort(){
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    String sqlQuery =  "select d.patient_id\n" +
+            "from kenyaemr_etl.etl_patient_demographics d\n" +
+            "where d.dob between date_sub(date(DATE_SUB(date(:endDate), INTERVAL DAYOFMONTH(date(:endDate)) - 1 DAY)),\n" +
+            "                             interval 12 MONTH)\n" +
+            "          and date_sub(date(:endDate), interval 12 MONTH);";
+    cd.setName("twelveMonthCohort");
+    cd.setQuery(sqlQuery);
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.setDescription("Twelve month cohort");
+    return cd;
+}
 
+    /**
+     * 24 month cohort
+     * @return
+     */
+    public CohortDefinition twentyFourMonthCohort(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery =  "select d.patient_id\n" +
+                "from kenyaemr_etl.etl_patient_demographics d\n" +
+                "where d.dob between date_sub(date(DATE_SUB(date(:endDate), INTERVAL DAYOFMONTH(date(:endDate)) - 1 DAY)),\n" +
+                "                             interval 24 MONTH)\n" +
+                "          and date_sub(date(:endDate), interval 24 MONTH);";
+        cd.setName("twentyFourMonthCohort");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("24 month cohort");
+        return cd;
+    }
+    public CohortDefinition heiDDSCTXStartWithin2Months(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery =  "SELECT en.patient_id\n" +
                 "FROM kenyaemr_etl.etl_hei_enrollment en\n" +
                 "         inner join kenyaemr_etl.etl_patient_demographics pd on en.patient_id = pd.patient_id\n" +
                 "         inner join kenyaemr_etl.etl_hei_follow_up_visit hf on hf.patient_id = en.patient_id\n" +
                 "where TIMESTAMPDIFF(MONTH, pd.DOB, hf.visit_date) <= 2\n" +
-                "  and hf.ctx_given = 105281\n" +
-                "and TIMESTAMPDIFF(MONTH, date(pd.DOB), date(:endDate)) = 12;";
+                "  and hf.ctx_given = 105281;";
         cd.setName("heiDDSCTSStartLessThan2Months");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("HEI DDS/CTS Start <2 Months");
+        cd.setDescription("HEI DDS/CTS Start <=2 Months");
 
+        return cd;
+    }
+    //HEI CTX/DDS Start <2 months	HV02-42
+    public CohortDefinition heiDDSCTXStartLessThan2Months() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("twelveMonthCohort",ReportUtils.map(twelveMonthCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("heiDDSCTXStartWithin2Months",ReportUtils.map(heiDDSCTXStartWithin2Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("twelveMonthCohort AND heiDDSCTXStartWithin2Months");
         return cd;
     }
 
@@ -2776,12 +2820,11 @@ public class ETLMoh731GreenCardCohortLibrary {
     public CohortDefinition initialPCRLessThan8Weeks(){
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "select distinct hv.patient_id \n" +
+        String sqlQuery =  "select hv.patient_id \n" +
                 "    from kenyaemr_etl.etl_hei_follow_up_visit hv \n" +
                 "    join kenyaemr_etl.etl_patient_demographics p on p.patient_id=hv.patient_id \n" +
-                "    where hv.dna_pcr_result is not null and dna_pcr_contextual_status=162080 and \n" +
+                "    where hv.dna_pcr_result is not null and \n" +
                 "    (hv.visit_date between date(:startDate) and date(:endDate)) and timestampdiff(week,p.dob,date(:endDate))<= 8; ";
-
         cd.setName("initialPCRLessThan8Weeks");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -2795,12 +2838,13 @@ public class ETLMoh731GreenCardCohortLibrary {
     public CohortDefinition initialPCROver8WeeksTo12Months(){
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "select distinct hv.patient_id \n" +
-                "    from kenyaemr_etl.etl_hei_follow_up_visit hv \n" +
-                "    join kenyaemr_etl.etl_patient_demographics p on p.patient_id=hv.patient_id \n" +
-                "    where hv.dna_pcr_result is not null and dna_pcr_contextual_status=162080 and \n" +
-                "    (hv.visit_date between date(:startDate) and date(:endDate)) and timestampdiff(WEEK,p.dob,date(:endDate)) > 8 and timestampdiff(month,p.dob,date(:endDate)) <= 12; ";
-
+        String sqlQuery =  "select hv.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
+                "         join kenyaemr_etl.etl_patient_demographics p on p.patient_id = hv.patient_id\n" +
+                "where hv.dna_pcr_result is not null\n" +
+                "  and (hv.visit_date between date(:startDate) and date(:endDate))\n" +
+                "  and timestampdiff(WEEK, p.dob, date(:endDate)) > 8\n" +
+                "  and timestampdiff(month, p.dob, date(:endDate)) <= 12; ";
         cd.setName("initialPCROver8WeeksTo12Months");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -2812,14 +2856,12 @@ public class ETLMoh731GreenCardCohortLibrary {
 
     //Initial PCR Test <12 mths Total	HV02-45
     public CohortDefinition totalInitialPCRTestLessThan12Months(){
-
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "select distinct hv.patient_id \n" +
-                "    from kenyaemr_etl.etl_hei_follow_up_visit hv \n" +
-                "    join kenyaemr_etl.etl_patient_demographics p on p.patient_id=hv.patient_id \n" +
-                "    where hv.dna_pcr_result is not null and dna_pcr_contextual_status=162080 and \n" +
-                "    (hv.visit_date between date(:startDate) and date(:endDate)) and timestampdiff(month,p.dob,date(:endDate))<12; ";
-
+        String sqlQuery = "select hv.patient_id\n" +
+                "                  from kenyaemr_etl.etl_hei_follow_up_visit hv \n" +
+                "                  join kenyaemr_etl.etl_patient_demographics p on p.patient_id=hv.patient_id \n" +
+                "                  where hv.dna_pcr_result is not null and\n" +
+                "                  (hv.visit_date between date(:startDate) and date(:endDate)) and timestampdiff(month,p.dob,date(:endDate)) <= 12;";
         cd.setName("totalInitialPCRTestLessThan12Months");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -2829,59 +2871,62 @@ public class ETLMoh731GreenCardCohortLibrary {
         return cd;
     }
 
-    //Infected 24 months	HV02-46
-    public CohortDefinition totalInfected24Months(){
-
+    public CohortDefinition totalInfectedHEI(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery =  "select hv.patient_id\n" +
-                "                  from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
-                "                  join kenyaemr_etl.etl_patient_demographics p on p.patient_id=hv.patient_id\n" +
-                "                  where dna_pcr_result= 703 and dna_pcr_contextual_status=162082 and\n" +
-                "                  hv.visit_date between date(:startDate) and date(:endDate) and timestampdiff(month,p.dob,date(:endDate))<=24;";
-
-        cd.setName("totalInfected24Months");
+                "from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
+                "where hv.dna_pcr_result = 703 and date(hv.visit_date) <= date(:endDate);";
+        cd.setName("totalInfectedHEI");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Total infected in 24 Months");
-
+        cd.setDescription("Total infected HEIs");
+        return cd;
+    }
+    //Infected 24 months	HV02-46
+    public CohortDefinition totalInfected24Months() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("twentyFourMonthCohort",ReportUtils.map(twentyFourMonthCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("totalInfectedHEI",ReportUtils.map(totalInfectedHEI(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("twentyFourMonthCohort AND totalInfectedHEI");
         return cd;
     }
 
-    //Uninfected 24 months	HV02-47
-    public CohortDefinition totalUninfectedIn24Months(){
-
+    public CohortDefinition totalUninfectedHEIs(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery =  "select hv.patient_id\n" +
-                "                  from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
-                "                  join kenyaemr_etl.etl_patient_demographics p on p.patient_id=hv.patient_id\n" +
-                "                  where dna_pcr_result= 664 and dna_pcr_contextual_status=162082 and\n" +
-                "                  hv.visit_date between date(:startDate) and date(:endDate) and timestampdiff(month,p.dob,date(:endDate))<=24;";
-
-        cd.setName("totalUninfectedIn24Months");
+                "from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
+                "where dna_pcr_result = 664\n" +
+                "  and dna_pcr_contextual_status = 162082 and date(hv.visit_date) <= date(:endDate);";
+        cd.setName("totalUninfectedHEIs");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Total uninfected in 24 Months");
-
+        cd.setDescription("Total uninfected HEIs");
+        return cd;
+    }
+    //Uninfected 24 months	HV02-47
+    public CohortDefinition totalUninfectedIn24Months() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("twentyFourMonthCohort",ReportUtils.map(twentyFourMonthCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("totalUninfectedHEIs",ReportUtils.map(totalUninfectedHEIs(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("twentyFourMonthCohort AND totalUninfectedHEIs");
         return cd;
     }
 
     //Unknown Outcome 24 mths HV02-48
     public CohortDefinition unknownOutcomesIn24Months(){
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "select d.patient_id from kenyaemr_etl.etl_patient_program_discontinuation d\n" +
-                "         inner join kenyaemr_etl.etl_patient_demographics m on d.patient_id = m.patient_id\n" +
-                "         where program_name = 'MCH Child HEI' and d.discontinuation_reason in (5240,159492)\n" +
-                "         and timestampdiff(month, date(m.dob), date(:endDate)) <= 24;";
-
-        cd.setName("unknownOutcomesIn24Months");
-        cd.setQuery(sqlQuery);
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Total Unknown outcomes in 24 Months");
-
+        cd.addSearch("twentyFourMonthCohort",ReportUtils.map(twentyFourMonthCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("exitedHEI",ReportUtils.map(exitedHEI(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("unknownStatusHEI",ReportUtils.map(unknownStatusHEI(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("twentyFourMonthCohort AND exitedHEI AND unknownStatusHEI");
         return cd;
     }
 
@@ -2890,23 +2935,38 @@ public class ETLMoh731GreenCardCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("enrolledHEITurning24Months",ReportUtils.map(enrolledHEITurning24Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("twentyFourMonthCohort",ReportUtils.map(twentyFourMonthCohort(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("heiTransferredOut",ReportUtils.map(heiTransferredOut(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("hivEnrollment", ReportUtils.map(hivEnrollment(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("enrolledHEITurning24Months AND NOTheiTransferredOut");
+        cd.setCompositionString("twentyFourMonthCohort AND NOT heiTransferredOut");
         return cd;
     }
-    public CohortDefinition enrolledHEITurning24Months(){
+    public CohortDefinition exitedHEI(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select he.patient_id\n" +
-                "              from kenyaemr_etl.etl_hei_enrollment he\n" +
-                "               join kenyaemr_etl.etl_patient_demographics d on d.patient_id = he.patient_id\n" +
-                "              where timestampdiff(month,d.dob,date(:endDate)) = 24;";
-        cd.setName("netCohortHeiIn24Months");
+        String sqlQuery = "select d.patient_id\n" +
+                "from kenyaemr_etl.etl_patient_program_discontinuation d\n" +
+                "where program_name = 'MCH Child HEI'\n" +
+                "  and d.discontinuation_reason in (5240, 159492, 160034)\n" +
+                "  and date(coalesce(d.effective_discontinuation_date, d.visit_date)) <= date(:endDate);";
+        cd.setName("exitedHEI");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Net cohort HEI in 24 Months");
+        cd.setDescription("Exited HEI");
+
+        return cd;
+    }
+    public CohortDefinition unknownStatusHEI(){
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select hv.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
+                "where date(hv.visit_date) <= date(:endDate)\n" +
+                "group by hv.patient_id\n" +
+                "having group_concat(hv.dna_pcr_result) is null;";
+        cd.setName("unknownStatusHEI");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Unknown status HEI");
 
         return cd;
     }
@@ -2925,124 +2985,164 @@ public class ETLMoh731GreenCardCohortLibrary {
 
         return cd;
     }
-
-    //Mother-baby pairs 24 months	HV02-50
-    public CohortDefinition motherBabyPairsIn24Months(){
-
+    /**
+     * Hei followup at 24 months with mother as primary care giver
+     * @return
+     */
+    public CohortDefinition motherBabyPairs(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "select distinct he.patient_id\n" +
-                "from kenyaemr_etl.etl_hei_enrollment he\n" +
-                "join kenyaemr_etl.etl_patient_demographics d on d.patient_id=he.patient_id\n" +
-                "where he.infant_mother_link is not null and\n" +
-                "he.visit_date between date(:startDate) and date(:endDate) and timestampdiff(month,d.dob,date(:endDate))<=24;";
-
+        String sqlQuery =  "select hv.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
+                "where hv.primary_caregiver = 970\n" +
+                "  and hv.visit_date between date(:startDate) and date(:endDate);";
         cd.setName("motherBabyPairsIn24Months");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Mother-baby pairs in 24 Months");
-
+        return cd;
+    }
+    //Mother-baby pairs 24 months	HV02-50
+    public CohortDefinition motherBabyPairsIn24Months(){
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("twentyFourMonthCohort",ReportUtils.map(twentyFourMonthCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("motherBabyPairs",ReportUtils.map(motherBabyPairs(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("twentyFourMonthCohort AND motherBabyPairs");
         return cd;
     }
 
-    //Pair net cohort 24 months	 HV02-51
-    public CohortDefinition pairNetCohortIn24Months(){
-
+    public CohortDefinition heiWithLivingMotherAtEnrollment(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "select he.patient_id\n" +
-                "from kenyaemr_etl.etl_hei_enrollment he\n" +
-                "join  kenyaemr_etl.etl_patient_demographics d on d.patient_id = he.patient_id\n" +
-                "where  he.mother_alive=1 and transfer_in = 1066\n" +
-                "and timestampdiff(month,d.dob,date(:endDate))>=24;";
-
-        cd.setName("pairNetCohortIn24Months");
+        String sqlQuery = "select he.patient_id\n" +
+                "    from kenyaemr_etl.etl_hei_enrollment he\n" +
+                "    where he.mother_alive = 1;";
+        cd.setName("heiWithLivingMotherAtEnrollment");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Pair net cohort in 24 Months");
-
+        cd.setDescription("HEI with living mother at registration");
         return cd;
     }
-
-    //EBF (at 6 months)	HV02-52
+    //Pair net cohort 24 months	 HV02-51
+    public CohortDefinition pairNetCohortIn24Months(){
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("twentyFourMonthCohort",ReportUtils.map(twentyFourMonthCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("heiWithLivingMotherAtEnrollment",ReportUtils.map(heiWithLivingMotherAtEnrollment(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("heiTransferredOut",ReportUtils.map(heiTransferredOut(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(twentyFourMonthCohort AND heiWithLivingMotherAtEnrollment) AND NOT heiTransferredOut");
+        return cd;
+    }
     public CohortDefinition exclusiveBFAt6Months(){
-
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "Select e.patient_id\n" +
+        String sqlQuery = "select f.patient_id from (Select e.patient_id, f.infant_feeding, group_concat(f.infant_feeding) as feeding, d.dob\n" +
                 "from kenyaemr_etl.etl_hei_enrollment e\n" +
                 "         inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
                 "         inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
-                "where f.infant_feeding = 5526\n" +
-                "  and date(e.visit_date) <= date(:endDate)\n" +
-                "  and date(f.visit_date) between date(:startDate) and date(:endDate)\n" +
-                "  and timestampdiff(month, d.dob, date(f.visit_date)) = 6;";
-
+                "where date(e.visit_date) <= date(:endDate)\n" +
+                "  and timestampdiff(month, d.dob, date(f.visit_date)) <= 6\n" +
+                "group by e.patient_id\n" +
+                "having find_in_set(6046, feeding) = 0\n" +
+                "   and find_in_set(1595, feeding) = 0\n" +
+                "   and find_in_set(5632, feeding) = 0\n" +
+                "   and find_in_set(164478, feeding) = 0\n" +
+                "   and find_in_set(5526, feeding) = 1)f;";
         cd.setName("exclusiveBFAt6Months");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Exclusive Breastfeeding at 6 months");
-
+        return cd;
+    }
+    //EBF (at 6 months)	HV02-52
+    public CohortDefinition exclusiveBFAt6Months12MonthCohort(){
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("twelveMonthCohort",ReportUtils.map(twelveMonthCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("exclusiveBFAt6Months",ReportUtils.map(exclusiveBFAt6Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("twelveMonthCohort AND exclusiveBFAt6Months");
         return cd;
     }
 
     //ERF (at 6 months)	HV02-53
     public CohortDefinition exclusiveRFAt6Months(){
-
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "Select e.patient_id\n" +
+        String sqlQuery = "select f.patient_id from (Select e.patient_id, f.infant_feeding, group_concat(f.infant_feeding) as feeding, d.dob\n" +
                 "from kenyaemr_etl.etl_hei_enrollment e\n" +
                 "         inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
                 "         inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
-                "where f.infant_feeding = 1595\n" +
-                "  and date(e.visit_date) <= date(:endDate)\n" +
-                "  and timestampdiff(month, d.dob, date(f.visit_date)) = 6\n" +
-                "  and date(f.visit_date) between date(:startDate) and date(:endDate);";
-
+                "where date(e.visit_date) <= date(:endDate)\n" +
+                "  and timestampdiff(month, d.dob, date(f.visit_date)) <= 6\n" +
+                "group by e.patient_id\n" +
+                "having find_in_set(6046, feeding) = 0\n" +
+                "   and find_in_set(1595, feeding) = 1\n" +
+                "   and find_in_set(5632, feeding) = 0\n" +
+                "   and find_in_set(164478, feeding) = 0\n" +
+                "   and find_in_set(5526, feeding) = 0)f;";
         cd.setName("exclusiveRFAt6Months");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Exclusive Replacement feeding at 6 months");
-
         return cd;
     }
-
-    //MF (at 6 months)	HV02-54
+    public CohortDefinition exclusiveRFAt6Months12MonthCohort(){
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("twelveMonthCohort",ReportUtils.map(twelveMonthCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("exclusiveRFAt6Months",ReportUtils.map(exclusiveRFAt6Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("twelveMonthCohort AND exclusiveRFAt6Months");
+        return cd;
+    }
     public CohortDefinition mixedFeedingAt6Months(){
-
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "Select e.patient_id\n" +
-                "from kenyaemr_etl.etl_hei_enrollment e\n" +
-                "         inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
-                "         inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
-                "where f.infant_feeding = 6046\n" +
-                "  and date(e.visit_date) <= date(:endDate)\n" +
-                "  and date(f.visit_date) between date(:startDate) and date(:endDate)\n" +
-                "  and timestampdiff(month, d.dob, date(f.visit_date)) = 6;";
-
+        String sqlQuery =  "select f.patient_id\n" +
+                "from (Select e.patient_id, f.infant_feeding, group_concat(f.infant_feeding) as feeding, d.dob\n" +
+                "      from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "               inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
+                "               inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+                "      where date(e.visit_date) <= date(:endDate)\n" +
+                "        and timestampdiff(month, d.dob, date(f.visit_date)) <= 6\n" +
+                "      group by e.patient_id\n" +
+                "      having find_in_set(6046, feeding) = 1\n" +
+                ") f;";
         cd.setName("mixedFeedingAt6Months");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Mixed feeding at 6 months");
-
         return cd;
     }
-
-    //BF (12 months)	HV02-55
+    //MF (at 6 months)	HV02-54
+    public CohortDefinition mixedFeedingAt6Months12MonthCohort(){
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("twelveMonthCohort",ReportUtils.map(twelveMonthCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("mixedFeedingAt6Months",ReportUtils.map(mixedFeedingAt6Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("twelveMonthCohort AND mixedFeedingAt6Months");
+        return cd;
+    }
     public CohortDefinition breastFeedingAt12Months(){
-
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "Select e.patient_id\n" +
-                "from kenyaemr_etl.etl_hei_enrollment e\n" +
-                "         inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
-                "         inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
-                "where f.infant_feeding in (5632,5526, 6046)\n" +
-                "  and date(e.visit_date) <= date(:endDate)\n" +
-                "  and date(f.visit_date) between date(:startDate) and date(:endDate)\n" +
-                "  and timestampdiff(month, d.dob, date(f.visit_date)) = 12;";
-
+        String sqlQuery =  "select f.patient_id\n" +
+                "from (Select e.patient_id, group_concat(f.infant_feeding) as feeding, d.dob\n" +
+                "      from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "               inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
+                "               inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+                "      where date(e.visit_date) <= date(:endDate)\n" +
+                "        and timestampdiff(month, d.dob, date(f.visit_date)) <= 12\n" +
+                "      group by e.patient_id\n" +
+                "      having (find_in_set(6046, feeding) = 1\n" +
+                "          or find_in_set(5632, feeding) = 1\n" +
+                "          or find_in_set(5526, feeding) = 1)\n" +
+                "         and find_in_set(1595, feeding) = 0\n" +
+                "         and find_in_set(164478, feeding) = 0) f;";
         cd.setName("breastFeedingAt12Months");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -3051,20 +3151,42 @@ public class ETLMoh731GreenCardCohortLibrary {
 
         return cd;
     }
+    //BF (12 months)	HV02-55
+    public CohortDefinition breastFeedingAt12Months12MonthCohort(){
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("twelveMonthCohort",ReportUtils.map(twelveMonthCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("breastFeedingAt12Months",ReportUtils.map(breastFeedingAt12Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("twelveMonthCohort AND breastFeedingAt12Months");
+        return cd;
+    }
 
     //Not BF (12 months)	HV02-56
+    public CohortDefinition notBreastFeedingAt12Months12MonthCohort(){
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("twelveMonthCohort",ReportUtils.map(twelveMonthCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("notBreastFeedingAt12Months",ReportUtils.map(notBreastFeedingAt12Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("twelveMonthCohort AND notBreastFeedingAt12Months");
+        return cd;
+    }
     public CohortDefinition notBreastFeedingAt12Months(){
-
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "Select e.patient_id\n" +
-                "from kenyaemr_etl.etl_hei_enrollment e\n" +
-                "         inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
-                "         inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
-                "where f.infant_feeding in (164478,1595)\n" +
-                "  and date(e.visit_date) <= date(:endDate)\n" +
-                "  and timestampdiff(month, d.dob, date(f.visit_date)) = 12\n" +
-                "  and date(f.visit_date) between date(:startDate) and date(:endDate);";
-
+        String sqlQuery =  "select f.patient_id\n" +
+                "from (Select e.patient_id, group_concat(f.infant_feeding) as feeding, d.dob\n" +
+                "      from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "               inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
+                "               inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+                "      where date(e.visit_date) <= date(:endDate)\n" +
+                "        and timestampdiff(month, d.dob, date(f.visit_date)) <= 12\n" +
+                "      group by e.patient_id\n" +
+                "      having (find_in_set(1595, feeding) = 1\n" +
+                "          or find_in_set(164478, feeding) = 1)\n" +
+                "          and find_in_set(6046, feeding) = 0\n" +
+                "          and find_in_set(5632, feeding) = 0\n" +
+                "          and find_in_set(5526, feeding) = 0) f;";
         cd.setName("notBreastFeedingAt12Months");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -3074,19 +3196,21 @@ public class ETLMoh731GreenCardCohortLibrary {
         return cd;
     }
 
-    //BF (18 months)	HV02-57
     public CohortDefinition breastFeedingAt18Months(){
-
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "Select e.patient_id\n" +
-                "from kenyaemr_etl.etl_hei_enrollment e\n" +
-                "         inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
-                "         inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
-                "where f.infant_feeding in (5632,5526, 6046)\n" +
-                "  and date(e.visit_date) <= date(:endDate)\n" +
-                "  and date(f.visit_date) between date(:startDate) and date(:endDate)\n" +
-                "  and timestampdiff(month, d.dob, date(f.visit_date)) = 18;";
-
+        String sqlQuery =  "select f.patient_id\n" +
+                "from (Select e.patient_id, group_concat(f.infant_feeding) as feeding, d.dob\n" +
+                "      from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "               inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
+                "               inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+                "      where date(e.visit_date) <= date(:endDate)\n" +
+                "        and timestampdiff(month, d.dob, date(f.visit_date)) <= 18\n" +
+                "      group by e.patient_id\n" +
+                "      having (find_in_set(6046, feeding) = 1\n" +
+                "          or find_in_set(5632, feeding) = 1\n" +
+                "          or find_in_set(5526, feeding) = 1)\n" +
+                "         and find_in_set(1595, feeding) = 0\n" +
+                "         and find_in_set(164478, feeding) = 0) f;";
         cd.setName("breastFeedingAt18Months");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -3095,26 +3219,48 @@ public class ETLMoh731GreenCardCohortLibrary {
 
         return cd;
     }
-
-    //Not BF (18 months)	HV02-58
+    //BF (18 months)	HV02-57
+    public CohortDefinition breastFeedingAt18Months24MonthCohort(){
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("twentyFourMonthCohort",ReportUtils.map(twentyFourMonthCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("breastFeedingAt18Months",ReportUtils.map(breastFeedingAt18Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("twentyFourMonthCohort AND breastFeedingAt18Months");
+        return cd;
+    }
     public CohortDefinition notBreastFeedingAt18Months(){
-
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "Select e.patient_id\n" +
-                "from kenyaemr_etl.etl_hei_enrollment e\n" +
-                "         inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
-                "         inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
-                "where f.infant_feeding in (164478,1595)\n" +
-                "  and date(e.visit_date) <= date(:endDate)\n" +
-                "  and timestampdiff(month, d.dob, date(f.visit_date)) = 18\n" +
-                "  and date(f.visit_date) between date(:startDate) and date(:endDate);";
-
-        cd.setName("notBreastFeedingAt18Months");
+        String sqlQuery =  "select f.patient_id\n" +
+                "from (Select e.patient_id, group_concat(f.infant_feeding) as feeding, d.dob\n" +
+                "      from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "               inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
+                "               inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+                "      where date(e.visit_date) <= date(:endDate)\n" +
+                "        and timestampdiff(month, d.dob, date(f.visit_date)) <= 18\n" +
+                "      group by e.patient_id\n" +
+                "      having (find_in_set(1595, feeding) = 1\n" +
+                "          or find_in_set(164478, feeding) = 1)\n" +
+                "          and find_in_set(6046, feeding) = 0\n" +
+                "          and find_in_set(5632, feeding) = 0\n" +
+                "          and find_in_set(5526, feeding) = 0) f;";
+        cd.setName("notBreastFeedingAt12Months");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Not Breastfeeding at 18 months");
+        cd.setDescription("Not Breast feeding at 12 months");
 
+        return cd;
+    }
+
+    //Not BF (18 months)	HV02-58
+    public CohortDefinition notBreastFeedingAt18Months24MonthCohort(){
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("twentyFourMonthCohort",ReportUtils.map(twentyFourMonthCohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("notBreastFeedingAt18Months",ReportUtils.map(notBreastFeedingAt18Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("twentyFourMonthCohort AND notBreastFeedingAt18Months");
         return cd;
     }
     /**

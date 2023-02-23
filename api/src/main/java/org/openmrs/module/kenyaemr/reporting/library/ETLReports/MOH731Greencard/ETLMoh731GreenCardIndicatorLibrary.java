@@ -11,7 +11,6 @@ package org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731Greencard
 
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.RevisedDatim.DatimCohortLibrary;
-import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -794,9 +793,9 @@ public class ETLMoh731GreenCardIndicatorLibrary {
      *
      * @return the indicator
      */
-    public CohortIndicator exclusiveBFAt6Months() {
+    public CohortIndicator exclusiveBFAt6Months12MonthCohort() {
         return cohortIndicator("exclusiveBFAt6Months",
-                map(moh731Cohorts.exclusiveBFAt6Months(), "startDate=${startDate},endDate=${endDate}")
+                map(moh731Cohorts.exclusiveBFAt6Months12MonthCohort(), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
@@ -806,9 +805,9 @@ public class ETLMoh731GreenCardIndicatorLibrary {
      *
      * @return the indicator
      */
-    public CohortIndicator exclusiveRFAt6Months() {
+    public CohortIndicator exclusiveRFAt6Months12MonthCohort() {
         return cohortIndicator("exclusiveRFAt6Months",
-                map(moh731Cohorts.exclusiveRFAt6Months(), "startDate=${startDate},endDate=${endDate}")
+                map(moh731Cohorts.exclusiveRFAt6Months12MonthCohort(), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
@@ -818,9 +817,9 @@ public class ETLMoh731GreenCardIndicatorLibrary {
      *
      * @return the indicator
      */
-    public CohortIndicator mixedFeedingAt6Months() {
+    public CohortIndicator mixedFeedingAt6Months12MonthCohort() {
         return cohortIndicator("mixedFeedingAt6Months",
-                map(moh731Cohorts.mixedFeedingAt6Months(), "startDate=${startDate},endDate=${endDate}")
+                map(moh731Cohorts.mixedFeedingAt6Months12MonthCohort(), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
@@ -830,9 +829,9 @@ public class ETLMoh731GreenCardIndicatorLibrary {
      *
      * @return the indicator
      */
-    public CohortIndicator breastFeedingAt12Months() {
+    public CohortIndicator breastFeedingAt12Months12MonthCohort() {
         return cohortIndicator("breastFeedingAt12Months",
-                map(moh731Cohorts.breastFeedingAt12Months(), "startDate=${startDate},endDate=${endDate}")
+                map(moh731Cohorts.breastFeedingAt12Months12MonthCohort(), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
@@ -842,9 +841,9 @@ public class ETLMoh731GreenCardIndicatorLibrary {
      *
      * @return the indicator
      */
-    public CohortIndicator notBreastFeedingAt12Months() {
+    public CohortIndicator notBreastFeedingAt12Months12MonthCohort() {
         return cohortIndicator("notBreastFeedingAt12Months",
-                map(moh731Cohorts.notBreastFeedingAt12Months(), "startDate=${startDate},endDate=${endDate}")
+                map(moh731Cohorts.notBreastFeedingAt12Months12MonthCohort(), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
@@ -854,9 +853,9 @@ public class ETLMoh731GreenCardIndicatorLibrary {
      *
      * @return the indicator
      */
-    public CohortIndicator breastFeedingAt18Months() {
+    public CohortIndicator breastFeedingAt18Months24MonthCohort() {
         return cohortIndicator("breastFeedingAt18Months",
-                map(moh731Cohorts.breastFeedingAt18Months(), "startDate=${startDate},endDate=${endDate}")
+                map(moh731Cohorts.breastFeedingAt18Months24MonthCohort(), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
@@ -866,9 +865,9 @@ public class ETLMoh731GreenCardIndicatorLibrary {
      *
      * @return the indicator
      */
-    public CohortIndicator notBreastFeedingAt18Months() {
+    public CohortIndicator notBreastFeedingAt18Months24MonthCohort() {
         return cohortIndicator("notBreastFeedingAt18Months",
-                map(moh731Cohorts.notBreastFeedingAt18Months(), "startDate=${startDate},endDate=${endDate}")
+                map(moh731Cohorts.notBreastFeedingAt18Months24MonthCohort(), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
