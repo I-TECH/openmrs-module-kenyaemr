@@ -55,11 +55,12 @@ public class ETLMoh731GreenCardCohortLibrary {
     }
     public CohortDefinition kpsWithHIVFollowupVisit(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "\n" +
-                "select f.patient_id\n" +
+        String sqlQuery = "select f.patient_id\n" +
                 "from kenyaemr_etl.etl_patient_hiv_followup f\n" +
                 "where date(f.visit_date) <= date(:endDate)\n" +
-                "  having mid(max(concat(f.visit_date,f.population_type)),11) = 164929;";
+                "  and f.population_type is not null\n" +
+                "group by f.patient_id\n" +
+                "having mid(max(concat(f.visit_date, f.population_type)), 11) = 164929;";
         cd.setName("kpsWithHIVFollowupVisit");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));

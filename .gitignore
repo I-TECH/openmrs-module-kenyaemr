@@ -65,4 +65,4 @@ nb-configuration.xml
 !.travis.yml
 *~
 #############
-
+local_history.patch
