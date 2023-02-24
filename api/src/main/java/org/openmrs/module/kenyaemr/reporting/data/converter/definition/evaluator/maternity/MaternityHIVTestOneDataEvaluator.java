@@ -35,10 +35,14 @@ public class MaternityHIVTestOneDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select v.patient_id,\n" +
-                "                 CONCAT_WS ('\\r\\n',v.test_1_kit_name,v.test_1_kit_lot_no,v.test_1_kit_expiry,v.test_1_result) as Test_one_results\n" +
-                "                 from kenyaemr_etl.etl_mchs_delivery v where date(v.visit_date) between date(:startDate) and date(:endDate);";
-
+        String qry = "select v.encounter_id,\n" +
+                "  CONCAT_WS ('\\r\\n',v.test_1_kit_name,v.test_1_kit_lot_no,v.test_1_kit_expiry,v.test_1_result) as Test_one_results\n" +
+                "from kenyaemr_etl.etl_mchs_delivery v where date(v.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "union\n" +
+                "select ht.encounter_id,\n" +
+                "  CONCAT_WS ('\\r\\n',ht.test_1_kit_name,ht.test_1_kit_lot_no,ht.test_1_kit_expiry,ht.test_1_result) as Test_one_results\n" +
+                "from kenyaemr_etl.etl_hts_test ht\n" +
+                "  join kenyaemr_etl.etl_mchs_delivery mat on mat.patient_id = ht.patient_id and mat.visit_date = ht.visit_date;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

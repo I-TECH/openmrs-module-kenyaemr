@@ -36,10 +36,10 @@ public class MaternityAdmissionNumberDataEvaluator implements PersonDataEvaluato
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select\n" +
-                "       v.patient_id,\n" +
-                "       v.anc_number\n" +
-                "from kenyaemr_etl.etl_mch_enrollment v\n" +
-                "where date(v.visit_date) between date(:startDate) and date(:endDate);";
+                "   mat.patient_id,\n" +
+                "   mat.admission_number\n" +
+                " from kenyaemr_etl.etl_mchs_delivery mat\n" +
+                " where date(mat.visit_date) between date(:startDate) and date(:endDate);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

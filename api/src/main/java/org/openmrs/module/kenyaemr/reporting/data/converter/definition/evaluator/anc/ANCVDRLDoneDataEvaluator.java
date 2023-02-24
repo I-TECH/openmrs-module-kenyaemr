@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Evaluates Definition if tested for syphilis
+ * Evaluates Definition if test results for syphilis
  */
 @Handler(supports=ANCVDRLDoneDataDefinition.class, order=50)
 public class ANCVDRLDoneDataEvaluator implements EncounterDataEvaluator {

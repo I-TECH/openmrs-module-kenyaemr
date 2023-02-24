@@ -35,7 +35,7 @@ public class SubCountyAddressCalculation extends AbstractPatientCalculation {
 		for(Integer ptId : cohort) {
 			Person person = personService.getPerson(ptId);
 			if(person.getPersonAddress() != null) {
-				ret.put(ptId, new SimpleResult(person.getPersonAddress().getCountyDistrict(), this));
+				ret.put(ptId, new SimpleResult(person.getPersonAddress().getStateProvince(), this));
 			}
 		}
 
