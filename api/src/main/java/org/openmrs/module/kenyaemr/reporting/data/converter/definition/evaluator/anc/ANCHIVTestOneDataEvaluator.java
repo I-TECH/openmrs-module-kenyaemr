@@ -36,8 +36,13 @@ public class ANCHIVTestOneDataEvaluator implements EncounterDataEvaluator {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select v.encounter_id,\n" +
-                "   CONCAT_WS ('\\r\\n',v.test_1_kit_name,v.test_1_kit_lot_no,v.test_1_kit_expiry,v.test_1_result) as Test_one_results\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v where date(v.visit_date) between date(:startDate) and date(:endDate);";
+                "      CONCAT_WS ('\\r\\n',v.test_1_kit_name,v.test_1_kit_lot_no,v.test_1_kit_expiry,v.test_1_result) as Test_one_results\n" +
+                "    from kenyaemr_etl.etl_mch_antenatal_visit v where date(v.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "union\n" +
+                "  select ht.encounter_id,\n" +
+                "    CONCAT_WS ('\\r\\n',ht.test_1_kit_name,ht.test_1_kit_lot_no,ht.test_1_kit_expiry,ht.test_1_result) as Test_one_results\n" +
+                "  from kenyaemr_etl.etl_hts_test ht\n" +
+                "       join kenyaemr_etl.etl_mch_antenatal_visit anc on anc.patient_id = ht.patient_id and anc.visit_date = ht.visit_date;\n";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

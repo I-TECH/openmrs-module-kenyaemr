@@ -36,7 +36,11 @@ public class CountyAddressCalculation extends AbstractPatientCalculation {
 		for(Integer ptId : cohort) {
 			Person person = personService.getPerson(ptId);
 			if(person.getPersonAddress() != null) {
+				if(person.getPersonAddress().getCountry() != null)
 				ret.put(ptId, new SimpleResult(person.getPersonAddress().getCountry(), this));
+				else if(person.getPersonAddress().getCountyDistrict() != null ){
+					ret.put(ptId, new SimpleResult(person.getPersonAddress().getCountyDistrict(), this));
+				}
 			}
 		}
 

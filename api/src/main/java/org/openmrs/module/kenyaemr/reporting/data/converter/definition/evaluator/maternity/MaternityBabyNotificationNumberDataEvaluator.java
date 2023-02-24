@@ -35,7 +35,7 @@ public class MaternityBabyNotificationNumberDataEvaluator implements PersonDataE
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select v.patient_id,v.birth_notification_number from kenyaemr_etl.etl_hei_enrollment v where date(v.visit_date) between date(:startDate) and date(:endDate);";
+        String qry = "select d.patient_id,d.birth_notification_number from kenyaemr_etl.etl_mchs_discharge d where date(d.visit_date) between date(:startDate) and date(:endDate);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
