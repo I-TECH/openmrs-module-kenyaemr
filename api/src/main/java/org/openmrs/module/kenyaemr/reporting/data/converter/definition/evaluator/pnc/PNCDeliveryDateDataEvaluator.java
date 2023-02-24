@@ -36,8 +36,15 @@ public class PNCDeliveryDateDataEvaluator implements EncounterDataEvaluator {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select v.encounter_id,\n" +
-                "       v.delivery_date\n" +
-                "from kenyaemr_etl.etl_mch_postnatal_visit v;";
+                "       date(coalesce(d.date_of_delivery, v.delivery_date)) as date_of_delivery\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
+                "         left join (select d.patient_id,\n" +
+                "                           mid(max(concat(d.visit_date, date(d.date_of_delivery))), 11) as date_of_delivery\n" +
+                "                    from kenyaemr_etl.etl_mchs_delivery d\n" +
+                "                    where d.visit_date <= date(:endDate)\n" +
+                "                    group by d.patient_id) d\n" +
+                "                   on v.patient_id = d.patient_id\n" +
+                "where v.visit_date between date(:startDate) and date(:endDate);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
