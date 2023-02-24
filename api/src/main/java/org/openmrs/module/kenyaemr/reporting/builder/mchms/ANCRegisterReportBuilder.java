@@ -27,6 +27,7 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultCon
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.KenyaEMRMaritalStatusDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.anc.*;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.AgeAtReportingDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLLastVLResultDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.pmtct.PMTCTIndicatorLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.SortCriteria;
@@ -158,7 +159,7 @@ public class ANCRegisterReportBuilder extends AbstractReportBuilder {
         ANCWHOStageDataDefinition ancWHOStageDataDefinition = new ANCWHOStageDataDefinition();
         ancWHOStageDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
         ancWHOStageDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        ANCVLTestResultsDataDefinition ancVLTestResultsDataDefinition = new ANCVLTestResultsDataDefinition();
+        ETLLastVLResultDataDefinition ancVLTestResultsDataDefinition = new ETLLastVLResultDataDefinition();
         ancVLTestResultsDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
         ancVLTestResultsDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
         ANCHAARTGivenBeforeFirstANCDataDefinition ancHAARTGivenBeforeFirstANCDataDefinition = new ANCHAARTGivenBeforeFirstANCDataDefinition();
@@ -228,7 +229,7 @@ public class ANCRegisterReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("Sex", new GenderDataDefinition(), "");
 
         dsd.addColumn("Unique Patient Number", identifierDef, null);
-
+        dsd.addColumn("Sub County", new CalculationDataDefinition("Subcounty", new SubCountyAddressCalculation()), "",new CalculationResultConverter());
         dsd.addColumn("Visit Date", new EncounterDatetimeDataDefinition(),"", new DateConverter(ENC_DATE_FORMAT));
         // new columns
         dsd.addColumn("ANC Number", new ANCNumberDataDefinition(),"");
