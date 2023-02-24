@@ -55,11 +55,12 @@ public class ETLMoh731GreenCardCohortLibrary {
     }
     public CohortDefinition kpsWithHIVFollowupVisit(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "\n" +
-                "select f.patient_id\n" +
+        String sqlQuery = "select f.patient_id\n" +
                 "from kenyaemr_etl.etl_patient_hiv_followup f\n" +
                 "where date(f.visit_date) <= date(:endDate)\n" +
-                "  having mid(max(concat(f.visit_date,f.population_type)),11) = 164929;";
+                "  and f.population_type is not null\n" +
+                "group by f.patient_id\n" +
+                "having mid(max(concat(f.visit_date, f.population_type)), 11) = 164929;";
         cd.setName("kpsWithHIVFollowupVisit");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1242,6 +1243,50 @@ public class ETLMoh731GreenCardCohortLibrary {
     }
 
     /**
+     * Ever tested HIV positive
+     * @return
+     */
+    public CohortDefinition everTestedHIVPositive() {
+        String sqlQuery = "select t.patient_id from kenyaemr_etl.etl_hts_test t where t.final_test_result = 'Positive' and date(t.visit_date) <= date(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("Ever tested positive for HIV");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Ever tested positive for HIV");
+        return cd;
+    }
+
+    /**
+     * Assessed for HIV risk within the period
+     * @return
+     */
+    public CohortDefinition assessedForHIVRiskWithinPeriod() {
+        String sqlQuery = "select a.patient_id from kenyaemr_etl.etl_prep_behaviour_risk_assessment a where date(a.visit_date) between date(:startDate) and date(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("Assessed for HIV risk within the period");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Assessed for HIV risk within the period");
+        return cd;
+    }
+
+    /**
+     * Assessed for HIV risk. Excludes anyone ever tested HIV positive as of reporting period
+     * @return
+     */
+    protected CohortDefinition numberAssessedForHIVRisk() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("assessedForHIVRiskWithinPeriod", ReportUtils.map(assessedForHIVRiskWithinPeriod(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("everTestedHIVPositive", ReportUtils.map(everTestedHIVPositive(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("assessedForHIVRiskWithinPeriod AND NOT everTestedHIVPositive");
+        return cd;
+    }
+
+    /**
      * Tested in PMTCT 3 months ago
      * @return
      */
@@ -2305,14 +2350,14 @@ public class ETLMoh731GreenCardCohortLibrary {
 
     //Syphilis Screened at ANC	 HV02-24
 
-    public CohortDefinition syphilisScreenedAt1stANC(){
+    public CohortDefinition syphilisScreenedAtANC(){
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "select distinct v.patient_id\n" +
-                "                from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
-                "                inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id\n" +
-                "                where anc_visit_number = 1 and (date(v.visit_date) between date(:startDate) and date(:endDate))\n" +
-                "                and v.syphilis_test_status in (1229,1228,1304);";
+        String sqlQuery =  "select v.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
+                "         inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id\n" +
+                "where date(v.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "  and v.syphilis_test_status in (1229, 1228, 1304);";
 
         cd.setName("syphilisScreenedAt1stANC");
         cd.setQuery(sqlQuery);
@@ -2323,14 +2368,15 @@ public class ETLMoh731GreenCardCohortLibrary {
         return cd;
     }
 
-    //Syphilis Screened Positive	HV02-25
+    //Syphilis Screened Positive HV02-25
     public CohortDefinition syphilisScreenedPositive(){
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "select distinct e.patient_id from kenyaemr_etl.etl_mch_enrollment e\n" +
-                "  left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id= e.patient_id\n" +
-                "where date(v.visit_date)  between date(:startDate) and date(:endDate)\n" +
-                "      and v.syphilis_test_status =1228 or e.serology =1228;";
+        String sqlQuery =  "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "         inner join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id = e.patient_id\n" +
+                "where date(v.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "    and v.syphilis_test_status = 1228;";
 
         cd.setName("syphilisScreenedPositive");
         cd.setQuery(sqlQuery);
@@ -2345,10 +2391,10 @@ public class ETLMoh731GreenCardCohortLibrary {
     public CohortDefinition treatedForSyphilis(){
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "select distinct e.patient_id from kenyaemr_etl.etl_mch_enrollment e\n" +
-                "  left outer join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id= e.patient_id\n" +
-                "where date(v.visit_date)  between date(:startDate) and date(:endDate)\n" +
-                "      and v.syphilis_treated_status =1065;;";
+        String sqlQuery =  "select e.patient_id from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "  inner join kenyaemr_etl.etl_mch_antenatal_visit v on v.patient_id= e.patient_id\n" +
+                "where date(v.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "      and v.syphilis_treated_status =1065;";
 
         cd.setName("treatedForSyphilis");
         cd.setQuery(sqlQuery);

@@ -165,6 +165,14 @@ public class ETLMoh731GreenCardIndicatorLibrary {
     }
 
     /**
+     * Assessed for HIV risk
+     * @return
+     */
+    public CohortIndicator numberAssessedForHIVRisk() {
+        return cohortIndicator("Assessed for HIV risk", map(moh731Cohorts.numberAssessedForHIVRisk(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
      * Number of patients who did First ANC visit during that period {@link org.openmrs.module.kenyaemr.PregnancyStage}
      * First ANC visit  HV02-01
      *
@@ -446,9 +454,9 @@ public class ETLMoh731GreenCardIndicatorLibrary {
      *
      * @return the indicator
      */
-    public CohortIndicator syphilisScreenedAt1stANC() {
-        return cohortIndicator("Screened for Syphilis at 1st ANC",
-                map(moh731Cohorts.syphilisScreenedAt1stANC(), "startDate=${startDate},endDate=${endDate}")
+    public CohortIndicator syphilisScreenedAtANC() {
+        return cohortIndicator("Screened for Syphilis at ANC",
+                map(moh731Cohorts.syphilisScreenedAtANC(), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
