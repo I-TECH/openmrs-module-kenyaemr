@@ -35,11 +35,26 @@ public class PNCHIVResultsWithin6WeeksDataEvaluator implements EncounterDataEval
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select v.encounter_id,\n" +
-                "                v.final_test_result as HIV_Results_in_pnc_Within_6Weeks\n" +
-                "               from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
-                "               where timestampdiff(week,date(v.delivery_date),date(v.visit_date)) between 0 and 6\n" +
-                "and date(v.visit_date) between date(:startDate) and date(:endDate);";
+        String qry = "select a.encounter_id,\n" +
+                "       if(timestampdiff(WEEK, a.date_of_delivery, a.visit_date) <= 6 and tested_at_pnc is not null, 'Yes',\n" +
+                "          'No') as tested_within_6_weeks\n" +
+                "from (select v.patient_id,\n" +
+                "             v.encounter_id,\n" +
+                "             coalesce(nullif(v.visit_date, ''), nullif(t.visit_date, ''))               as visit_date,\n" +
+                "             coalesce(nullif(d.date_of_delivery, ''), nullif(v.delivery_date, ''))      as date_of_delivery,\n" +
+                "             coalesce(nullif(v.final_test_result, ''), nullif(t.final_test_result, '')) as tested_at_pnc\n" +
+                "      from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
+                "               left join (select d.patient_id,\n" +
+                "                                 mid(max(concat(d.visit_date, date(d.date_of_delivery))), 11) as date_of_delivery\n" +
+                "                          from kenyaemr_etl.etl_mchs_delivery d\n" +
+                "                          where d.visit_date <= date(:endDate)\n" +
+                "                          group by d.patient_id) d\n" +
+                "                         on v.patient_id = d.patient_id\n" +
+                "               left join (select t.encounter_id, t.patient_id, t.visit_date, t.hts_entry_point, t.final_test_result\n" +
+                "                          from kenyaemr_etl.etl_hts_test t\n" +
+                "                          where date(t.visit_date) between date(:startDate) and date(:endDate)) t\n" +
+                "                         on v.patient_id = t.patient_id and v.visit_date = t.visit_date\n" +
+                "      where date(v.visit_date) between date(:startDate) and date(:endDate)) a;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

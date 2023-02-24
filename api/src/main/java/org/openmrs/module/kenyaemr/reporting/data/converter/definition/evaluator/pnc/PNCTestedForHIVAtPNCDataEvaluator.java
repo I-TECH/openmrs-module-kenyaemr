@@ -35,12 +35,16 @@ public class PNCTestedForHIVAtPNCDataEvaluator implements EncounterDataEvaluator
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select\n" +
-                "       max(v.encounter_id),\n" +
-                "       (case (SELECT count(encounter_id)  FROM kenyaemr_etl.etl_mch_postnatal_visit WHERE\n" +
-                "           encounter_id != (SELECT MAX(v1.encounter_id) FROM kenyaemr_etl.etl_mch_postnatal_visit v1)\n" +
-                "           and  final_test_result = \"Negative\")  when 0 then \"Initial\" else \"Retest\" end)\n" +
-                "from kenyaemr_etl.etl_mch_postnatal_visit v where date(v.visit_date) between date(:startDate) and date(:endDate);";
+        String qry = "select a.encounter_id, if(a.tested_at_pnc is not null, 'Yes', 'No') as tested_at_pnc\n" +
+                "from (select v.patient_id,\n" +
+                "             v.encounter_id,\n" +
+                "             coalesce(nullif(v.final_test_result,''), nullif(t.final_test_result,'')) as tested_at_pnc\n" +
+                "      from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
+                "               left join (select t.encounter_id, t.patient_id, t.visit_date, t.hts_entry_point, t.final_test_result\n" +
+                "                          from kenyaemr_etl.etl_hts_test t\n" +
+                "                            where date(t.visit_date) between date(:startDate) and date(:endDate)) t\n" +
+                "                         on v.patient_id = t.patient_id and v.visit_date = t.visit_date\n" +
+                "      where date(v.visit_date) between date(:startDate) and date(:endDate)) a;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

@@ -36,11 +36,18 @@ public class PNCModernFPWithin6WeeksDataEvaluator implements EncounterDataEvalua
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select v.encounter_id,\n" +
-                "       if(v.family_planning_method in\n" +
-                "          (160570, 780,5279,1359, 5275,136163, 5278, 5277,1472,190,1489), 'Yes', if(v.family_planning_method = 162332, 'No', NULL)) as Modern_FP_Within_6Weeks\n" +
+                "    if(v.family_planning_method in\n" +
+                "          (160570, 780, 5279, 1359, 5275, 136163, 5278, 5277, 1472, 190, 1489), 'Yes',\n" +
+                "          if(v.family_planning_method = 162332, 'No', NULL)) as Modern_FP_Within_6Weeks\n" +
                 "from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
-                "where date(v.visit_date) between date(:startDate) and date(:endDate)\n" +
-                "  and timestampdiff(week, date(v.delivery_date), date(v.visit_date)) between 0 and 6;";
+                "         left join (select d.patient_id,\n" +
+                "                           mid(max(concat(d.visit_date, date(d.date_of_delivery))), 11) as date_of_delivery\n" +
+                "                    from kenyaemr_etl.etl_mchs_delivery d\n" +
+                "                    where d.visit_date <= date(:endDate)\n" +
+                "                    group by d.patient_id) d\n" +
+                "                   on v.patient_id = d.patient_id\n" +
+                "where v.visit_date between date(:startDate) and date(:endDate)\n" +
+                "  and timestampdiff(week, coalesce(date(d.date_of_delivery),date(v.delivery_date)), date(v.visit_date)) between 0 and 6;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

@@ -35,9 +35,19 @@ public class PNCTestTwoResultsDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select v.encounter_id,\n" +
-                "  CONCAT_WS ('\\r\\n',v.test_2_kit_name,v.test_2_kit_lot_no,v.test_2_kit_expiry,v.test_2_result) as Test_two_results\n" +
-                "from kenyaemr_etl.etl_mch_postnatal_visit v where date(v.visit_date) between date(:startDate) and date(:endDate);";
+        String qry = "\n" +
+                "select v.encounter_id,\n" +
+                "       CONCAT_WS('\\r\\n', v.test_2_kit_name, v.test_2_kit_lot_no, v.test_2_kit_expiry,\n" +
+                "                 v.test_2_result) as Test_two_results\n" +
+                "from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
+                "where date(v.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "union\n" +
+                "select ht.encounter_id,\n" +
+                "       CONCAT_WS('\\r\\n', ht.test_2_kit_name, ht.test_2_kit_lot_no, ht.test_2_kit_expiry,\n" +
+                "                 ht.test_2_result) as Test_two_results\n" +
+                "from kenyaemr_etl.etl_hts_test ht\n" +
+                "         join kenyaemr_etl.etl_mch_antenatal_visit anc\n" +
+                "              on anc.patient_id = ht.patient_id and anc.visit_date = ht.visit_date;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
