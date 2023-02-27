@@ -40,7 +40,6 @@ public class MaternityChlorhexidineAppliedOnCordStumpDataEvaluator implements Pe
                 "  (case v.chlohexidine_applied_on_code_stump when 1065 then \"Yes\" when 1066 then \"No\" else \"\" end) as chlohexidine_applied_on_code_stump\n" +
                 "from kenyaemr_etl.etl_mchs_delivery v where date(v.visit_date) between date(:startDate) and date(:endDate);";
 
-
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
         Date startDate = (Date)context.getParameterValue("startDate");

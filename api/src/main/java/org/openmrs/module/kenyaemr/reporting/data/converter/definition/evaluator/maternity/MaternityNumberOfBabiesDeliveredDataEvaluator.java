@@ -36,10 +36,9 @@ public class MaternityNumberOfBabiesDeliveredDataEvaluator implements PersonData
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "SELECT\n" +
-                "patient_id,\n" +
-                "mode_of_delivery\n" +
-                "FROM kenyaemr_etl.etl_mchs_delivery \n" +
+        String qry = "SELECT patient_id,\n" +
+                "       (case delivery_outcome when 159913 then 1 when 159914 then 2 when 159915 then 3 end) as number_of_babies\n" +
+                "FROM kenyaemr_etl.etl_mchs_delivery\n" +
                 "WHERE DATE(visit_date) BETWEEN DATE(:startDate) AND DATE(:endDate)\n" +
                 "GROUP BY patient_id;";
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();

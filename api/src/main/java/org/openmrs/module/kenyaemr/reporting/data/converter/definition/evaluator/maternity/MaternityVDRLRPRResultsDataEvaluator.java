@@ -40,7 +40,6 @@ public class MaternityVDRLRPRResultsDataEvaluator implements PersonDataEvaluator
                 "  (case v.vdrl_rpr_results when 703 then \"Positive\" when 664 then \"Negative\" when 1118 then \"Not Done\" else \"\" end) as vdrl_rpr_results\n" +
                 "from kenyaemr_etl.etl_mchs_delivery v where date(v.visit_date) between date(:startDate) and date(:endDate);";
 
-
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
         Date startDate = (Date)context.getParameterValue("startDate");

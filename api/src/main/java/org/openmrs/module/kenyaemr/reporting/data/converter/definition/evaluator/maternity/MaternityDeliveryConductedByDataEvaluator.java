@@ -40,7 +40,6 @@ public class MaternityDeliveryConductedByDataEvaluator implements PersonDataEval
                 "  v.delivery_assistant\n" +
                 "from kenyaemr_etl.etl_mchs_delivery v where date(v.visit_date) between date(:startDate) and date(:endDate);";
 
-
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
         Date startDate = (Date)context.getParameterValue("startDate");

@@ -35,11 +35,11 @@ public class MaternityEDDUltrasoundDateDataEvaluator implements PersonDataEvalua
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select\n" +
-                "  v.patient_id,\n" +
-                "  v.edd_ultrasound\n" +
-                "from kenyaemr_etl.etl_mch_enrollment v;";
-
+        String qry = "select v.patient_id,\n" +
+                "       date(mid(max(concat(date(v.visit_date), date(v.edd_ultrasound))), 11)) as edd\n" +
+                "from kenyaemr_etl.etl_mch_enrollment v\n" +
+                "where date(v.visit_date) <= date(:endDate)\n" +
+                "group by v.patient_id;";
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
         Date startDate = (Date)context.getParameterValue("startDate");
