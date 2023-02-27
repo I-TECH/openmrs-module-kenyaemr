@@ -75,10 +75,6 @@
             jq('#pallorSeverityTbl').hide();
             jq('#pallorSeverityTbl1').hide();
             jq('#specifyUterusTbl').hide();
-            jq('#pncMotherProphylaxisTbl').hide();
-            jq('#haartProphylaxisTitleTbl').hide();
-            jq('#haartProphylaxisTreatmenTbl').hide();
-            jq('#haartMotherTbl').hide();
             if(DELIVERY_OUTCOME_QUANTITATIVE == 159913){
                 getField('delivery-outcome.value').prop("selectedIndex", 1);
                 jq('#single').show();
@@ -127,8 +123,6 @@
             // HIV Test validation
             //kit selected
             jq('#kit-name-1 select').change(kit1Selected);
-            //prior hiv  status
-            jq('#priorKnownStatus :input').prop('disabled', true);
             jq("#hiv-test2").hide();
             jq('#hiv-final-result select').attr("style", "pointer-events:none;");
             jq("#hiv-test1-result select").change(firstTestSelected);
@@ -151,12 +145,6 @@
                 jq('#vl-sample').show();
                 jq('#tbl-known-positive').show();
                 jq('#hiv-known-positive:text').val('Positive');
-                jq('#priorKnownStatus input[value=703]').prop("checked", true);
-                jq('#pncMotherHivTestTbl').hide();
-                jq('#pncMotherProphylaxisTbl').show();
-                jq('#haartProphylaxisTitleTbl').show();
-                jq('#haartProphylaxisTreatmenTbl').show();
-                jq('#haartMotherTbl').show();
 
                 //Prepopulate if already on HAART
                 if(PATIENT_ON_ART =="true") {
@@ -168,7 +156,6 @@
                 jq('#tbl-hiv-test').show();
                 jq('#tbl-unknown-status').show();
                 jq('#hiv-status:text').val("Negative");
-                jq('#priorKnownStatus input[value=664]').prop("checked", true);
                 jq('#art-and-prophylaxis').hide();
                 jq('#who-staging').hide();
                 jq('#vl-sample').hide();
@@ -179,10 +166,6 @@
                 var __duration = moment.duration(moment(encounterDateFormatted).diff(deliveryDateFormatted));
                 var testDurationWeeks = __duration.asWeeks().toFixed(0);
                 var testDurationDays = __duration.asDays().toFixed(0);
-                jq('#pncMotherProphylaxisTbl').hide();
-                jq('#haartProphylaxisTitleTbl').hide();
-                jq('#haartProphylaxisTreatmenTbl').hide();
-                jq('#haartMotherTbl').hide();
 
                 if(!isNaN(testDurationWeeks) &amp;&amp; testDurationWeeks &gt; 1) {
                     jq('#test-duration:text').val(testDurationWeeks + " Week(s)");
@@ -200,7 +183,6 @@
                 jq('#who-staging').hide();
                 jq('#vl-sample').hide();
                 var encounterDate = getValue('encounter-date.value');
-                jq('#priorKnownStatus input[value=1067]').prop("checked", true);
                 jq('#tbl-hiv-test').show();
                 var deliveryDateFormatted = moment(DATE_OF_DELIVERY, 'DD-MMM-YYYY').format('YYYY-MM-DD');
                 var encounterDateFormatted = moment(encounterDate, 'YYYY-MM-DD').format('YYYY-MM-DD');
@@ -1477,52 +1459,6 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>Prior Known Status:&#160;&#160;&#160;
-                                                <obs class="priorKnownStatus" conceptId="1169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="priorKnownStatus"
-                                                     answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                     style="radio" answerLabels="Positive,Negative,Unknown"/>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td>
-                                                <strong><U>Results in PNC</U></strong>
-                                            </td>
-                                        </tr>
-                                        <tr id="pncMotherHivTestTbl">
-                                            <td>When did mother come for HIV Test?&#160;&#160;&#160;
-                                                <obs class="pncMotherHivTest" id="pncMotherHivTest" conceptId="d6607e3d-b9a4-4eae-97d8-9bb2bce834dc"
-                                                     answerConceptIds="162080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 162081AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                     style="radio" answerLabels="Less than 6 weeks, Greater 6 weeks, Not Done"/>
-                                            </td>
-                                        </tr>
-                                        <tr id="pncMotherProphylaxisTbl">
-                                            <td>Mother’s prophylaxis given during this visit?&#160;&#160;&#160;
-                                                <obs id="pncMotherProphylaxis" conceptId="161930AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                     answerConceptIds="162229AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,74250AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                     style="radio" answerLabels="Cotrimoxazole,Dapsone, None"/>
-                                            </td>
-                                        </tr>
-                                        <tr id="haartProphylaxisTitleTbl">
-                                            <td>
-                                                <strong><U>HAART and Infant Prophylaxis and Treatment</U></strong>
-                                            </td>
-                                        </tr>
-                                        <tr id="haartProphylaxisTreatmenTbl">
-                                            <td>When did Infant come for HAART and Infant Prophylaxis and Treatment  ?&#160;&#160;&#160;
-                                                <obs id="haartProphylaxisTreatment" conceptId="166665AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                     answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                     style="radio" answerLabels="Less than 6 weeks, Greater 6 weeks"/>
-                                            </td>
-                                        </tr>
-                                        <tr id="haartMotherTbl">
-                                            <td>Was HAART for Mother given?&#160;&#160;&#160;
-                                                <obs id="haartMother" conceptId="163783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                     answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 164142AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                     style="radio" answerLabels="Yes,No,Not Applicable, Revisit"/>
-                                            </td>
-                                        </tr>
-                                        <tr>
                                             <td>
                                                 <strong><U>Partner Testing</U></strong>
                                             </td>
@@ -1563,6 +1499,27 @@
                                                     answerLabels="Cotrimoxazole,Dapsone,None"
                                                     style="radio" id="prophylaxis-used"/>
                                             </td>
+                                        <tr>
+                                        <td>Was HAART for Mother given?&#160;&#160;&#160; </td>
+                                              <td> <obs id="haartMother" conceptId="163783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 164142AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     style="radio" answerLabels="Yes,No,Not Applicable, Revisit"/>
+                                            </td>
+                                        </tr>
+                                            <tr>
+                                                  <td>When did mother come for HIV Test?&#160;&#160;&#160;</td>
+                                                <td><obs class="pncMotherHivTest" id="pncMotherHivTest" conceptId="d6607e3d-b9a4-4eae-97d8-9bb2bce834dc"
+                                                     answerConceptIds="162080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 162081AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     style="radio" answerLabels="Less than 6 weeks, Greater 6 weeks, Not Done"/>
+                                            </td>
+                                    </tr>
+                                        <tr>
+                                            <td>When did Infant come for HAART and Infant Prophylaxis and Treatment  ?&#160;&#160;&#160;</td>
+                                                <td><obs id="haartProphylaxisTreatment" conceptId="166665AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     style="radio" answerLabels="Less than 6 weeks, Greater 6 weeks"/>
+                                            </td>
+                                        </tr>
                                         </tr>
                                         <tr>
                                             <td>AZT for the baby dispensed?</td>
