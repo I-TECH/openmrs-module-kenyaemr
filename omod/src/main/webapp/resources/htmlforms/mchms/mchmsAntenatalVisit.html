@@ -46,6 +46,7 @@
     var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
 
     var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
+    var PATIENT_IS_HIGH_RISK_POSITIVE = <lookup expression="kenyaemr.isHighRiskPositiveMchClient()" />;
     var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.latestObs(159427).getValueCoded()"/>";
     var BABY_PROPHYLAXIS = "<lookup expression="fn.latestObs(1282).getValueCoded()"/>";
     var LATEST_VIRAL_LOAD_DATE = "<lookup expression="fn.latestObs(856).getObsDatetime()"/>";
@@ -56,15 +57,15 @@
     var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
     var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
     var REGIMEN_NAME = GREENCARD_VELOCITY.split(",")[4].split(":")[1];
-    var HIGH_RISK_CATEGORIZATION = "<lookup expression="kenyaemr.HighRiskClientCategorization()" />";
     var LATEST_LMP_DATE =  "<lookup expression="fn.latestObs(1427).getValueDatetime()"/>";
     //Start on ready
 	jq(function () {
         jq('#anc-counselling').hide();
 		jq('#counselled input').change(onANCCounselChange);
         jq('#package-group').hide();
-		jq('#package-care').hide();
+        jq('#positives-care-package').hide();
 		jq('#antenatal-care input').change(onPackageChange);
+		jq('#positive-antenatal-care input').change(onPositivePackageChange);
 		jq('#treatment-done').hide();
 		jq('#hepatitis-b-screening input').change(onHepatitisChange);
 		jq('#fgm-done input').change(onFgmDoneChange);
@@ -166,6 +167,13 @@
 		}else if(LATEST_LDL_DATE != "" &amp;&amp; LATEST_VIRAL_LOAD_DATE == ""){
             jq('#vl-date:text').val(LATEST_LDL_DATE);
             jq('#vl-value:text').val('LDL');
+		}
+
+		if(PATIENT_IS_HIGH_RISK_POSITIVE){
+            jq('#package-positives-group').show();
+		}else{
+            jq('#package-positives-group :checkbox').prop('checked', false);
+            jq('#package-positives-group').hide();
 		}
        //Partner testing
         jq('#partner-hiv-status select').prop("disabled", true);
@@ -331,6 +339,15 @@
             }
         }else{
             jq('#package-care').hide();
+        }
+    }
+
+    function onPositivePackageChange() {
+        var pAge = parseInt('<lookup expression="patient.age"/>');
+        if (getValue('positive-antenatal-care.value') == 1065) {
+            jq('#positives-care-package').show();
+        }else{
+            jq('#positives-care-package').hide();
         }
     }
     function onHepatitisChange() {
@@ -713,6 +730,13 @@
                                 jq('#package-care').show();
                                }
 
+                            var antenatalPositivePackage = getValue('positive-antenatal-care.value');
+                            if (antenatalPositivePackage == 1065) {
+                                jq('#positives-care-package').show();
+                            }else{
+                                jq('#positives-care-package').hide();
+                            }
+
                             var treatmentVisit = getValue('treatmentVisit.value');
                             if(treatmentVisit == 1065){
                                 jq('#treatment-dose').show();
@@ -728,6 +752,12 @@
                                 getField('syphilis-test-results.value').prop("selectedIndex", 1);
                             }else if (syphilisResults == 1228){
                                 getField('syphilis-test-results.value').prop("selectedIndex", 2);
+                            }
+
+                            if(PATIENT_IS_HIGH_RISK_POSITIVE){
+                                jq('#package-positives-group').show();
+                            }else{
+                                jq('#package-positives-group').hide();
                             }
 
                         });
@@ -1611,7 +1641,7 @@
 				</td>
 			</tr>
 			<tr>
-
+        <!-- minimum package for negatives   -->
 			<tr id="package-group">
 				<td colspan="2">
 					<fieldset>
@@ -1689,7 +1719,107 @@
 					</fieldset>
 				</td>
 			</tr>
+			<!-- minimum package for positives   -->
+			<tr id="package-positives-group">
+				<td colspan="2">
+					<fieldset>
+						<legend>Minimum Package of Care</legend>
+						<table align="center" width="100%" class="tb1">
+							<tr>
+								<td>Has the client received the minimum package of Care: &#160;&#160;&#160;&#160;&#160;&#160;&#160;
 
+									<obs conceptId="161595"
+										 id="positive-antenatal-care"
+										 style="radio"
+										 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Yes,No"/>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="6">
+									<table id="positives-care-package" align="center" width="100%" class="tb1">
+
+										<obsgroup groupingConceptId="161628">
+											<tr>
+												<td style="text-align: left">
+													<div style="float: left; padding-right: 50px">
+														<obs conceptId="1592"
+															 answerConceptId="164836"
+															 answerLabel="Identify a case manager (M2M/HCW)" style="checkbox"
+														/>
+														<br />
+														<obs conceptId="1592"
+															 answerConceptId="166607"
+															 answerLabel="Pre appointmnet SMS" style="checkbox"/>
+														<br />
+														<obs conceptId="1592"
+															 answerConceptId="166486"
+															 answerLabel="Tartgeted home visits" style="checkbox"/>
+														<br />
+														<obs conceptId="1592"
+															 answerConceptId="1167"
+															 answerLabel="Psychosocial and disclosure support" style="checkbox"/>
+														<br />
+														<obs conceptId="1592"
+															 answerConceptId="165002"
+															 answerLabel="3-monthly Enhanced ART adherence assessments optimize TLD"
+															 style="checkbox"/>
+														<br />
+														<obs conceptId="1592"
+															 answerConceptId="163310"
+															 answerLabel="Timely viral load monitoring, early ART switches" style="checkbox"/>
+														<br />
+														<obs conceptId="1592"
+															 answerConceptId="167410"
+															 answerLabel="Complex case reviews in MDT/Consultation with clinical mentors" style="checkbox"/>
+														<br />
+													</div>
+												</td>
+												<td>
+													<div style="float: left; padding-right: 50px">
+														<obs conceptId="1592"
+															 answerConceptId="167079"
+															 answerLabel="Enhanced longitudinal Mother-Infant Pair follow up" style="checkbox"/>
+														<br />
+														<obs conceptId="1592"
+															 answerConceptId="166563"
+															 answerLabel="Early HEI case identification" style="checkbox"
+															 id="ovm"
+														/>
+														<br /><obs conceptId="1592"
+																   answerConceptId="160116"
+																   answerLabel="Bi weekly random file audits to inform quality improvement" style="checkbox"
+																   id="ovm"
+													/>
+														<br />
+														<obs conceptId="1592"
+															 answerConceptId="160031"
+															 answerLabel="Patient who default-LTFU root cause audit and return to care plan" style="checkbox"
+															 id="ovm"
+														/>
+														<br />
+														<obs conceptId="1592"
+															 answerConceptId="166663"
+															 answerLabel="Screen and support - GBV, Disclosure and Stigma" style="checkbox"
+															 id="ovm"
+														/>
+														<br />
+														<obs conceptId="1592"
+															 answerConceptId="159612"
+															 answerLabel="RH education and FP during breastfeeding period" style="checkbox"
+															 id="ovm"
+														/>
+													</div>
+												</td>
+											</tr>
+										</obsgroup>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</fieldset>
+				</td>
+			</tr>
 
 			<tr>
 				<td colspan="2">
