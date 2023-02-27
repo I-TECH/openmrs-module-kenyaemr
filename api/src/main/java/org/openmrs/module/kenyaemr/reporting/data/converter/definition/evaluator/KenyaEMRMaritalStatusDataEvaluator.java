@@ -35,7 +35,8 @@ public class KenyaEMRMaritalStatusDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select ld.patient_id, ld.marital_status from kenyaemr_etl.etl_patient_demographics ld INNER JOIN kenyaemr_etl.etl_mchs_delivery d ON d.patient_id = ld.patient_id where date(d.visit_date) between date(:startDate) and date(:endDate) group by ld.patient_id;";
+        String qry = "select d.patient_id, d.marital_status\n" +
+                "from kenyaemr_etl.etl_patient_demographics d;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
