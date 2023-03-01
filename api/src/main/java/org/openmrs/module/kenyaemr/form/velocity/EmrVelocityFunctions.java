@@ -25,6 +25,7 @@ import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.calculation.library.HighRiskNegativeClientCategorizationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.HighRiskPositiveClientCategorizationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.DiscontinuationVelocityCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.GreenCardVelocityCalculation;
@@ -352,5 +353,16 @@ public class EmrVelocityFunctions {
 
 	}
 
+	/**
+	 * Checks whether the patient is PMTCT positive High Risk Client
+	 * @return true if patient is enrolled in MCH and negative High Risk Client
+	 *
+	 * */
 
+	public Boolean isHighRiskNegativeMchClient() {
+
+		CalculationResult highRiskNegativeMchClient = EmrCalculationUtils.evaluateForPatient(HighRiskNegativeClientCategorizationCalculation.class, null,session.getPatient());
+		return 	(Boolean) highRiskNegativeMchClient.getValue();
+
+	}
 }
