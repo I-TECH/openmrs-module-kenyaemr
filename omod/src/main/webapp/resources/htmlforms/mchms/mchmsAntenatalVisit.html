@@ -759,6 +759,11 @@
                             }else{
                                 jq('#package-positives-group').hide();
                             }
+                            if(PATIENT_IS_HIGH_RISK_NEGATIVE){
+                                jq('#package-group').show();
+                            }else{
+                                jq('#package-group').hide();
+                            }
 
                         });
 					</script>
