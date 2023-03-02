@@ -57,6 +57,7 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
     public void afterReturning(Object returnValue, Method method, Object[] args, Object target) throws Throwable {
 
         AppointmentsService appointmentsService = Context.getService(AppointmentsService.class);
+        AppointmentServiceDefinitionService appointmentServiceDefinitionService  = Context.getService(AppointmentServiceDefinitionService.class);
         ObsService obsService = Context.getObsService();
         ConceptService conceptService = Context.getConceptService();
         PersonService personService = Context.getPersonService();
@@ -165,9 +166,10 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
                     }
 
                     //create new refill appointment if added on editing followup
-                    if((o.getConcept().getUuid().equals(NEXT_DRUG_REFILL_APPOINTMENT_DATE_CONCEPT_UUID)) && drugRefillAppointment == null) {
+                    if((o.getConcept().getUuid().equals(NEXT_DRUG_REFILL_APPOINTMENT_DATE_CONCEPT_UUID)) && drugRefillAppointment == null &&
+                        appointmentServiceDefinitionService.getAppointmentServiceByUuid(DRUG_REFILL_SERVICE) != null) {
                         AppointmentServiceDefinition appointmentServiceDefinition = new AppointmentServiceDefinition();
-                        appointmentServiceDefinition.setAppointmentServiceId(Context.getService(AppointmentServiceDefinitionService.class).getAppointmentServiceByUuid(DRUG_REFILL_SERVICE).getId());
+                        appointmentServiceDefinition.setAppointmentServiceId(appointmentServiceDefinitionService.getAppointmentServiceByUuid(DRUG_REFILL_SERVICE).getId());
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
                         Appointment editedFollowUpAppointment = appointmentsService.getAppointmentByUuid(enc.getUuid());
@@ -216,7 +218,6 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
                 );
 
                 for (Obs o : obs) { // Loop through the obs and compose Appointment object for Bahmni
-                    Date appointmentDate = null;
                     AppointmentServiceDefinition appointmentServiceDefinition = new AppointmentServiceDefinition();
                     if(o.getConcept().getUuid().equals(APPOINTMENT_REASON_CONCEPT_UUID) ) {
                         if(o.getValueCoded().getConceptId() == 160523 || o.getValueCoded().getConceptId() == 160521 ) {
@@ -225,10 +226,10 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
                     }
 
                     // create HIV followup appointment
-                    if(o.getConcept().getUuid().equals(NEXT_CLINICAL_APPOINTMENT_DATE_CONCEPT_UUID) ) {
+                    if(o.getConcept().getUuid().equals(NEXT_CLINICAL_APPOINTMENT_DATE_CONCEPT_UUID) && appointmentServiceDefinitionService.getAppointmentServiceByUuid(HIV_FOLLOWUP_SERVICE) != null ) {
                         nxtAppointment = true;
 
-                        appointmentServiceDefinition.setAppointmentServiceId(Context.getService(AppointmentServiceDefinitionService.class).getAppointmentServiceByUuid(HIV_FOLLOWUP_SERVICE).getId());
+                        appointmentServiceDefinition.setAppointmentServiceId(appointmentServiceDefinitionService.getAppointmentServiceByUuid(HIV_FOLLOWUP_SERVICE).getId());
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                         Date nextApptStartDateTime = DateUtil.convertToDate(dateFormat.format(o.getValueDatetime()).concat("T07:00:00.0Z"), DateUtil.DateFormatType.UTC);
                         Date nextApptEndDateTime = DateUtil.convertToDate(dateFormat.format(o.getValueDatetime()).concat("T20:00:00.0Z"), DateUtil.DateFormatType.UTC);
@@ -247,8 +248,8 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
                     }
 
                     // create appointment for drug refill
-                    if(o.getConcept().getUuid().equals(NEXT_DRUG_REFILL_APPOINTMENT_DATE_CONCEPT_UUID)) {
-                        appointmentServiceDefinition.setAppointmentServiceId(Context.getService(AppointmentServiceDefinitionService.class).getAppointmentServiceByUuid(DRUG_REFILL_SERVICE).getId());
+                    if(o.getConcept().getUuid().equals(NEXT_DRUG_REFILL_APPOINTMENT_DATE_CONCEPT_UUID) && appointmentServiceDefinitionService.getAppointmentServiceByUuid(DRUG_REFILL_SERVICE) != null) {
+                        appointmentServiceDefinition.setAppointmentServiceId(appointmentServiceDefinitionService.getAppointmentServiceByUuid(DRUG_REFILL_SERVICE).getId());
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
                         Appointment currentFollowUpAppointment = appointmentsService.getAppointmentByUuid(enc.getUuid());
