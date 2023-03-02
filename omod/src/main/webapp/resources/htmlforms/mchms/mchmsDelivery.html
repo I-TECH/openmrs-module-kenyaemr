@@ -467,6 +467,7 @@
             var given_vitaminkTriplets = getValue('given-vitamink-triplets.value');
 
             var deliveryOutcome = getValue('delivery-outcome.value');
+            var deliveryDate = getValue('delivery-date.value');
 
             if (gestation != null) {
                 var gestationValue = parseFloat(gestation);
@@ -586,6 +587,12 @@
                 return false;
             }else{
                 getField('given-vitamink-triplets.error').html('Please specify if vitamin K was given.').hide();
+            }
+            if (deliveryDate &gt; encounterDate ) {
+                getField('delivery-date.error').html('Delivery date cannot be later than encounter date.').show();
+                return false;
+            }else{
+                getField('delivery-date.error').html('Delivery date cannot be later than encounter date.').show();
             }
 
             return true;
@@ -873,7 +880,7 @@
                             </td>
                             <td>Date and time of Delivery:</td>
                             <td>
-                                <obs conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime="true" required = "true"/>
+                                <obs conceptId="5599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime="true" id="delivery-date" required = "true"/>
                             </td>
                         </tr>
                         <tr>

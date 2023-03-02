@@ -75,17 +75,22 @@
             jq('#pallorSeverityTbl').hide();
             jq('#pallorSeverityTbl1').hide();
             jq('#specifyUterusTbl').hide();
-            if(DELIVERY_OUTCOME_QUANTITATIVE == 159913){
+            jq('#pncMotherProphylaxisTbl').hide();
+            jq('#haartProphylaxisTitleTbl').hide();
+            jq('#haartProphylaxisTreatmenTbl').hide();
+            jq('#haartMotherTbl').hide();
+
+           if(DELIVERY_OUTCOME_QUANTITATIVE.replace(/[^\d]/g, '') == 159913){
                 getField('delivery-outcome.value').prop("selectedIndex", 1);
                 jq('#single').show();
                 jq('#twins').hide();
                 jq('#triplets').hide();
-            }else if(DELIVERY_OUTCOME_QUANTITATIVE == 159914){
+            }else if(DELIVERY_OUTCOME_QUANTITATIVE.replace(/[^\d]/g, '') == 159914){
                 jq('#single').show();
                 jq('#twins').show();
                 jq('#triplets').hide();
                 getField('delivery-outcome.value').prop("selectedIndex", 2);
-            }else if(DELIVERY_OUTCOME_QUANTITATIVE == 159915){
+            }else if(DELIVERY_OUTCOME_QUANTITATIVE.replace(/[^\d]/g, '') == 159915){
                 jq('#single').show();
                 jq('#twins').show();
                 jq('#triplets').show();
