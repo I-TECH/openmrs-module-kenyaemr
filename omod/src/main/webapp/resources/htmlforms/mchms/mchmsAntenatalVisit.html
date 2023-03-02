@@ -47,6 +47,7 @@
 
     var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
     var PATIENT_IS_HIGH_RISK_POSITIVE = <lookup expression="kenyaemr.isHighRiskPositiveMchClient()" />;
+    var PATIENT_IS_HIGH_RISK_NEGATIVE = <lookup expression="kenyaemr.isHighRiskNegativeMchClient()" />;
     var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.latestObs(159427).getValueCoded()"/>";
     var BABY_PROPHYLAXIS = "<lookup expression="fn.latestObs(1282).getValueCoded()"/>";
     var LATEST_VIRAL_LOAD_DATE = "<lookup expression="fn.latestObs(856).getObsDatetime()"/>";
@@ -63,7 +64,9 @@
         jq('#anc-counselling').hide();
 		jq('#counselled input').change(onANCCounselChange);
         jq('#package-group').hide();
+        jq('#package-care').hide();
         jq('#positives-care-package').hide();
+        jq('#package-positives-group').hide();
 		jq('#antenatal-care input').change(onPackageChange);
 		jq('#positive-antenatal-care input').change(onPositivePackageChange);
 		jq('#treatment-done').hide();
@@ -115,8 +118,7 @@
             jq('#art-and-prophylaxis').show();
             jq('#who-staging').show();
             jq('#vl-sample').show();
-            jq('#package-group').hide();
-            //Prepopulate if already on HAART
+                      //Prepopulate if already on HAART
             if(PATIENT_ON_ART =="true") {
                 jq('#on-art:text').val('Yes');
             }else {
@@ -175,6 +177,13 @@
             jq('#package-positives-group :checkbox').prop('checked', false);
             jq('#package-positives-group').hide();
 		}
+
+        if(PATIENT_IS_HIGH_RISK_NEGATIVE){
+            jq('#package-group').show();
+        }else{
+            jq('#package-group :checkbox').prop('checked', false);
+            jq('#package-group').hide();
+        }
        //Partner testing
         jq('#partner-hiv-status select').prop("disabled", true);
         //skip pattern
@@ -189,7 +198,6 @@
             jq("#expiry-date2 input").prop("disabled", true);
             getField('hiv-final-result.value').val(664);
             jq('#ccc-no input').prop("disabled", true);
-            jq('#package-group').show();
         }
         //Positive
         if(firstTest ==703){
@@ -198,7 +206,6 @@
             jq(".kit-name2 select").prop("disabled", false);
             jq(".lot-number2 input").prop("disabled", false);
             jq("#expiry-date2 input").prop("disabled", false);
-            jq('#package-group').hide();
         }
         //Invalid
         if(firstTest ==163611){
@@ -207,7 +214,6 @@
             jq(".kit-name2 select").prop("disabled", false);
             jq(".lot-number2 input").prop("disabled", false);
             jq("#expiry-date2 input").prop("disabled", false);
-            jq('#package-group').hide();
         }
         //Final test
         var secondTest = getField("hiv-test2-result.value").val();
@@ -478,7 +484,6 @@
             clearHiddenSections(jq('.lot-number2'));
             getField('hiv-final-result.value').val(664);
             jq('#ccc-no input').prop("disabled", true);
-            jq('#package-group').show();
         }
         //Positive
         if(firstTest ==703){
@@ -489,7 +494,6 @@
             jq("#expiry-date2 input").prop("disabled", false);
             clearHiddenSections(jq('#hiv-final-result'));
             clearHiddenSections(jq('#hiv-test2-result'));
-            jq('#package-group').hide();
         }
         //Invalid
         if(firstTest ==163611){
@@ -498,7 +502,6 @@
             jq("kit-name2 select").prop("disabled", false);
             jq("lot-number2 input").prop("disabled", false);
             jq("#expiry-date2 input").prop("disabled", false);
-            jq('#package-group').hide();
             clearHiddenSections(jq('#ccc-no'));
             clearHiddenSections(jq('#hiv-final-result'));
             clearHiddenSections(jq('#hiv-test2-result'));
@@ -651,7 +654,6 @@
                                 jq("#expiry-date2 input").prop("disabled", true);
                                 getField('hiv-final-result.value').val(664);
                                 jq('#ccc-no input').prop("disabled", true);
-                                jq('#package-group').show();
                             }
                             //Positive
                             if(firstTest ==703){
@@ -660,7 +662,6 @@
                                 jq(".kit-name2 select").prop("disabled", false);
                                 jq(".lot-number2 input").prop("disabled", false);
                                 jq("#expiry-date2 input").prop("disabled", false);
-                                jq('#package-group').hide();
                             }
                             //Invalid
                             if(firstTest ==163611){
@@ -669,7 +670,6 @@
                                 jq(".kit-name2 select").prop("disabled", false);
                                 jq(".lot-number2 input").prop("disabled", false);
                                 jq("#expiry-date2 input").prop("disabled", false);
-                                jq('#package-group').hide();
                             }
                             //Final test
                             var secondTest = getField("hiv-test2-result.value").val();
@@ -758,6 +758,11 @@
                                 jq('#package-positives-group').show();
                             }else{
                                 jq('#package-positives-group').hide();
+                            }
+                            if(PATIENT_IS_HIGH_RISK_NEGATIVE){
+                                jq('#package-group').show();
+                            }else{
+                                jq('#package-group').hide();
                             }
 
                         });
