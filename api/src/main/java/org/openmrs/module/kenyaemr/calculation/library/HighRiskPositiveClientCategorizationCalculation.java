@@ -17,6 +17,7 @@ import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
+import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
@@ -63,10 +64,11 @@ public class HighRiskPositiveClientCategorizationCalculation extends AbstractPat
      * 1. PMTCT client enrolled in MCH
      * 2. Tested within the last 30 days (HTS + MCH module)
      * 3. All AGYW HIV tested positive  10-19
-     * 4. All enrolled in last 30 days
-     * 5. All AGYW HIV enrolled  10-19
-     * 6. All Enrolled clients with detectable VL > 200 copies/ml
-     * 7. Tranfer Ins or Transist clients
+     * 4. Reported positive at latest MCH enrollment
+     * 5. All enrolled in last 30 days
+     * 6. All AGYW HIV enrolled  10-19
+     * 7. All Enrolled clients with detectable VL > 200 copies/ml
+     * 8. Tranfer Ins or Transist clients
      */
 
     @Override
@@ -90,6 +92,7 @@ public class HighRiskPositiveClientCategorizationCalculation extends AbstractPat
             boolean result = false;
             Integer hivEnrollmentDiffDays = 0;
             Integer htsEncounterDiffDays = 0;
+            Integer mchReportedTestDiffDays = 0;
             Date currentDate = new Date();
             Patient patient = patientService.getPatient(ptId);
             Double vl = EmrCalculationUtils.numericObsResultForPatient(lastVLObs, ptId);
@@ -98,7 +101,7 @@ public class HighRiskPositiveClientCategorizationCalculation extends AbstractPat
             Concept htsPositiveResult = cs.getConcept(HtsConstants.HTS_POSITIVE_RESULT_CONCEPT_ID);
             Concept patientTypeQuestion = cs.getConcept(164932);
             Concept PatientTypeTIAnswer = Dictionary.getConcept(Dictionary.TRANSFER_IN);
-
+            Concept dateReportedTestedHiv = Dictionary.getConcept(Dictionary.DATE_OF_HIV_DIAGNOSIS);
             // 1. PMTCT client enrolled in MCH
             if (inMchmsProgram.contains(ptId)) {
 
@@ -107,10 +110,13 @@ public class HighRiskPositiveClientCategorizationCalculation extends AbstractPat
                 Encounter lastHtsRetestEnc = EmrUtils.lastEncounter(patient, HtsConstants.htsEncType, HtsConstants.htsRetestForm);
 
                 //  Check new Tested HIV+ clients in MCH module in the past one month
+                Form mchEnrollmentForm = MetadataUtils.existing(Form.class, MchMetadata._Form.MCHMS_ENROLLMENT);
                 Form antenatalVisitForm = MetadataUtils.existing(Form.class, MchMetadata._Form.MCHMS_ANTENATAL_VISIT);
                 Form matVisitForm = MetadataUtils.existing(Form.class, MchMetadata._Form.MCHMS_DELIVERY);
                 Form pncVisitForm = MetadataUtils.existing(Form.class, MchMetadata._Form.MCHMS_POSTNATAL_VISIT);
+                EncounterType mchEnrollmentEncounterType = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_ENROLLMENT);
                 EncounterType mchConsultationEncounterType = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_CONSULTATION);
+                Encounter lastMCHEnrollmentEnc = EmrUtils.lastEncounter(patient,mchEnrollmentEncounterType,mchEnrollmentForm );
                 Encounter lastANCHtsEnc = EmrUtils.lastEncounter(patient,mchConsultationEncounterType,antenatalVisitForm );
                 Encounter lastMatHtsEnc = EmrUtils.lastEncounter(patient,mchConsultationEncounterType,matVisitForm );
                 Encounter lastPNCHtsEnc = EmrUtils.lastEncounter(patient,mchConsultationEncounterType,pncVisitForm );
@@ -154,8 +160,34 @@ public class HighRiskPositiveClientCategorizationCalculation extends AbstractPat
                     }
 
                 }
+                //  MCH enrollment form reported status
+                if(lastMCHEnrollmentEnc != null) {
+                    Date dateReportedTested = null;
+                    for (Obs obs : lastMCHEnrollmentEnc.getObs()) {
+                        if (obs.getConcept().equals(dateReportedTestedHiv)) {
+                            dateReportedTested = obs.getValueDatetime();
+                        }
+                    }
+                    boolean patientHasPositiveReportedResult = lastMCHEnrollmentEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastMCHEnrollmentEnc, htsFinalTestQuestion, htsPositiveResult) : false;
+                    // Reported positive at latest MCH enrollment
+                    if (patientHasPositiveReportedResult) {
+                        // 4. Reported positive at latest MCH enrollment and AGYW
+                        if (patient.getAge() >= 10 && patient.getAge() <= 19) {
+                            result = true;
+                        }
+                        // 4.1  Reported positive at latest MCH enrollment test done within last 30 days
+                        if (dateReportedTested != null) {
+                            mchReportedTestDiffDays = daysBetween(currentDate, dateReportedTested);
+                            if (mchReportedTestDiffDays <= 30) {
+                                result = true;
+                            }
+                        }
+                    }
+                }
+
+
                 //Check Enrolled
-                // 4. New Enrolled clients enrolled in the past one month
+                // 5. New Enrolled clients enrolled in the past one month
                 if(inHivProgram.contains(ptId)) {
                     PatientProgram patientProgramHiv = EmrCalculationUtils.resultForPatient(inHivProgramResultMap, ptId);
                     Date hivEnrolmentDate = patientProgramHiv.getDateEnrolled();
@@ -163,15 +195,15 @@ public class HighRiskPositiveClientCategorizationCalculation extends AbstractPat
                     if (hivEnrollmentDiffDays <= 30) {
                         result = true;
                     }
-                    // 5. All Enrolled on age group 10-19
+                    // 6. All Enrolled on age group 10-19
                     if (patient.getAge() >= 10 && patient.getAge() <= 19) {
                         result = true;
                     }
-                    // 6. All Enrolled with detectable VL > 200 copies/ml
+                    // 7. All Enrolled with detectable VL > 200 copies/ml
                     if (vl != null && vl >= 200) {
                         result = true;
                     }
-                    //7. All transfer in clients
+                    //8. All transfer in clients
                     EncounterService encounterService = Context.getEncounterService();
                     EncounterType hivEnrolmentEncounter = encounterService.getEncounterTypeByUuid(HivMetadata._EncounterType.HIV_ENROLLMENT);
                     Encounter lastHivEnrollmentEncounter = EmrUtils.lastEncounter(patientService.getPatient(ptId), hivEnrolmentEncounter);

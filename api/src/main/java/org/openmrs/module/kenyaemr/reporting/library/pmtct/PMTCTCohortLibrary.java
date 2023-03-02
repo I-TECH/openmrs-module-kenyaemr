@@ -34,9 +34,9 @@ public class PMTCTCohortLibrary {
      */
     public CohortDefinition newClientsANCCohortDefinition() {
         String sqlQuery = "select distinct v.patient_id\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
-                "  inner join kenyaemr_etl.etl_mch_enrollment e on e.patient_id=v.patient_id\n" +
-                "     where v.visit_date between date(:startDate) AND date(:endDate);";
+                "       from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
+                "         inner join kenyaemr_etl.etl_mch_enrollment e on e.patient_id=v.patient_id\n" +
+                "            where v.anc_visit_number = 1  and v.visit_date between date(:startDate) AND date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("ancNewClients");
         cd.setQuery(sqlQuery);

@@ -216,6 +216,17 @@
             }
 		}
 
+        function showWhetherReferred() {
+            var val = jq(this).val();
+            if (val == YES_CONCEPT_ID) {
+                jq("#referral-reason").show();
+            }
+            else {
+                jq("#referral-reason").hide();
+                clearHiddenSections(jq('#referral-reason'));
+            }
+        }
+
         function showOtherFacilityReferredFrom() {
             var val = jq(this).val();
             if (val == OTHER_REFERRAL_CONCEPT_ID) {
@@ -278,6 +289,7 @@
 			var birthDate = "<lookup expression="patient.birthdate" />";
 			jq("#tbl-other-followup").hide();
 			jq("#tbl-other-caregiver").hide();
+            jq("#referral-reason").hide();
             jq("#referral-from-specify").hide();
             jq("#referral-to-specify").hide();
             jq("#otherFollowMilestoneOther").hide();
@@ -297,6 +309,8 @@
 			jq("#folloup-for :input[type=radio]").change(showOtherSpecifyFollowup);
             //other followup milestone
             jq("#otherFollowMilestone :input[type=radio]").change(showOtherFollowMilestone);
+            //Referral question
+            jq("#referralQuestion :input[type=radio]").change(showWhetherReferred);
             //other facility referred from
             jq("#referralFrom :input[type=radio]").change(showOtherFacilityReferredFrom);
             //other facility referred to
@@ -460,15 +474,16 @@
 							<td><obs conceptId="1109AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="105281AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" /></td>
 							<td><obs conceptId="1193AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="461AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="" style="checkbox" /></td>
 							<td><obs conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" id="tb-assesment" answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1661AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1679AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="No signs,Suspect,Confirmed,TB Rx,INH,Not done" answerSeparator="&lt;br/&gt;" /></td>
-							<td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="next-appointment-date" allowFutureDates="true" /><br /><br />
-								Referred? <br /> <obs conceptId="1788AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Yes,No" style="radio" /> <br /> <br />
-								Reason for Referral <br /> <obs conceptId="164359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> <br /><br />
+							<td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="next-appointment-date" allowFutureDates="true" /><br /><br /><br /><br />
+								Referred? <br /> <obs conceptId="1788AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="referralQuestion" answerLabels="Yes,No" style="radio" /> <br /> <br />
+								<table id="referral-reason"><tr><td>Reason for Referral <br />
+								Specify:<obs conceptId="164359AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> <br /><br /></td></tr></table>
 								Referral from: <br />
 								<obs id="referralFrom" conceptId="160481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerConceptIds="1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Other Health facility,Community Unit" answerSeparator="&lt;br/&gt;" /><br /><br />
-								<obs conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="referral-from-specify"/> <br /><br />
+								<table id="referral-from-specify"><tr><td>Specify: <obs conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /> <br /><br /></td></tr></table>
 								Referral to:<br />
 								<obs id="referralTo" conceptId="163145AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerConceptIds="1537AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160543AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Other Health facility,Community Unit" answerSeparator="&lt;br/&gt;" /><br /><br />
-								<obs conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="referral-to-specify"/> <br /><br />
+								<table id="referral-to-specify"><tr><td>Specify: <obs conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/> <br /><br /></td></tr></table>
 							</td>
 						</tr>
 						</tbody>
