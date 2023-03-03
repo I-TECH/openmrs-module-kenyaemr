@@ -11,6 +11,25 @@
         kenyaui.openPanelDialog({ templateId: 'visit-summary', width: 85, height: 70, scrolling: true });
     }
 
+	function getO3URL() {
+        var patientID = "${ currentPatient.id }";
+        var patientUUID = "${ currentPatient.uuid }";
+		var getUrl = window.location;
+        var baseUrl = getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
+        baseUrl = baseUrl + "/spa"
+        if(isEmpty(patientUUID) == false) {
+            // Sample: http://localhost:8080/openmrs/spa/patient/49ceb938-bac0-4514-b712-7452121a8c24/chart/Patient%20Summary
+            baseUrl = baseUrl + "/patient/" + patientUUID + "/chart/Patient%20Summary"
+        }
+        var spaUrl = new URL(baseUrl);
+        window.location.replace(spaUrl);
+
+        function isEmpty(value) {
+            return (value === null || value === undefined || value.length === 0);
+        }
+		return(spaUrl);
+    }
+
 </script>
 
 <div class="ke-panelbar" style="text-align: right">
