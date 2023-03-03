@@ -51,6 +51,7 @@
 				<ref bean="kenyaemr.common.report.artDrug" />
 				<ref bean="kenyaemr.common.report.etlMissedAppointments" />
 				<ref bean="kenyaemr.etl.common.report.moh731"/>
+				<ref bean="kenyaemr.etl.common.report.htsprediction"/>
 				<ref bean="kenyaemr.common.report.moh745"/>
 				<ref bean="kenyaemr.etl.common.report.Moh731KDoD"/>
 				<ref bean="kenyaemr.etl.common.report.datim"/>
@@ -476,6 +477,15 @@
 		<!--<property name="template" value="kenyaemr:moh731_greencard_template.xls" />-->
 		<property name="template" value="kenyaemr:moh731.xls" />
 	</bean>
+
+	<bean id="kenyaemr.etl.common.report.htsprediction" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+        <property name="targetUuid" value="76edc288-d49a-47b5-91ff-804b513ddc05" />
+        <property name="name" value="HTS Prediction Report" />
+        <property name="description" value="HTS Prediction Report" />
+        <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:hts/hts_prediction_template.xls" />
+		<property name="repeatingSection" value="sheet:1,row:8,dataset:screenedPatients" />
+    </bean>
 
 	<bean id="kenyaemr.common.report.moh745" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="a5348342-a05e-11ec-b909-0242ac120002" />
