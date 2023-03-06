@@ -56,6 +56,27 @@
 	margin-left: 8px;
 }
 </style>
+<script type="text/javascript">
+    jq = jQuery;
+	function getO3URL() {
+		var patientID = "${ currentPatient.id }";
+        var patientUUID = "${ currentPatient.uuid }";
+		var getUrl = window.location;
+        var baseUrl = getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
+        baseUrl = baseUrl + "/spa"
+        if(isEmpty(patientUUID) == false) {
+            // Sample: http://localhost:8080/openmrs/spa/patient/49ceb938-bac0-4514-b712-7452121a8c24/chart/Patient%20Summary
+            baseUrl = baseUrl + "/patient/" + patientUUID + "/chart/Patient%20Summary"
+        }
+        var spaUrl = new URL(baseUrl);
+        window.location.replace(spaUrl);
+
+        function isEmpty(value) {
+            return (value === null || value === undefined || value.length === 0);
+        }
+		return(spaUrl);
+    }
+</script>
 <div class="action-container">
 	<div class="action-section">
 
@@ -108,6 +129,12 @@
 				<a href="${ ui.pageLink("covid19", "covidHome", [patientId: currentPatient]) }" class="float-left">
 					<i class="fa fa fa-cog fa-2x"></i>
 					Covid-19
+				</a>
+			</li>
+			<li class="float-left" style="margin-top: 7px">
+				<a href="javascript:getO3URL()" class="float-left">
+					<i class="fa fa fa-cog fa-2x"></i>
+					KenyaEMR on 3.x
 				</a>
 			</li>
 
