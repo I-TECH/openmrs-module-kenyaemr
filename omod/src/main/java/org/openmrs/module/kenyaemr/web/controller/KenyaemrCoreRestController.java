@@ -165,6 +165,38 @@ public class KenyaemrCoreRestController extends BaseRestController {
         
     }
 
+     /**
+     * Returns custom patient object
+     * @param request
+     * @param patientUuid
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/patient") 
+    @ResponseBody
+    public Object getPatientIdByPatientUuid(@RequestParam("patientUuid") String patientUuid) {
+        ObjectNode patientNode = JsonNodeFactory.instance.objectNode();
+        if (StringUtils.isBlank(patientUuid)) {
+            return new ResponseEntity<Object>("You must specify patientUuid in the request!",
+                    new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        }
+
+        Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
+        ObjectNode patientObj = JsonNodeFactory.instance.objectNode();
+
+        if (patient == null) {
+            return new ResponseEntity<Object>("The provided patient was not found in the system!",
+                    new HttpHeaders(), HttpStatus.NOT_FOUND);
+        }
+        patientNode.put("patientId", patient.getPatientId());
+        patientNode.put("name", patient.getPerson().getPersonName().getFullName());
+        patientNode.put("age", patient.getAge());
+
+        patientObj.put("results", patientNode);
+
+		return patientObj.toString();
+        
+    }
+
 
 
     /**
