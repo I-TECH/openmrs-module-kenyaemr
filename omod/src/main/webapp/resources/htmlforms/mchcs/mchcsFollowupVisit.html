@@ -334,7 +334,8 @@
 			// add medication
 			var tbAssesment = getValue('tb-assesment.value');
 			var nextAppointmentDate = getValue('next-appointment-date.value');
-			var longasLastingNet = getValue('long-lasting-net.value');
+			var longLastingNet = getValue('long-lasting-net.value');
+            var pAge = parseInt('<lookup expression="patient.age"/>');
 
 			if (weight == "") {
 				getField('weight.error').html('Please specify the weight for client.').show();
@@ -366,12 +367,15 @@
 			}else{
 				getField('next-appointment-date.error').html('Please specify the next appointment date for client.').hide();
 			}
-			if (longasLastingNet == "") {
-				getField('long-lasting-net.error').html('Please specify if the long-lasting insecticidal nets (LLIN) was given to client.').show();
-				return false;
-			}else{
-				getField('long-lasting-net.error').html('Please specify if the long-lasting insecticidal nets (LLIN) was given to client.').hide();
-			}
+			if (pAge &lt; 1) {
+                if (longLastingNet == "") {
+                    getField('long-lasting-net.error').html('Please specify if the long-lasting insecticidal nets (LLIN) was given to client.').show();
+                    return false;
+                } else {
+                    getField('long-lasting-net.error').html('Please specify if the long-lasting insecticidal nets (LLIN) was given to client.').hide();
+                }
+            }
+            return true;
 		});
 	</script>
 
@@ -672,8 +676,9 @@
 								<tr>
 									<td id="calculated-age-deworming" class="value"></td>
 									<td><obs conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="79413AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,70439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Mebendazole,Albendazole" style="radio" />										</td>
-									<td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /><obs conceptId="1621AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-									<td><obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
+									<td><obs conceptId="1443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+										<obs conceptId="161563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1513AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161553AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+									<td><obs conceptId="162549AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" /></td>
 								</tr>
 							</obsgroup>
 							<tr>
