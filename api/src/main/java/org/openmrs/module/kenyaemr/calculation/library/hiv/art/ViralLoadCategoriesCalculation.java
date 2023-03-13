@@ -17,6 +17,8 @@ import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.*;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LostToFollowUpCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.NeedsViralLoadTestCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.PendingViralLoadResultCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.ui.framework.SimpleObject;
@@ -46,13 +48,16 @@ public class ViralLoadCategoriesCalculation extends AbstractPatientCalculation i
 
                 //Checks for ltfu
                 Set<Integer> ltfu = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
+                //Checks for those due for VL; We should not categorize those patients who are already due for VL test
+                Set<Integer> dueForVl = CalculationUtils.patientsThatPass(calculate(new NeedsViralLoadTestCalculation(), cohort, context));
+                Set<Integer> pendingVLResult = CalculationUtils.patientsThatPass(calculate(new PendingViralLoadResultCalculation(), cohort, context));
                 // All on ART already
                 LastViralLoadResultCalculation lastVlResultCalculation = new LastViralLoadResultCalculation();
                 CalculationResultMap lastVlResults = lastVlResultCalculation.evaluate(cohort, null, context);
                 CalculationResultMap ret = new CalculationResultMap();
                 for(Integer ptId:cohort) {
                         boolean eligibleForFlag = false;
-                       if(!ltfu.contains(ptId) && inHivProgram.contains(ptId)){
+                       if(!ltfu.contains(ptId) && inHivProgram.contains(ptId) && !dueForVl.contains(ptId) && !pendingVLResult.contains(ptId)){
                                 String lastVlResult = null;
                                 Double lastVlResultValue = null;
                                 Date lastVLResultDate = null;
