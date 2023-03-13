@@ -1,0 +1,179 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+    <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+    <script type="text/javascript">
+
+
+        $(function() {
+            $('#assessment-outcome input[type=radio]').css("pointer-events", "none");
+            $("#anxiety-group").on("change", function() {
+                    $('tr').each(function() {
+                       $(this).find('input[type="radio"]').click(function() {
+                       $(this).parents('tr').find('input[type="radio"]').not(this).prop('checked', false);
+                      });
+                    });
+                    const scores = {160215:0, 167000:1, 167001:2, 167002:3};
+                    var totalScore = $("#anxiety-group input:checked").map(function() {
+                    return scores[$(this).val()];
+                }).get().reduce((acc, curr) => acc + curr, 0);
+
+                if(totalScore &lt; 5)
+                    $("#assessment-outcome input[value=159410]").prop("checked", true);
+                else if(totalScore &gt; 4 &amp;&amp; totalScore &lt; 10)
+                    $("#assessment-outcome input[value=1498]").prop("checked", true);
+                else if(totalScore &gt; 9 &amp;&amp; totalScore &lt; 15)
+                    $("#assessment-outcome input[value=1499]").prop("checked", true);
+                else
+                    $("#assessment-outcome input[value=1500]").prop("checked", true);
+           });
+        });
+
+    </script>
+    <style>
+        .simple-table {
+            border: solid 1px #DDEEEE;
+            border-collapse: collapse;
+            border-spacing: 0;
+            font: normal 13px Arial, sans-serif;
+        }
+
+        .simple-table thead th {
+            background-color: #DDEFEF;
+            border: solid 1px #DDEEEE;
+            color: #336B6B;
+            padding: 10px;
+            text-align: left;
+            text-shadow: 1px 1px 1px #fff;
+        }
+
+        .simple-table td {
+            border: solid 1px #DDEEEE;
+            color: #333;
+            padding: 10px;
+            text-shadow: 1px 1px 1px #fff;
+        }
+    </style>
+
+    <div class="ke-form-header">
+        <table width="100%">
+            <tr>
+                <td>Date: <encounterDate id="encounter-date" showTime="true" /></td>
+                <td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="ke-form-content">
+        <fieldset>
+
+            <fieldset>
+                <legend>
+                    <strong> Generalized Anxiety Disorder Assessment
+                    </strong>
+                </legend>
+                <table class="simple-table" id="anxiety-group">
+                    <tr>
+                        <td></td>
+                        <td><b> Over the last 2 weeks, how often have you been bothered by any of the following problems?</b></td>
+                        <td><b> Not at all </b> </td>
+                        <td><b> Several days </b> </td>
+                        <td><b> More than half the days</b> </td>
+                        <td><b> Nearly every day </b></td>
+
+                    </tr>
+                    <tr>
+                        <td>1.</td>
+                        <td>Feeling nervous, anxious or<br/> on edge</td>
+                        <td><obs conceptId="167003"  answerConceptIds="160215" style="radio" showLabel="false" answerLabels="" /></td>
+                        <td><obs conceptId="167003" answerConceptIds="167000" style="radio"  showLabel="false" answerLabels=""/></td>
+                        <td><obs conceptId="167003"  answerConceptIds="167001" style="radio" showLabel="false" answerLabels=""/></td>
+                        <td><obs conceptId="167003"  answerConceptIds="167002" style="radio" showLabel="false" answerLabels=""/></td>
+                    </tr>
+
+                    <tr>
+                        <td>2.</td>
+                        <td>Not being able to stop or <br/> control worrying</td>
+                            <td><obs conceptId="167005" labelText=" " answerConceptIds="160215" style="radio"  answerLabels=""/></td>
+                            <td><obs conceptId="167005" labelText=" " answerConceptIds="167000" style="radio"  answerLabels=""/></td>
+                            <td><obs conceptId="167005" labelText=" " answerConceptIds="167001" style="radio" answerLabels=""/></td>
+                            <td><obs conceptId="167005" labelText=" " answerConceptIds="167002" style="radio" answerLabels=""/></td>
+                    </tr>
+                    <tr>
+                        <td>3.</td>
+                        <td>Worrying too much about <br/> different things</td>
+                            <td><obs conceptId="166482" labelText=" " answerConceptIds="160215" style="radio" answerLabels=""/></td>
+                            <td><obs conceptId="166482" labelText=" " answerConceptIds="167000" style="radio" answerLabels=""/></td>
+                            <td><obs conceptId="166482" labelText=" " answerConceptIds="167001" style="radio" answerLabels=""/></td>
+                            <td><obs conceptId="166482" labelText=" " answerConceptIds="167002" style="radio" answerLabels=""/></td>
+                    </tr>
+                    <tr>
+                        <td>4.</td>
+                        <td>Trouble Relaxing</td>
+                            <td><obs conceptId="167064" labelText=" " answerConceptIds="160215" style="radio" answerLabels=""/></td>
+                            <td><obs conceptId="167064" labelText=" " answerConceptIds="167000" style="radio" answerLabels=""/></td>
+                            <td><obs conceptId="167064" labelText=" " answerConceptIds="167001" style="radio" answerLabels=""/></td>
+                            <td><obs conceptId="167064" labelText=" " answerConceptIds="167002" style="radio" answerLabels=""/></td>
+                    </tr>
+                    <tr>
+                        <td>5.</td>
+                        <td>Being so restless that it is <br/> hard to sit still</td>
+                            <td><obs conceptId="167065" labelText=" " answerConceptIds="160215" style="radio" answerLabels=""/></td>
+                            <td><obs conceptId="167065" labelText=" " answerConceptIds="167000" style="radio" answerLabels=""/></td>
+                            <td><obs conceptId="167065" labelText=" " answerConceptIds="167001" style="radio" answerLabels=""/></td>
+                            <td><obs conceptId="167065" labelText=" " answerConceptIds="167002" style="radio" answerLabels=""/></td>
+                    </tr>
+                    <tr>
+                        <td>6.</td>
+                        <td>Feeling bad about yourself, or that you are a failure, <br/> or that you have let yourself or your family down </td>
+                            <td><obs conceptId="167066" labelText=" " answerConceptIds="160215" style="radio"  answerLabels=""/></td>
+                            <td><obs conceptId="167066" labelText=" " answerConceptIds="167000" style="radio" answerLabels=""/></td>
+                            <td><obs conceptId="167066" labelText=" " answerConceptIds="167001" style="radio" answerLabels=""/></td>
+                            <td><obs conceptId="167066" labelText=" " answerConceptIds="167002" style="radio" answerLabels=""/></td>
+
+                    </tr>
+                    <tr>
+                        <td>7.</td>
+                        <td>Feeling afraid as if <br/> something awful might <br/> happen</td>
+                            <td><obs conceptId="167067" labelText=" " answerConceptIds="160215" style="radio" answerLabels=""/></td>
+                            <td><obs conceptId="167067" labelText=" " answerConceptIds="167000" style="radio" answerLabels=""/></td>
+                            <td><obs conceptId="167067" labelText=" " answerConceptIds="167001" style="radio"  answerLabels=""/></td>
+                            <td><obs conceptId="167067" labelText=" " answerConceptIds="167002" style="radio" answerLabels=""/></td>
+                    </tr>
+                </table>
+                <br /><hr/><br />
+            </fieldset>
+            <fieldset>
+                <legend>
+                    <strong> Anxiety Assessment Score </strong>
+                </legend>
+                <table class="simple-table">
+                        <td>GAD 7 Rating:</td>
+                        <td>
+                            <obs
+                                    conceptId="167267"
+                                    answerConceptIds="159410,1498,1499,1500"
+                                    answerLabels="Minimal Anxiety,Mild Anxiety,Moderate Anxiety,Severe Anxiety"
+                                    style="radio" id="assessment-outcome"
+                            />
+                        </td>
+                </table>
+            </fieldset>
+        </fieldset>
+    </div>
+    <div class="ke-form-footer">
+        <submit />
+    </div>
+
+</htmlform>

@@ -27,6 +27,7 @@
 		<property name="commonVisitForms">
 			<set>
 				<ref bean="kenyaemr.common.form.triage" />
+				<ref bean="kenyaemr.common.form.gad7" />
 				<ref bean="kenyaemr.common.form.clinicalEncounter" />
 				<ref bean="kenyaemr.common.form.labResults" />
 				<ref bean="kenyaemr.common.form.tbScreening" />
@@ -35,7 +36,7 @@
 				<ref bean="kenyaemr.common.form.htsinitialtest"/>
 				<ref bean="kenyaemr.common.form.htsconfirmatorytest"/>
 				<ref bean="kenyaemr.common.form.htsLinkage"/>
-			    <ref bean="kenyaemr.common.form.cervicalCancerScreening"/>
+				<ref bean="kenyaemr.common.form.cervicalCancerScreening"/>
 				<ref bean="kenyaemr.common.form.cervicalCancerAssessment"/>
 				<ref bean="kenyaemr.hiv.form.genderBasedViolenceScreening"/>
 				<ref bean="kenyaemr.common.form.hivSelfTesting"/>
@@ -64,7 +65,7 @@
 				<ref bean="kenyaemr.common.report.activePatientsLinelist" />
 				<ref bean="kenyaemr.nupi.report.allPatientsMissingNationalUniquePatientIdentifier" />
 				<ref bean="kenyaemr.common.report.rdqaReport" />
-<!--				<ref bean="kenyaemr.common.report.clients.died" />-->
+				<!--				<ref bean="kenyaemr.common.report.clients.died" />-->
 				<ref bean="kenyaemr.common.report.clients.transferred.in" />
 				<ref bean="kenyaemr.common.report.clients.transferred.out" />
 				<ref bean="kenyaemr.hiv.report.htsPositiveCLientsNotLinkedToCare"/>
@@ -189,6 +190,26 @@
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:triage.html" />
 		<property name="order" value="200010" />
+	</bean>
+
+	<!-- Generalized Anxiety Disorder Assessment -->
+	<bean id="kenyaemr.common.form.gad7" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="${metadata.form.GAD_7}" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+				<ref bean="kenyaemr.app.hts" />
+				<ref bean="kenyaemr.app.prep" />
+				<ref bean="kenyaemr.app.counselling" />
+				<ref bean="kenyakeypop.app.keypopulation.provider" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:generalizedAnxietyDisorderAssessment.html" />
+		<property name="order" value="200021" />
 	</bean>
 
 	<!-- Clinical Encounter -->
@@ -479,13 +500,13 @@
 	</bean>
 
 	<bean id="kenyaemr.etl.common.report.htsprediction" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
-        <property name="targetUuid" value="76edc288-d49a-47b5-91ff-804b513ddc05" />
-        <property name="name" value="HTS Prediction Report" />
-        <property name="description" value="HTS Prediction Report" />
-        <property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="targetUuid" value="76edc288-d49a-47b5-91ff-804b513ddc05" />
+		<property name="name" value="HTS Prediction Report" />
+		<property name="description" value="HTS Prediction Report" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 		<property name="template" value="kenyaemr:hts/hts_prediction_template.xls" />
 		<property name="repeatingSection" value="sheet:1,row:8,dataset:screenedPatients" />
-    </bean>
+	</bean>
 
 	<bean id="kenyaemr.common.report.moh745" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="a5348342-a05e-11ec-b909-0242ac120002" />
@@ -598,25 +619,25 @@
 	<bean id="kenyaemr.nupi.report.allPatientsMissingNationalUniquePatientIdentifier" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
 		<property name="targetUuid" value="c7fbb62a-c165-11ec-9d64-0242ac120002" />
 		<property name="name" value="All Patients Missing National Unique Patient Identifier" />
-	    <property name="description" value="List of clients who do not have national unique patient identifier listed" />
+		<property name="description" value="List of clients who do not have national unique patient identifier listed" />
 		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.MissingNUPIIdentifierCalculation" />
 		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
-    <!-- =========================== RDQA Reports =============================-->
-    <bean id="kenyaemr.common.report.rdqaReport" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
-        <property name="targetUuid" value="ed1cfbf2-64c6-11e4-86ed-10c37b209d8a" />
-        <property name="name" value="RDQA Report" />
-        <property name="description" value="Report for Routine Data Quality Analysis" />
-        <property name="apps">
-            <set>
-                <ref bean="kenyaemr.app.reports" />
-            </set>
+	<!-- =========================== RDQA Reports =============================-->
+	<bean id="kenyaemr.common.report.rdqaReport" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="ed1cfbf2-64c6-11e4-86ed-10c37b209d8a" />
+		<property name="name" value="RDQA Report" />
+		<property name="description" value="Report for Routine Data Quality Analysis" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set>
 		</property>
-        <property name="template" value="kenyaemr:rdqa/rdqaTemplate.xls" />
-        <property name="repeatingSection" value="sheet:1,row:11,dataset:allPatients | sheet:2,row:11,dataset:activePatients " />
-    </bean>
+		<property name="template" value="kenyaemr:rdqa/rdqaTemplate.xls" />
+		<property name="repeatingSection" value="sheet:1,row:11,dataset:allPatients | sheet:2,row:11,dataset:activePatients " />
+	</bean>
 
 	<bean id="kenyaemr.common.report.currentInCareNotStartedOnART" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
 		<property name="targetUuid" value="0e325e0e-e60e-40be-b83b-e4e30d0ffdd0" />
@@ -645,13 +666,13 @@
 
 	</bean>
 
-<!--	<bean id="kenyaemr.common.report.clients.died" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">-->
-<!--		<property name="targetUuid" value="d4c6805e-7ecf-11e5-8b43-10c37b209c79" />-->
-<!--		<property name="name" value="Clients died" />-->
-<!--		<property name="description" value="Patients who have died" />-->
-<!--		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>-->
+	<!--	<bean id="kenyaemr.common.report.clients.died" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">-->
+	<!--		<property name="targetUuid" value="d4c6805e-7ecf-11e5-8b43-10c37b209c79" />-->
+	<!--		<property name="name" value="Clients died" />-->
+	<!--		<property name="description" value="Patients who have died" />-->
+	<!--		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>-->
 
-<!--	</bean>-->
+	<!--	</bean>-->
 
 	<!-- MER indicators-->
 	<bean id="kenyaemr.common.report.mer-indicators" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
