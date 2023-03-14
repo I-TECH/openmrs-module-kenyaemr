@@ -64,7 +64,7 @@ public class ViralLoadCategoriesCalculation extends AbstractPatientCalculation i
                                         lastVLResultDate = (Date) res.get("lastVlDate");
                                         if (daysSince(lastVLResultDate, context) <= 365) {
                                                 if(lastVlResult =="LDL"){
-                                                        vlMessage = "Suppressed";
+                                                        vlMessage = "LDL";
                                                 } else {
                                                         lastVlResultValue = Double.parseDouble(lastVlResult);
                                                         categorizeViralLoad(lastVlResultValue);
@@ -81,17 +81,16 @@ public class ViralLoadCategoriesCalculation extends AbstractPatientCalculation i
         }
 
         private void categorizeViralLoad(Double lastVlResultValue) {
-                //If VL level is above 1000 in the last 12 months, the patient is unsuppressed
-                if ((lastVlResultValue >= 1000)) {
-                        vlMessage = "Unsuppressed";
-                }
-                //If VL level is between 400 and 999 in the last 12 months, the patient has high viremia
-                if (lastVlResultValue >= 50 && lastVlResultValue <= 999) {
-                        vlMessage = "Low Level viremia";
-                }
-                //If VL level is between 0 and 399 in the last 12 months, the patient has low viremia
-                if (lastVlResultValue <= 49) {
-                        vlMessage = "Suppressed";
+                if (lastVlResultValue >= 200.0) {// Unsuppressed category
+                    if (lastVlResultValue >= 200.0 && lastVlResultValue <= 999.0) {
+                        vlMessage = "High Risk LLV";
+                    } else if (lastVlResultValue >= 1000.0) {
+                        vlMessage = "Suspected Treatment Failure";
+                    }
+                } else if (lastVlResultValue >= 50.0 && lastVlResultValue <= 199.0) { // suppressed category
+                        vlMessage = "Low Risk LLV";
+                } else if (lastVlResultValue < 50.0) {
+                        vlMessage = "LDL";
                 }
         }
 
