@@ -247,6 +247,12 @@
                     getField('transfer-in-date.error').html('Transfer in date, should not be later than Date first enrolled in HIV care').show();
                     return false;
                 }
+
+                var isTransferInFutureDate = moment(moment(moment(transferInDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isAfter(moment().format('YYYY-MM-DD'));
+                if (isTransferInFutureDate) {
+                    getField('transfer-in-date.error').html('Transfer in date should not be in future').show();
+                    return false;
+                }
             }
             if(entryPointStatus == TRANSFER_IN) {
                 var isARTStartDateBeforeFirstEnrolled = moment(moment(moment(artStartDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isBefore(moment(moment(firstEnrolledDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD'));
@@ -694,7 +700,7 @@
 				<table>
 					<tr>
 						<td>Transfer in date:</td>
-						<td><obs conceptId="160534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="transfer-in-date"/></td>
+						<td><obs conceptId="160534AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" id="transfer-in-date"/></td>
 					</tr>
 					<tr>
 						<td>Transferred from facility:</td>
