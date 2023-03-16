@@ -16,7 +16,6 @@ import org.joda.time.Months;
 import org.joda.time.Weeks;
 import org.openmrs.*;
 import org.openmrs.api.OrderService;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -45,7 +44,7 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
         return flagMsg.toString();
     }
 
-    StringBuilder flagMsg = new StringBuilder();
+    StringBuilder flagMsg = new StringBuilder("");
 
     /**
      * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
@@ -61,7 +60,6 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
 
         // Get whether the child is HIV Exposed
         CalculationResultMap lastChildHivStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS), cohort, context);
-        CalculationResultMap lastPcrTestReaction = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION), cohort, context);
         CalculationResultMap lastPcrTestQualitative = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE), cohort, context);
         Set<Integer> pendingDNARapidTestResults = CalculationUtils.patientsThatPass(calculate(new PendingDNAPCRRapidTestResultCalculation(), cohort, context));
 
@@ -74,8 +72,6 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
         CalculationResultMap ret = new CalculationResultMap();
 
         OrderService orderService = Context.getOrderService();
-        PatientService patientService = Context.getPatientService();
-        OrderType labOrderType = orderService.getOrderTypeByUuid(OrderType.TEST_ORDER_TYPE_UUID);
 
         for (Integer ptId : cohort) {
 
@@ -85,7 +81,6 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
             if (inMchcsProgram.contains(ptId) && !pendingDNARapidTestResults.contains(ptId)) {
 
                 Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, ptId);
-                Obs pcrTestObs = EmrCalculationUtils.obsResultForPatient(lastPcrTestReaction, ptId);
                 Obs pcrTestObsQual = EmrCalculationUtils.obsResultForPatient(lastPcrTestQualitative, ptId);
 
                 if (pcrTestObsQual != null) {
@@ -96,7 +91,7 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
                 //get birth date of this patient
                 Person person = Context.getPersonService().getPerson(ptId);
 
-                if (hivStatusObs != null && pcrTestObsQual == null && (hivStatusObs.getValueCoded().equals(hivExposed))  && !order.getOrderReason().equals(PCR_6_WEEKS) && getAgeInWeeks(person.getBirthdate(), context.getNow()) >= 6) {
+                if (hivStatusObs != null && pcrTestObsQual == null && hivStatusObs.getValueCoded().equals(hivExposed) && getAgeInWeeks(person.getBirthdate(), context.getNow()) >= 6) {
                     needsPcr = true;
                     flagMsg.append("Due for week-6 PCR test");
                 } else if (hivStatusObs != null && pcrTestObsQual != null && order != null && hivStatusObs.getValueCoded().equals(hivExposed) && pcrTestObsQual.getValueCoded() == NEGATIVE && !order.getOrderReason().equals(PCR_6_MONTHS) && order.getOrderReason().equals(PCR_6_WEEKS) && getAgeInMonths(person.getBirthdate(), context.getNow()) >= 6) {
@@ -115,7 +110,7 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
         return ret;
     }
 
-   public static Integer getAgeInWeeks(Date birtDate, Date context) {
+    public static Integer getAgeInWeeks(Date birtDate, Date context) {
         DateTime d1 = new DateTime(birtDate.getTime());
         DateTime d2 = new DateTime(context.getTime());
         return Weeks.weeksBetween(d1, d2).getWeeks();

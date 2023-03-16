@@ -21,7 +21,6 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.*;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.PendingViralLoadResultCalculation;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 
@@ -29,8 +28,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
-
-import static org.openmrs.module.kenyaemrorderentry.util.Utils.getLatestObs;
 
 /**
  * Determines whether a child at 9 months and above has had antibody test
@@ -46,7 +43,7 @@ public class NeedsAntibodyTestCalculation extends AbstractPatientCalculation imp
         return flagMsg.toString();
     }
 
-    StringBuilder flagMsg = new StringBuilder();
+    StringBuilder flagMsg = new StringBuilder("");
 
     /**
      * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
@@ -59,8 +56,6 @@ public class NeedsAntibodyTestCalculation extends AbstractPatientCalculation imp
         // Get all patients who are alive and in MCH-CS program
         Set<Integer> alive = Filters.alive(cohort, context);
         Set<Integer> inMchcsProgram = Filters.inProgram(mchcsProgram, alive, context);
-
-        //CalculationResultMap ages = Calculations.ages(cohort, context);
 
         // Get whether the child is HIV Exposed
         CalculationResultMap lastChildHivStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS), cohort, context);
@@ -91,9 +86,8 @@ public class NeedsAntibodyTestCalculation extends AbstractPatientCalculation imp
 
 
             if (inMchcsProgram.contains(ptId) && !pendingDNARapidTestResults.contains(ptId)) {
-                //Integer ageInMonths = ((Age) ages.get(ptId).getValue()).getFullMonths();
+
                 Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, ptId);
-                Obs rapidTest1 = EmrCalculationUtils.obsResultForPatient(lastHivRapidTest1, ptId);
 
                 if (pcrTestObsQual != null) {
                     Integer orderId = pcrTestObsQual.getOrder().getOrderId();
@@ -101,6 +95,7 @@ public class NeedsAntibodyTestCalculation extends AbstractPatientCalculation imp
                 }
 
                 Person person = Context.getPersonService().getPerson(ptId);
+
                 if (hivStatusObs != null && pcrTestObsQual != null && order != null && (hivStatusObs.getValueCoded().equals(hivExposedUnknown) || hivStatusObs.getValueCoded().equals(hivExposed)) && pcrTestObsQual.getValueCoded() == NEGATIVE && !order.getOrderReason().equals(AB_18_MONTHS) && order.getOrderReason().equals(PCR_12_MONTHS) && getAge(person.getBirthdate(), context.getNow()) >= 18) {
                     needsAntibody = true;
                     flagMsg.append("Due for month-18 Rapid AB test");
