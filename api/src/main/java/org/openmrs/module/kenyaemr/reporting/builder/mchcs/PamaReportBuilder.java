@@ -25,6 +25,7 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLLa
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLNextAppointmentDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLStabilityDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLSuppressionStatusDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pama.PamaCareGiverCCCNumberDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pama.PamaCareGiverLastVLDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pama.PamaCareGiverLastVLDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pama.PamaCareGiverLastVisitDateDataDefinition;
@@ -160,6 +161,7 @@ public class PamaReportBuilder extends AbstractHybridReportBuilder {
 		dsd.addColumn("Next Appointment Date", nextAppointmentDateDataDefinition, "endDate=${endDate}", new DateConverter(DATE_FORMAT));
 
 		dsd.addColumn("Care giver name", new PamaCareGiverNameDataDefinition(), "");
+		dsd.addColumn("Care giver CCC Number", new PamaCareGiverCCCNumberDataDefinition(), "");
 		dsd.addColumn("Care Giver HIV Status", new PamaCareGiverStatusDataDefinition(), "");
 		dsd.addColumn("Caregiver Last Viral Load Results", pamaCareGiverLastVLDataDefinition, "endDate=${endDate}");
 		dsd.addColumn("Caregiver Last Viral Load Date", pamaCareGiverLastVLDateDataDefinition, "endDate=${endDate}",new DateConverter(DATE_FORMAT));

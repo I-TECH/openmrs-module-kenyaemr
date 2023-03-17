@@ -36,15 +36,15 @@ public class PamaCareGiverSuppressionStatusDataEvaluator implements PersonDataEv
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select r.person_b,\n" +
+        String qry = "select distinct r.person_a,\n" +
                 "  mid(max(concat(le.visit_date, if(le.lab_test = 856 and le.test_result >= 1000, 'Unsuppressed',\n" +
                 "                                if(le.lab_test = 856 and le.test_result between 50 and 999, 'Low Level viremia',\n" +
                 "                                   if((le.lab_test= 856 and le.test_result <50) or (le.lab_test=1305 and le.test_result = 1302), 'Suppressed ',''))), '' )),11) as suppression_status\n" +
                 "from kenyaemr_etl.etl_patient_demographics d\n" +
                 "  inner join kenyaemr_etl.etl_laboratory_extract le on le.patient_id = d.patient_id and coalesce(date(le.date_test_requested),date(le.visit_date)) <= date(:endDate)\n" +
-                "  inner join openmrs.relationship r on d.patient_id = r.person_a\n" +
-                "  inner join openmrs.relationship_type t on r.relationship = t.relationship_type_id and t.uuid in ('8d91a210-c2cc-11de-8d13-0010c6dffd0f','5f115f62-68b7-11e3-94ee-6bef9086de92')\n" +
-                "GROUP BY r.person_b;";
+                "  inner join relationship r on d.patient_id = r.person_b\n" +
+                "  inner join relationship_type t on r.relationship = t.relationship_type_id and t.uuid in ('3667e52f-8653-40e1-b227-a7278d474020','8d91a210-c2cc-11de-8d13-0010c6dffd0f','5f115f62-68b7-11e3-94ee-6bef9086de92');";
+
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
