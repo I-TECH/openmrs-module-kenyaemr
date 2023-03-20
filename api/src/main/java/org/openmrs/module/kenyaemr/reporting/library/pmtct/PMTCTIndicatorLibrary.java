@@ -409,4 +409,47 @@ public class PMTCTIndicatorLibrary {
     }
     //MATERNITY INDICTORS
 
+    //HEI Indicators
+    public CohortIndicator dnaPCRUnder8Weeks() {
+        return cohortIndicator("DNA PCR test under 8 weeks", ReportUtils.<CohortDefinition>map(pmtctCohorts.dnaPCRUnder8Weeks(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    public CohortIndicator dnaPCR8To12Weeks() {
+        return cohortIndicator("DNA PCR test between 8 and 12 weeks", ReportUtils.<CohortDefinition>map(pmtctCohorts.dnaPCR8To12Weeks(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator ctxDapWithin2Months() {
+        return cohortIndicator("Given Dapson/CTX within 2 months", ReportUtils.<CohortDefinition>map(pmtctCohorts.ctxDapWithin2Months(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator ebfUpto6Months() {
+        return cohortIndicator("EBF at 6 months", ReportUtils.<CohortDefinition>map(pmtctCohorts.ebfUpto6Months(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator erfUpto6Months() {
+        return cohortIndicator("ERF at 6 months", ReportUtils.<CohortDefinition>map(pmtctCohorts.erfUpto6Months(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator mfAt6Months() {
+        return cohortIndicator("MF at 6 months", ReportUtils.<CohortDefinition>map(pmtctCohorts.mfAt6Months(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator notBFAt6Months() {
+        return cohortIndicator("Not BF at 6 months", ReportUtils.<CohortDefinition>map(pmtctCohorts.notBFAt6Months(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    public CohortIndicator bfAt12Months() {
+        return cohortIndicator("BF at 12 months", ReportUtils.<CohortDefinition>map(pmtctCohorts.bfAt12Months(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator notBFAt12Months() {
+        return cohortIndicator("Not BF at 12 months", ReportUtils.<CohortDefinition>map(pmtctCohorts.notBFAt12Months(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator bfAt18Months() {
+        return cohortIndicator("BF at 18 months", ReportUtils.<CohortDefinition>map(pmtctCohorts.bfAt18Months(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator notBFAt18Months() {
+        return cohortIndicator("Not BF at 18 months", ReportUtils.<CohortDefinition>map(pmtctCohorts.notBFAt18Months(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    public CohortIndicator antibodyTestAt18Months() {
+        return cohortIndicator("Antibody test at 18 months", ReportUtils.<CohortDefinition>map(pmtctCohorts.antibodyTestAt18Months(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator antibodyTestAfter18Months() {
+        return cohortIndicator("Antibody test after 18 months", ReportUtils.<CohortDefinition>map(pmtctCohorts.antibodyTestAfter18Months(), "startDate=${startDate},endDate=${endDate}"));
+    }
 }

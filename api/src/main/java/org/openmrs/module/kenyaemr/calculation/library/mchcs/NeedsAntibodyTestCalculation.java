@@ -90,7 +90,9 @@ public class NeedsAntibodyTestCalculation extends AbstractPatientCalculation imp
                 Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, ptId);
 
                 if (pcrTestObsQual != null) {
+                    System.out.println("+++++++++++++++++++++++pcrTestObsQual:"+pcrTestObsQual.getValueCoded());
                     Integer orderId = pcrTestObsQual.getOrder().getOrderId();
+                    System.out.println("+++++++++++++++++++++++orderId:"+pcrTestObsQual.getOrder().getOrderId());
                     order = orderService.getOrder(orderId);
                 }
 

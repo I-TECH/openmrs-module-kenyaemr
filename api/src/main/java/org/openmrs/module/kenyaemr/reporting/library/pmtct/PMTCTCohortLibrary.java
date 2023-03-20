@@ -9,7 +9,10 @@
  */
 package org.openmrs.module.kenyaemr.reporting.library.pmtct;
 
+import org.openmrs.module.kenyacore.report.ReportUtils;
+import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731Greencard.ETLMoh731GreenCardCohortLibrary;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Component;
@@ -25,7 +28,8 @@ import java.util.Date;
  */
 @Component
 public class PMTCTCohortLibrary {
-
+    @Autowired
+    private ETLMoh731GreenCardCohortLibrary moh731Cohorts;
     //ANC COHORTS
     /**
      * New ANC Clients
@@ -1624,6 +1628,160 @@ public class PMTCTCohortLibrary {
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("HIV wasted Test-2");
+        return cd;
+    }
+    public  CohortDefinition dnaPCRUnder8Weeks() {
+        String sqlQuery="select x.patient_id\n" +
+                "from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "         inner join kenyaemr_etl.etl_patient_demographics d on x.patient_id = d.patient_id\n" +
+                "where x.lab_test = 1030\n" +
+                "  and x.order_reason = 1040\n" +
+                "  and timestampdiff(WEEK, date(d.DOB), date(coalesce(x.date_test_requested, x.visit_date))) < 8;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("DNA PCR test under 8 weeks");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("DNA PCR test under 8 weeks");
+        return cd;
+    }
+    public  CohortDefinition dnaPCR8To12Weeks() {
+        String sqlQuery="select x.patient_id\n" +
+                "from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "         inner join kenyaemr_etl.etl_patient_demographics d on x.patient_id = d.patient_id\n" +
+                "where x.lab_test = 1030\n" +
+                "  and x.order_reason = 1040\n" +
+                "  and timestampdiff(WEEK, date(d.DOB), date(coalesce(x.date_test_requested, x.visit_date))) between 8 and 12;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("DNA PCR test between 8 and 12 weeks");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("DNA PCR test between 8 and 12 weeks");
+        return cd;
+    }
+    public  CohortDefinition ctxDapWithin2Months() {
+        String sqlQuery="select f.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_follow_up_visit f\n" +
+                "         inner join kenyaemr_etl.etl_patient_demographics d on f.patient_id = d.patient_id\n" +
+                "where f.ctx_given = 105281\n" +
+                "  and timestampdiff(MONTH, date(d.DOB), date(f.visit_date)) < 2;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("Given Dapson/CTX within 2 months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Given Dapson/CTX within 2 months");
+        return cd;
+    }
+    public  CohortDefinition ebfUpto6Months() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("exclusiveBFAt6Months",ReportUtils.map(moh731Cohorts.exclusiveBFAt6Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("exclusiveBFAt6Months");
+        return cd;
+    }
+    public  CohortDefinition erfUpto6Months() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("exclusiveRFAt6Months",ReportUtils.map(moh731Cohorts.exclusiveRFAt6Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("exclusiveRFAt6Months");
+        return cd;
+    }
+    public  CohortDefinition mfAt6Months() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("mixedFeedingAt6Months",ReportUtils.map(moh731Cohorts.mixedFeedingAt6Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("mixedFeedingAt6Months");
+        return cd;
+    }
+    public  CohortDefinition notBFAt6Months() {
+        String sqlQuery="select f.patient_id\n" +
+                "              from (Select e.patient_id, group_concat(f.infant_feeding) as feeding, d.dob\n" +
+                "                    from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "                             inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
+                "                             inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+                "                    where date(e.visit_date) <= date(:endDate)\n" +
+                "                      and timestampdiff(month, d.dob, date(f.visit_date)) <= 6\n" +
+                "                    group by e.patient_id\n" +
+                "                    having (find_in_set(1595, feeding) = 1\n" +
+                "                        or find_in_set(164478, feeding) = 1)\n" +
+                "                        and find_in_set(6046, feeding) = 0\n" +
+                "                        and find_in_set(5632, feeding) = 0\n" +
+                "                        and find_in_set(5526, feeding) = 0) f;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("Not BF upto 6 months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Not BF upto 6 months");
+        return cd;
+    }
+
+    public  CohortDefinition bfAt12Months() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("breastFeedingAt12Months",ReportUtils.map(moh731Cohorts.breastFeedingAt12Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("breastFeedingAt12Months");
+        return cd;
+    }
+    public  CohortDefinition notBFAt12Months() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("notBreastFeedingAt12Months",ReportUtils.map(moh731Cohorts.notBreastFeedingAt12Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("notBreastFeedingAt12Months");
+        return cd;
+    }
+    public  CohortDefinition bfAt18Months() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("breastFeedingAt18Months",ReportUtils.map(moh731Cohorts.breastFeedingAt18Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("breastFeedingAt18Months");
+        return cd;
+    }
+    public  CohortDefinition notBFAt18Months() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("notBreastFeedingAt18Months",ReportUtils.map(moh731Cohorts.notBreastFeedingAt18Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("notBreastFeedingAt18Months");
+        return cd;
+    }
+
+    public  CohortDefinition antibodyTestAt18Months() {
+        String sqlQuery="sELECT x.patient_id\n" +
+                "FROM kenyaemr_etl.etl_laboratory_extract x\n" +
+                "         inner join kenyaemr_etl.etl_patient_demographics d on x.patient_id = d.patient_id\n" +
+                "where x.lab_test = 1040\n" +
+                "  and x.order_reason = 164860\n" +
+                "  and timestampdiff(MONTH, date(d.DOB), date(coalesce(x.date_test_requested, x.visit_date))) <= 18;\n";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("Antibody test at 18 months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Antibody test at 18 months");
+        return cd;
+    }
+    public  CohortDefinition antibodyTestAfter18Months() {
+        String sqlQuery="sELECT x.patient_id\n" +
+                "FROM kenyaemr_etl.etl_laboratory_extract x\n" +
+                "         inner join kenyaemr_etl.etl_patient_demographics d on x.patient_id = d.patient_id\n" +
+                "where x.lab_test = 1040\n" +
+                "  and x.order_reason = 164860\n" +
+                "  and timestampdiff(MONTH, date(d.DOB), date(coalesce(x.date_test_requested, x.visit_date))) > 18;\n";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("Antibody test after 18 months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Antibody test after 18 months");
         return cd;
     }
 }
