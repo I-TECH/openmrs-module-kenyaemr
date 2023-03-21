@@ -34,14 +34,7 @@ public class HEIPCRResultsCollectionDateMonth6DataEvaluator implements PersonDat
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select\n" +
-                "  f.patient_id,\n" +
-                "  f.dna_pcr_results_date as six_months_results_collection_date\n" +
-                "from  kenyaemr_etl.etl_hei_follow_up_visit f\n" +
-                "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
-                "   f.patient_id = d.patient_id\n" +
-                "WHERE round(DATEDIFF(f.visit_date,d.DOB)/7) =24\n" +
-                "GROUP BY f.patient_id";
+        String qry = "select x.patient_id,x.date_test_result_received from kenyaemr_etl.etl_laboratory_extract x where x.lab_test = 1030 and x.order_reason = 1326;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

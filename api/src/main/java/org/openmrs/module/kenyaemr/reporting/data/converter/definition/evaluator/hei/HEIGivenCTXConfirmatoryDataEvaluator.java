@@ -34,14 +34,13 @@ public class HEIGivenCTXConfirmatoryDataEvaluator implements PersonDataEvaluator
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select\n" +
-                "  f.patient_id,\n" +
-                "  (case f.ctx_given when 105281 then \"Yes\" else \"No\" end) as ctx_given_twelve_months\n" +
+        String qry = "select f.patient_id,\n" +
+                "       (case f.ctx_given when 105281 then \"Yes\" else \"No\" end) as ctx_given\n" +
                 "from kenyaemr_etl.etl_hei_follow_up_visit f\n" +
-                "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
-                "                                          d.patient_id = f.patient_id\n" +
-                "WHERE f.dna_pcr_result = 703\n" +
-                "GROUP BY patient_id";
+                "         INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
+                "        d.patient_id = f.patient_id\n" +
+                "WHERE timestampdiff(MONTH, d.DOB, f.visit_date) BETWEEN 16 AND 17\n" +
+                "GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

@@ -83,7 +83,7 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
                 Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, ptId);
                 Obs pcrTestObsQual = EmrCalculationUtils.obsResultForPatient(lastPcrTestQualitative, ptId);
 
-                if (pcrTestObsQual != null) {
+                if (pcrTestObsQual != null && pcrTestObsQual.getOrder() != null) {
                     Integer orderId = pcrTestObsQual.getOrder().getOrderId();
                     order = orderService.getOrder(orderId);
                 }
