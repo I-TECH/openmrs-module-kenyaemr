@@ -16,6 +16,7 @@ import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinitio
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 
@@ -1675,37 +1676,12 @@ public class PMTCTCohortLibrary {
         return cd;
     }
     public  CohortDefinition ebfUpto6Months() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("exclusiveBFAt6Months",ReportUtils.map(moh731Cohorts.exclusiveBFAt6Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("exclusiveBFAt6Months");
-        return cd;
-    }
-    public  CohortDefinition erfUpto6Months() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("exclusiveRFAt6Months",ReportUtils.map(moh731Cohorts.exclusiveRFAt6Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("exclusiveRFAt6Months");
-        return cd;
-    }
-    public  CohortDefinition mfAt6Months() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("mixedFeedingAt6Months",ReportUtils.map(moh731Cohorts.mixedFeedingAt6Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("mixedFeedingAt6Months");
-        return cd;
-    }
-    public  CohortDefinition notBFAt6Months() {
-        String sqlQuery="select f.patient_id\n" +
+        String sql = "select f.patient_id\n" +
                 "              from (Select e.patient_id, group_concat(f.infant_feeding) as feeding, d.dob\n" +
                 "                    from kenyaemr_etl.etl_hei_enrollment e\n" +
                 "                             inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
                 "                             inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
-                "                    where date(e.visit_date) <= date(:endDate)\n" +
-                "                      and timestampdiff(month, d.dob, date(f.visit_date)) <= 6\n" +
+                "                    where timestampdiff(month, d.dob, date(f.visit_date)) <= 6\n" +
                 "                    group by e.patient_id\n" +
                 "                    having (find_in_set(1595, feeding) = 1\n" +
                 "                        or find_in_set(164478, feeding) = 1)\n" +
@@ -1713,44 +1689,155 @@ public class PMTCTCohortLibrary {
                 "                        and find_in_set(5632, feeding) = 0\n" +
                 "                        and find_in_set(5526, feeding) = 0) f;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("Not BF upto 6 months");
-        cd.setQuery(sqlQuery);
+        cd.setName("EBF at 6 months");
+        cd.setQuery(sql);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Not BF upto 6 months");
+        cd.setDescription("EBF at 6 months");
+        return cd;
+    }
+    public  CohortDefinition erfUpto6Months() {
+        String sql = "select f.patient_id from (Select e.patient_id, f.infant_feeding, group_concat(f.infant_feeding) as feeding, d.dob\n" +
+                "               from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "                        inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
+                "                        inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+                "               where timestampdiff(month, d.dob, date(f.visit_date)) <= 6\n" +
+                "               group by e.patient_id\n" +
+                "               having find_in_set(6046, feeding) = 0\n" +
+                "                  and find_in_set(1595, feeding) = 1\n" +
+                "                  and find_in_set(5632, feeding) = 0\n" +
+                "                  and find_in_set(164478, feeding) = 0\n" +
+                "                  and find_in_set(5526, feeding) = 0)f;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("ERF at 6 months");
+        cd.setQuery(sql);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("ERF at 6 months");
+        return cd;
+    }
+    public  CohortDefinition mfAt6Months() {
+        String sql = "select f.patient_id\n" +
+                "             from (Select e.patient_id, f.infant_feeding, group_concat(f.infant_feeding) as feeding, d.dob\n" +
+                "                   from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "                            inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
+                "                            inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+                "                   where timestampdiff(month, d.dob, date(f.visit_date)) <= 6\n" +
+                "                   group by e.patient_id\n" +
+                "                   having find_in_set(6046, feeding) = 1\n" +
+                "             ) f;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("MF at 6 months");
+        cd.setQuery(sql);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("MF at 6 months");
+        return cd;
+    }
+    public  CohortDefinition notBFAt6Months() {
+        String sql = "select f.patient_id\n" +
+                "              from (Select e.patient_id, group_concat(f.infant_feeding) as feeding, d.dob\n" +
+                "                    from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "                             inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
+                "                             inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+                "                    where timestampdiff(month, d.dob, date(f.visit_date)) <= 6\n" +
+                "                    group by e.patient_id\n" +
+                "                    having (find_in_set(1595, feeding) = 1\n" +
+                "                        or find_in_set(164478, feeding) = 1)\n" +
+                "                        and find_in_set(6046, feeding) = 0\n" +
+                "                        and find_in_set(5632, feeding) = 0\n" +
+                "                        and find_in_set(5526, feeding) = 0) f;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("Not BF at 6 months");
+        cd.setQuery(sql);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Not BF at 6 months");
         return cd;
     }
 
-    public  CohortDefinition bfAt12Months() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    public CohortDefinition bfAt12Months() {
+        String sql = "select f.patient_id\n" +
+                "             from (Select e.patient_id, group_concat(f.infant_feeding) as feeding, d.dob\n" +
+                "                   from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "                            inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
+                "                            inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+                "                   where timestampdiff(month, d.dob, date(f.visit_date)) between 7 and 12\n" +
+                "                   group by e.patient_id\n" +
+                "                   having (find_in_set(6046, feeding) = 1\n" +
+                "                       or find_in_set(5632, feeding) = 1\n" +
+                "                       or find_in_set(5526, feeding) = 1)\n" +
+                "                      and find_in_set(1595, feeding) = 0\n" +
+                "                      and find_in_set(164478, feeding) = 0) f;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("BF at 12 months");
+        cd.setQuery(sql);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("breastFeedingAt12Months",ReportUtils.map(moh731Cohorts.breastFeedingAt12Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("breastFeedingAt12Months");
+        cd.setDescription("BF at 12 months");
         return cd;
     }
     public  CohortDefinition notBFAt12Months() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        String sql = "select f.patient_id\n" +
+                "              from (Select e.patient_id, group_concat(f.infant_feeding) as feeding, d.dob\n" +
+                "                    from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "                             inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
+                "                             inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+                "                    where timestampdiff(month, d.dob, date(f.visit_date)) between 7 and 12\n" +
+                "                    group by e.patient_id\n" +
+                "                    having (find_in_set(1595, feeding) = 1\n" +
+                "                        or find_in_set(164478, feeding) = 1)\n" +
+                "                        and find_in_set(6046, feeding) = 0\n" +
+                "                        and find_in_set(5632, feeding) = 0\n" +
+                "                        and find_in_set(5526, feeding) = 0) f;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("Not BF at 12 months");
+        cd.setQuery(sql);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("notBreastFeedingAt12Months",ReportUtils.map(moh731Cohorts.notBreastFeedingAt12Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("notBreastFeedingAt12Months");
+        cd.setDescription("Not BF at 12 months");
         return cd;
     }
     public  CohortDefinition bfAt18Months() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        String sql = "select f.patient_id\n" +
+                "from (Select e.patient_id, group_concat(f.infant_feeding) as feeding, d.dob\n" +
+                "      from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "               inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
+                "               inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+                "      where timestampdiff(month, d.dob, date(f.visit_date)) between 13 and 18\n" +
+                "      group by e.patient_id\n" +
+                "      having (find_in_set(6046, feeding) = 1\n" +
+                "          or find_in_set(5632, feeding) = 1\n" +
+                "          or find_in_set(5526, feeding) = 1)\n" +
+                "         and find_in_set(1595, feeding) = 0\n" +
+                "         and find_in_set(164478, feeding) = 0) f;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("BF at 18 months");
+        cd.setQuery(sql);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("breastFeedingAt18Months",ReportUtils.map(moh731Cohorts.breastFeedingAt18Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("breastFeedingAt18Months");
+        cd.setDescription("BF at 18 months");
         return cd;
     }
     public  CohortDefinition notBFAt18Months() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        String sql = "select f.patient_id\n" +
+                "              from (Select e.patient_id, group_concat(f.infant_feeding) as feeding, d.dob\n" +
+                "                    from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "                             inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
+                "                             inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+                "                    where timestampdiff(month, d.dob, date(f.visit_date)) between 13 and 18\n" +
+                "                    group by e.patient_id\n" +
+                "                    having (find_in_set(1595, feeding) = 1\n" +
+                "                        or find_in_set(164478, feeding) = 1)\n" +
+                "                        and find_in_set(6046, feeding) = 0\n" +
+                "                        and find_in_set(5632, feeding) = 0\n" +
+                "                        and find_in_set(5526, feeding) = 0) f;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("Not BF at 18 months");
+        cd.setQuery(sql);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("notBreastFeedingAt18Months",ReportUtils.map(moh731Cohorts.notBreastFeedingAt18Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("notBreastFeedingAt18Months");
+        cd.setDescription("Not BF at 18 months");
         return cd;
     }
 
