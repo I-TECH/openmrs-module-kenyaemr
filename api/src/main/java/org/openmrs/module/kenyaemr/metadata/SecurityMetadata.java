@@ -89,7 +89,10 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				EmrConstants.APP_AIR,
 				EmrConstants.APP_LAB_MANIFEST,
 				EmrConstants.APP_ADHERENCE_COUNSELOR,
-				EmrConstants.APP_UPI_VERIFICATION
+				EmrConstants.APP_UPI_VERIFICATION,
+				EmrConstants.APP_O3_QUEUES_SHORTCUT,
+				EmrConstants.APP_O3_APPOINTMENTS_SHORTCUT,
+				EmrConstants.APP_O3_SHORTCUT
 		};
 
 		// Ensure a privilege exists for each app. App framework does create these but not always before this
@@ -127,7 +130,9 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_DEFAULTER_TRACING),
 						app(EmrConstants.APP_PREP),
 						app(EmrConstants.APP_AIR),
-						app(EmrConstants.APP_UPI_VERIFICATION)
+						app(EmrConstants.APP_O3_APPOINTMENTS_SHORTCUT),
+						app(EmrConstants.APP_O3_QUEUES_SHORTCUT),
+						app(EmrConstants.APP_O3_SHORTCUT)
 				)
 		));
 
@@ -142,6 +147,9 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_DEFAULTER_TRACING),
 						app(EmrConstants.APP_PREP),
 						app(EmrConstants.APP_UPI_VERIFICATION),
+						app(EmrConstants.APP_O3_APPOINTMENTS_SHORTCUT),
+						app(EmrConstants.APP_O3_QUEUES_SHORTCUT),
+						app(EmrConstants.APP_O3_SHORTCUT),
 						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
@@ -165,6 +173,9 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_DEFAULTER_TRACING),
 						app(EmrConstants.APP_PREP),
 						app(EmrConstants.APP_AIR),
+						app(EmrConstants.APP_O3_APPOINTMENTS_SHORTCUT),
+						app(EmrConstants.APP_O3_QUEUES_SHORTCUT),
+						app(EmrConstants.APP_O3_SHORTCUT),
 						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
@@ -187,6 +198,9 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_PREP),
 						app(EmrConstants.APP_AIR),
 						app(EmrConstants.APP_UPI_VERIFICATION),
+						app(EmrConstants.APP_O3_APPOINTMENTS_SHORTCUT),
+						app(EmrConstants.APP_O3_QUEUES_SHORTCUT),
+						app(EmrConstants.APP_O3_SHORTCUT),
 						_Privilege.MANAGE_DRUG_ORDERS,
 						_Privilege.VIEW_LEGACY_INTERFACE,
 						_Privilege.MANAGE_AIR
@@ -208,6 +222,9 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_PREP),
 						app(EmrConstants.APP_AIR),
 						app(EmrConstants.APP_UPI_VERIFICATION),
+						app(EmrConstants.APP_O3_APPOINTMENTS_SHORTCUT),
+						app(EmrConstants.APP_O3_QUEUES_SHORTCUT),
+						app(EmrConstants.APP_O3_SHORTCUT),
 						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
@@ -220,6 +237,9 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_FACILITIES),
 						app(EmrConstants.APP_FACILITY_DASHBOARD),
 						app(EmrConstants.APP_DEFAULTER_TRACING),
+						app(EmrConstants.APP_O3_APPOINTMENTS_SHORTCUT),
+						app(EmrConstants.APP_O3_QUEUES_SHORTCUT),
+						app(EmrConstants.APP_O3_SHORTCUT),
 						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
@@ -233,6 +253,9 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_FACILITY_DASHBOARD),
 						app(EmrConstants.APP_HIV_TESTING),
 						app(EmrConstants.APP_PREP),
+						app(EmrConstants.APP_O3_APPOINTMENTS_SHORTCUT),
+						app(EmrConstants.APP_O3_QUEUES_SHORTCUT),
+						app(EmrConstants.APP_O3_SHORTCUT),
 						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
@@ -264,6 +287,8 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_LAB_MANIFEST),
 						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES),
+						app(EmrConstants.APP_O3_QUEUES_SHORTCUT),
+						app(EmrConstants.APP_O3_SHORTCUT),
 						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
@@ -294,6 +319,9 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_FACILITIES),
 						app(EmrConstants.APP_FACILITY_DASHBOARD),
 						app(EmrConstants.APP_ADHERENCE_COUNSELOR),
+						app(EmrConstants.APP_O3_APPOINTMENTS_SHORTCUT),
+						app(EmrConstants.APP_O3_QUEUES_SHORTCUT),
+						app(EmrConstants.APP_O3_SHORTCUT),
 						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
