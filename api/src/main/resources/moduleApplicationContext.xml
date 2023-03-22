@@ -144,10 +144,26 @@
 
 	<bean id="kenyaemr.app.openmrs3Shortcut" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
 		<constructor-arg value="kenyaemr.openmrs3Shortcut" />
-		<constructor-arg value="KenyaEMR on 3.x" />
+		<constructor-arg value="3.x Patient Chart" />
 		<constructor-arg value="kenyaemr/shortcuts/o3Home.page" />
 		<constructor-arg value="kenyaemr:apps/O3.png" />
 		<constructor-arg value="999999" />
+	</bean>
+
+	<bean id="kenyaemr.app.openmrs3ServiceQueueShortcut" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
+		<constructor-arg value="kenyaemr.openmrs3ServiceQueueShortcut" />
+		<constructor-arg value="3.x Service Queue Module" />
+		<constructor-arg value="kenyaemr/shortcuts/o3ServiceQueuesHome.page" />
+		<constructor-arg value="kenyaemr:apps/queue.png" />
+		<constructor-arg value="999999" />
+	</bean>
+
+	<bean id="kenyaemr.app.openmrs3AppointmentsShortcut" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
+		<constructor-arg value="kenyaemr.openmrs3AppointmentsShortcut" />
+		<constructor-arg value="3.x Appointment Module" />
+		<constructor-arg value="kenyaemr/shortcuts/o3AppointmentsHome.page" />
+		<constructor-arg value="kenyaemr:apps/appointment.png" />
+		<constructor-arg value="1000001" />
 	</bean>
 
 	<bean id="kenyaemr.app.developer" factory-bean="kenyacore.appFactoryBean" factory-method="createInstance">
@@ -155,7 +171,7 @@
 		<constructor-arg value="Developer" />
 		<constructor-arg value="kenyaemr/developer/developerHome.page" />
 		<constructor-arg value="kenyaui:apps/developer.png" />
-		<constructor-arg value="1000000" />
+		<constructor-arg value="1000003" />
 	</bean>
 
 	<!-- ===================== Lab test catalogs ===================== -->

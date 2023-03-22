@@ -45,6 +45,8 @@ public class EmrConstants {
 	public static final String APP_ADHERENCE_COUNSELOR = MODULE_ID + ".counselling";
 	public static final String APP_UPI_VERIFICATION = MODULE_ID + ".upiVerification";
 	public static final String APP_O3_SHORTCUT = MODULE_ID + ".openmrs3Shortcut";
+	public static final String APP_O3_QUEUES_SHORTCUT = MODULE_ID + ".openmrs3ServiceQueueShortcut";
+	public static final String APP_O3_APPOINTMENTS_SHORTCUT = MODULE_ID + ".openmrs3AppointmentsShortcut";
 
 	/**
 	 * Global property names

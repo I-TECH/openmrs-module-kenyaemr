@@ -32,38 +32,36 @@ import org.openmrs.util.OpenmrsUtil;
 public class O3HomePageController {
 
     public void get(@SpringBean KenyaUiUtils kenyaUi, UiUtils ui, PageModel model) {
-		SimpleObject ret = new SimpleObject();
-		Patient patient = (Patient) model.getAttribute("currentPatient");
-		if(patient != null) {
-			ret.put("patientExists", true);
-			ret.put("patientId", patient.getId());
-			ret.put("patientUUID", patient.getUuid());
-		} else {
-			ret.put("patientExists", false);
-			ret.put("patientId", "");
-			ret.put("patientUUID", "");
-		}
+        SimpleObject ret = new SimpleObject();
+        Patient patient = (Patient) model.getAttribute("currentPatient");
+        if(patient != null) {
+            ret.put("patientExists", true);
+            ret.put("patientId", patient.getId());
+            ret.put("patientUUID", patient.getUuid());
+        } else {
+            ret.put("patientExists", false);
+            ret.put("patientId", "");
+            ret.put("patientUUID", "");
+        }
 
         model.addAttribute("patientDetails", ui.toJson(ret));
     }
 
     public String controller(PageModel model, UiUtils ui, HttpSession session, @SpringBean KenyaUiUtils kenyaUi) {
         SimpleObject ret = new SimpleObject();
-		Patient patient = (Patient) model.getAttribute("currentPatient");
-		if(patient != null) {
-			ret.put("patientExists", true);
-			ret.put("patientId", patient.getId());
-			ret.put("patientUUID", patient.getUuid());
-		} else {
-			ret.put("patientExists", false);
-			ret.put("patientId", "");
-			ret.put("patientUUID", "");
-		}
+        Patient patient = (Patient) model.getAttribute("currentPatient");
+        if(patient != null) {
+            ret.put("patientExists", true);
+            ret.put("patientId", patient.getId());
+            ret.put("patientUUID", patient.getUuid());
+        } else {
+            ret.put("patientExists", false);
+            ret.put("patientId", "");
+            ret.put("patientUUID", "");
+        }
 
         model.addAttribute("patientDetails", ui.toJson(ret));
 
-		return null;
-	}
+        return null;
+    }
 }
-
-
