@@ -21,6 +21,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.*;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 
@@ -52,11 +53,12 @@ public class NeedsAntibodyTestCalculation extends AbstractPatientCalculation imp
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
         Program mchcsProgram = MetadataUtils.existing(Program.class, MchMetadata._Program.MCHCS);
+        Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 
         // Get all patients who are alive and in MCH-CS program
         Set<Integer> alive = Filters.alive(cohort, context);
         Set<Integer> inMchcsProgram = Filters.inProgram(mchcsProgram, alive, context);
-
+        Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
         // Get whether the child is HIV Exposed
         CalculationResultMap lastChildHivStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS), cohort, context);
         CalculationResultMap lastHivRapidTest1 = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_RAPID_TEST_1_QUALITATIVE), cohort, context);
@@ -85,7 +87,7 @@ public class NeedsAntibodyTestCalculation extends AbstractPatientCalculation imp
             Date obsBFStatusDate = latestBFStatus != null && latestBFStatus.getValueCoded().equals(INFANT_NOT_BREASTFEEDING) ? latestBFStatus.getObsDatetime() : null;
 
 
-            if (inMchcsProgram.contains(ptId) && !pendingDNARapidTestResults.contains(ptId)) {
+            if (inMchcsProgram.contains(ptId) && !pendingDNARapidTestResults.contains(ptId) && !inHivProgram.contains(ptId)) {
 
                 Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, ptId);
 

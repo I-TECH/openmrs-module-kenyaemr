@@ -47,6 +47,7 @@
 				<ref bean="kenyaemr.mchcs.report.moh710" />
 				<ref bean="kenyaemr.mchcs.report.moh511" />
 				<ref bean="kenyaemr.mchcs.report.hcareport" />
+				<ref bean="kenyaemr.mchcs.report.heiMissingTests" />
 				<!--<ref bean="kenyaemr.mchcs.report/>
 				 />
 				<ref bean="kenyaemr.mchcs.report.vaccinationAppointments" />
@@ -256,4 +257,15 @@
 		<property name="template" value="kenyaemr:pmtct/hei_cohort.xls" />
 	</bean>
 
+	<bean id="kenyaemr.mchcs.report.heiMissingTests" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="8020f881-f405-43c4-80e5-1fc74ea94a16" />
+		<property name="name" value="HEI Missed HIV Tests" />
+		<property name="description" value="Report of HEIs with missed HIV tests" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:pmtct/hei_missed_tests_template.xls" />
+		<property name="repeatingSection" value="sheet:1,row:9,dataset:HEIMissedTests" />
+	</bean>
 </beans>

@@ -92,6 +92,9 @@ public class PublicHealthActionIndicatorLibrary {
         return cohortIndicator("HEIs not linked to Mothers", ReportUtils.map(cohortLibrary.unlinkedHEI(), "startDate=${startDate},endDate=${endDate}"));
     }
 
+    public CohortIndicator heiMissedHIVTests() {
+        return cohortIndicator("HEIs Missed HIV tests", ReportUtils.map(cohortLibrary.heiMissedHIVTests(), "startDate=${startDate},endDate=${endDate}"));
+    }
     /**
      * Number of adolescents not in OTZ
      * @return the indicator
