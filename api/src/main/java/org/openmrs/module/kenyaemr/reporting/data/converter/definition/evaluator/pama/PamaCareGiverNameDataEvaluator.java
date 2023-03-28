@@ -35,13 +35,12 @@ public class PamaCareGiverNameDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select r.person_b,\n" +
-                "  concat_ws(' ',d.given_name,d.middle_name,d.family_name) as careGiverName\n" +
-                "from kenyaemr_etl.etl_patient_demographics d\n" +
-                "  inner join openmrs.relationship r on d.patient_id = r.person_a\n" +
-                "  inner join openmrs.relationship_type t on r.relationship = t.relationship_type_id and t.uuid in ('8d91a210-c2cc-11de-8d13-0010c6dffd0f','5f115f62-68b7-11e3-94ee-6bef9086de92')\n" +
-                "GROUP BY r.person_b;";
-
+        String qry = "select distinct r.person_a,\n" +
+                "    concat_ws(' ',d.given_name,d.middle_name,d.family_name) as careGiverName\n" +
+                "  from kenyaemr_etl.etl_patient_demographics d\n" +
+                "    inner join relationship r on d.patient_id = r.person_b\n" +
+                "    inner join relationship_type t on r.relationship = t.relationship_type_id\n" +
+                "                                              and t.uuid in ('3667e52f-8653-40e1-b227-a7278d474020','8d91a210-c2cc-11de-8d13-0010c6dffd0f','5f115f62-68b7-11e3-94ee-6bef9086de92');";
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
