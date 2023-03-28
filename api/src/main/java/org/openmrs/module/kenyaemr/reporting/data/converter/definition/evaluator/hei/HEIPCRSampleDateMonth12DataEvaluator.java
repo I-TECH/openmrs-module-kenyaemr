@@ -34,14 +34,7 @@ public class HEIPCRSampleDateMonth12DataEvaluator implements PersonDataEvaluator
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select\n" +
-                "  f.patient_id,\n" +
-                "  f.dna_pcr_sample_date as twelve_months_sample_taken_date\n" +
-                "from kenyaemr_etl.etl_hei_follow_up_visit f\n" +
-                "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
-                "  f.patient_id = d.patient_id\n" +
-                "WHERE round(DATEDIFF(f.visit_date,d.DOB)/7) =48\n" +
-                "GROUP BY f.patient_id";
+        String qry = "select x.patient_id,x.date_test_requested from kenyaemr_etl.etl_laboratory_extract x where x.lab_test = 1030 and x.order_reason = 844;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

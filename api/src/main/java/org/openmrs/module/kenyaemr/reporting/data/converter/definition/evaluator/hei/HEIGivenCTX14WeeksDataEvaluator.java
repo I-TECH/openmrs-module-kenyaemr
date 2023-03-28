@@ -34,14 +34,13 @@ public class HEIGivenCTX14WeeksDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select\n" +
-                "  f.patient_id,\n" +
-                "  (case f.ctx_given when 105281 then \"Yes\" else \"No\" end) as ctx_given_fourteen_weeks\n" +
+        String qry = "select f.patient_id,\n" +
+                "       (case f.ctx_given when 105281 then \"Yes\" else \"No\" end) as ctx_given\n" +
                 "from kenyaemr_etl.etl_hei_follow_up_visit f\n" +
-                "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
-                "                                          d.patient_id = f.patient_id\n" +
-                "WHERE round(DATEDIFF(f.visit_date,d.DOB)/7) =14\n" +
-                "GROUP BY patient_id";
+                "         INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
+                "        d.patient_id = f.patient_id\n" +
+                "WHERE timestampdiff(WEEK, d.DOB, f.visit_date) BETWEEN 13 AND 15\n" +
+                "GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

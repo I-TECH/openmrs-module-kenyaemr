@@ -18,21 +18,21 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
  * HEIAgeAndDOBDataDefinition Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class HEIAgeAndDOBDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
+public class HEIAgeInMonthsDataDefinition extends BaseDataDefinition implements PersonDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public HEIAgeAndDOBDataDefinition() {
+    public HEIAgeInMonthsDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public HEIAgeAndDOBDataDefinition(String name) {
+    public HEIAgeInMonthsDataDefinition(String name) {
         super(name);
     }
 

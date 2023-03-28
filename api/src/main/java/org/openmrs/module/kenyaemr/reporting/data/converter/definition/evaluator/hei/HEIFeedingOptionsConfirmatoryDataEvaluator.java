@@ -34,14 +34,17 @@ public class HEIFeedingOptionsConfirmatoryDataEvaluator implements PersonDataEva
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select\n" +
-                "  f.patient_id,\n" +
-                "  (case f.infant_feeding when 5526 then \"Exclusive Breastfeeding(EBF)\" when 1595 then \"Exclusive Replacement(ERF)\" when 6046 then \"Mixed Feeding(MF)\" else \"\" end) as infant_feeding_twelve_months\n" +
+        String qry = "select f.patient_id,\n" +
+                "       (case f.infant_feeding\n" +
+                "            when 5526 then \"Exclusive Breastfeeding(EBF)\"\n" +
+                "            when 1595 then \"Exclusive Replacement(ERF)\"\n" +
+                "            when 6046 then \"Mixed Feeding(MF)\"\n" +
+                "            end) as infant_feeding_six_weeks\n" +
                 "from kenyaemr_etl.etl_hei_follow_up_visit f\n" +
-                "  INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
-                "                                          d.patient_id = f.patient_id\n" +
-                "WHERE f.dna_pcr_result = 703\n" +
-                "GROUP BY patient_id";
+                "         INNER JOIN kenyaemr_etl.etl_patient_demographics d ON\n" +
+                "    d.patient_id = f.patient_id\n" +
+                "WHERE timestampdiff(MONTH, d.DOB, f.visit_date) BETWEEN 16 AND 17\n" +
+                "GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
