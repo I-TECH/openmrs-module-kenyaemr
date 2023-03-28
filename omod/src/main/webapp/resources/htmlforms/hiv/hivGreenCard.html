@@ -225,6 +225,16 @@ Green Card follow-up visit form
             iptInitiationTab.hide();
             iptEnrollmentTab.hide();
             ageGroup();
+            //WHO staging OIs defaults
+            jq("#tr-whoStageAdult-1").hide();
+            jq("#tr-whoStageAdult-2").hide();
+            jq("#tr-whoStageAdult-3").hide();
+            jq("#tr-whoStageAdult-4").hide();
+            jq("#tr-whoStagePead-1").hide();
+            jq("#tr-whoStagePead-2").hide();
+            jq("#tr-whoStagePead-3").hide();
+            jq("#tr-whoStagePead-4").hide();
+
             displayRecentBmi();
 //Prophylaxis section
             jq("#ctx-part").hide();
@@ -287,8 +297,99 @@ Green Card follow-up visit form
                 jq("#btnCloseARVAssessment").click(closeAdherenceAssessment);
                 jq("#adherence-1").change(adherenceAssessment);
             });
-
             jq('#arv-adherence input[type=radio]').attr("style", "pointer-events:none;");
+// WHO staging Modal
+            var staging = "";
+            jq("#whoStage-adult select").change(function (e) {
+                jq("#whoStage-adult select option:selected").each(function () {
+                    staging = jq(this).val();
+                });
+                var whoStage1Adult = jq("#tr-whoStageAdult-1").show();
+                var whoStage2Adult = jq("#tr-whoStageAdult-2").hide();
+                var whoStage3Adult = jq("#tr-whoStageAdult-3").hide();
+                var whoStage4Adult = jq("#tr-whoStageAdult-4").hide();
+
+                e.preventDefault();
+                if (staging == 1204) {
+                    jq("#tr-whoStageAdult-1").show();
+                    jq("#tr-whoStageAdult-2").hide();
+                    jq("#tr-whoStageAdult-3").hide();
+                    jq("#tr-whoStageAdult-4").hide();
+                    e.preventDefault();
+                    clearHiddenSections([whoStage2Adult,whoStage3Adult,whoStage4Adult]);
+                }
+                if(staging == 1205){
+                    jq("#tr-whoStageAdult-1").hide();
+                    jq("#tr-whoStageAdult-2").show();
+                    jq("#tr-whoStageAdult-3").hide();
+                    jq("#tr-whoStageAdult-4").hide();
+                    e.preventDefault();
+                    clearHiddenSections([whoStage1Adult,whoStage3Adult,whoStage4Adult]);
+                }
+                if(staging == 1206){
+                    jq("#tr-whoStageAdult-1").hide();
+                    jq("#tr-whoStageAdult-2").hide();
+                    jq("#tr-whoStageAdult-3").show();
+                    jq("#tr-whoStageAdult-4").hide();
+                    e.preventDefault();
+                    clearHiddenSections([whoStage1Adult,whoStage2Adult,whoStage4Adult]);
+                }
+                if(staging == 1207){
+                    jq("#tr-whoStageAdult-1").hide();
+                    jq("#tr-whoStageAdult-2").hide();
+                    jq("#tr-whoStageAdult-3").hide();
+                    jq("#tr-whoStageAdult-4").show();
+
+                    e.preventDefault();
+                    clearHiddenSections([whoStage1Adult,whoStage2Adult,whoStage3Adult]);
+                }
+            });
+
+            jq("#whoStage-child select").change(function (e) {
+                jq("#whoStage-child select option:selected").each(function () {
+                    staging = jq(this).val();
+                });
+                var whoStage1Pead =  jq("#tr-whoStagePead-1").hide();
+                var whoStage2Pead = jq("#tr-whoStagePead-2").hide();
+                var whoStage3Pead = jq("#tr-whoStagePead-3").hide();
+                var whoStage4Pead = jq("#tr-whoStagePead-4").hide();
+
+                e.preventDefault();
+                if (staging == 1220) {
+                    jq("#tr-whoStagePead-1").show();
+                    jq("#tr-whoStagePead-2").hide();
+                    jq("#tr-whoStagePead-3").hide();
+                    jq("#tr-whoStagePead-4").hide();
+                    e.preventDefault();
+                    clearHiddenSections([whoStage2Pead,whoStage3Pead,whoStage4Pead]);
+                }
+                if(staging == 1221){
+                    jq("#tr-whoStagePead-1").hide();
+                    jq("#tr-whoStagePead-2").show();
+                    jq("#tr-whoStagePead-3").hide();
+                    jq("#tr-whoStagePead-4").hide();
+                    e.preventDefault();
+                    clearHiddenSections([whoStage1Pead,whoStage3Pead,whoStage4Pead]);
+                }
+                if(staging == 1222){
+                    jq("#tr-whoStagePead-1").hide();
+                    jq("#tr-whoStagePead-2").hide();
+                    jq("#tr-whoStagePead-3").show();
+                    jq("#tr-whoStagePead-4").hide();
+                    e.preventDefault();
+                    clearHiddenSections([whoStage1Pead,whoStage2Pead,whoStage4Pead]);
+                }
+                if(staging == 1223){
+                    jq("#tr-whoStagePead-1").hide();
+                    jq("#tr-whoStagePead-2").hide();
+                    jq("#tr-whoStagePead-3").hide();
+                    jq("#tr-whoStagePead-4").show();
+                    e.preventDefault();
+                    clearHiddenSections([whoStage1Pead,whoStage2Pead,whoStage3Pead]);
+                }
+            });
+
+
             var strtext = "";
             var familyPlanningOption = getValue('fplanning.value');
             var pregnancyOption = getValue('pregnancyOption.value');
@@ -397,7 +498,7 @@ Green Card follow-up visit form
                 jq("#ipt-followup").show();
                 jq("#tb-screening-result").show();
             }
-     /*On TB Drugs from being active in TB program  supersede onIPT*/
+            /*On TB Drugs from being active in TB program  supersede onIPT*/
             if (PATIENT_ON_TB == "true"){
                 jq("#on-anti-tb-drugs input[value=1065]").prop("checked", true);
                 jq('#on-ipt input').prop("disabled", true);
@@ -858,7 +959,7 @@ Green Card follow-up visit form
             var heightM = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>")/100
             var bmi = '';
             var recent_bmi ='';
-   //If client is > 19 years prepopluate height
+            //If client is > 19 years prepopluate height
             if (pAge &gt; 19 &amp;&amp; heightM !="") {
                 getField('height.value').val(heightM*100);
             }else{
@@ -920,11 +1021,11 @@ Green Card follow-up visit form
                 jq('#pregnant:text').val("NO");
             }
 //8. breast feeding
-           if(PREVIOUSLY_BREASTFEEDING == 1065 || PATIENT_BREASTFEEDING == 'true') {
+            if(PREVIOUSLY_BREASTFEEDING == 1065 || PATIENT_BREASTFEEDING == 'true') {
                 jq('#breast-feeding:text').val("YES");
             }else {
-               jq('#breast-feeding:text').val("NO");
-           }
+                jq('#breast-feeding:text').val("NO");
+            }
         }
         function onLmpChange() {
             jq('#pregnancyOption :input').prop('disabled', false);
@@ -1849,6 +1950,7 @@ Green Card follow-up visit form
             var x = jq("#modalContents");
             x.dialog('close');
         }
+
         //stability selected
         var stabilitySelected = function() {
             var stabilityStatus = getValue('stability.value');
@@ -1922,14 +2024,11 @@ Green Card follow-up visit form
             }
         }
         function step1Validation(){    //Step 1 validations
-            var recentWHO = "<lookup expression="fn.latestObs(5356).getValueCoded()"/>";
             var personPresent =getValue('person-present.value');
             var visit_scheduled =getValue('visit-scheduled.value');
             var patientWeight =getValue('weight.value');
             var patientHeight =getValue('height.value');
             var populationType =getValue('population-type.value');
-            var adultWhoStage =getField('whoStage-adult.value').val();
-            var childWhoStage =getField('whoStage-child.value').val();
 
             if (visit_scheduled == false) {
                 jq('#greencard').smartWizard('setError', {stepnum: 1, iserror: true});
@@ -1962,20 +2061,6 @@ Green Card follow-up visit form
             if (populationType == false &amp;&amp; personPresent == SELF) {
                 jq('#greencard').smartWizard('setError', {stepnum: 1, iserror: true});
                 getField('population-type.error').html('Please specify population type').show();
-                return false;
-            }else{
-                getField('population-type.error').html('Please specify population type').hide();
-            }
-            if (recentWHO =="" &amp;&amp; pAge &gt; 15 &amp;&amp; adultWhoStage == false &amp;&amp; personPresent == SELF ) {
-                jq('#greencard').smartWizard('setError', {stepnum: 1, iserror: true});
-                getField('whoStage-adult.error').html('Please specify adult WHO stage').show();
-                return false;
-            }else{
-                getField('whoStage-adult.error').html('Please specify adult WHO stage').hide();
-            }
-            if (recentWHO =="" &amp;&amp; pAge &lt; 16 &amp;&amp; childWhoStage == false &amp;&amp; personPresent == SELF) {
-                jq('#greencard').smartWizard('setError',{stepnum:1,iserror:true});
-                getField('whoStage-child.error').html('Please specify child WHO stage').show();
                 return false;
             }
             else {
@@ -2238,6 +2323,9 @@ Green Card follow-up visit form
             var systemsReview = getValue('systems-review.value');    //boolean
             var generalExamsChecked = jq("#general-exam-findings input:checkbox:checked");
             var personPresent =getValue('person-present.value');
+            var recentWHO = "<lookup expression="fn.latestObs(5356).getValueCoded()"/>";
+            var adultWhoStage =getField('whoStage-adult.value').val();
+            var childWhoStage =getField('whoStage-child.value').val();
 
 //Validate general examinations findings
             if (generalExamsChecked.length == 0 &amp;&amp; personPresent == SELF) {
@@ -2250,6 +2338,18 @@ Green Card follow-up visit form
             if (systemsReview == false &amp;&amp; personPresent == SELF) {
                 jq('#greencard').smartWizard('setError', {stepnum: 3, iserror: true});
                 getField('systems-review.error').html('Please specify if patient has any findings on systems review.').show();
+                return false;
+            }
+            if (recentWHO =="" &amp;&amp; pAge &gt; 15 &amp;&amp; adultWhoStage == false &amp;&amp; personPresent == SELF ) {
+                jq('#greencard').smartWizard('setError', {stepnum: 1, iserror: true});
+                getField('whoStage-adult.error').html('Please specify adult WHO stage').show();
+                return false;
+            }else{
+                getField('whoStage-adult.error').html('Please specify adult WHO stage').hide();
+            }
+            if (recentWHO =="" &amp;&amp; pAge &lt; 16 &amp;&amp; childWhoStage == false &amp;&amp; personPresent == SELF) {
+                jq('#greencard').smartWizard('setError',{stepnum:1,iserror:true});
+                getField('whoStage-child.error').html('Please specify child WHO stage').show();
                 return false;
             }
             else {
@@ -2498,7 +2598,7 @@ Management<br />
 //Stability assessment
                             var stabilityStatus = getValue('stability.value');
                             var tca_reason = getField('returnVisitReason.value').val();
-                 //Validation if on TB drugs
+                            //Validation if on TB drugs
                             var onAntiTbDrugs = getValue('on-anti-tb-drugs.value');    //non boolean
                             var onIpt = jq('#on-ipt');
                             var iptFollowup = jq('#ipt-followup');
@@ -2542,8 +2642,8 @@ Management<br />
                             //if key pop show which type
                             var popTypeSelected = getValue('population-type.value');
                             if (popTypeSelected == 164929 ){
-                                    jq("#key-population").show();
-                                    jq("#priority-population").hide();
+                                jq("#key-population").show();
+                                jq("#priority-population").hide();
                             }
                             if (popTypeSelected == 138643 ){
                                 jq("#priority-population").show();
@@ -2617,13 +2717,13 @@ Management<br />
 //TB screening show on edit
 //if key pop show which type
 //Screening for all options
-                           if(onAntiTbDrugs == 1066) {
-                                   jq('#on-ipt input').prop("disabled", false);
-                                   jq('#currently-onIpt :input').prop('disabled', false);
-                                   jq("#tbl-ever-on-ipt").show();
-                                   jq('#ever-taken-ipt :input').prop('disabled', false);
-                                   jq("#tb-screening-tab").show();
-                                }
+                            if(onAntiTbDrugs == 1066) {
+                                jq('#on-ipt input').prop("disabled", false);
+                                jq('#currently-onIpt :input').prop('disabled', false);
+                                jq("#tbl-ever-on-ipt").show();
+                                jq('#ever-taken-ipt :input').prop('disabled', false);
+                                jq("#tb-screening-tab").show();
+                            }
                             if(onAntiTbDrugs == 1065){
                                 jq('input[type=radio].on-ipt').prop("checked", false);
                                 jq('#on-ipt input').prop("disabled", true);
@@ -2676,6 +2776,58 @@ Management<br />
                                 jq("#tbl-start-antiTb").show();
                             }else{
                                 jq("#tbl-start-antiTb").hide();
+                            }
+
+                            //WHO staging OIs
+                            var staging = getField('whoStage-adult.value').val();
+                            if (staging == 1204) {
+                                jq("#tr-whoStageAdult-1").show();
+                                jq("#tr-whoStageAdult-2").hide();
+                                jq("#tr-whoStageAdult-3").hide();
+                                jq("#tr-whoStageAdult-4").hide();
+                            }
+                            if(staging == 1205){
+                                jq("#tr-whoStageAdult-1").hide();
+                                jq("#tr-whoStageAdult-2").show();
+                                jq("#tr-whoStageAdult-3").hide();
+                                jq("#tr-whoStageAdult-4").hide();
+                            }
+                            if(staging == 1206){
+                                jq("#tr-whoStageAdult-1").hide();
+                                jq("#tr-whoStageAdult-2").hide();
+                                jq("#tr-whoStageAdult-3").show();
+                                jq("#tr-whoStageAdult-4").hide();
+                            }
+                            if(staging == 1207){
+                                jq("#tr-whoStageAdult-1").hide();
+                                jq("#tr-whoStageAdult-2").hide();
+                                jq("#tr-whoStageAdult-3").hide();
+                                jq("#tr-whoStageAdult-4").show();
+                            }
+
+                            if (staging == 1220) {
+                                jq("#tr-whoStagePead-1").show();
+                                jq("#tr-whoStagePead-2").hide();
+                                jq("#tr-whoStagePead-3").hide();
+                                jq("#tr-whoStagePead-4").hide();
+                            }
+                            if(staging == 1221){
+                                jq("#tr-whoStagePead-1").hide();
+                                jq("#tr-whoStagePead-2").show();
+                                jq("#tr-whoStagePead-3").hide();
+                                jq("#tr-whoStagePead-4").hide();
+                            }
+                            if(staging == 1222){
+                                jq("#tr-whoStagePead-1").hide();
+                                jq("#tr-whoStagePead-2").hide();
+                                jq("#tr-whoStagePead-3").show();
+                                jq("#tr-whoStagePead-4").hide();
+                            }
+                            if(staging == 1223){
+                                jq("#tr-whoStagePead-1").hide();
+                                jq("#tr-whoStagePead-2").hide();
+                                jq("#tr-whoStagePead-3").hide();
+                                jq("#tr-whoStagePead-4").show();
                             }
 
                         });
@@ -2841,54 +2993,23 @@ Management<br />
                         </tr>
                     </table>
                     <table id="priority-population">
-                     <tr>
-                      <td>
-                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="159674AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="Fisher folk" style="checkbox" /><br/>
-                            <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 answerLabel="Truck driver" style="checkbox" /><br/>
-                        <includeIf velocityTest="$patient.gender == 'F'">
-                            <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160549AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                 answerLabel="Adolescent and young girls" style="checkbox" id="adyg" /><br/>
-                        </includeIf>
-                            <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="Prisoner" style="checkbox" /><br/>
-                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerLabel="Not applicable" style="checkbox" id="other" /><br/>
-                        <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="165192"
-                             answerLabel="Military and other uniformed services" style="checkbox" id="dodOnly" /><br/>
+                        <tr>
+                            <td>
+                                <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="159674AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerLabel="Fisher folk" style="checkbox" /><br/>
+                                <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162198AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerLabel="Truck driver" style="checkbox" /><br/>
+                                <includeIf velocityTest="$patient.gender == 'F'">
+                                    <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160549AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabel="Adolescent and young girls" style="checkbox" id="adyg" /><br/>
+                                </includeIf>
+                                <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162277AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerLabel="Prisoner" style="checkbox" /><br/>
+                                <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerLabel="Not applicable" style="checkbox" id="other" /><br/>
+                                <obs conceptId="160581AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="165192"
+                                     answerLabel="Military and other uniformed services" style="checkbox" id="dodOnly" /><br/>
 
-                    </td>
-                   </tr>
-                   </table>
-                </fieldset>
-                <!-- WHO staging -->
-                <fieldset class="patient-details">
-                    <legend>WHO Staging</legend>
-                    <table cellspacing="10" >
-                        <tr>
-                            <th  style="color: #888" >Current Stage </th>
-                            <th  style="color: #888" >Recent </th>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div id="whoAdult">
-                                    <table>
-                                        <tr>
-                                            <td><strong>Adult</strong></td><td><obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4" id="whoStage-adult"/></td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <div id="whoChild">
-                                    <table>
-                                        <tr>
-                                            <td><strong>Child</strong></td><td><obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1220AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4" id="whoStage-child" /></td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="value"><recentObs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
                             </td>
                         </tr>
                     </table>
@@ -3948,6 +4069,162 @@ Management<br />
                         </tr>
                     </table>
                 </fieldset>
+                <!-- WHO staging -->
+                <fieldset class="patient-details">
+                    <legend>WHO Staging</legend>
+                    <table cellspacing="10" >
+                        <tr>
+                            <th  style="color: #888" >Current Stage </th>
+                            <th  style="color: #888" >Recent </th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div id="whoAdult">
+                                    <table>
+                                        <tr>
+                                            <td><strong>Adult</strong></td><td><obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4" id="whoStage-adult"/></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div id="whoChild">
+                                    <table>
+                                        <tr>
+                                            <td><strong>Child</strong></td><td><obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1220AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4" id="whoStage-child" /></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="value"><recentObs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
+                            </td>
+                        </tr>
+                    </table>
+                    <table id="tbl-who-stage">
+                        <tr id="tr-whoStageAdult-1">
+                            <td>
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5006" answerLabel="Asymptomatic" style="checkbox" id="stageAdultOne_1"/><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="130364" answerLabel="Persistent generalized lymphadenopathy (PGL)" style="checkbox" id="stageAdultOne_2" /><br />
+                            </td>
+                        </tr>
+                        <tr id="tr-whoStageAdult-2">
+                            <td>
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="159214" answerLabel="Moderate unexplained weight loss (Less than 10% of presumed or measured body weight)" style="checkbox" id="stageTwoOi_1" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5330" answerLabel="Minor mucocutaneous manifestations (seborrheic dermatitis, papular pruritic eruptions,
+                                                                                                                              fungal nail infections, recurrent oral ulcerations, angular cheilitis)" style="checkbox" id="stageTwoOi_2" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="117543" answerLabel="Herpes zoster" style="checkbox" id="stageTwoOi_3" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5012" answerLabel="Recurrent upper respiratory tract infections(sinusitis, tonsillitis, bronchitis, otitis media,
+                                                                                                                            pharyngitis)" style="checkbox" id="stageTwoOi_4" /><br />
+                            </td>
+                        </tr>
+                        <tr id="tr-whoStageAdult-3">
+                            <td>
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="159214" answerLabel="Unexplained severe weight loss (over 10% of presumed or measured body weight)" style="checkbox" id="stageThreeOi_1" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5018" answerLabel="Unexplained chronic diarrhoea for longer than one month" style="checkbox" id="stageThreeOi_2" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5027" answerLabel="Unexplained persistent fever (intermittent or constant for longer than one month)" style="checkbox" id="stageThreeOi_3" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5334" answerLabel="Persistent oral candidiasis" style="checkbox" id="stageThreeOi_4" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5337" answerLabel="Oral hairy leukoplakia" style="checkbox" id="stageThreeOi_5" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="42" answerLabel="Pulmonary tuberculosis" style="checkbox" id="stageThreeOi_6" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5333" answerLabel="Severe bacterial infections (e.g. pneumonia, empyema, pyomyositis, bone or joint infection,
+                                                                                                                            meningitis, bacteraemia)" style="checkbox" id="stageThreeOi_7" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="133440" answerLabel="Acute necrotizing ulcerative stomatitis, gingivitis or periodontitis" style="checkbox" id="stageThreeOi_8" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="148849" answerLabel="Unexplained anaemia (below 8 g/dl),neutropenia(below 0.5 x 109/l) and/orchronic
+                                                                                                                            thrombocytopenia(below 50 x109/l)" style="checkbox" id="stageThreeOi_9" /><br />
+                            </td>
+                        </tr>
+                        <tr id="tr-whoStageAdult-4">
+                            <td>
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="823" answerLabel="HIV wasting syndrome" style="checkbox" id="stageFourOi_1" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="137375" answerLabel="Pneumocystis jirovecipneumonia (PCP)" style="checkbox" id="stageFourOi_2" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1215" answerLabel="Recurrent severe bacterial pneumonia (Equal or more than 2 episodes within 1 year)" style="checkbox" id="stageFourOi_3" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1294" answerLabel="Cryptococcal meningitis" style="checkbox" id="stageFourOi_4" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="990" answerLabel="Toxoplasmosis of the brain" style="checkbox" id="stageFourOi_5" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="143929" answerLabel="Chronic orolabial, genital or ano-rectal herpes simplex infection for more than 1 month" style="checkbox" id="stageFourOi_6" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="110915" answerLabel="Kaposi’s sarcoma (KS)" style="checkbox" id="stageFourOi_7" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160442" answerLabel="HIV encephalopathy" style="checkbox" id="stageFourOi_8" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5042" answerLabel="Extra pulmonary tuberculosis (EPTB) Conditions where confirmatory diagnostic testing is
+                                                                                                                             necessary" style="checkbox" id="stageFourOi_9" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="143110" answerLabel="Cryptosporidiosis, with diarrhoea for more than 1 month" style="checkbox" id="stageFourOi_10" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="136458" answerLabel="Isosporiasis" style="checkbox" id="stageFourOi_11" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5033" answerLabel="Cryptococcosis (extra pulmonary)" style="checkbox" id="stageFourOi_12" /><br />
+                            </td><td>
+                            <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160745" answerLabel="Disseminated non-tuberculous mycobacterial infection" style="checkbox" id="stageFourOi_13" /><br />
+                            <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="154119" answerLabel="Cytomegalovirus (CMV) retinitis or infection of the organs (other than liver, spleen,
+                                                                                                                                or lymph nodes)" style="checkbox" id="stageFourOi_14" /><br />
+                            <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5046" answerLabel="Progressive multifocal leucoencephalopathy (PML)" style="checkbox" id="stageFourOi_15" /><br />
+                            <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="131357" answerLabel="Any disseminated mycosis (e.g. histoplasmosis, coccidiomycosis)" style="checkbox" id="stageFourOi_16" /><br />
+                            <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="146513" answerLabel="Candidiasis of the oesophagus or airways" style="checkbox" id="stageFourOi_17" /><br />
+                            <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160851" answerLabel="Non-typhoid salmonella (NTS) septicaemia" style="checkbox" id="stageFourOi_18" /><br />
+                            <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="155941" answerLabel="Lymphoma cerebral or B cell Non-Hodgkin’s Lymphoma" style="checkbox" id="stageFourOi_19" /><br />
+                            <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="116023" answerLabel="Invasive cervical cancer" style="checkbox" id="stageFourOi_20" /><br />
+                            <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="123084" answerLabel="Visceral leishmaniasis" style="checkbox" id="stageFourOi_21" /><br />
+                            <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="153701" answerLabel="Symptomatic HIV-associated nephropathy or HIV associated cardiomyopathy" style="checkbox" id="stageFourOi_22" /><br />
+
+                        </td>
+                        </tr>
+                        <tr id="tr-whoStagePead-1">
+                            <td>
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5006" answerLabel="Asymptomatic" style="checkbox" id="stageOnePeadOi_1"/><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="130364" answerLabel="Persistent generalized lymphadenopathy (PGL)" style="checkbox" id="stageOnePeadOi_2" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="825" answerLabel="Unexplained, asymptomatic hepatosplenomegaly" style="checkbox" id="stageOnePeadOi_3" /><br />
+                            </td>
+                        </tr>
+                        <tr id="tr-whoStagePead-2">
+                            <td>
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1249" answerLabel="Papular pruritic eruptions (PPE)" style="checkbox" id="stageTwoPeadOi_1"/><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="113116" answerLabel="Seborrheic dermatitis" style="checkbox" id="stageTwoPeadOi_2" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="132387" answerLabel="Fungal nail infections" style="checkbox" id="stageTwoPeadOi_3" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="148762" answerLabel="Angular cheilitis" style="checkbox" id="stageTwoPeadOi_4" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="159344" answerLabel="Linear gingival erythema" style="checkbox" id="stageTwoPeadOi_5" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1212" answerLabel="Extensive HPV or molluscum infection (More than 5% of body area or face)" style="checkbox" id="stageTwoPeadOi_6" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="159912" answerLabel="Recurrent oral ulcerations (More than 2 episodes in 6 months)" style="checkbox" id="stageTwoPeadOi_7" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1210" answerLabel="Parotid enlargement" style="checkbox" id="stageTwoPeadOi_8" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="117543" answerLabel="Herpes zoster (More than 1 episode in 12 months)" style="checkbox" id="stageTwoPeadOi_9" /><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="127784" answerLabel="Recurrent or chronic upper respiratory infection(URI): otitis media, otorrhoea, sinusitis (More than 2 episodes in 6months)" style="checkbox" id="stageTwoPeadOi_10" /><br />
+                            </td>
+                        </tr>
+                        <tr id="tr-whoStagePead-3">
+                            <td>
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="134722" answerLabel="Unexplained moderate malnutrition (- 2SD or Z score) not responding to standard therapy" style="checkbox" id="stageThreePeadOi_1"/><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5018" answerLabel="Unexplained persistent diarrhoea (More than 14 days)" style="checkbox" id="stageThreePeadOi_2"/><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="163282" answerLabel="Unexplained persistent fever (intermittent or constant more than 1 month)" style="checkbox" id="stageThreePeadOi_3"/><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5334" answerLabel="Oral candidiasis (outside neonatal period)" style="checkbox" id="stageThreePeadOi_4"/><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5337" answerLabel="Oral hairy Leucoplakia" style="checkbox" id="stageThreePeadOi_5"/><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="42" answerLabel="Pulmonary tuberculosis" style="checkbox" id="stageThreePeadOi_6"/><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160515" answerLabel="Severe recurrent presumed bacterial pneumonia (More than 2 episodes in 12 months)" style="checkbox" id="stageThreePeadOi_7"/><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="133440" answerLabel="Acute necrotizing ulcerative gingivitis or periodontitis" style="checkbox" id="stageThreePeadOi_8"/><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="135458" answerLabel="Lymphoid interstitial pneumonitis (LIP)" style="checkbox" id="stageThreePeadOi_9"/><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="148849" answerLabel="Unexplained anaemia (More than 8g/dL), neutropenia (Less than 1,000/mm ) or thrombocytopenia (More than 30,000 per mm 31 for more than 1 month" style="checkbox" id="stageThreePeadOi_10"/><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="163712" answerLabel="HIV-related cardiomyopathy" style="checkbox" id="stageThreePeadOi_11"/><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="153701" answerLabel="HIV-related nephropathy" style="checkbox" id="stageThreePeadOi_12"/><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="127784" answerLabel="Recurrent or chronic upper respiratory infection(URI): otitis media, otorrhoea, sinusitis (More than 2 episodes in 6months)" style="checkbox" id="stageTwoPeadOi_10" /><br />
+                            </td>
+                        </tr>
+                        <tr id="tr-whoStagePead-4">
+                            <td>
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="162331" answerLabel="Unexplained severe wasting or severe malnutrition (-3 SD or Z score) not responding to standard therapy" style="checkbox" id="stageFourPeadOi_1"/><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="130021" answerLabel="Pneumocystis pneumonia" style="checkbox" id="stageFourPeadOi_2"/><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160515" answerLabel="Recurrent severe bacterial infections (More than 2 episodes in 12 months, excluding pneumonia)" style="checkbox" id="stageFourPeadOi_3"/><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="143929" answerLabel="Chronic orolabial or cutaneous HSV (lasting more than 1 month)" style="checkbox" id="stageFourPeadOi_4"/><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5042" answerLabel="Extra-pulmonary tuberculosis" style="checkbox" id="stageFourPeadOi_5"/><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="110915" answerLabel="Kaposi's sarcoma" style="checkbox" id="stageFourPeadOi_6"/><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="146513" answerLabel="Oesophageal candidiasis" style="checkbox" id="stageFourPeadOi_7"/><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="990" answerLabel="CNS toxoplasmosis" style="checkbox" id="stageFourPeadOi_8"/><br />
+                                <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1294" answerLabel="Cryptococcal meningitis" style="checkbox" id="stageFourPeadOi_9"/><br />
+                            </td><td>
+                            <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="131357" answerLabel="Any disseminated endemic mycosis" style="checkbox" id="stageFourPeadOi_10"/><br />
+                            <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="143110" answerLabel="Cryptosporidiosis or Isosporiasis (with diarrhoea for more than 1 month)" style="checkbox" id="stageFourPeadOi_11"/><br />
+                            <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="154119" answerLabel="CMV infection of organ other than liver, spleen, lymph nodes (and onset age more than l month)" style="checkbox" id="stageFourPeadOi_12"/><br />
+                            <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160745" answerLabel="Disseminated mycobacterial disease other than tuberculosis" style="checkbox" id="stageFourPeadOi_13"/><br />
+                            <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="146518" answerLabel="Candida of trachea, bronchi or lungs" style="checkbox" id="stageFourPeadOi_14"/><br />
+                            <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="143744" answerLabel="Acquired recto-vesicular fistula" style="checkbox" id="stageFourPeadOi_15"/><br />
+                            <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="155941" answerLabel="Cerebral or B-cell non-Hodgkin's lymphoma" style="checkbox" id="stageFourPeadOi_16"/><br />
+                            <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="5046" answerLabel="Progressive multifocal leucoencephalopathy (PML)" style="checkbox" id="stageFourPeadOi_17"/><br />
+                            <obs conceptId="167394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="160442" answerLabel="HIV encephalopathy" style="checkbox" id="stageFourPeadOi_18"/><br />
+                        </td>
+                        </tr>
+                    </table>
+                </fieldset>
+
                 <fieldset class="patient-details">
                     <legend>Treatment/Management Plan</legend>
                     <table style="width: 70%;" border="0">
@@ -4172,14 +4449,14 @@ Management<br />
                             </tr>
                             <!--Adult Questions-->
                             <includeIf velocityTest="$patient.age &gt; 14">
-                            <tr>
-                                <td>Has the Client disclosed HIV status to their sexually active partner?</td>
-                                <td><obs conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                         answerLabels="Yes,No,Unkown,N/A"
-                                         style="radio"
-                                /></td>
-                            </tr>
+                                <tr>
+                                    <td>Has the Client disclosed HIV status to their sexually active partner?</td>
+                                    <td><obs conceptId="159423AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabels="Yes,No,Unkown,N/A"
+                                             style="radio"
+                                    /></td>
+                                </tr>
                             </includeIf>
                             <!--Paed Questions-->
                             <includeIf velocityTest="$patient.age &lt; 15">
