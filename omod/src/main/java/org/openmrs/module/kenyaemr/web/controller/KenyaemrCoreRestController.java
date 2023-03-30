@@ -16,6 +16,8 @@ import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
 import org.openmrs.Form;
+import org.openmrs.GlobalProperty;
+import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
@@ -28,6 +30,7 @@ import org.openmrs.module.kenyacore.form.FormDescriptor;
 import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyacore.program.ProgramDescriptor;
 import org.openmrs.module.kenyacore.program.ProgramManager;
+import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.openmrs.ui.framework.annotation.SpringBean;
@@ -197,7 +200,30 @@ public class KenyaemrCoreRestController extends BaseRestController {
         
     }
 
+	/**
+	 * Fetches default facility
+	 *
+	 * @return custom location object
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/default-facility")
+	@ResponseBody
+	public Object getDefaultConfiguredFacility() {
+		GlobalProperty gp = Context.getAdministrationService().getGlobalPropertyObject(EmrConstants.GP_DEFAULT_LOCATION);
 
+		if (gp == null) {
+			return new ResponseEntity<Object>("Default facility not configured!", new HttpHeaders(), HttpStatus.NOT_FOUND);
+		}
+
+		Location location = (Location) gp.getValue();
+		ObjectNode locationNode = JsonNodeFactory.instance.objectNode();
+
+		locationNode.put("locationId", location.getLocationId());
+		locationNode.put("uuid", location.getUuid());
+		locationNode.put("name", location.getName());
+
+		return locationNode.toString();
+
+	}
 
     /**
      * Get a list of programs a patient is eligible for
