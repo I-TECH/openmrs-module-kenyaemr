@@ -135,25 +135,30 @@ public class NeedsCACXTestCalculation extends AbstractPatientCalculation impleme
             boolean patientHasPresumedCancerTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxPresumedCancerResult) : false;
 
             // Newly initiated and without cervical cancer test
-            if(patient.getAge() >= 18 && patient.getAge() <= 65){
+            if(patient.getAge() >= 18){
 
                 // no cervical cancer screening done
                 if(lastCacxScreeningEnc == null) {
-                    needsCacxTest = true;
+                   needsCacxTest = true;
                 }
 
                 // cacx flag should be 12 months after last cacx if negative or normal
                 if(lastCacxScreeningEnc != null && (patientHasNegativeTestResult || patientHasNormalTestResult)  && (daysSince(lastCacxScreeningEnc.getEncounterDatetime(), context) >= 365)) {
-                    needsCacxTest = true;
+                   needsCacxTest = true;
                 }
 
                 // cacx flag should be 6 months after last cacx if positive
                 if(lastCacxScreeningEnc != null && patientHasPositiveTestResult && (daysSince(lastCacxScreeningEnc.getEncounterDatetime(), context) >= 183)) {
-                    needsCacxTest = true;
+                   needsCacxTest = true;
                 }
 
                 // cacx flag should remain if there is any suspicion
                 if(lastCacxScreeningEnc != null && (patientHasSuspiciousTestResult || patientHasOtherTestResult || patientHasLowGradeLesionTestResult || patientHasHighGradeLesionTestResult|| patientHasInvasiveCancerTestResult || patientHasPresumedCancerTestResult || patientHasAbnormalTestResult)) {
+                    needsCacxTest = true;
+                }
+
+                // cacx flag should remain if there are no results added
+                if(lastCacxScreeningEnc != null && (!patientHasPositiveTestResult && !patientHasNegativeTestResult && !patientHasNormalTestResult && !patientHasSuspiciousTestResult && !patientHasOtherTestResult && !patientHasLowGradeLesionTestResult && !patientHasHighGradeLesionTestResult && !patientHasInvasiveCancerTestResult && !patientHasPresumedCancerTestResult && !patientHasAbnormalTestResult)) {
                     needsCacxTest = true;
                 }
 
