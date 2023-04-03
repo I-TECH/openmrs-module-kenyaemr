@@ -13,11 +13,12 @@
         var getUrl = window.location;
         var baseUrl = getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
         baseUrl = baseUrl + "/spa"
+        homeBaseUrl = baseUrl + "/home"
         if(isEmpty(patientUUID) == false) {
             // Sample: http://localhost:8080/openmrs/spa/patient/49ceb938-bac0-4514-b712-7452121a8c24/chart/Patient%20Summary
             baseUrl = baseUrl + "/patient/" + patientUUID + "/chart/Patient%20Summary"
         }
-        var spaUrl = new URL(baseUrl);
+        var spaUrl = new URL(homeBaseUrl);
         window.location.replace(spaUrl);
 
         function isEmpty(value) {
