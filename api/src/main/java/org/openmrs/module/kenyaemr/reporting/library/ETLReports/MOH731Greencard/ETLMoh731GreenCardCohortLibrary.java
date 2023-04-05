@@ -2621,7 +2621,7 @@ public class ETLMoh731GreenCardCohortLibrary {
     //Started HAART adolescents_Total	HV02-35
     public CohortDefinition adolescentsStartedOnHAART(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "select c.patient_id\n" +
+        String sqlQuery =  "select e.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_enrollment e\n" +
                 "         left join (select de.patient_id\n" +
                 "                    from kenyaemr_etl.etl_drug_event de\n" +
