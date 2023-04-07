@@ -42,6 +42,7 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulter
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.LastDefaulterTracingDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.ReturnToCareDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.IPTIndicationDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.PhysicalAddressDataDefinition;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.SortCriteria;
@@ -116,6 +117,7 @@ public class ETLLtfuReportBuilder extends AbstractHybridReportBuilder {
 
         dsd.addColumn("Number of days late", daysMissed, paramMapping);
         dsd.addColumn("Program", new CalculationDataDefinition("Program", new PatientProgramEnrollmentCalculation()), "", new PatientProgramEnrollmentConverter());
+        dsd.addColumn("Physical Address", new PhysicalAddressDataDefinition(), "");
       }
 
     @Override
