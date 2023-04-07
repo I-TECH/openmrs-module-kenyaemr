@@ -122,6 +122,7 @@ public class Moh510ReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("PCV 10(Pneumococcal) 3", new DateOfVaccineDataDefinition("PCV 10(Pneumococcal) 3", "PCV_10_3"), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("ROTA 1", new DateOfVaccineDataDefinition("ROTA 1", "ROTA_1"), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("ROTA 2", new DateOfVaccineDataDefinition("ROTA 2", "ROTA_2"), "", new DateConverter(DATE_FORMAT));
+        dsd.addColumn("ROTA 3", new DateOfVaccineDataDefinition("ROTA 3", "ROTA_3"), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Vitamin A", new DateOfVitaminADataDefinition("Vitamin A"), "", null);
         dsd.addColumn("Measles 1", new DateOfVaccineDataDefinition("Measles 1", "Measles_rubella_1"), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Yellow Fever", new DateOfVaccineDataDefinition("Yellow Fever", "Yellow_fever"), "", new DateConverter(DATE_FORMAT));
