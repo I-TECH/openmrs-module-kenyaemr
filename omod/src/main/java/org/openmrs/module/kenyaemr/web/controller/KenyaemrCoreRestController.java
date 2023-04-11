@@ -219,7 +219,7 @@ public class KenyaemrCoreRestController extends BaseRestController {
 
 		locationNode.put("locationId", location.getLocationId());
 		locationNode.put("uuid", location.getUuid());
-		locationNode.put("name", location.getName());
+		locationNode.put("display", location.getName());
 
 		return locationNode.toString();
 
