@@ -58,6 +58,7 @@
 				<ref bean="kenyaemr.hiv.report.scheduledAppointment"/>
 				<ref bean="kenyaemr.hiv.report.covid19vaccination"/>
 				<ref bean="kenyaemr.mchcs.report.pamaReport" />
+				<ref bean="kenyaemr.ahd.report.advancedHivDiseaseLineList" />
 			</set>
 		</property>
 		<property name="fragments">
@@ -447,6 +448,15 @@
 			</set></property>
 		<property name="template" value="kenyaemr:pmtct/Pama_Report_template.xls" />
 		<property name="repeatingSection" value="sheet:1,row:6,dataset:PamaReport" />
+	</bean>
+	<!-- Ahd linelist report-->
+	<bean id="kenyaemr.ahd.report.advancedHivDiseaseLineList" class="org.openmrs.module.kenyacore.report.CalculationReportDescriptor">
+		<property name="targetUuid" value="fd1c3cd2-7800-4150-85c6-cce27725d0a0" />
+		<property name="name" value="Patients with Advanced Hiv Disease" />
+		<property name="description" value="List of patients with Advanced Hiv Disease" />
+		<property name="calculation" value="org.openmrs.module.kenyaemr.calculation.library.hiv.PatientsWithAdvancedHivDiseaseCalculation" />
+		<property name="displayIdentifier" ref="kenyaemr.hiv.identifier.upn" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
 </beans>
