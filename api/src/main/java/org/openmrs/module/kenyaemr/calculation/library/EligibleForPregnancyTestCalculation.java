@@ -92,7 +92,7 @@ import java.util.Set;
                 boolean patientRecentBirthResult = lastTriageEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastTriageEnc, recentBirthResult, no) : false;
                 boolean referredForPregnancyTestResult = lastTriageEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastTriageEnc, referredForPregnancyTest, no) : false;
 
-                //Age should be
+                //Age should be between 15 - 49 years
                 if(patient.getAge() >= 15 && patient.getAge() <= 49) {
                     if (patientSexualAbstainedResult && pantientLmpResult && patientFamilyPlanningResult && patientMiscariageResultTestResult && patientRecentBirthResult && referredForPregnancyTestResult) {
                         result = true;
