@@ -134,7 +134,7 @@ public class EligibleForCaCxScreeningCalculation extends AbstractPatientCalculat
 			boolean patientHasPresumedCancerTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxPresumedCancerResult) : false;
 
 			// Newly initiated and without cervical cancer test
-			if(patient.getAge() >= 15 && patient.getAge() <= 65){
+			if(patient.getAge() >= 15){
 
 				// no cervical cancer screening done
 				if(lastCacxScreeningEnc == null) {
@@ -153,6 +153,10 @@ public class EligibleForCaCxScreeningCalculation extends AbstractPatientCalculat
 
 				// cacx flag should remain if there is any suspicion
 				if(lastCacxScreeningEnc != null && (patientHasSuspiciousTestResult || patientHasOtherTestResult || patientHasLowGradeLesionTestResult || patientHasHighGradeLesionTestResult|| patientHasInvasiveCancerTestResult || patientHasPresumedCancerTestResult || patientHasAbnormalTestResult)) {
+					needsCacxTest = true;
+				}
+				// cacx flag should remain if there are no results added
+				if(lastCacxScreeningEnc != null && (!patientHasPositiveTestResult && !patientHasNegativeTestResult && !patientHasNormalTestResult && !patientHasSuspiciousTestResult && !patientHasOtherTestResult && !patientHasLowGradeLesionTestResult && !patientHasHighGradeLesionTestResult && !patientHasInvasiveCancerTestResult && !patientHasPresumedCancerTestResult && !patientHasAbnormalTestResult)) {
 					needsCacxTest = true;
 				}
 
