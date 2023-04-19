@@ -1111,6 +1111,20 @@ public class Moh710CohortLibrary {
 		return cd;
 	}
 
+	/*Given Rota 3 vaccine*/
+	public CohortDefinition givenRota3VirusVaccineCl() {
+		SqlCohortDefinition cd = new SqlCohortDefinition();
+		String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_hei_immunization i where date(i.ROTA_3) between date(:startDate) and date(:endDate) group by i.patient_id;";
+
+		cd.setName("ROTA-3");
+		cd.setQuery(sqlQuery);
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+		cd.setDescription("Given Rota 3 vaccine");
+
+		return cd;
+	}
+
 	/*Given Vitamin A at 6 Months*/
 	public CohortDefinition givenVitAAt6MAgeCl() {
 		SqlCohortDefinition cd = new SqlCohortDefinition();

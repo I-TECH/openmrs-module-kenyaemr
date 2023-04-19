@@ -284,6 +284,12 @@ public class Moh710IndicatorLibrary {
 		return cohortIndicator("Given Rota 2",map(moh710CohortLibrary.givenRota2VirusVaccineCl(), "startDate=${startDate},endDate=${endDate}")
 		);
 	}
+	/*Given Rota 3*/
+	public CohortIndicator givenRota3VirusVaccine() {
+
+		return cohortIndicator("Given Rota 3",map(moh710CohortLibrary.givenRota3VirusVaccineCl(), "startDate=${startDate},endDate=${endDate}")
+		);
+	}
 
 	/*Given Vitamin A at 6 Months*/
 	public CohortIndicator givenVitAAt6MAge() {

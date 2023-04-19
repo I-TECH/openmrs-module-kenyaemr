@@ -125,6 +125,7 @@ public class Moh710ReportBuilder extends AbstractReportBuilder {
 		EmrReportingUtils.addRow(dsd,"PCV-3", "Given Pneumococcal 3", ReportUtils.map(moh710Indicators.givenPneumococcal3Vaccine(), indParams), moh710Disaggregations, Arrays.asList("01", "02"));
 		EmrReportingUtils.addRow(dsd,"ROTA-1", "Given Rota 1", ReportUtils.map(moh710Indicators.givenRota1VirusVaccine(), indParams), moh710Disaggregations, Arrays.asList("01", "02"));
 		EmrReportingUtils.addRow(dsd,"ROTA-2", "Given Rota 2", ReportUtils.map(moh710Indicators.givenRota2VirusVaccine(), indParams), moh710Disaggregations, Arrays.asList("01", "02"));
+		EmrReportingUtils.addRow(dsd,"ROTA-3", "Given Rota 3", ReportUtils.map(moh710Indicators.givenRota3VirusVaccine(), indParams), moh710Disaggregations, Arrays.asList("01", "02"));
 		EmrReportingUtils.addRow(dsd,"VA6M", "Given Vitamin A at 6 Months", ReportUtils.map(moh710Indicators.givenVitAAt6MAge(), indParams), moh710Disaggregations, Arrays.asList("01", "02"));
 		EmrReportingUtils.addRow(dsd,"YF", "Given Yellow Fever", ReportUtils.map(moh710Indicators.givenYellowFeverVaccine(), indParams), moh710Disaggregations, Arrays.asList("01", "02"));
 		EmrReportingUtils.addRow(dsd,"MR-1", "Given Measles-Rubella 1 vaccine", ReportUtils.map(moh710Indicators.givenMeaslesRubella1Vaccine(), indParams), moh710Disaggregations, Arrays.asList("01", "02"));
