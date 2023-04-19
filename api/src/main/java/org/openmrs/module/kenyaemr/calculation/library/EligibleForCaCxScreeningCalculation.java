@@ -59,8 +59,10 @@ public class EligibleForCaCxScreeningCalculation extends AbstractPatientCalculat
 	public static final EncounterType cacxEncType = MetadataUtils.existing(EncounterType.class, CommonMetadata._EncounterType.CACX_SCREENING);
 	public static final Form cacxScreeningForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.CACX_SCREENING_FORM);
 	public static final Integer CACX_TEST_RESULT_QUESTION_CONCEPT_ID = 164934;
+	public static final Integer CACX_SCREEENING_METHOD_QUESTION_CONCEPT_ID = 163589;
 
 	Integer SCREENING_RESULT = 164934;
+	Integer HPV_TEST_CONCEPT_ID = 159859;
 	Integer POSITIVE = 703;
 	Integer NEGATIVE = 664;
 	Integer NORMAL = 1115;
@@ -111,6 +113,8 @@ public class EligibleForCaCxScreeningCalculation extends AbstractPatientCalculat
 
 			ConceptService cs = Context.getConceptService();
 			Concept cacxTestResultQuestion = cs.getConcept(CACX_TEST_RESULT_QUESTION_CONCEPT_ID);
+			Concept cacxScreeningMethodQuestion = cs.getConcept(CACX_SCREEENING_METHOD_QUESTION_CONCEPT_ID);
+			Concept cacxHpvScreeningMethod = cs.getConcept(HPV_TEST_CONCEPT_ID);
 			Concept cacxPositiveResult = cs.getConcept(POSITIVE);
 			Concept cacxNegativeResult = cs.getConcept(NEGATIVE);
 			Concept cacxNormalResult = cs.getConcept(NORMAL);
@@ -132,6 +136,7 @@ public class EligibleForCaCxScreeningCalculation extends AbstractPatientCalculat
 			boolean patientHasHighGradeLesionTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxHighGradeLesionResult) : false;
 			boolean patientHasInvasiveCancerTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxInvasiveCancerResult) : false;
 			boolean patientHasPresumedCancerTestResult = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxTestResultQuestion, cacxPresumedCancerResult) : false;
+			boolean patientScreenedUsingHPV = lastCacxScreeningEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastCacxScreeningEnc, cacxScreeningMethodQuestion, cacxHpvScreeningMethod) : false;
 
 			// Newly initiated and without cervical cancer test
 			if(patient.getAge() >= 15){
@@ -141,8 +146,13 @@ public class EligibleForCaCxScreeningCalculation extends AbstractPatientCalculat
 					needsCacxTest = true;
 				}
 
-				// cacx flag should be 12 months after last cacx if negative or normal
-				if(lastCacxScreeningEnc != null && (patientHasNegativeTestResult || patientHasNormalTestResult)  && (daysSince(lastCacxScreeningEnc.getEncounterDatetime(), context) >= 365)) {
+				// cacx flag should be 24 months after last cacx screening using HPV method and result is negative
+				if(lastCacxScreeningEnc != null && patientScreenedUsingHPV && patientHasNegativeTestResult && (daysSince(lastCacxScreeningEnc.getEncounterDatetime(), context) >= 730)) {
+					needsCacxTest = true;
+				}
+
+				// cacx flag should be 12 months after last cacx if negative or normal and cacx method is not HPV
+				if(lastCacxScreeningEnc != null && !patientScreenedUsingHPV && (patientHasNegativeTestResult || patientHasNormalTestResult)  && (daysSince(lastCacxScreeningEnc.getEncounterDatetime(), context) >= 365)) {
 					needsCacxTest = true;
 				}
 
