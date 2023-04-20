@@ -180,7 +180,7 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("TPT Start Date", new CalculationDataDefinition("IPT Start Date", new IPTStartDateCalculation()), "", new SimpleResultDateConverter());
         dsd.addColumn("TPT Outcome", new CalculationDataDefinition("IPT Outcome", new IPTOutcomeCalculation()), "", new IPTOutcomeDataConverter());
         dsd.addColumn("TPT Outcome Date", new CalculationDataDefinition("IPT Outcome Date", new IPTOutcomeDateCalculation()), "", new SimpleResultDateConverter());
-        dsd.addColumn("Stability", stabilityDataDefinition, "endDate=${endDate}");
+        dsd.addColumn("Establishment", stabilityDataDefinition, "endDate=${endDate}");
         dsd.addColumn("Differentiated care model", eTLDifferentiatedCareModelDataDefinition, "endDate=${endDate}");
         dsd.addColumn("Last Visit Date", lastVisitDateDataDefinition,"endDate=${endDate}", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Self Visit Date", eTLHivSelfVisitDateDataDefinition, "endDate=${endDate}", new DateConverter(DATE_FORMAT));

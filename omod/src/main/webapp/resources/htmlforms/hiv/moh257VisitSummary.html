@@ -748,10 +748,10 @@
             }
 
             if (personPresent == SELF &amp;&amp; stabilityStatus == false) {
-                getField('stability.error').html('Please specify stability status.').show();
+                getField('stability.error').html('Please specify establishment status.').show();
                 return false;
             }else{
-                getField('stability.error').html('Please specify stability status.').hide();
+                getField('stability.error').html('Please specify establishment status.').hide();
             }
             if (pAge &lt; 16 === true) {
                 var fpStatus = getValue('fp-status.value');
@@ -1593,11 +1593,11 @@
                 </td>
             </tr>
             <tr class="patient-details" >
-                         <th colspan="3">Stability assessment</th>
+                         <th colspan="3">Establishment assessment</th>
                          <td>(ag)</td>
                          <td colspan="2">
                              <br />
-                                Is the patient stable?  &#160;&#160;&#160;&#160;
+                             Healthcare team is satisfied about providing longer follow-up intervals for the patient?  &#160;&#160;&#160;&#160;
                                          <obs conceptId="1855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="yes_no"
                                              id="stability"/>
                                          <span style="color:red;"><strong>*</strong></span>

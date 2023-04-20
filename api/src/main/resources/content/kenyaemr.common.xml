@@ -706,7 +706,7 @@
 	<bean id="kenyaemr.etl.common.report.diffcarestability" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="fb52e73d-3f98-4ff0-a2e9-65c5d486b872" />
 		<property name="name" value="Differentiated care report for Current in Care Patients" />
-		<property name="description" value="Current in Care - stability report" />
+		<property name="description" value="Current in Care - establishment report" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 

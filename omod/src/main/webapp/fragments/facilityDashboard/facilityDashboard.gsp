@@ -287,7 +287,7 @@
             },
             yAxis: {
                 title: {
-                    text: 'Documented Stable patients'
+                    text: 'Established patients'
                 }
 
             },
@@ -349,7 +349,7 @@
             },
             yAxis: {
                 title: {
-                    text: 'Documented Unstable patients'
+                    text: 'Patients not established'
                 }
 
             },
@@ -719,7 +719,7 @@
                 <tr>
                     <td style="width: 50%; vertical-align: top; padding-left: 5px">
                         <div class="ke-panel-frame">
-                            <div class="ke-panel-heading">Documented Unstable Patients</div>
+                            <div class="ke-panel-heading">Patients not established</div>
 
                             <div class="ke-panel-content">
                                 <table class="alignLeft">
@@ -739,12 +739,7 @@
                                     </tr>
                                     <tr><strong>
                                         <td colspan="3" class="heading"><strong
-                                                style="font-weight: bold">Total Unstable: ${unstableUnder15 + unstableFemales15Plus + unstableMales15Plus}</strong>
-                                        </td></strong>
-                                    </tr>
-                                    <tr><strong>
-                                        <td colspan="3" class="heading"><strong
-                                                style="font-weight: bold">Patients with undocumented stability: ${undocumentedStability}</strong>
+                                                style="font-weight: bold">Total Not Established: ${unstableUnder15 + unstableFemales15Plus + unstableMales15Plus}</strong>
                                         </td></strong>
                                     </tr>
                                     <tr>
@@ -763,7 +758,7 @@
 
                     <td style="width: 50%; vertical-align: top; padding-left: 5px">
                         <div class="ke-panel-frame">
-                            <div class="ke-panel-heading">Documented Stable Patients</div>
+                            <div class="ke-panel-heading">Established patients</div>
 
                             <div class="ke-panel-content">
                                 <table class="alignLeft">
@@ -793,12 +788,7 @@
                                     </tr>
                                     <tr>
                                         <td colspan="6" class="heading1"><strong
-                                                style="font-weight: bold">Total Stable: ${stableUnder4mtcaBelow15 + stableUnder4mtcaOver15F + stableUnder4mtcaOver15M + stableOver4mtcaBelow15 + stableOver4mtcaOver15F + stableOver4mtcaOver15M}</strong>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="6" class="heading1"><strong
-                                                style="font-weight: bold">Patients with undocumented stability: ${undocumentedStability}</strong>
+                                                style="font-weight: bold">Total Established: ${stableUnder4mtcaBelow15 + stableUnder4mtcaOver15F + stableUnder4mtcaOver15M + stableOver4mtcaBelow15 + stableOver4mtcaOver15F + stableOver4mtcaOver15M}</strong>
                                         </td>
                                     </tr>
                                     <tr>

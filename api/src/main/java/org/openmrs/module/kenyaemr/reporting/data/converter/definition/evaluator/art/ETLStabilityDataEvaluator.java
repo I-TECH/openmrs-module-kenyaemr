@@ -36,7 +36,7 @@ public class ETLStabilityDataEvaluator implements PersonDataEvaluator {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry="select fup.patient_id,\n" +
-                "       (case fup.stability when 1 then 'Stable' when 2 then 'Unstable' else '' end) as Stability\n" +
+                "       (case fup.stability when 1 then 'Established' when 2 then 'Not Established' else '' end) as Stability\n" +
                 "from\n" +
                 " (select f.patient_id,\n" +
                 "     mid(max(concat(f.visit_date,f.stability)),11) as stability,\n" +

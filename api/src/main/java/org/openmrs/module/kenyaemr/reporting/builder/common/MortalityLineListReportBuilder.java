@@ -151,7 +151,7 @@ public class MortalityLineListReportBuilder extends AbstractHybridReportBuilder 
         dsd.addColumn("IPT Start Date", new CalculationDataDefinition("IPT Start Date", new IPTStartDateCalculation()), "", new SimpleResultDateConverter());
         dsd.addColumn("IPT Outcome", new CalculationDataDefinition("IPT Outcome", new IPTOutcomeCalculation()), "", new IPTOutcomeDataConverter());
         dsd.addColumn("IPT Outcome Date", new CalculationDataDefinition("IPT Outcome Date", new IPTOutcomeDateCalculation()), "", new SimpleResultDateConverter());
-        dsd.addColumn("Stability", new ETLStabilityDataDefinition(), "");
+        dsd.addColumn("Establishment", new ETLStabilityDataDefinition(), "");
         dsd.addColumn("Differentiated care model", new ETLDifferentiatedCareModelDataDefinition(), "");
         dsd.addColumn("Last Visit Date", new ETLLastVisitDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Self Visit Date", new ETLHivSelfVisitDateDataDefinition(), "", new DateConverter(DATE_FORMAT));

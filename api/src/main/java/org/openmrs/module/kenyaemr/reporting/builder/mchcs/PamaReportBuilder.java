@@ -155,7 +155,7 @@ public class PamaReportBuilder extends AbstractHybridReportBuilder {
 		dsd.addColumn("Last VL Date", lastVLDateDataDefinition, "endDate=${endDate}", new DateConverter(DATE_FORMAT));
 		dsd.addColumn("Suppression Status", suppressionStatusDataDefinition, "endDate=${endDate}");
 		dsd.addColumn("Pair Categorization", new PamaPairCategorizationDataDefinition(), "");
-		dsd.addColumn("Stability Status", stabilityDataDefinition, "endDate=${endDate}");
+		dsd.addColumn("Establishment status", stabilityDataDefinition, "endDate=${endDate}");
 		dsd.addColumn("Disclosure Status", disclosureStatusDataDefinition, "endDate=${endDate}");
 		dsd.addColumn("Last Visit Date", lastVisitDateDataDefinition,"endDate=${endDate}", new DateConverter(DATE_FORMAT));
 		dsd.addColumn("Next Appointment Date", nextAppointmentDateDataDefinition, "endDate=${endDate}", new DateConverter(DATE_FORMAT));
@@ -166,7 +166,7 @@ public class PamaReportBuilder extends AbstractHybridReportBuilder {
 		dsd.addColumn("Caregiver Last Viral Load Results", pamaCareGiverLastVLDataDefinition, "endDate=${endDate}");
 		dsd.addColumn("Caregiver Last Viral Load Date", pamaCareGiverLastVLDateDataDefinition, "endDate=${endDate}",new DateConverter(DATE_FORMAT));
 		dsd.addColumn("Caregiver Suppression Status", pamaCareGiverSuppressionStatusDataDefinition, "endDate=${endDate}");
-		dsd.addColumn("Caregiver Stability Status", pamaCareGiverStabilityStatusDataDefinition, "endDate=${endDate}");
+		dsd.addColumn("Caregiver Establishment Status", pamaCareGiverStabilityStatusDataDefinition, "endDate=${endDate}");
 		dsd.addColumn("Caregiver Last Visit Date", pamaCareGiverLastVisitDateDataDefinition, "endDate=${endDate}",new DateConverter(DATE_FORMAT));
 		dsd.addColumn("Caregiver Next Appointment Date", pamaCareGiverNextAppointmentDateDataDefinition, "endDate=${endDate}",new DateConverter(DATE_FORMAT));
 
