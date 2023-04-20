@@ -46,7 +46,7 @@ public class PatientsWithAdvancedHivDiseaseCalculation extends AbstractPatientCa
 
 	@Override
 	public String getFlagMessage() {
-		return "Advanced Hiv Disease";
+		return "AHD Client";
 	}
 
 	@Override
