@@ -37,7 +37,7 @@ public class PamaCareGiverStabilityStatusDataEvaluator implements PersonDataEval
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select distinct r.person_a,\n" +
-                "  (case mid(max(concat(fup.visit_date,fup.stability)),11)  when 1 then 'Stable' when 2 then 'Unstable' else '' end) as Stability\n" +
+                "  (case mid(max(concat(fup.visit_date,fup.stability)),11)  when 1 then 'Established' when 2 then 'Not Established' else '' end) as Stability\n" +
                 "from kenyaemr_etl.etl_patient_demographics d\n" +
                 "  inner join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id = d.patient_id and date(fup.visit_date) <= date(:endDate)\n" +
                 "  inner join relationship r on d.patient_id = r.person_b\n" +

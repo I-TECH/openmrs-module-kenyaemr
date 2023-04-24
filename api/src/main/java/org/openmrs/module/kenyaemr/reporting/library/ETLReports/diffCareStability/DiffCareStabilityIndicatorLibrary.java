@@ -30,7 +30,7 @@ public class DiffCareStabilityIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator stableUnder1Monthtca() {
-        return cohortIndicator("Stable patients with under 1 month prescription", ReportUtils.map(cohortLibrary.stableUnder1Monthtca(), ""));
+        return cohortIndicator("Established patients with under 1 month prescription", ReportUtils.map(cohortLibrary.stableUnder1Monthtca(), ""));
     }
 
     /**
@@ -38,7 +38,7 @@ public class DiffCareStabilityIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator stableOver6Monthstca() {
-        return cohortIndicator("Stable patients 6+ months prescription", ReportUtils.map(cohortLibrary.stableOver6Monthstca(), ""));
+        return cohortIndicator("Established patients 6+ months prescription", ReportUtils.map(cohortLibrary.stableOver6Monthstca(), ""));
     }
 
     /**
@@ -46,7 +46,7 @@ public class DiffCareStabilityIndicatorLibrary {
      * @return
      */
     public  CohortIndicator stableUnder4Monthstca() {
-        return cohortIndicator("Stable patients <4 months prescription", ReportUtils.map(cohortLibrary.stableUnder4Monthstca(), ""));
+        return cohortIndicator("Established patients <4 months prescription", ReportUtils.map(cohortLibrary.stableUnder4Monthstca(), ""));
     }
 
 
@@ -55,7 +55,7 @@ public class DiffCareStabilityIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator unstable() {
-        return cohortIndicator("Unstable Patients" , ReportUtils.map(cohortLibrary.unstable(), ""));
+        return cohortIndicator("Unestablished Patients" , ReportUtils.map(cohortLibrary.unstable(), ""));
     }
 
     /**
@@ -63,7 +63,7 @@ public class DiffCareStabilityIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator undocumentedStability() {
-        return cohortIndicator("Undocumented stability" , ReportUtils.map(cohortLibrary.undocumentedStability(), ""));
+        return cohortIndicator("Undocumented establishment" , ReportUtils.map(cohortLibrary.undocumentedStability(), ""));
     }
 
     /**
@@ -71,7 +71,7 @@ public class DiffCareStabilityIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator stablePatientsMultiMonthAppointments(Integer month) {
-        return cohortIndicator("Stable with Multi-month appointment" , ReportUtils.map(cohortLibrary.stablePatientsMultiMonthAppointments(month), ""));
+        return cohortIndicator("Established with Multi-month appointment" , ReportUtils.map(cohortLibrary.stablePatientsMultiMonthAppointments(month), ""));
     }
 
 

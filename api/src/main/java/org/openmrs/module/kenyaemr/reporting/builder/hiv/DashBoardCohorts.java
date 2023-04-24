@@ -418,7 +418,7 @@ public class DashBoardCohorts {
         try {
             return getService().evaluate(new DiffCareStableOver4MonthstcaCohortDefinition(), context);
         } catch (EvaluationException e) {
-            throw new IllegalStateException("Error evaluating stable patients with 4+ months tca", e);
+            throw new IllegalStateException("Error evaluating established patients with 4+ months tca", e);
         }
     }
 
@@ -430,7 +430,7 @@ public class DashBoardCohorts {
         try {
             return getService().evaluate(new DiffCareStableUnder4MonthstcaCohortDefinition(), context);
         } catch (EvaluationException e) {
-            throw new IllegalStateException("Error evaluating stable patients with under months tca", e);
+            throw new IllegalStateException("Error evaluating established patients with under months tca", e);
         }
     }
 
@@ -442,7 +442,7 @@ public class DashBoardCohorts {
         try {
             return getService().evaluate(new DiffCareUnstableUnder15YearsCohortDefinition(), context);
         } catch (EvaluationException e) {
-            throw new IllegalStateException("Error evaluating unstable patients aged under 15 years", e);
+            throw new IllegalStateException("Error evaluating unestablished patients aged under 15 years", e);
         }
     }
 
@@ -454,7 +454,7 @@ public class DashBoardCohorts {
         try {
             return getService().evaluate(new DiffCareUnstableFemales15PlusYearsCohortDefinition(), context);
         } catch (EvaluationException e) {
-            throw new IllegalStateException("Error evaluating unstable female patients aged 15+ years", e);
+            throw new IllegalStateException("Error evaluating unestablished female patients aged 15+ years", e);
         }
     }
 
@@ -466,7 +466,7 @@ public class DashBoardCohorts {
         try {
             return getService().evaluate(new DiffCareUnstableMales15PlusYearsCohortDefinition(), context);
         } catch (EvaluationException e) {
-            throw new IllegalStateException("Error evaluating unstable male patients aged 15+ years", e);
+            throw new IllegalStateException("Error evaluating unestablished male patients aged 15+ years", e);
         }
     }
 
@@ -502,7 +502,7 @@ public static EvaluatedCohort currentInCareOnART(EvaluationContext context) {
         try {
             return getService().evaluate(new DiffCareUndocumentedStabilityCohortDefinition(), context);
         } catch (EvaluationException e) {
-            throw new IllegalStateException("Error evaluating undocumented patient stability", e);
+            throw new IllegalStateException("Error evaluating undocumented patient establishment", e);
         }
     }
 
@@ -538,7 +538,7 @@ public static EvaluatedCohort currentInCareOnART(EvaluationContext context) {
         try {
             return getService().evaluate(new DiffCareStableOver4MonthstcaOver15FemaleCohortDefinition(), context);
         } catch (EvaluationException e) {
-            throw new IllegalStateException("Error evaluating stable female patients with over 4 months prescription aged 15+ years", e);
+            throw new IllegalStateException("Error evaluating established female patients with over 4 months prescription aged 15+ years", e);
         }
     }
 
@@ -550,7 +550,7 @@ public static EvaluatedCohort currentInCareOnART(EvaluationContext context) {
         try {
             return getService().evaluate(new DiffCareStableOver4MonthstcaOver15MaleCohortDefinition(), context);
         } catch (EvaluationException e) {
-            throw new IllegalStateException("Error evaluating stable male patients with over 4 months prescription aged 15+ years", e);
+            throw new IllegalStateException("Error evaluating established male patients with over 4 months prescription aged 15+ years", e);
         }
     }
 
@@ -562,7 +562,7 @@ public static EvaluatedCohort currentInCareOnART(EvaluationContext context) {
         try {
             return getService().evaluate(new DiffCareStableUnder4MonthstcaOver15FemaleCohortDefinition(), context);
         } catch (EvaluationException e) {
-            throw new IllegalStateException("Error evaluating stable female patients with under 4 months prescription aged 15+ years", e);
+            throw new IllegalStateException("Error evaluating established female patients with under 4 months prescription aged 15+ years", e);
         }
     }
 
@@ -574,7 +574,7 @@ public static EvaluatedCohort currentInCareOnART(EvaluationContext context) {
         try {
             return getService().evaluate(new DiffCareStableOver4MonthstcaUnder15CohortDefinition(), context);
         } catch (EvaluationException e) {
-            throw new IllegalStateException("Error evaluating stable children patients with over 4 months prescription aged below 15 years", e);
+            throw new IllegalStateException("Error evaluating established children patients with over 4 months prescription aged below 15 years", e);
         }
     }
     /**
@@ -585,7 +585,7 @@ public static EvaluatedCohort currentInCareOnART(EvaluationContext context) {
         try {
             return getService().evaluate(new DiffCareStableUnder4MonthstcaOver15MaleCohortDefinition(), context);
         } catch (EvaluationException e) {
-            throw new IllegalStateException("Error evaluating stable male patients with under 4 months prescription aged 15+ years", e);
+            throw new IllegalStateException("Error evaluating established male patients with under 4 months prescription aged 15+ years", e);
         }
     }
 
@@ -597,7 +597,7 @@ public static EvaluatedCohort currentInCareOnART(EvaluationContext context) {
         try {
             return getService().evaluate(new DiffCareStableUnder4MonthstcaUnder15CohortDefinition(), context);
         } catch (EvaluationException e) {
-            throw new IllegalStateException("Error evaluating stable children patients with under 4 months prescription aged below 15 years", e);
+            throw new IllegalStateException("Error evaluating established children patients with under 4 months prescription aged below 15 years", e);
         }
     }
 

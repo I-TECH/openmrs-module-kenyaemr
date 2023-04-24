@@ -2441,10 +2441,10 @@ Green Card follow-up visit form
                 getField('sti-partnerNotification.error').html('Please specify partner notification status.').hide();
             }
             if (personPresent == SELF &amp;&amp; stabilityStatus == false) {
-                getField('stability.error').html('Please specify stability status.').show();
+                getField('stability.error').html('Please specify establishment status.').show();
                 return false;
             }else{
-                getField('stability.error').html('Please specify stability status.').hide();
+                getField('stability.error').html('Please specify establishment status.').hide();
             }
 
             if (personPresent == SELF &amp;&amp; stabilityStatus == "true" &amp;&amp; fastTrackCareError == "") {
@@ -4511,7 +4511,7 @@ Management<br />
                 </fieldset>
                 <!--Stability Assessment -->
                 <fieldset class="stability-details">
-                    <legend>Stability assessment</legend>
+                    <legend>Establishment assessment</legend>
                     <table>
                         <tr>
                             <td>
@@ -4528,7 +4528,7 @@ Management<br />
                                 <table class="simple-table">
                                     <tr>
                                         <th colspan="4">
-                                            Recorded stability assessment indicators
+                                            Recorded establishment assessment indicators
                                         </th>
                                     </tr>
                                     <tr>
