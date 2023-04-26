@@ -59,6 +59,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String CACX_SCREENING = "3fefa230-ea10-45c7-b62b-b3b8eb7274bb";
 		public static final String HIV_SELF_TEST = "8b706d42-b4ae-4b3b-bd83-b14f15294362";
 		public static final String VMMC_PROCEDURE = "35c6fcc2-960b-11ec-b909-0242ac120002" ;
+		public static final String GAD_7 = "899d64ad-be13-4071-a879-2153847206b7";
 	}
 
 	public static final class _Form {
@@ -69,6 +70,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String PROGRESS_NOTE = Metadata.Form.PROGRESS_NOTE;
 		public static final String SURGICAL_AND_MEDICAL_HISTORY = Metadata.Form.SURGICAL_AND_MEDICAL_HISTORY;
 		public static final String TRIAGE = Metadata.Form.TRIAGE;
+		public static final String GAD_7 = Metadata.Form.GAD_7;
 		public static final String HTS_INITIAL_TEST = "402dc5d7-46da-42d4-b2be-f43ea4ad87b0";
 		public static final String HTS_CONFIRMATORY_TEST = "b08471f6-0892-4bf7-ab2b-bf79797b8ea4";
 		public static final String HTS_LINKAGE = "050a7f12-5c52-4cad-8834-863695af335d";
@@ -163,6 +165,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(encounterType("Lab Results", "Collection of laboratory results", _EncounterType.LAB_RESULTS));
 		install(encounterType("Registration", "Initial data collection for a patient, not specific to any program", _EncounterType.REGISTRATION));
 		install(encounterType("Triage", "Collection of limited data prior to a more thorough examination", _EncounterType.TRIAGE));
+		install(encounterType("Generalized Anxiety Disorder Assessment", "Anxiety Screening using Generalized Anxiety Disorder Assessment (GAD-7)", _EncounterType.GAD_7));
 		install(encounterType("HTS", "HTS Services", _EncounterType.HTS));
 		install(encounterType("Drug Regimen Editor", "Handles patient regimen events", _EncounterType.DRUG_REGIMEN_EDITOR));
 		install(encounterType("Cervical cancer screening", "Cervical cancer screening", _EncounterType.CACX_SCREENING));
@@ -175,6 +178,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(form("Progress Note", "For additional information - mostly complaints and examination findings.", _EncounterType.CONSULTATION, "1", _Form.PROGRESS_NOTE));
 		install(form("Surgical and Medical History", null, _EncounterType.REGISTRATION, "1", _Form.SURGICAL_AND_MEDICAL_HISTORY));
 		install(form("Triage", null, _EncounterType.TRIAGE, "1", _Form.TRIAGE));
+		install(form("Generalized Anxiety Disorder Assessment", "Anxiety Screening using Generalized Anxiety Disorder Assessment (GAD-7)", _EncounterType.GAD_7, "1", _Form.GAD_7));
 		install(form("HTS Initial Form", "Form for HTS testing services ", _EncounterType.HTS, "1", _Form.HTS_INITIAL_TEST));
 		install(form("HTS Retest Form", "Form for HTS retest Services", _EncounterType.HTS, "1", _Form.HTS_CONFIRMATORY_TEST));
 		install(form("HTS Linkage Form", "Form for HTS linkage", _EncounterType.HTS, "1", _Form.HTS_LINKAGE));
