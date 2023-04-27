@@ -45,7 +45,7 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
         return flagMsg.toString();
     }
 
-    StringBuilder flagMsg = new StringBuilder("");
+    StringBuilder flagMsg = new StringBuilder();
 
     /**
      * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
@@ -71,7 +71,6 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
 
         Concept NEGATIVE = Dictionary.getConcept(Dictionary.NEGATIVE);
         Concept hivExposed = Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV);
-        Concept PCR_6_WEEKS = Dictionary.getConcept(Dictionary.HIV_RAPID_TEST_1_QUALITATIVE);
         Concept PCR_6_MONTHS = Dictionary.getConcept(Dictionary.HIV_RAPID_TEST_2_QUALITATIVE);
         Concept PCR_12_MONTHS = Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION);
         Concept INFANT_NOT_BREASTFEEDING = Dictionary.getConcept(Dictionary.INFANT_NOT_BREASTFEEDING);
@@ -92,13 +91,11 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
 
                 Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, ptId);
 
-                System.out.println("-------------I am here----------line 89");
                 if (hivStatusObs != null && hivStatusObs.getValueCoded().equals(hivExposed)) {
-                    System.out.println("-------------I am here----------line 91");
 
                     Integer ageInWeeks = getAgeInWeeks(person.getBirthdate(), context.getNow());
                     Integer ageInMonths = getAgeInMonths(person.getBirthdate(), context.getNow());
-                    System.out.println("++++++Patient:" + person.getGivenName() + " +++++Age in Months:" + ageInMonths);
+
                     Obs pcrTestObsQual = EmrCalculationUtils.obsResultForPatient(lastPcrTestQualitative, ptId);
                     Obs cwcDNATestObs = EmrCalculationUtils.obsResultForPatient(lastPcrCWCTest, ptId);
                     Obs dnaTestLab = EmrCalculationUtils.obsResultForPatient(lastDNATestQualitative, ptId);
@@ -108,25 +105,22 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
 
                     Order labOrder;
                     if (ageInWeeks >= 6 && ageInMonths < 6) {
-                        System.out.println("-------------I am here----------line 94");
+
                         if (pcrTestObsQual == null) {
                             needsPcr = true;
                             flagMsg.append("Due for week-6 PCR test");
                         }
                     } else if (ageInMonths >= 6 && ageInMonths < 12) {
-                        System.out.println("I am here??? line 104");
-                        // if (pcrTestObsQual != null) {
+
                         if (pcrTestObsQual != null) {
                             if (pcrTestObsQual.getValueCoded() == NEGATIVE) {
                                 labOrder = pcrTestObsQual.getOrder();
                                 if (labOrder != null) {
                                     Integer orderId = labOrder.getOrderId();
                                     Order order = orderService.getOrder(orderId);
-                                    System.out.println("Before++++++++++++++++++++++++");
-                                    System.out.println("order.getOrderReason().getConceptId()++++++++++++++++++++++++" + order.getOrderReason().getConceptId());
-                                    System.out.println("order.getOrderReason().getConceptId()++++++++++++++++++++++++" + order.getOrderReason().getConceptId());
-                                    if (!order.getOrderReason().equals(PCR_6_MONTHS) /*&& order.getOrderReason().equals(PCR_6_WEEKS)*/) {
-                                        System.out.println("line 115++++++++++++++++++++++++");
+
+                                    if (!order.getOrderReason().equals(PCR_6_MONTHS)) {
+
                                         needsPcr = true;
                                     }
                                 } else {
@@ -139,38 +133,34 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
                                         Concept obsTest = obs.getConcept();
 
                                         if (pcrTest != null && obsTestReason != null && obsTest != null) {
-                                            System.out.println("******obsTest.getConceptId():" + obsTest.getConceptId());
-                                            System.out.println(";;;;;;;;;;;;;;;obsTestReason.getConceptId():" + obsTestReason.getConceptId());
-                                            if (pcrTest == NEGATIVE && obsTest.getConceptId() == 164959 && obsTestReason.getConceptId() != 167015 /*&& obsTestReason.getConceptId() == 844*/) {
-                                                System.out.println("line 131============================");
+
+                                            if (pcrTest == NEGATIVE && obsTest.getConceptId() == 164959 && obsTestReason.getConceptId() != 167015) {
+
                                                 needsPcr = true;
                                             }
                                         }
                                     }
                                 }
                                 if (needsPcr)
-                                    System.out.println("line 138============================");
-                                flagMsg.append("Due for month-6 PCR test ");
+
+                                    flagMsg.append("Due for month-6 PCR test ");
                             }
                         } else {
                             needsPcr = true;
                             flagMsg.append("everything else Due for month-6 PCR test ");
                         }
                     } else if (ageInMonths >= 12 && ageInMonths < 18) {
-                        //System.out.println("???????????pcrTestObsQual.getId:" + pcrTestObsQual.getId());
-                        // if (pcrTestObsQual != null) {
+
                         if (pcrTestObsQual != null) {
                             if (pcrTestObsQual.getValueCoded() == NEGATIVE) {
                                 labOrder = pcrTestObsQual.getOrder();
-                                System.out.println("++++Line 143");
-                                // System.out.println("++++lab order.getOrderId" + labOrder.getOrderId());
+
                                 if (labOrder != null) {
                                     Integer orderId = labOrder.getOrderId();
                                     Order order = orderService.getOrder(orderId);
-                                    System.out.println("//////////////////////////////order.getOrderReason().equals(PCR_6_MONTHS):" + order.getOrderReason().getConceptId());
-                                    System.out.println("//////////////////////////////pcrTestObsQual.getValueCoded():" + pcrTestObsQual.getValueCoded());
-                                    if (!order.getOrderReason().equals(PCR_12_MONTHS)/* && order.getOrderReason().equals(PCR_6_MONTHS)*/) {
-                                        System.out.println("||||||||||Line 151");
+
+                                    if (!order.getOrderReason().equals(PCR_12_MONTHS)) {
+
                                         needsPcr = true;
                                     }
                                 } else {
@@ -181,39 +171,38 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
                                         Concept obsTestReason = obs.getValueCoded();
                                         Concept obsTest = obs.getConcept();
                                         if (pcrTest != null && obsTestReason != null && obsTest != null) {
-                                            System.out.println("++Line 163++++++++++obsTest.getConceptId():" + obsTest.getConceptId());
-                                            System.out.println("++Line 164++++++++++obsTestReason.getConceptId():" + obsTestReason.getConceptId());
-                                            if (pcrTest.equals(NEGATIVE) && obsTest.getConceptId() == 164959 && obsTestReason.getConceptId() != 165389/* && obsTestReason.getConceptId() == 167015*/) {
+
+                                            if (pcrTest.equals(NEGATIVE) && obsTest.getConceptId() == 164959 && obsTestReason.getConceptId() != 165389) {
                                                 needsPcr = true;
                                             }
                                         }
                                     }
                                 }
                                 if (needsPcr)
-                                    System.out.println("pppppppppppppppppppppLine 172");
-                                flagMsg.append("Due for month-12 PCR test ");
+
+                                    flagMsg.append("Due for month-12 PCR test ");
                             }
                         } else {
                             needsPcr = true;
                             flagMsg.append("everything else Due for month-12 PCR test ");
                         }
                     } else if (ageInMonths >= 18) {
-                        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaa we are at line 198");
+
                         if (dnaTestLab != null) {
-                            System.out.println("Line 200???????? Person " + person.getGivenName());
+
                             if (dnaTestLab.getValueCoded() == NEGATIVE) {
                                 labOrder = dnaTestLab.getOrder();
-                                System.out.println("Line 203??????????Lab order:" + labOrder + " Person " + person.getGivenName());
+
                                 if (labOrder != null) {
-                                    System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaa we are at line 205");
+
                                     Integer orderId = labOrder.getOrderId();
                                     Order order = orderService.getOrder(orderId);
-                                    System.out.println("------------We are here 190:order.getOrderReason().getConceptId" + order.getOrderReason().getConceptId());
-                                    if (!order.getOrderReason().equals(AB_18_MONTHS)/* && order.getOrderReason().equals(PCR_12_MONTHS)*/) {
-                                        System.out.println("+++++We are here --line 191");
+
+                                    if (!order.getOrderReason().equals(AB_18_MONTHS)) {
+
                                         needsPcr = true;
                                         flagMsg.append("-+-Due for month-18 Rapid AB test ");
-                                    } else if (obsBFStatusDate != null && getAgeInWeeks(obsBFStatusDate, context.getNow()) >= 6 && /*pcrTestObsQual.getValueCoded() == NEGATIVE && order.getOrderReason().equals(AB_18_MONTHS) && */!order.getOrderReason().equals(AB_6_MONTHS_AFTER_CESSATION_OF_BF)) {
+                                    } else if (obsBFStatusDate != null && getAgeInWeeks(obsBFStatusDate, context.getNow()) >= 6 && !order.getOrderReason().equals(AB_6_MONTHS_AFTER_CESSATION_OF_BF)) {
                                         needsPcr = true;
                                         flagMsg.append("--Due for week-6 Rapid AB test after cessation of breastfeeding");
                                     }
@@ -229,10 +218,9 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
                                 Concept obsTest = obs.getConcept();
 
                                 if (dnaABTest != null && obsTestReason != null && obsTest != null) {
-                                    System.out.println("Line 205:????????????????obs.getConcept().getConceptId():" + obs.getConcept().getConceptId());
-                                    System.out.println("Line 206:????????????????obs.getValueCoded().getConceptId:" + obs.getValueCoded().getConceptId());
-                                    if (obs.getConcept().getConceptId() == 164959 && !obs.getValueCoded().equals(AB_18_MONTHS)/* && obs.getValueCoded().equals(PCR_12_MONTHS)*/) {
-                                        System.out.println("+++++We are here --line 208");
+
+                                    if (obs.getConcept().getConceptId() == 164959 && !obs.getValueCoded().equals(AB_18_MONTHS)) {
+
                                         needsPcr = true;
                                         flagMsg.append("-+-Due for month-18 Rapid AB test ");
                                     } else if (obsBFStatusDate != null && !obsTest.equals(AB_6_MONTHS_AFTER_CESSATION_OF_BF) && getAgeInWeeks(obsBFStatusDate, context.getNow()) >= 6) {
