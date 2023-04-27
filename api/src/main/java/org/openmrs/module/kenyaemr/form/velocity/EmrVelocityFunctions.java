@@ -24,6 +24,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.module.kenyaemr.Dictionary;
+import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.HighRiskNegativeClientCategorizationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.HighRiskPositiveClientCategorizationCalculation;
@@ -242,14 +243,13 @@ public class EmrVelocityFunctions {
 
 	/**
 	 * Gets MFL number for current facility
-	 * From global property
+	 * From KenyaEmrService
 	 * @return the MFL code
 	 */
 	public String currentFacilityMFLCode() {
-		AdministrationService administrationService = org.openmrs.api.context.Context.getAdministrationService();
-		GlobalProperty globalProperty = administrationService.getGlobalPropertyObject("facility.mflcode");
-		if (globalProperty.getValue() != null) {
-			return globalProperty.getPropertyValue();
+		String facilityCode = Context.getService(KenyaEmrService.class).getDefaultLocationMflCode();
+		if (facilityCode != "") {
+			return facilityCode;
 		}
 		return "";
 	}
