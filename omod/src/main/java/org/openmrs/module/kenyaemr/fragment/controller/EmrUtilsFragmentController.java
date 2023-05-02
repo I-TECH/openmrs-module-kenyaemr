@@ -210,6 +210,7 @@ public class EmrUtilsFragmentController {
 
 		return recencyId;
 	}
+
 	/**
 	 * Checks whether provided identifier(s) is already assigned
 	 * @return simple object with statuses for the different identifiers
@@ -244,6 +245,25 @@ public class EmrUtilsFragmentController {
 			Context.removeProxyPrivilege(PrivilegeConstants.SQL_LEVEL_ACCESS);
 		}
 	}
+
+	/**
+	 * Checks for any update on IIT risk score
+	 * @return simple object with current risk score and real time risk score
+	 */
+	public SimpleObject getRealTimeRiskScore(@RequestParam(value = "newPatientVars") SimpleObject patientVars) {
+		SimpleObject ret = new SimpleObject();
+		ret.put("previousIITRisk", "");
+		ret.put("updatedIITRisk", "");
+		try {
+			
+		}
+		catch(Exception re) {
+			System.err.println(re.getMessage());
+			re.printStackTrace();
+		}
+		return(ret);
+	}
+
 	/**
 	 * Checks whether provided identifier(s) is already assigned
 	 * @return simple object with statuses for the different identifiers
