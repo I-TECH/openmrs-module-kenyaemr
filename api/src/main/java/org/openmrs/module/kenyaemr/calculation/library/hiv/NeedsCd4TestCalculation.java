@@ -23,7 +23,7 @@ import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.module.kenyacore.calculation.*;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.pre_art.PreviousHIVClinicalVisitTCACalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.PreviousHIVClinicalVisitTCACalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.metadatadeploy.MetadataUtils;

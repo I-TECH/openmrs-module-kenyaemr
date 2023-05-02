@@ -7,7 +7,7 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.kenyaemr.calculation.library.hiv.pre_art;
+package org.openmrs.module.kenyaemr.calculation.library.hiv.art;
 
 import org.openmrs.*;
 import org.openmrs.api.EncounterService;
