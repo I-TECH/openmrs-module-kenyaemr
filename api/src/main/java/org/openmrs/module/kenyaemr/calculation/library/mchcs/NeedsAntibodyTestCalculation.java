@@ -30,6 +30,9 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
+import static org.openmrs.module.kenyaemr.calculation.library.mchcs.NeedsPcrTestCalculation.getAgeInWeeks;
+import static org.openmrs.module.kenyaemrorderentry.util.Utils.getLatestObs;
+
 /**
  * Determines whether a child at 9 months and above has had antibody test
  */
@@ -61,101 +64,94 @@ public class NeedsAntibodyTestCalculation extends AbstractPatientCalculation imp
         Set<Integer> inHivProgram = Filters.inProgram(hivProgram, alive, context);
         // Get whether the child is HIV Exposed
         CalculationResultMap lastChildHivStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS), cohort, context);
-        CalculationResultMap lastHivRapidTest1 = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_RAPID_TEST_1_QUALITATIVE), cohort, context);
         Set<Integer> pendingDNARapidTestResults = CalculationUtils.patientsThatPass(calculate(new PendingDNAPCRRapidTestResultCalculation(), cohort, context));
+        CalculationResultMap lastPcrCWCTest = Calculations.lastObs(Dictionary.getConcept(Dictionary.EID_CWC_TEST), cohort, context);
+        CalculationResultMap lastDNATestQualitative = Calculations.lastObs(Dictionary.getConcept(Dictionary.RAPID_HIV_CONFIRMATORY_TEST), cohort, context);
         Concept hivExposedUnknown = Dictionary.getConcept(Dictionary.UNKNOWN);
         Concept hivExposed = Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV);
         CalculationResultMap ret = new CalculationResultMap();
         OrderService orderService = Context.getOrderService();
         Concept NEGATIVE = Dictionary.getConcept(Dictionary.NEGATIVE);
-        Concept PCR_12_MONTHS = Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION);
+        Concept EID_CWC_TEST = Dictionary.getConcept(Dictionary.EID_CWC_TEST);
         Concept AB_18_MONTHS = Dictionary.getConcept(Dictionary.RAPID_HIV_ANTIBODY_TEST_AT_18_MONTHS);
         Concept AB_6_MONTHS_AFTER_CESSATION_OF_BF = Dictionary.getConcept(Dictionary.AB_TEST_6_WEEKS_AFTER_CESSATION_OF_BREASTFEEDING);
 
         Concept INFANT_NOT_BREASTFEEDING = Dictionary.getConcept(Dictionary.INFANT_NOT_BREASTFEEDING);
+        Concept HIV_NEG_NO_LONGER_AT_RISK = Dictionary.getConcept(Dictionary.HIV_NEG_NOT_AT_RISK);
 
-        CalculationResultMap lastPcrTestQualitative = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE), cohort, context);
         CalculationResultMap lastBreastFeedingStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.INFANT_FEEDING_METHOD), cohort, context);
 
         for (Integer ptId : cohort) {
-            boolean needsAntibodyAt18Months = false;
-            boolean needsAntibodyAfterBF = false;
-            Order labOrder = new Order();
+            boolean needsAntibodyTest = false;
+            Order labOrder;
 
             Person person = Context.getPersonService().getPerson(ptId);
 
-            Obs pcrTestObsQual = EmrCalculationUtils.obsResultForPatient(lastPcrTestQualitative, ptId);
             Obs latestBFStatus = EmrCalculationUtils.obsResultForPatient(lastBreastFeedingStatus, ptId);
-
+            Obs cwcDNATestObs = EmrCalculationUtils.obsResultForPatient(lastPcrCWCTest, ptId);
+            Obs dnaTestLab = EmrCalculationUtils.obsResultForPatient(lastDNATestQualitative, ptId);
             Date obsBFStatusDate = latestBFStatus != null && latestBFStatus.getValueCoded().equals(INFANT_NOT_BREASTFEEDING) ? latestBFStatus.getObsDatetime() : null;
 
             Integer ageInMonths = getAge(person.getBirthdate(), context.getNow());
-            if (inMchcsProgram.contains(ptId) && !pendingDNARapidTestResults.contains(ptId) && !inHivProgram.contains(ptId) && ageInMonths <=24) {
+            if (inMchcsProgram.contains(ptId) && !pendingDNARapidTestResults.contains(ptId) && !inHivProgram.contains(ptId) && ageInMonths <= 24) {
 
                 Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, ptId);
 
-                if(hivStatusObs!= null && (hivStatusObs.getValueCoded().equals(hivExposedUnknown) || hivStatusObs.getValueCoded().equals(hivExposed))){
-                    if(pcrTestObsQual != null ){
-                        labOrder = pcrTestObsQual.getOrder();
-                        if(labOrder!= null){
-                            Integer orderId = labOrder.getOrderId();
-                            Order order = orderService.getOrder(orderId);
-                            if(pcrTestObsQual.getValueCoded() == NEGATIVE && !order.getOrderReason().equals(AB_18_MONTHS) && order.getOrderReason().equals(PCR_12_MONTHS)){
-                                needsAntibodyAt18Months = true;
-                            }
-                        }
-                     else{
-                            Encounter e = pcrTestObsQual.getEncounter();
-                            Set<Obs> o = e.getObs();
-                            for(Obs obs : o) {
+                if (hivStatusObs != null && (hivStatusObs.getValueCoded().equals(hivExposedUnknown) || hivStatusObs.getValueCoded().equals(hivExposed))) {
 
-                                Concept pcrTest = pcrTestObsQual.getValueCoded();
-                                Concept obsTestReason = obs.getValueCoded();
-                                Concept obsTest = obs.getConcept();
+                    Obs heiOutCome = getLatestObs((Patient) person, Dictionary.HEI_OUTCOME);
 
-                                if (pcrTest != null && obsTestReason != null && obsTest != null) {
-                                    if (pcrTestObsQual.getValueCoded() == NEGATIVE && obs.getConcept().getConceptId() == 164959 && !obs.getValueCoded().equals(AB_18_MONTHS) && obs.getValueCoded().equals(PCR_12_MONTHS) && ageInMonths >= 18) {
-                                        needsAntibodyAt18Months = true;
+                    if (ageInMonths >= 18 && (heiOutCome == null || !heiOutCome.getValueCoded().equals(HIV_NEG_NO_LONGER_AT_RISK))) {
+
+                        if (dnaTestLab != null) {
+
+                            if (dnaTestLab.getValueCoded() == NEGATIVE) {
+                                labOrder = dnaTestLab.getOrder();
+
+                                if (labOrder != null) {
+
+                                    Integer orderId = labOrder.getOrderId();
+                                    Order order = orderService.getOrder(orderId);
+
+                                    if (!order.getOrderReason().equals(AB_18_MONTHS)) {
+
+                                        needsAntibodyTest = true;
+                                        flagMsg.append("Due for month-18 Rapid AB test ");
+                                    } else if (obsBFStatusDate != null && getAgeInWeeks(obsBFStatusDate, context.getNow()) >= 6 && !order.getOrderReason().equals(AB_6_MONTHS_AFTER_CESSATION_OF_BF)) {
+                                        needsAntibodyTest = true;
+                                        flagMsg.append("Due for week-6 Rapid AB test after cessation of breastfeeding");
                                     }
                                 }
                             }
-                        }
-                       // if(needsAntibodyAt18Months)
-                         //   flagMsg.append("Due for month-18 Rapid AB test ");
-                    }
-                }
-
-                if(hivStatusObs!= null && (hivStatusObs.getValueCoded().equals(hivExposedUnknown) || hivStatusObs.getValueCoded().equals(hivExposed))){
-                    if(pcrTestObsQual != null){
-                        labOrder = pcrTestObsQual.getOrder();
-                        if(labOrder!= null){
-                            Integer orderId = labOrder.getOrderId();
-                            Order order = orderService.getOrder(orderId);
-                            if(pcrTestObsQual.getValueCoded() == NEGATIVE && order.getOrderReason().equals(AB_18_MONTHS) && !order.getOrderReason().equals(AB_6_MONTHS_AFTER_CESSATION_OF_BF) && getAge(person.getBirthdate(), context.getNow()) >= 18){
-                                needsAntibodyAfterBF = true;
-                            }
-                        }
-                        else{
-                            Encounter e = pcrTestObsQual.getEncounter();
+                        } else if (cwcDNATestObs != null) {
+                            Encounter e = cwcDNATestObs.getEncounter();
                             Set<Obs> o = e.getObs();
-                            for(Obs obs : o){
+                            for (Obs obs : o) {
 
-                               Concept pcrTest = pcrTestObsQual.getValueCoded();
-                               Concept obsTestReason = obs.getValueCoded();
-                               Concept obsTest = obs.getConcept();
+                                Concept dnaABTest = cwcDNATestObs.getValueCoded();
+                                Concept obsTestReason = obs.getValueCoded();
+                                Concept obsTest = obs.getConcept();
 
-                                if (obsBFStatusDate != null & pcrTest != null && obsTestReason != null && obsTest != null) {
-                                    if (pcrTest.equals(NEGATIVE) && obsTestReason.equals(AB_18_MONTHS) && !obsTest.equals(AB_6_MONTHS_AFTER_CESSATION_OF_BF) && NeedsPcrTestCalculation.getAgeInWeeks(obsBFStatusDate, context.getNow()) >= 6)
-                                        needsAntibodyAfterBF = true;
+                                if (dnaABTest != null && obsTestReason != null && obsTest != null) {
+
+                                    if (obs.getConcept().getConceptId().equals(EID_CWC_TEST.getConceptId()) && !obs.getValueCoded().equals(AB_18_MONTHS)) {
+
+                                        needsAntibodyTest = true;
+                                        flagMsg.append("Due for month-18 Rapid AB test ");
+                                    } else if (obsBFStatusDate != null && !obsTest.equals(AB_6_MONTHS_AFTER_CESSATION_OF_BF) && getAgeInWeeks(obsBFStatusDate, context.getNow()) >= 6) {
+                                        needsAntibodyTest = true;
+                                        flagMsg.append("Due for week-6 Rapid AB test after cessation of breastfeeding");
+                                    }
                                 }
                             }
-                        }
-                        if (needsAntibodyAfterBF)
-                            flagMsg.append("Due for week-6 Rapid AB test after cessation of breastfeeding");
+                        } else {
+                        needsAntibodyTest = true;
+                        flagMsg.append("Due for month-18 Rapid AB test");
+                    }
                     }
                 }
             }
-         //   ret.put(ptId, new BooleanResult(needsAntibody, this, context));
+            ret.put(ptId, new BooleanResult(needsAntibodyTest, this, context));
 
         }
         return ret;

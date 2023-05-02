@@ -64,18 +64,15 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
         // Get whether the child is HIV Exposed
         CalculationResultMap lastChildHivStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS), cohort, context);
         CalculationResultMap lastPcrTestQualitative = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE), cohort, context);
-        CalculationResultMap lastPcrCWCTest = Calculations.lastObs(Dictionary.getConcept(Dictionary.EID_CWC_TEST), cohort, context);
-        CalculationResultMap lastDNATestQualitative = Calculations.lastObs(Dictionary.getConcept(Dictionary.RAPID_HIV_CONFIRMATORY_TEST), cohort, context);
         Set<Integer> pendingDNARapidTestResults = CalculationUtils.patientsThatPass(calculate(new PendingDNAPCRRapidTestResultCalculation(), cohort, context));
-        CalculationResultMap lastBreastFeedingStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.INFANT_FEEDING_METHOD), cohort, context);
 
         Concept NEGATIVE = Dictionary.getConcept(Dictionary.NEGATIVE);
         Concept hivExposed = Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV);
         Concept PCR_6_MONTHS = Dictionary.getConcept(Dictionary.HIV_RAPID_TEST_2_QUALITATIVE);
         Concept PCR_12_MONTHS = Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION);
-        Concept INFANT_NOT_BREASTFEEDING = Dictionary.getConcept(Dictionary.INFANT_NOT_BREASTFEEDING);
-        Concept AB_18_MONTHS = Dictionary.getConcept(Dictionary.RAPID_HIV_ANTIBODY_TEST_AT_18_MONTHS);
-        Concept AB_6_MONTHS_AFTER_CESSATION_OF_BF = Dictionary.getConcept(Dictionary.AB_TEST_6_WEEKS_AFTER_CESSATION_OF_BREASTFEEDING);
+        Concept EID_CWC_TEST = Dictionary.getConcept(Dictionary.EID_CWC_TEST);
+        Concept MONTH_SIX_FOLLOWUP = Dictionary.getConcept(Dictionary.MONTH_SIX_FOLLOWUP);
+        Concept MONTH_12_FOLLOWUP = Dictionary.getConcept(Dictionary.MONTH_12_FOLLOWUP);
 
         CalculationResultMap ret = new CalculationResultMap();
 
@@ -97,11 +94,6 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
                     Integer ageInMonths = getAgeInMonths(person.getBirthdate(), context.getNow());
 
                     Obs pcrTestObsQual = EmrCalculationUtils.obsResultForPatient(lastPcrTestQualitative, ptId);
-                    Obs cwcDNATestObs = EmrCalculationUtils.obsResultForPatient(lastPcrCWCTest, ptId);
-                    Obs dnaTestLab = EmrCalculationUtils.obsResultForPatient(lastDNATestQualitative, ptId);
-                    Obs latestBFStatus = EmrCalculationUtils.obsResultForPatient(lastBreastFeedingStatus, ptId);
-
-                    Date obsBFStatusDate = latestBFStatus != null && latestBFStatus.getValueCoded().equals(INFANT_NOT_BREASTFEEDING) ? latestBFStatus.getObsDatetime() : null;
 
                     Order labOrder;
                     if (ageInWeeks >= 6 && ageInMonths < 6) {
@@ -134,7 +126,7 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
 
                                         if (pcrTest != null && obsTestReason != null && obsTest != null) {
 
-                                            if (pcrTest == NEGATIVE && obsTest.getConceptId() == 164959 && obsTestReason.getConceptId() != 167015) {
+                                            if (pcrTest == NEGATIVE && obsTest.getConceptId().equals(EID_CWC_TEST.getConceptId()) && !obsTestReason.getConceptId().equals(MONTH_SIX_FOLLOWUP.getConceptId())) {
 
                                                 needsPcr = true;
                                             }
@@ -147,7 +139,7 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
                             }
                         } else {
                             needsPcr = true;
-                            flagMsg.append("everything else Due for month-6 PCR test ");
+                            flagMsg.append("Due for month-6 PCR test ");
                         }
                     } else if (ageInMonths >= 12 && ageInMonths < 18) {
 
@@ -172,7 +164,7 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
                                         Concept obsTest = obs.getConcept();
                                         if (pcrTest != null && obsTestReason != null && obsTest != null) {
 
-                                            if (pcrTest.equals(NEGATIVE) && obsTest.getConceptId() == 164959 && obsTestReason.getConceptId() != 165389) {
+                                            if (pcrTest.equals(NEGATIVE) && obsTest.getConceptId().equals(EID_CWC_TEST.getConceptId()) && !obsTestReason.getConceptId().equals(MONTH_12_FOLLOWUP.getConceptId())) {
                                                 needsPcr = true;
                                             }
                                         }
@@ -184,54 +176,7 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
                             }
                         } else {
                             needsPcr = true;
-                            flagMsg.append("everything else Due for month-12 PCR test ");
-                        }
-                    } else if (ageInMonths >= 18) {
-
-                        if (dnaTestLab != null) {
-
-                            if (dnaTestLab.getValueCoded() == NEGATIVE) {
-                                labOrder = dnaTestLab.getOrder();
-
-                                if (labOrder != null) {
-
-                                    Integer orderId = labOrder.getOrderId();
-                                    Order order = orderService.getOrder(orderId);
-
-                                    if (!order.getOrderReason().equals(AB_18_MONTHS)) {
-
-                                        needsPcr = true;
-                                        flagMsg.append("-+-Due for month-18 Rapid AB test ");
-                                    } else if (obsBFStatusDate != null && getAgeInWeeks(obsBFStatusDate, context.getNow()) >= 6 && !order.getOrderReason().equals(AB_6_MONTHS_AFTER_CESSATION_OF_BF)) {
-                                        needsPcr = true;
-                                        flagMsg.append("--Due for week-6 Rapid AB test after cessation of breastfeeding");
-                                    }
-                                }
-                            }
-                        } else if (cwcDNATestObs != null) {
-                            Encounter e = cwcDNATestObs.getEncounter();
-                            Set<Obs> o = e.getObs();
-                            for (Obs obs : o) {
-
-                                Concept dnaABTest = cwcDNATestObs.getValueCoded();
-                                Concept obsTestReason = obs.getValueCoded();
-                                Concept obsTest = obs.getConcept();
-
-                                if (dnaABTest != null && obsTestReason != null && obsTest != null) {
-
-                                    if (obs.getConcept().getConceptId() == 164959 && !obs.getValueCoded().equals(AB_18_MONTHS)) {
-
-                                        needsPcr = true;
-                                        flagMsg.append("-+-Due for month-18 Rapid AB test ");
-                                    } else if (obsBFStatusDate != null && !obsTest.equals(AB_6_MONTHS_AFTER_CESSATION_OF_BF) && getAgeInWeeks(obsBFStatusDate, context.getNow()) >= 6) {
-                                        needsPcr = true;
-                                        flagMsg.append("--Due for week-6 Rapid AB test after cessation of breastfeeding");
-                                    }
-                                }
-                            }
-                        } else {
-                            needsPcr = true;
-                            flagMsg.append("ever thing else Due for month-18 Rapid AB test ");
+                            flagMsg.append("Due for month-12 PCR test ");
                         }
                     }
                 }
