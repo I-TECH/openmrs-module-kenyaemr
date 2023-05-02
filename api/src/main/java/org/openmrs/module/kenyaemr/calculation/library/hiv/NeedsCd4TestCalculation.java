@@ -3,7 +3,7 @@
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
  * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
  * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
- * <p>
+ *
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
@@ -23,7 +23,7 @@ import org.openmrs.calculation.result.ObsResult;
 import org.openmrs.module.kenyacore.calculation.*;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.pre_art.SecondLastClinicalVisitCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.pre_art.PreviousHIVClinicalVisitTCACalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -61,7 +61,7 @@ public class NeedsCd4TestCalculation extends AbstractPatientCalculation implemen
         CalculationResultMap lastObsPercent = Calculations.lastObs(Dictionary.getConcept(Dictionary.CD4_PERCENT), cohort, context);
         CalculationResultMap lastObsCountQualitative = Calculations.lastObs(Dictionary.getConcept(Dictionary.CD4_COUNT_QUALITATIVE), cohort, context);
 
-        CalculationResultMap prevEncTCADateCalcMap = calculate(new SecondLastClinicalVisitCalculation(), cohort, context);
+        CalculationResultMap prevEncTCADateCalcMap = calculate(new PreviousHIVClinicalVisitTCACalculation(), cohort, context);
 
         Set<Integer> pendingCD4TestResults = CalculationUtils.patientsThatPass(calculate(new PendingCD4ResultCalculation(), cohort, context));
 
@@ -71,18 +71,17 @@ public class NeedsCd4TestCalculation extends AbstractPatientCalculation implemen
 
         for (Integer ptId : cohort) {
             Date prevEncTCADate = EmrCalculationUtils.datetimeResultForPatient(prevEncTCADateCalcMap, ptId);
-            ;
             Date latestEncDate = null;
             boolean needsCD4 = false;
 
-            // Is patient alive and in the HIV program
+            // Is patient alive and in the HIV program with no active CD4 test order
             if (inHivProgram.contains(ptId) && !pendingCD4TestResults.contains(ptId)) {
 
-                //1. Baseline test for ALL PLHIV
                 ObsResult cd4Count = (ObsResult) lastObsCount.get(ptId);
                 ObsResult cd4CountQual = (ObsResult) lastObsCountQualitative.get(ptId);
                 ObsResult cd4Percentage = (ObsResult) lastObsPercent.get(ptId);
 
+                //1. Baseline test for ALL PLHIV
                 if (cd4Count == null && cd4CountQual == null && cd4Percentage == null) {
                     needsCD4 = true;
                 }
@@ -94,7 +93,6 @@ public class NeedsCd4TestCalculation extends AbstractPatientCalculation implemen
                     Form rdeHivFollowup = MetadataUtils.existing(Form.class, HivMetadata._Form.MOH_257_VISIT_SUMMARY);
 
                     Encounter lastHIVEncounter = EmrUtils.lastEncounter(Context.getPatientService().getPatient(ptId), greenCardEncType, Arrays.asList(pocHivFollowup, rdeHivFollowup));
-                    //  Encounter previousClinicalEncounter = EmrCalculationUtils.encounterResultForPatient(secondLastClinicalVisit, ptId);
 
                     if (lastHIVEncounter != null) {
                         latestEncDate = lastHIVEncounter.getEncounterDatetime();

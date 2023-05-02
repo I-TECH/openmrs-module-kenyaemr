@@ -11,7 +11,6 @@ package org.openmrs.module.kenyaemr.calculation.library.hiv.pre_art;
 
 import org.openmrs.*;
 import org.openmrs.api.EncounterService;
-import org.openmrs.api.ObsService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -31,21 +30,15 @@ import java.util.*;
 /**
  * Calculate visit before most current visit
  */
-public class SecondLastClinicalVisitCalculation extends AbstractPatientCalculation {
+public class PreviousHIVClinicalVisitTCACalculation extends AbstractPatientCalculation {
 
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
-        ObsService obsService = Context.getObsService();
         PersonService patientService = Context.getPersonService();
         EncounterService encounterService = Context.getEncounterService();
 
         CalculationResultMap ret = new CalculationResultMap();
-        /*List<Concept> vlConcepts = new ArrayList<Concept>();
-        vlConcepts.add(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD_QUALITATIVE));
-        vlConcepts.add(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD));*/
-
-        //	List<Encounter> encounters = new ArrayList<Encounter>();
 
         Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
         Set<Integer> alive = Filters.alive(cohort, context);
@@ -59,25 +52,15 @@ public class SecondLastClinicalVisitCalculation extends AbstractPatientCalculati
         Set<Integer> transferredOut = CalculationUtils.patientsThatPass(calculate(new IsTransferOutCalculation(), cohort, context));
 
         for (Integer ptId : cohort) {
-            Date encDate = null;
             Date encTCADate = null;
             Encounter secondLastEnc = null;
             if (alive.contains(ptId) && !ltfu.contains(ptId) && !transferredOut.contains(ptId)) {
                 List<Encounter> encounters = encounterService.getEncounters((Patient) patientService.getPerson(ptId), null, null, null, Arrays.asList(pocHivFollowup, rdeHivFollowup), Collections.singletonList(hivFollowup), null, null, null, false);
 
-                for (Encounter encounter : encounters) {
-                    System.out.println("++++++++++++++encounter:" + encounter.getEncounterId() + " Dated: " + encounter.getEncounterDatetime());
-
-                }
                 if (encounters.size() == 1) {
-                    encDate = encounters.get(0).getEncounterDatetime();
                     secondLastEnc = encounters.get(0);
-                    System.out.println("encDate->encounters.get(0).getEncounterDatetime(): " + encounters.get(0).getEncounterDatetime());
                 } else if (encounters.size() > 1) {
-                    encDate = encounters.get(encounters.size() - 2).getEncounterDatetime();
                     secondLastEnc = encounters.get(encounters.size() - 2);
-                    System.out.println("encDate->encounters.get(encounters.size() - 2).getEncounterDatetime(): " + encounters.get(encounters.size() - 2).getEncounterDatetime());
-                    System.out.println("secondLastEnc.getEncounterId(): " + secondLastEnc.getEncounterId()+" secondLastEnc.getEncounterDatetime(): "+secondLastEnc.getEncounterDatetime());
                 }
                 if (secondLastEnc != null) {
                     for (Obs obs : secondLastEnc.getObs()) {
