@@ -14,7 +14,8 @@
 <!--
 Green Card follow-up visit form
 -->
-<htmlform postSubmissionAction="updatePatientIITRiskScore()">
+<htmlform>
+    <postSubmissionAction class="org.openmrs.module.kenyaemr.form.action.HivGreenCardPostSubmissionAction"/>
     <style type="text/css">
         table.right-aligned-first td:first-child {
             text-align: right;
@@ -140,9 +141,7 @@ Green Card follow-up visit form
             onEncounterDateChange();
             recordedStabilityAssessmentIndicators();
             jq('#showNumberBooked').hide();
-            jq('#showNewRiskScore').hide();
-            // jq("#returnVisitDate input[type=hidden]").change(getPatientsBookedOnDate);
-            jq("#returnVisitDate input[type=hidden]").change(actionOnSetAppointmentDate);
+            jq("#returnVisitDate input[type=hidden]").change(getPatientsBookedOnDate);
 
             everOnIPTSelected = null;
             patientCurrentlyOnIPT = null;
@@ -760,18 +759,6 @@ Green Card follow-up visit form
                 jq("#cacxScreeningRow").hide();
             }
         });
-
-        // Update the patient IIT risk score once this form is saved
-        function updatePatientIITRiskScore() {
-            console.log("Now updating the patien risk score !!!");
-        }
-
-        // Actions to take upon change of appointment date
-        function actionOnSetAppointmentDate() {
-            getPatientsBookedOnDate();
-            getNewIITRiskScore();
-        }
-
         // get count of patients booked on a date
         function getPatientsBookedOnDate() {
             var tca_date = jq('#returnVisitDate input[type=hidden]').val();
@@ -779,85 +766,6 @@ Green Card follow-up visit form
             jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/clientsBookedForHivConsultationOnDate.action', { appointmentDate: tca_date }, function(data) {
                 jq('#showBookedResult').text(data.bookingsOnDate);
                 jq('#showNumberBooked').show();
-            });
-        }
-
-        // get new IIT risk score
-        function getNewIITRiskScore() {
-            var casefindingURL = "<lookup expression="fn.globalProperty('kenyaemrml.iitscore.endpoint')"/>";
-            var return_date = jq('#returnVisitDate input[type=hidden]').val();
-            jq('#showNewRiskScore').hide();
-
-            // console.log("ML Payload: " + JSON.stringify(mlScoringRequestPayload));
-
-            // var predResponse = '';
-            // if (casefindingURL !='') {
-            //     jq.ajax({
-            //         url: '/' + ctxPath + casefindingURL,
-            //         type: "POST",
-            //         contentType: 'application/json',
-            //         data: JSON.stringify(mlScoringRequestPayload),
-            //         async: false,
-            //         success: function (response, textStatus, jqXHR) {
-            //             var probabilityForPositivity = response.result.predictions["probability(1)"];
-                        
-            //             var lowRiskThreshold = glbLowRiskThreshold;
-            //             var mediumRiskThreshold = glbMediumRiskThreshold;
-            //             var highRiskThreshold = glbHighRiskThreshold;
-
-            //             var highestRiskConcept = 167164;
-            //             var highRiskConcept = 1408;
-            //             var mediumRiskConcept = 1499;
-            //             var lowRiskConcept = 1407;
-
-            //             setValue('algorithm_result_score.value', probabilityForPositivity);
-
-            //             var className = jq('#ml-prediction-risk-category').attr("class");
-            //             if (probabilityForPositivity &gt; highRiskThreshold) {
-            //                 jq('#ml-prediction-risk-category').html('Highest Risk Client');
-            //                 jq('#ml-prediction-risk-category').removeClass(className);
-            //                 jq('#ml-prediction-risk-category').addClass('ke-ml-very-high-risk');
-            //                 jq('#ml-prediction-desc').html('This client has a very high probability of a HIV positive test result. Testing is strongly recommended');
-            //                 setValue('algorithm_result_category.value', highestRiskConcept);
-            //             } else if (probabilityForPositivity &lt;= highRiskThreshold &amp;&amp; probabilityForPositivity &gt; mediumRiskThreshold) {
-            //                 jq('#ml-prediction-risk-category').html('High Risk Client');
-            //                 jq('#ml-prediction-risk-category').removeClass(className);
-            //                 jq('#ml-prediction-risk-category').addClass('ke-ml-very-high-risk');
-            //                 jq('#ml-prediction-desc').html('This client has a high probability of a HIV positive test result. Testing is strongly recommended');
-            //                 setValue('algorithm_result_category.value', highRiskConcept);
-            //             } else if (probabilityForPositivity &lt;= mediumRiskThreshold &amp;&amp; probabilityForPositivity &gt; lowRiskThreshold ) {
-            //                 jq('#ml-prediction-risk-category').html('Medium Risk Client');
-            //                 jq('#ml-prediction-risk-category').removeClass(className);
-            //                 jq('#ml-prediction-risk-category').addClass('ke-ml-medium-risk');
-            //                 jq('#ml-prediction-desc').html('This client has a medium probability of a HIV positive test result. Testing is recommended');
-            //                 setValue('algorithm_result_category.value', mediumRiskConcept);
-            //             } else if(probabilityForPositivity &lt;= lowRiskThreshold) {
-            //                 jq('#ml-prediction-risk-category').html('Low Risk Client');
-            //                 jq('#ml-prediction-risk-category').removeClass(className);
-            //                 jq('#ml-prediction-risk-category').addClass('ke-ml-low-risk');
-            //                 jq('#ml-prediction-desc').html('This client has a low probability of a HIV positive test result. Testing may not be recommended');
-            //                 setValue('algorithm_result_category.value', lowRiskConcept);
-            //             }
-            //         },
-            //         error: function (jqXHR, textStatus, errorThrown) {
-            //             var msg = '';
-            //             if (jqXHR.status == 500) {
-            //                 msg = 'There was an internal Server Error [500].';
-            //             } else if (jqXHR.status == 404) {
-            //                 msg = 'The requested service not found. [404]';
-            //             } else {
-            //                 msg = 'System error: ' + jqXHR.responseText;
-            //             }
-                        
-            //             jq('#ml-prediction-desc').html(msg);
-            //         }
-            //     });
-            // }
-
-            jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/getRealTimeRiskScore.action', { appointmentDate: return_date }, function(data) {
-                jq('#showPreviousIITRisk').text(data.previousIITRisk);
-                jq('#showUpdatedIITRisk').text(data.updatedIITRisk);
-                jq('#showNewRiskScore').show();
             });
         }
 
@@ -4706,13 +4614,6 @@ Management<br />
                             <td> <span class="ke-flagtag">Number of patients already booked for HIV consultation on the date selected</span></td>
                             <td><span id="showBookedResult"></span></td></tr>
                     </table>
-                    <table id="showNewRiskScore" class="simple-table">
-                        <tr>
-                            <td> <span class="ke-flagtag">Previous IIT Risk Score:</span></td>
-                            <td><span id="showPreviousIITRisk"></span></td></tr>
-                            <td> <span class="ke-flagtag">Updated IIT Risk Score:</span></td>
-                            <td><span id="showUpdatedIITRisk"></span></td></tr>
-                    </table>
                     <table>
                         <tr id="tbl-fast-track">
                             <td>Differentiated Care</td>
@@ -4745,6 +4646,4 @@ Management<br />
         </div>
     </div>
 </htmlform>
-
-
 
