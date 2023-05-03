@@ -105,8 +105,13 @@ public class ETLLtfuReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("Age", new AgeDataDefinition(), "", new DataConverter[0]);
         dsd.addColumn("Sex", new GenderDataDefinition(), "", new DataConverter[0]);
         dsd.addColumn("Phone number", new CalculationDataDefinition("Phone number", new TelephoneNumberCalculation()), "", new DataConverter[]{new CalculationResultConverter()});
-        dsd.addColumn("Last Visit Date", new ETLLastVisitDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
-        dsd.addColumn("Last Appointment Date", new ETLNextAppointmentDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
+
+        ETLLastVisitDateDataDefinition lastVisitDateDataDefinition = new ETLLastVisitDateDataDefinition();
+        lastVisitDateDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+        dsd.addColumn("Last Visit Date", lastVisitDateDataDefinition,"endDate=${endDate}", new DateConverter(DATE_FORMAT));
+        ETLNextAppointmentDateDataDefinition nextAppointmentDateDataDefinition = new ETLNextAppointmentDateDataDefinition();
+        nextAppointmentDateDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+        dsd.addColumn("Last Appointment Date", nextAppointmentDateDataDefinition, "endDate=${endDate}", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Last Tracing Date", new LastDefaulterTracingDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Return to Care Date", new BookingDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
 
