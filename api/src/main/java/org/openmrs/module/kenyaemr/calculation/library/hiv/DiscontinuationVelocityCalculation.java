@@ -20,6 +20,7 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyaemr.calculation.BaseEmrCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.rdqa.PatientLastEncounterDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import java.util.*;
@@ -34,24 +35,33 @@ public class DiscontinuationVelocityCalculation extends BaseEmrCalculation {
         Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
         CalculationResultMap ret = new CalculationResultMap();
         CalculationResultMap artStartDates = calculate(new InitialArtStartDateCalculation(), cohort, context);
+        CalculationResultMap lastEncounterDateResMap = calculate(new PatientLastEncounterDateCalculation(), cohort, context);
         StringBuilder sb = new StringBuilder();
         for (Integer ptId : cohort) {
             Date artStartDat = EmrCalculationUtils.datetimeResultForPatient(artStartDates, ptId);
+            Date lastEncDate = EmrCalculationUtils.datetimeResultForPatient(lastEncounterDateResMap, ptId);
 
             Long artStartDate = null;
             Long enrollmentDate = null;
+            Long discDate = null;
+            Long lastEncounterDate = null;
 
             ProgramWorkflowService service = Context.getProgramWorkflowService();
             List<PatientProgram> programs = service.getPatientPrograms(Context.getPatientService().getPatient(ptId), hivProgram, null, null, null,null, true);
             if (programs.size() > 0) {
                 enrollmentDate = programs.get(0).getDateEnrolled().getTime();
+                discDate = programs.get(0).getDateCompleted().getTime();
             }
             if(artStartDat != null) {
                 artStartDate = artStartDat.getTime();
             }
-
+            if (lastEncDate != null) {
+                lastEncounterDate = lastEncDate.getTime();
+            }
             sb.append("artStartDate:").append(artStartDate).append(",");
-            sb.append("enrollmentDate:").append(enrollmentDate);
+            sb.append("enrollmentDate:").append(enrollmentDate).append(",");
+            sb.append("discDate:").append(discDate).append(",");
+            sb.append("lastEncounterDate:").append(lastEncounterDate);
 
             ret.put(ptId, new SimpleResult(sb.toString(), this, context));
         }
