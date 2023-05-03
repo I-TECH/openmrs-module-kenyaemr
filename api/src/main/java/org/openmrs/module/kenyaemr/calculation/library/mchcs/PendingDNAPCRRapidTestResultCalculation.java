@@ -60,6 +60,7 @@ public class PendingDNAPCRRapidTestResultCalculation extends AbstractPatientCalc
         Concept PCR_12_MONTHS = Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION);
         Concept AB_TEST_6_WEEKS_AFTER_CESSATION_OF_BREASTFEEDING = Dictionary.getConcept(Dictionary.AB_TEST_6_WEEKS_AFTER_CESSATION_OF_BREASTFEEDING);
         Concept RAPID_HIV_ANTIBODY_TEST_AT_18_MONTHS = Dictionary.getConcept(Dictionary.RAPID_HIV_ANTIBODY_TEST_AT_18_MONTHS);
+        Concept HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE = Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE);
 
         Set<Integer> alive = Filters.alive(cohort, context);
         Set<Integer> inHEIProgram = Filters.inProgram(heiProgram, alive, context);
@@ -77,23 +78,25 @@ public class PendingDNAPCRRapidTestResultCalculation extends AbstractPatientCalc
                     List<Order> activeVLTestOrders = orderService.getActiveOrders(Context.getPatientService().getPatient(ptId), patientLabOrders, null, null);
                     if (activeVLTestOrders.size() > 0) {
                         for (Order o : activeVLTestOrders) {
-                            if (o.getConcept().getConceptId().equals(1030) && o.getOrderReason().equals(PCR_6_WEEKS)) {
+                            if (o.getOrderReason() != null && o.getConcept().equals(HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE) && o.getOrderReason().equals(PCR_6_WEEKS)) {
                                 pendingHIVTestResult = true;
                                 msgFlag.append("Pending week-6 PCR results");
-                            } else if (o.getConcept().getConceptId().equals(1030) && o.getOrderReason().equals(PCR_6_MONTHS)) {
+                            } else if (o.getOrderReason() != null && o.getConcept().equals(HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE) && o.getOrderReason().equals(PCR_6_MONTHS)) {
                                 pendingHIVTestResult = true;
                                 msgFlag.append("Pending month-6 PCR results");
-                            } else if (o.getConcept().getConceptId().equals(1030) && o.getOrderReason().equals(PCR_12_MONTHS)) {
+                            } else if (o.getOrderReason() != null && o.getConcept().equals(HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE) && o.getOrderReason().equals(PCR_12_MONTHS)) {
                                 pendingHIVTestResult = true;
                                 msgFlag.append("Pending month-12 PCR results");
-                            } else if (o.getConcept().getConceptId().equals(163722) && o.getOrderReason().equals(RAPID_HIV_ANTIBODY_TEST_AT_18_MONTHS)) {
+                            } else if (o.getOrderReason() != null && o.getOrderReason() != null && o.getConcept().getConceptId().equals(163722) && o.getOrderReason().equals(RAPID_HIV_ANTIBODY_TEST_AT_18_MONTHS)) {
                                 pendingHIVTestResult = true;
                                 msgFlag.append("Pending month-18 HIV antibody results");
-                            } else if (o.getConcept().getConceptId().equals(163722) && o.getOrderReason().equals(AB_TEST_6_WEEKS_AFTER_CESSATION_OF_BREASTFEEDING)) {
+                            } else if (o.getOrderReason() != null && o.getConcept().getConceptId().equals(163722) && o.getOrderReason().equals(AB_TEST_6_WEEKS_AFTER_CESSATION_OF_BREASTFEEDING)) {
                                 pendingHIVTestResult = true;
                                 msgFlag.append("Pending week-6 after breastfeeding HIV antibody results");
+                            } else if (o.getOrderReason() != null && o.getConcept().equals(HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE) && o.getOrderReason().equals(Dictionary.getConcept(Dictionary.CONFIRMATION_STATUS))) {
+                                pendingHIVTestResult = true;
+                                msgFlag.append("Pending Confirmatory Test results");
                             }
-
                         }
                     }
 

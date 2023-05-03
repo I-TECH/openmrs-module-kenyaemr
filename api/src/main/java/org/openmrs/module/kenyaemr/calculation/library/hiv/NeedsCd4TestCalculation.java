@@ -32,7 +32,10 @@ import java.util.*;
 
 /**
  * Calculate whether patients are due for a CD4 count. Calculation returns true if if the patient
- * is alive, enrolled in the HIV program, and has not had a CD4 count in the last 180 days
+ * is alive, enrolled in the HIV program, and:
+ * 1. Is PLHIV and no Baseline CD4 test
+ * 2. Is PLHIV ≥5 years of age and who had previously initiated ART and are re-initiating after more than 3 months)
+ * 3. Individuals who have documented persistent unsuppressed viral load (2 viral load vl >1000 copies within 3-6 months)
  */
 public class NeedsCd4TestCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
 

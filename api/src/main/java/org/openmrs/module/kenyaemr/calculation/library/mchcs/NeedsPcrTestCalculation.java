@@ -45,7 +45,7 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
         return flagMsg.toString();
     }
 
-    StringBuilder flagMsg = new StringBuilder("");
+    StringBuilder flagMsg = new StringBuilder();
 
     /**
      * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
@@ -68,9 +68,11 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
 
         Concept NEGATIVE = Dictionary.getConcept(Dictionary.NEGATIVE);
         Concept hivExposed = Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV);
-        Concept PCR_6_WEEKS = Dictionary.getConcept(Dictionary.HIV_RAPID_TEST_1_QUALITATIVE);
         Concept PCR_6_MONTHS = Dictionary.getConcept(Dictionary.HIV_RAPID_TEST_2_QUALITATIVE);
         Concept PCR_12_MONTHS = Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION);
+        Concept EID_CWC_TEST = Dictionary.getConcept(Dictionary.EID_CWC_TEST);
+        Concept MONTH_SIX_FOLLOWUP = Dictionary.getConcept(Dictionary.MONTH_SIX_FOLLOWUP);
+        Concept MONTH_12_FOLLOWUP = Dictionary.getConcept(Dictionary.MONTH_12_FOLLOWUP);
 
         CalculationResultMap ret = new CalculationResultMap();
 
@@ -79,32 +81,105 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
         for (Integer ptId : cohort) {
 
             boolean needsPcr = false;
-            Order order = new Order();
+            Person person = Context.getPersonService().getPerson(ptId);
+
             // Check if a patient is alive and is in MCHCS program
-            if (inMchcsProgram.contains(ptId) && !pendingDNARapidTestResults.contains(ptId) && !inHivProgram.contains(ptId)) {
+            if (inMchcsProgram.contains(ptId) && !pendingDNARapidTestResults.contains(ptId) && !inHivProgram.contains(ptId) && getAgeInMonths(person.getBirthdate(), context.getNow()) <= 24) {
 
                 Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, ptId);
-                Obs pcrTestObsQual = EmrCalculationUtils.obsResultForPatient(lastPcrTestQualitative, ptId);
 
-                if (pcrTestObsQual != null && pcrTestObsQual.getOrder() != null) {
-                    Integer orderId = pcrTestObsQual.getOrder().getOrderId();
-                    order = orderService.getOrder(orderId);
+                if (hivStatusObs != null && hivStatusObs.getValueCoded().equals(hivExposed)) {
+
+                    Integer ageInWeeks = getAgeInWeeks(person.getBirthdate(), context.getNow());
+                    Integer ageInMonths = getAgeInMonths(person.getBirthdate(), context.getNow());
+
+                    Obs pcrTestObsQual = EmrCalculationUtils.obsResultForPatient(lastPcrTestQualitative, ptId);
+
+                    Order labOrder;
+                    if (ageInWeeks >= 6 && ageInMonths < 6) {
+
+                        if (pcrTestObsQual == null) {
+                            needsPcr = true;
+                            flagMsg.append("Due for week-6 PCR test");
+                        }
+                    } else if (ageInMonths >= 6 && ageInMonths < 12) {
+
+                        if (pcrTestObsQual != null) {
+                            if (pcrTestObsQual.getValueCoded() == NEGATIVE) {
+                                labOrder = pcrTestObsQual.getOrder();
+                                if (labOrder != null) {
+                                    Integer orderId = labOrder.getOrderId();
+                                    Order order = orderService.getOrder(orderId);
+
+                                    if (!order.getOrderReason().equals(PCR_6_MONTHS)) {
+
+                                        needsPcr = true;
+                                    }
+                                } else {
+                                    Encounter e = pcrTestObsQual.getEncounter();
+                                    Set<Obs> o = e.getObs();
+                                    for (Obs obs : o) {
+
+                                        Concept pcrTest = pcrTestObsQual.getValueCoded();
+                                        Concept obsTestReason = obs.getValueCoded();
+                                        Concept obsTest = obs.getConcept();
+
+                                        if (pcrTest != null && obsTestReason != null && obsTest != null) {
+
+                                            if (pcrTest == NEGATIVE && obsTest.getConceptId().equals(EID_CWC_TEST.getConceptId()) && !obsTestReason.getConceptId().equals(MONTH_SIX_FOLLOWUP.getConceptId())) {
+
+                                                needsPcr = true;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (needsPcr)
+
+                                    flagMsg.append("Due for month-6 PCR test ");
+                            }
+                        } else {
+                            needsPcr = true;
+                            flagMsg.append("Due for month-6 PCR test ");
+                        }
+                    } else if (ageInMonths >= 12 && ageInMonths < 18) {
+
+                        if (pcrTestObsQual != null) {
+                            if (pcrTestObsQual.getValueCoded() == NEGATIVE) {
+                                labOrder = pcrTestObsQual.getOrder();
+
+                                if (labOrder != null) {
+                                    Integer orderId = labOrder.getOrderId();
+                                    Order order = orderService.getOrder(orderId);
+
+                                    if (!order.getOrderReason().equals(PCR_12_MONTHS)) {
+
+                                        needsPcr = true;
+                                    }
+                                } else {
+                                    Encounter e = pcrTestObsQual.getEncounter();
+                                    Set<Obs> o = e.getObs();
+                                    for (Obs obs : o) {
+                                        Concept pcrTest = pcrTestObsQual.getValueCoded();
+                                        Concept obsTestReason = obs.getValueCoded();
+                                        Concept obsTest = obs.getConcept();
+                                        if (pcrTest != null && obsTestReason != null && obsTest != null) {
+
+                                            if (pcrTest.equals(NEGATIVE) && obsTest.getConceptId().equals(EID_CWC_TEST.getConceptId()) && !obsTestReason.getConceptId().equals(MONTH_12_FOLLOWUP.getConceptId())) {
+                                                needsPcr = true;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (needsPcr)
+
+                                    flagMsg.append("Due for month-12 PCR test ");
+                            }
+                        } else {
+                            needsPcr = true;
+                            flagMsg.append("Due for month-12 PCR test ");
+                        }
+                    }
                 }
-
-                //get birth date of this patient
-                Person person = Context.getPersonService().getPerson(ptId);
-
-                if (hivStatusObs != null && pcrTestObsQual == null && hivStatusObs.getValueCoded().equals(hivExposed) && getAgeInWeeks(person.getBirthdate(), context.getNow()) >= 6) {
-                    needsPcr = true;
-                    flagMsg.append("Due for week-6 PCR test");
-                } else if (hivStatusObs != null && pcrTestObsQual != null && order != null && hivStatusObs.getValueCoded().equals(hivExposed) && pcrTestObsQual.getValueCoded() == NEGATIVE && !order.getOrderReason().equals(PCR_6_MONTHS) && order.getOrderReason().equals(PCR_6_WEEKS) && getAgeInMonths(person.getBirthdate(), context.getNow()) >= 6) {
-                    needsPcr = true;
-                    flagMsg.append("Due for month-6 PCR test");
-                } else if (hivStatusObs != null && pcrTestObsQual != null && order != null && (hivStatusObs.getValueCoded().equals(hivExposed)) && pcrTestObsQual.getValueCoded() == NEGATIVE && !order.getOrderReason().equals(PCR_12_MONTHS) && order.getOrderReason().equals(PCR_6_MONTHS) && getAgeInMonths(person.getBirthdate(), context.getNow()) >= 12) {
-                    needsPcr = true;
-                    flagMsg.append("Due for month-12 PCR test");
-                }
-
             }
 
             ret.put(ptId, new BooleanResult(needsPcr, this, context));
