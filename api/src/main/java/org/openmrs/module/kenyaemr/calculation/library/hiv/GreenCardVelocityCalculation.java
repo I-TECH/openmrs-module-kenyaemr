@@ -256,6 +256,17 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
                 }
             }
 
+            // Ois recorded in last greencard encounter
+            Encounter lastGreencardEncounter = EmrUtils.lastEncounter(patientService.getPatient(ptId), encounterService.getEncounterTypeByUuid(HivMetadata._EncounterType.HIV_CONSULTATION), MetadataUtils.existing(Form.class, HivMetadata._Form.HIV_GREEN_CARD));
+            String oiObserved = null;
+            if (lastGreencardEncounter != null) {
+                for (Obs obs : lastGreencardEncounter.getObs()) {
+                    if (obs.getConcept().getConceptId().equals(167394) && !obs.getValueCoded().equals(5006)) {
+                        oiObserved = "YES";
+                    }
+                }
+            }
+
 
             //On ART -- find if client has active ART
             Encounter lastDrugRegimenEditorEncounter = EncounterBasedRegimenUtils.getLastEncounterForCategory(Context.getPatientService().getPatient(ptId), "ARV");   //last DRUG_REGIMEN_EDITOR encounter
@@ -313,7 +324,8 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             // sb.append("dueTB:").append(patientDueForTBEnrollment).append(",");
             sb.append("CacXResult:").append(cacxResult).append(",");
             sb.append("vmmcProcedureResult:").append(vmmcMethodResult).append(",");
-            sb.append("eligibleForCacx:").append(isEligibleForCacx);
+            sb.append("eligibleForCacx:").append(isEligibleForCacx).append(",");
+            sb.append("oiObserved:").append(oiObserved);
 
             ret.put(ptId, new SimpleResult(sb.toString(), this, context));
         }

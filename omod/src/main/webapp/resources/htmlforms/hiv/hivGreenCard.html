@@ -99,6 +99,7 @@ Green Card follow-up visit form
         var PATIENT_PREGNANT = GREENCARD_VELOCITY.split(",")[10].split(":")[1];
         var PATIENT_BREASTFEEDING = GREENCARD_VELOCITY.split(",")[11].split(":")[1];
         var PATIENT_ELIGIBLE_FOR_CACX = GREENCARD_VELOCITY.split(",")[16].split(":")[1];
+        var PATIENT_DOCUMENTED_OI = GREENCARD_VELOCITY.split(",")[17].split(":")[1];
 
         var pAge = parseInt('<lookup expression="patient.age"/>');
         var pgender = "<lookup expression="patient.gender" />";
@@ -257,6 +258,7 @@ Green Card follow-up visit form
             jq("#referral-action").change(referralAction);
             jq("#tb-test-ordered").change(testOrdered);
             jq('#general-exam-findings :input[type=checkbox]').change(generalExamSelected);
+            jq('#tbl-who-stage :input[type=checkbox]').change(oiObservedSelected);
             jq("#complaints-today").change(complaintSelected);       //boolean
             jq(".complaint-time input").change(complaintDurationInput);
             jq('#adverse-reactions').change(adverseReactionSelected);     //boolean
@@ -999,7 +1001,11 @@ Green Card follow-up visit form
                 jq('#vl-value:text').val("Not available");
             }
 //4. Active OIs
-
+            if(PATIENT_DOCUMENTED_OI =="YES") {
+                jq('#active-oi:text').val("YES");
+            }else  {
+                jq('#active-oi:text').val("NO");
+            }
 //5. Missed appointment last 6 months
             if(PATIENT_ON_ART =="true" &amp;&amp; GOOD_ADHERENCE == 'true') {
                 jq('#good-adherence:text').val("YES");
@@ -1210,6 +1216,15 @@ Green Card follow-up visit form
             }
             if(generalExamsChecked.length ==0){
                 jq("#general-exam-findings input[value=1107]").prop("disabled",false);
+            }
+        }
+        var oiObservedSelected = function(){
+            var val = jq(this).val();
+            var oiObservedChecked = jq("#tbl-who-stage input:checkbox:checked");
+            if(val == 5006 &amp;&amp; oiObservedChecked.length ==1){
+              //Do nothing as this is assymptomatic
+            }else {
+                jq('#active-oi:text').val("YES");
             }
         }
         var complaintSelected = function() {
