@@ -47,7 +47,7 @@ public class ETLPatientsWithSuppressedVLInLast12MonthsCohortDefinitionEvaluator 
 
 		Cohort newCohort = new Cohort();
 
-		String qry="select vt.patient_id from kenyaemr_etl.etl_viral_load_tracker vt where (vt.vl_result < 1000 or vt.vl_result='LDL');";
+		String qry="select vt.patient_id from kenyaemr_etl.etl_viral_load_tracker vt where (vt.vl_result < 200 or vt.vl_result='LDL');";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		builder.append(qry);
