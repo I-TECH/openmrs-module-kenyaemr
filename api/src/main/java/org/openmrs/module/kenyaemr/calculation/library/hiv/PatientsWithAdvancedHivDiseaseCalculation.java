@@ -39,7 +39,7 @@ import java.util.Set;
  * 1. In HIV program
  * 1.1 Patients with WHO clinical stage 3 or 4 disease
  * 1.2 Patients with CD4 cell count of <200 cells for adults, adolescents, and children 5yrs and older
- * 1.3 Children <5 years living with HIV who are not already receiving ART and are clinically unstable
+ * 1.3 All children younger than five years
  */
 public class PatientsWithAdvancedHivDiseaseCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
 	protected static final Log log = LogFactory.getLog(PatientsWithAdvancedHivDiseaseCalculation.class);
@@ -60,13 +60,8 @@ public class PatientsWithAdvancedHivDiseaseCalculation extends AbstractPatientCa
 		CalculationResultMap lastQuantitativeCd4Obs = calculate(new LastCd4CountCalculation(), cohort, context);
 		Concept CD4QualitativeConceptQuestion = Context.getConceptService().getConcept(167718);
 		Concept CD4QualitativeConceptAnswer = Context.getConceptService().getConcept(167717);
-		Concept StabilityConceptQuestion = Context.getConceptService().getConcept(1855);
-		Concept UnstableConceptAnswer = Context.getConceptService().getConcept(2);
 		CalculationResultMap lastQualitativeCD4Obs = Calculations.lastObs(CD4QualitativeConceptQuestion, inHivProgram, context);
-		CalculationResultMap lastStabilityObs = Calculations.lastObs(StabilityConceptQuestion, inHivProgram, context);
 		CalculationResultMap ret = new CalculationResultMap();
-
-		Set<Integer> onART = CalculationUtils.patientsThatPass(calculate(new OnArtCalculation(), cohort, context));
 
 			for (Integer ptId : cohort) {
 			boolean eligible = false;
@@ -100,14 +95,9 @@ public class PatientsWithAdvancedHivDiseaseCalculation extends AbstractPatientCa
 						}
 					}
 				}
-				//1.3  Children <5 years not on ART and are unstable
-				if (lastStabilityObs != null) {
-					Concept stabilityStatus = EmrCalculationUtils.codedObsResultForPatient(lastStabilityObs, ptId);
-					if (stabilityStatus != null) {
-						if (stabilityStatus.equals(UnstableConceptAnswer) && patient.getAge() < 5 && !(onART.contains(ptId))) {
-							eligible = true;
-						}
-					}
+				//1.3 All children younger than five years
+			if (patient.getAge() < 5 ) {
+				eligible = true;
 				}
 			}
 			ret.put(ptId, new BooleanResult(eligible, this));
