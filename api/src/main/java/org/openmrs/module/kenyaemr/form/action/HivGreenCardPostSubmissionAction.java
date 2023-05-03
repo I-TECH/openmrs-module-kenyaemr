@@ -9,24 +9,92 @@
  */
 package org.openmrs.module.kenyaemr.form.action;
 
-import org.apache.commons.lang3.StringUtils;
-import org.openmrs.module.htmlformentry.FormEntryContext;
-import org.openmrs.module.htmlformentry.FormEntrySession;
-import org.openmrs.module.htmlformentry.element.HtmlGeneratorElement;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import org.openmrs.GlobalProperty;
+import org.openmrs.Patient;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.htmlformentry.CustomFormSubmissionAction;
-
-import java.util.Map;
-
+import org.openmrs.module.htmlformentry.FormEntrySession;
+import org.openmrs.ui.framework.SimpleObject;
+import org.openmrs.ui.framework.WebConstants;
 
 /**
  *
  */
 public class HivGreenCardPostSubmissionAction implements CustomFormSubmissionAction {
 
+    /**
+     * This is an action that runs immediately after the greencard is saved (submitted)
+     */
     @Override
     public void applyAction(FormEntrySession session) {
         // Update the patient IIT risk score
         System.out.println("Updating the patient IIT risk score");
+        Patient currentPatient = session.getPatient();
+        Integer patientId = currentPatient.getId();
+        System.out.println("IIT risk score: Patient ID: " + patientId);
+        SimpleObject constructPayload = new SimpleObject();
+        constructPayload.put("patientId", patientId);
+        String payload = constructPayload.toJson();
+
+        BufferedReader reader = null;
+        HttpURLConnection connection = null;
+        try {
+            //Connection Params (Build the URL)
+            String iitMLbackEndURLGlobal = "kenyaemrml.iitscore.updatepatientscore";
+            GlobalProperty globalIITMLbackEndURL = Context.getAdministrationService().getGlobalPropertyObject(iitMLbackEndURLGlobal);
+            String strIITMLbackEndURL = globalIITMLbackEndURL.getPropertyValue();
+            strIITMLbackEndURL = strIITMLbackEndURL.trim();
+            System.out.println("Got global IIT update score url part as: " + strIITMLbackEndURL);
+            // final String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString().trim();
+            // System.out.println("Got base url part as: " + baseUrl);
+            if(!strIITMLbackEndURL.startsWith("http")) {
+                final String baseUrl = "http://127.0.0.1:8080/" + WebConstants.CONTEXT_PATH;
+                strIITMLbackEndURL = baseUrl + strIITMLbackEndURL;
+            }
+            System.out.println("Got full IIT update backend url as: " + strIITMLbackEndURL);
+
+            //Call endpoint to get the score
+		
+			URL url = new URL(strIITMLbackEndURL);
+			System.out.println("Calling IIT update backend using: " + url);
+			connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("POST");
+			connection.setRequestProperty("Content-Type", "application/json");
+			connection.setRequestProperty("Accept", "application/json");
+			connection.setDoOutput(true);
+			OutputStream outputStream = connection.getOutputStream();
+			byte[] output = payload.getBytes("utf-8");
+			outputStream.write(output, 0, output.length);
+			reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			StringBuilder response = new StringBuilder();
+			String responseLine = null;
+			while ((responseLine = reader.readLine()) != null) {
+				response.append(responseLine.trim());
+			}
+			String mlScoreResponse = response.toString();
+			System.out.println("ITT ML - Got IIT update Score JSON as: " + mlScoreResponse);
+		}
+		catch (Exception e) {
+			System.err.println("ITT ML - Error getting IIT update Score: " + e.getMessage());
+			e.printStackTrace();
+		}
+		finally {
+            try {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    }
+                    catch (Exception e) {}
+                }
+                connection.disconnect();
+            } catch (Exception e) {}
+		}
     }
 
 }
