@@ -28,7 +28,7 @@ public class ClinicianViewPatientPageController {
 
 	public void controller(PageModel model,
 							UiUtils ui) {
-		System.out.println("ALERT: Patient View Called");
+		// System.out.println("ALERT: Patient View Called");
 		Patient patient = (Patient) model.getAttribute(EmrWebConstants.MODEL_ATTR_CURRENT_PATIENT);
 		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
 		model.addAttribute("inHivProgram", Context.getProgramWorkflowService().getPatientPrograms(patient, hivProgram, null, null, null, null, true));

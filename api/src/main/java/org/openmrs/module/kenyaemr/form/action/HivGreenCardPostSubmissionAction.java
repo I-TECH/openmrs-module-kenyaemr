@@ -34,10 +34,10 @@ public class HivGreenCardPostSubmissionAction implements CustomFormSubmissionAct
     @Override
     public void applyAction(FormEntrySession session) {
         // Update the patient IIT risk score
-        System.out.println("Updating the patient IIT risk score");
+        // System.out.println("Updating the patient IIT risk score");
         Patient currentPatient = session.getPatient();
         Integer patientId = currentPatient.getId();
-        System.out.println("IIT risk score: Patient ID: " + patientId);
+        // System.out.println("IIT risk score: Patient ID: " + patientId);
         SimpleObject constructPayload = new SimpleObject();
         constructPayload.put("patientId", patientId);
         String payload = constructPayload.toJson();
@@ -50,19 +50,19 @@ public class HivGreenCardPostSubmissionAction implements CustomFormSubmissionAct
             GlobalProperty globalIITMLbackEndURL = Context.getAdministrationService().getGlobalPropertyObject(iitMLbackEndURLGlobal);
             String strIITMLbackEndURL = globalIITMLbackEndURL.getPropertyValue();
             strIITMLbackEndURL = strIITMLbackEndURL.trim();
-            System.out.println("Got global IIT update score url part as: " + strIITMLbackEndURL);
+            // System.out.println("Got global IIT update score url part as: " + strIITMLbackEndURL);
             // final String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString().trim();
             // System.out.println("Got base url part as: " + baseUrl);
             if(!strIITMLbackEndURL.startsWith("http")) {
                 final String baseUrl = "http://127.0.0.1:8080/" + WebConstants.CONTEXT_PATH;
                 strIITMLbackEndURL = baseUrl + strIITMLbackEndURL;
             }
-            System.out.println("Got full IIT update backend url as: " + strIITMLbackEndURL);
+            // System.out.println("Got full IIT update backend url as: " + strIITMLbackEndURL);
 
             //Call endpoint to get the score
 		
 			URL url = new URL(strIITMLbackEndURL);
-			System.out.println("Calling IIT update backend using: " + url);
+			// System.out.println("Calling IIT update backend using: " + url);
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("POST");
 			connection.setRequestProperty("Content-Type", "application/json");
@@ -78,7 +78,7 @@ public class HivGreenCardPostSubmissionAction implements CustomFormSubmissionAct
 				response.append(responseLine.trim());
 			}
 			String mlScoreResponse = response.toString();
-			System.out.println("ITT ML - Got IIT update Score JSON as: " + mlScoreResponse);
+			// System.out.println("ITT ML - Got IIT update Score JSON as: " + mlScoreResponse);
 		}
 		catch (Exception e) {
 			System.err.println("ITT ML - Error getting IIT update Score: " + e.getMessage());
