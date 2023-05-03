@@ -32,6 +32,7 @@
         var mflCode = <lookup expression="kenyaemr.currentFacilityMFLCode()" />;
         var ENROLLED_IN_HIV = GREENCARD_VELOCITY.split(",")[12].split(":")[1];
         var patientId = <lookup expression="patient.patientId"/>;
+
         //On Ready
         jq(function() {
 
@@ -192,8 +193,11 @@
             var orphan = getValue('is-orphan.value');
             var schooling = getValue('in-school.value');
             var guardian = jq('#guardian-name input[type=text]').val();
-
             var upn = jq('#hiv-id input[type=text]').val();
+			var Discontinuation_VELOCITY = "<lookup expression="kenyaemr.DiscontinuationVelocityCalculation()" />";
+			var discontinuationDate = Discontinuation_VELOCITY.split(",")[2].split(":")[1];
+			var effectiveDiscDate = "<lookup expression="fn.latestObs(164384).getValueDatetime()"/>";
+
             if(IS_KDoD_SITE==false){
             if (PATIENT_HAS_UPN) {
                 if((/^[0-9]{10}$/.test(upn) === false) &amp;&amp; (/^[0-9]{11}$/.test(upn) === false)) {
@@ -286,6 +290,23 @@
                     }
                 }
             }
+			var isEnrollmentDateEqualsDiscontinuationDate = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isSame(moment(moment(discontinuationDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
+				if (isEnrollmentDateEqualsDiscontinuationDate) {
+				getField('encounter-date.error').html('Enrollment date should be after discontinuation encounter date').show();
+				return false;
+			}
+			else {
+				getField('encounter-date.error').html('Enrollment date should be after discontinuation encounter date').hide();
+			}
+
+			var isEnrollmentDateEqualsEffectiveDiscDate = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isSame(moment(moment(effectiveDiscDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
+			if (isEnrollmentDateEqualsEffectiveDiscDate) {
+				getField('encounter-date.error').html('Enrollment date should be after effective discontinuation date').show();
+				return false;
+			}
+			else {
+				getField('encounter-date.error').html('Enrollment date should be after effective discontinuation date').hide();
+			}
 
             return true;
         });
