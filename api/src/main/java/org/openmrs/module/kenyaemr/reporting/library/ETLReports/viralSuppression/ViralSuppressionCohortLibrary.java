@@ -67,7 +67,7 @@ public class ViralSuppressionCohortLibrary {
                 "             having max(visit_date) between\n" +
                 "                        date_sub(:endDate , interval 12 MONTH) and date(:endDate)\n" +
                 "             )vl\n" +
-                "    on t.patient_id = vl.patient_id  where (vl_result < 1000 or vl_result='LDL'))a;";
+                "    on t.patient_id = vl.patient_id  where (vl_result < 200 or vl_result='LDL'))a;";
         cd.setName("suppressed");
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setQuery(sqlQuery);
@@ -122,8 +122,7 @@ public class ViralSuppressionCohortLibrary {
                 "             having max(visit_date) between\n" +
                 "date_sub(:endDate , interval 12 MONTH) and date(:endDate)\n" +
                 "             )vl\n" +
-                "    on t.patient_id = vl.patient_id where vl_result >= 1000)a;" ;
-
+                "    on t.patient_id = vl.patient_id where vl_result >= 200)a;" ;
 
         cd.setName("unsuppressed");
         cd.setQuery(sqlQuery);
