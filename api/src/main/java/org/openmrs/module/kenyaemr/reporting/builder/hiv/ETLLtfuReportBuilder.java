@@ -22,11 +22,13 @@ import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDa
 import org.openmrs.module.kenyaemr.calculation.library.NumberOfDaysLateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.TelephoneNumberCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastReturnVisitDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.mchcs.PersonAddressCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.PatientProgramEnrollmentCalculation;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.EncounterDatetimeConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.PatientProgramEnrollmentConverter;
+import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQACalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLLTFUWithDateRangeCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLLostToFollowupCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ScheduledAppointmentCohortDefinition;
@@ -42,6 +44,7 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulter
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.LastDefaulterTracingDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.ReturnToCareDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.IPTIndicationDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.ipt.PhysicalAddressDataDefinition;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.SortCriteria;
@@ -121,7 +124,8 @@ public class ETLLtfuReportBuilder extends AbstractHybridReportBuilder {
 
         dsd.addColumn("Number of days late", daysMissed, paramMapping);
         dsd.addColumn("Program", new CalculationDataDefinition("Program", new PatientProgramEnrollmentCalculation()), "", new PatientProgramEnrollmentConverter());
-      }
+        dsd.addColumn("Physical Address", new CalculationDataDefinition("Physical Address", new PersonAddressCalculation()), "", new RDQACalculationResultConverter());
+    }
 
     @Override
     protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
