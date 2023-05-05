@@ -18,7 +18,6 @@ import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.HEIMissedHIVTestsCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.*;
-import org.openmrs.module.kenyaemr.reporting.library.pmtct.PMTCTIndicatorLibrary;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.SortCriteria;
@@ -34,7 +33,6 @@ import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -96,7 +94,7 @@ public class HEIMissingHIVTestsReportBuilder extends AbstractHybridReportBuilder
        // dsd.addColumn("Unique Patient No", identifierDef, "");
         dsd.addColumn("Sex", new GenderDataDefinition(), "");
         dsd.addColumn("DOB", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
-        dsd.addColumn("Age", new HEIAgeInMonthsDataDefinition(), "");
+        dsd.addColumn("Age at Enrollment (Months)", new HEIAgeInMonthsDataDefinition(), "");
         dsd.addColumn("Enrollment Date", new HEIEnrollmentDateDataDefinition(), "");
         dsd.addColumn("HEI Id", new HEIIdDataDefinition(), "");
         dsd.addColumn("Mother's Name", new HEIMotherNameDataDefinition(), "");
