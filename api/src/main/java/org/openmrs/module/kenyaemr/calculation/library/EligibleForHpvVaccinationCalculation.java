@@ -85,7 +85,7 @@ public class EligibleForHpvVaccinationCalculation extends AbstractPatientCalcula
     }
     @Override
     public String getFlagMessage() {
-        return "Due for HPV Dose";
+        return "Due for HPV Vaccine";
     }
 
 }
