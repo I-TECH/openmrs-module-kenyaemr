@@ -35,8 +35,7 @@ public class ANCDewormedDataEvaluator implements EncounterDataEvaluator {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select\n" +
-                "  v.encounter_id,\n" +
-                " (case v.deworming when 79413 then \"Yes\" else \"No\" end)as deworming\n" +
+                "  v.encounter_id,v.deworming_done_anc as deworming\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
