@@ -9,23 +9,24 @@
  */
 package org.openmrs.module.kenyaemr.fragment.controller.program.mchcs;
 
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Obs;
-import org.openmrs.Patient;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
+import org.openmrs.calculation.patient.PatientCalculationContext;
+import org.openmrs.calculation.patient.PatientCalculationService;
+import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.ListResult;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.wrapper.EncounterWrapper;
 import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Controller for child services care summary
@@ -55,7 +56,10 @@ public class MchcsCarePanelFragmentController {
 		EncounterType mchcs_consultation_encounterType = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHCS_CONSULTATION);
 		Encounter lastMchcsConsultation = patientWrapper.lastEncounter(mchcs_consultation_encounterType);
 		Encounter heiProphylaxis = patientWrapper.lastEncounter(mchcs_consultation_encounterType);
-
+		Concept pce = Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE);
+		CalculationResultMap ret = new CalculationResultMap();
+		PatientCalculationContext context = Context.getService(PatientCalculationService.class).createCalculationContext();
+		CalculationResultMap pcrObs = Calculations.allObs(Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE), Arrays.asList(patient.getPatientId()), context);
 
 		if (lastMchcsHeiCompletion != null && lastMchcsEnrollment != null) {
 			EncounterWrapper heiCompletionWrapper = new EncounterWrapper(lastMchcsHeiCompletion);
@@ -99,7 +103,6 @@ public class MchcsCarePanelFragmentController {
 
 		}
 
-
 		if (lastMchcsConsultation != null) {
 			EncounterWrapper mchcsConsultationWrapper = new EncounterWrapper(lastMchcsConsultation);
 
@@ -128,14 +131,33 @@ public class MchcsCarePanelFragmentController {
 			else {
 				calculations.put("feeding", "Not Specified");
 			}
-			pcr.addAll(mchcsConsultationWrapper.allObs(Context.getConceptService().getConcept(1030)));
 
-			if (remarks.size() > 0) {
-				calculations.put("pcr", pcr);
+			ListResult obsResults = (ListResult) pcrObs.get(patient.getPatientId());
+			List<Obs> obsListPCR;
+			obsListPCR = CalculationUtils.extractResultValues(obsResults);
+
+			if(obsListPCR !=null){
+
+				if(obsListPCR.size() > 0){
+					List<SimpleObject> obbListView = new ArrayList<SimpleObject>();
+					for (Obs obs:obsListPCR){
+						if(obs.getConcept().equals(pce)){
+							Order pcrTestOrder = obs.getOrder();
+							String orderReason = "";
+							if(pcrTestOrder!= null){
+								orderReason = pcrTestOrder.getOrderReason().getName().toString();
+							}
+							Date pcrDate = obs.getObsDatetime();
+							String testResults = obs.getValueCoded().getName().toString();
+							SimpleObject pcrTests = SimpleObject.create("orderReason", orderReason, "pcrDate", pcrDate, "testResults", testResults);
+							obbListView.add(pcrTests);
+							calculations.put("obbListView",obbListView);
+
+						}
+					}
+				}
 			}
-			else {
-				calculations.put("pcr", "Not Specified");
-			}
+
 		}
 		else {
 			calculations.put("milestones", "Not Specified");

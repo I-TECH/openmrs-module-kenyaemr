@@ -9,14 +9,22 @@
 	dataPointsLeft << [label: "HIV Status", value: calculations.hivStatus]
 	dataPointsLeft << [label: "HEI Outcome", value: calculations.heioutcomes]
     def dataPointsRight = []
-	dataPointsRight << [label: "PCRs Done: ", value: calculations.pcr]
 
-%>
+    obbList = calculations.obbListView
+    for (testResult in obbList) {
+        orderReason = testResult.orderReason
+        pcrDate = testResult.pcrDate.format("yyyy-MM-dd")
+        testResults = testResult.testResults
+        dataPointsRight << [label: "PRCs Done", value: "Order Reason: $orderReason, Date: $pcrDate, Test:  $testResults"]
+    }
+
+     %>
 <div style="display: flex;">
 <div style="width: 50%;">
    <% dataPointsLeft.each { print ui.includeFragment("kenyaui", "widget/dataPoint", it) } %>
 </div>
 <div style="width: 50%;">
-   <% dataPointsRight.each { print ui.includeFragment("kenyaui", "widget/dataPoint", it) } %>
+    <% dataPointsRight.each { it -> print ui.includeFragment("kenyaui", "widget/dataPoint", it) } %>
+
 </div>
 </div>
