@@ -258,7 +258,7 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
 
             // Ois recorded in last greencard encounter
             Encounter lastGreencardEncounter = EmrUtils.lastEncounter(patientService.getPatient(ptId), encounterService.getEncounterTypeByUuid(HivMetadata._EncounterType.HIV_CONSULTATION), MetadataUtils.existing(Form.class, HivMetadata._Form.HIV_GREEN_CARD));
-            String oiObserved = null;
+            String oiObserved = "";
             if (lastGreencardEncounter != null) {
                 for (Obs obs : lastGreencardEncounter.getObs()) {
                     if (obs.getConcept().getConceptId().equals(167394) && !obs.getValueCoded().equals(5006)) {
