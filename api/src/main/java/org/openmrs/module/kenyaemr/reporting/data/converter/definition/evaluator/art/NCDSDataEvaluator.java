@@ -62,7 +62,7 @@ public class NCDSDataEvaluator implements PersonDataEvaluator {
                 "              when 118976 then 'Thyroid disease'\n" +
                 "              when 141623 then 'Dyslipidemia'\n" +
                 "              end SEPARATOR\n" +
-                "          '|') as ChronicIllness\n" +
+                "          ',') as ChronicIllness\n" +
                 "from kenyaemr_etl.etl_allergy_chronic_illness ci where ci.visit_date <= date(:endDate)\n" +
                 "group by ci.patient_id;";
 
