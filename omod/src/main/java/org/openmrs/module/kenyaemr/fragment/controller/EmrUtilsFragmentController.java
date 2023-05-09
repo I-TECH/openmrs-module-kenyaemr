@@ -21,6 +21,8 @@ import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.PatientProgram;
+import org.openmrs.Person;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.Relationship;
 import org.openmrs.User;
 import org.openmrs.Visit;
@@ -30,6 +32,7 @@ import org.openmrs.VisitType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.PatientService;
+import org.openmrs.api.PersonService;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.ContextAuthenticationException;
@@ -52,6 +55,7 @@ import org.openmrs.module.kenyaemr.regimen.RegimenChangeHistory;
 import org.openmrs.module.kenyaemr.regimen.RegimenManager;
 import org.openmrs.module.kenyaemr.util.EmrUiUtils;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.kenyaemr.wrapper.PersonWrapper;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.AppAction;
 import org.openmrs.module.kenyaui.annotation.PublicAction;
@@ -739,6 +743,25 @@ public SimpleObject lastLotNumberUsedForHTSTesting(@RequestParam(value = "kitNam
 		} catch (Exception e) {
 			return SimpleObject.create("status", "Error","message","There was an error updating TPT followup details");
 		}
+	}
+
+	/**
+	 * updates telephone number person-attribute
+	 * @param patient
+	 * @param updatedPhoneNumber
+	 * @return
+	 */
+	public SimpleObject updateTelephoneNumber(@RequestParam("patientId") Patient patient,
+											  @RequestParam("updatedPhoneNumber") String updatedPhoneNumber){
+		    PersonService personService = Context.getPersonService();
+				try {
+					PersonWrapper wrapper = new PersonWrapper(patient);
+					wrapper.setTelephoneContact(updatedPhoneNumber);
+					personService.savePerson(patient);
+					return SimpleObject.create("status", "Success","message","The patient has successfully updated telephone number");
+			} catch (Exception e) {
+				return SimpleObject.create("status", "Error","message","There was an error while updating telephone number");
+			}
 	}
 
 	/**

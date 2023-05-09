@@ -737,6 +737,22 @@ Green Card follow-up visit form
                     width: 900,
                     modal: true });
             });
+            // Update Telephone
+            jq("#btnUpdateTelephoneDialog").click(function(e){
+                e.preventDefault();
+                jq("#dlgUpdateTelephone").dialog({bgiframe: true,
+                    title : "Update Phone Number",
+                    buttons: {
+                        "Update  Phone Number": updatePhoneNumber,
+                        "Cancel": function () {
+                            jq("#dlgUpdateTelephone").dialog("close");
+                        }
+                    },
+                    height: 300,
+                    width: 900,
+                    modal: true });
+            });
+
             // Prepopulate weight and height if added through other forms on the same encounter date
             //Form such as Triage form
             var encounterDate = getValue('encounter-date.value');
@@ -912,6 +928,31 @@ Green Card follow-up visit form
 
         // ------------------------------------ end of ipt handlers -----------------------
 
+        function updatePhoneNumber() {
+            var updatedPhoneNumber = jq("#updatePhoneNumber").val();
+            var patientId = <lookup expression="patient.patientId"/>;
+            var encDate = getValue('encounter-date.value');
+            if(encDate == null) {
+                encDate = new Date();
+            }
+            if(updatedPhoneNumber == null || updatedPhoneNumber == "" || (/^(?:\+254|0|254)(\d{9})$/.test(updatedPhoneNumber) === false)) {
+               jq('#lblupdatedPhoneNumber').text('Phone number should contain only 10 digits').addClass("ke-error-label");
+             }else {
+                jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/updateTelephoneNumber.action', {
+                    patientId: patientId,
+                    updatedPhoneNumber: updatedPhoneNumber
+                }, function (data) {
+                    if (data.status == "Success") {
+                        jq("#lblupdatedPhoneNumber").text(data.message).addClass("ke-success-label");
+                        jq("#dlgUpdateTelephone").dialog('close');
+                    } else {
+                        jq("#lblupdatedPhoneNumber").text(data.message).addClass("ke-error-label");
+                        jq("#dlgUpdateTelephone").dialog('close');
+                    }
+
+                });
+            }
+        }
 
         function onWeightOrHeightChange() {
             var display = '';
@@ -4638,6 +4679,23 @@ Management<br />
                                     answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                     answerLabels="Yes,No"
                                     style="radio" required="true"/>
+                            </td>
+                            <td>&#160;&#160;&#160;&#160;</td>
+                            <td>Current Telephone Number:&#160;&#160;<lookup class="value" expression="personAttributes.get('Telephone contact')"/></td>
+                            <td>&#160;&#160;&#160;&#160;</td>
+                           <td><button type="button" id="btnUpdateTelephoneDialog" class="ke-program-outcome-button">Update</button></td>
+                            <td>
+                                <div id="dlgUpdateTelephone" style="display: none">
+                                    <span class="ui-helper-hidden-accessible"><input type="text"/></span>
+                                    <table>
+                                        <tr>
+                                            <td>Add new telephone number : &#160;&#160;&#160;&#160;</td>
+                                            <td><input type="text" size="20" id="updatePhoneNumber" autocomplete="off"/><span class="error field-error" style="display: none" id="errorUpdatePhoneNumber"></span></td>
+                                            <td><label id="lblupdatedPhoneNumber"></label></td>
+
+                                        </tr>
+                                    </table>
+                                </div>
                             </td>
                         </tr><tr></tr>
                     </table>
