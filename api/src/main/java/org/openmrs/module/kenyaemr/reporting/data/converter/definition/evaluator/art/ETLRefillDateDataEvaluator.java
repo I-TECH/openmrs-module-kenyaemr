@@ -37,7 +37,7 @@ public class ETLRefillDateDataEvaluator implements PersonDataEvaluator {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select patient_id,\n" +
-                "    date(mid(max(concat(visit_date,refill_date, '' )),11)) as refill_date from kenyaemr_etl.etl_patient_hiv_followup\n" +
+                "    date(mid(max(concat(visit_date, if(refill_date = '0000-00-00', '', refill_date), '')), 11)) as refill_date from kenyaemr_etl.etl_patient_hiv_followup\n" +
                 "   where  date(visit_date) <= date(:endDate)\n" +
                 "   GROUP BY patient_id;";
 
