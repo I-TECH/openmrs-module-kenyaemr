@@ -29,6 +29,7 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.ListResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
@@ -99,9 +100,17 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
         //Checking adherence
         Concept AdherenceQuestion = Context.getConceptService().getConcept(1658);
 
+        //Check chronic illnesses in greencard
+        Concept ChronicIllnessQuestion = Context.getConceptService().getConcept(1284);
+        Concept ChronicIllnessOnsetDateQuestion = Context.getConceptService().getConcept(159948);
+        Concept ChronicIllnessControlQuestion = Context.getConceptService().getConcept(166937);
+
         CalculationResultMap lastVLObs = Calculations.lastObs(latestVL, inHivProgram, context);
         CalculationResultMap lastLDLObs = Calculations.lastObs(LDLQuestion, inHivProgram, context);
         CalculationResultMap lastAdherenceObs = Calculations.lastObs(AdherenceQuestion, inHivProgram, context);
+        CalculationResultMap lastChronicIllnessObs = Calculations.allObs(ChronicIllnessQuestion, inHivProgram, context);
+        CalculationResultMap lastChronicIllnessOnsetDateObs = Calculations.allObs(ChronicIllnessOnsetDateQuestion, inHivProgram, context);
+        CalculationResultMap lastChronicIllnessControlObs = Calculations.allObs(ChronicIllnessControlQuestion, inHivProgram, context);
 
         // Get active ART regimen of each patient
 
@@ -142,6 +151,9 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             String regimenName = null;
             Obs lastVLObsResult = null;
             String ldlResult = null;
+            String chronicIllness = "";
+            Date chronicIllnessOnsetDate = null;
+            String chronicIllnessControlStatus = "";
             Double vlResult = 0.0;
             Concept cacxResult = null;
             Concept vmmcMethodResult  = null;
@@ -267,6 +279,48 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
                 }
             }
 
+            ListResult chronicIllnessResults = (ListResult) lastChronicIllnessObs.get(ptId);
+                if (!chronicIllnessResults.isEmpty()) {
+                    //Has chronic illness results
+                    List<Obs> obsListChronicIllness;
+                    obsListChronicIllness = CalculationUtils.extractResultValues(chronicIllnessResults);
+                    if (obsListChronicIllness.size() > 0) {
+                        for (Obs obs : obsListChronicIllness) {
+                            if (obs.getConcept().equals(ChronicIllnessQuestion)) {
+                                chronicIllness = obs.getValueCoded().getName().getName();
+                                break;
+                            }
+                        }
+                    }
+                }
+            ListResult chronicIllnessOnsetResults = (ListResult) lastChronicIllnessOnsetDateObs.get(ptId);
+            if (!chronicIllnessOnsetResults.isEmpty()) {
+                //Has chronic illness results
+                List<Obs> obsListChronicIllnessOnset;
+                obsListChronicIllnessOnset = CalculationUtils.extractResultValues(chronicIllnessOnsetResults);
+                if (obsListChronicIllnessOnset.size() > 0) {
+                    for (Obs obs : obsListChronicIllnessOnset) {
+                         if (obs.getConcept().equals(ChronicIllnessOnsetDateQuestion)) {
+                            chronicIllnessOnsetDate = obs.getValueDate();
+                             break;
+                        }
+                    }
+                }
+            }
+            ListResult chronicIllnessControlResults = (ListResult) lastChronicIllnessControlObs.get(ptId);
+            if (!chronicIllnessControlResults.isEmpty()) {
+                //Has chronic illness results
+                List<Obs> obsListChronicIllnessControlStatus;
+                obsListChronicIllnessControlStatus = CalculationUtils.extractResultValues(chronicIllnessControlResults);
+                if (obsListChronicIllnessControlStatus.size() > 0) {
+                    for (Obs obs : obsListChronicIllnessControlStatus) {
+                        if (obs.getConcept().equals(ChronicIllnessControlQuestion)) {
+                            chronicIllnessControlStatus = obs.getValueCoded().getName().getName();
+                            break;
+                        }
+                    }
+                }
+            }
 
             //On ART -- find if client has active ART
             Encounter lastDrugRegimenEditorEncounter = EncounterBasedRegimenUtils.getLastEncounterForCategory(Context.getPatientService().getPatient(ptId), "ARV");   //last DRUG_REGIMEN_EDITOR encounter
@@ -325,7 +379,10 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             sb.append("CacXResult:").append(cacxResult).append(",");
             sb.append("vmmcProcedureResult:").append(vmmcMethodResult).append(",");
             sb.append("eligibleForCacx:").append(isEligibleForCacx).append(",");
-            sb.append("oiObserved:").append(oiObserved);
+            sb.append("oiObserved:").append(oiObserved).append(",");
+            sb.append("chronicIllness:").append(chronicIllness).append(",");
+            sb.append("chronicIllnessOnsetDate:").append(chronicIllnessOnsetDate).append(",");
+            sb.append("chronicIllnessControlStatus:").append(chronicIllnessControlStatus);
 
             ret.put(ptId, new SimpleResult(sb.toString(), this, context));
         }
