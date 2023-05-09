@@ -145,6 +145,8 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         eTLHivSelfVisitDateDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
         ETLLastVLJustificationDataDefinition eTLLastVLJustificationDataDefinition = new ETLLastVLJustificationDataDefinition();
         eTLLastVLJustificationDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+        NCDsDataDefinition ncDsDataDefinition = new NCDsDataDefinition();
+        ncDsDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 
         DataConverter formatter = new ObjectFormatter("{familyName}, {givenName}");
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), formatter);
@@ -188,6 +190,7 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("Months of Prescription", eTLMonthsOfPrescriptionDataDefinition, "endDate=${endDate}");
         dsd.addColumn("Refill Date", eTLRefillDateDataDefinition, "endDate=${endDate}", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Case Manager", etlCaseManagerDataDefinition, "endDate=${endDate}");
+        dsd.addColumn("NCDs", ncDsDataDefinition, "endDate=${endDate}");
 
         return dsd;
     }
