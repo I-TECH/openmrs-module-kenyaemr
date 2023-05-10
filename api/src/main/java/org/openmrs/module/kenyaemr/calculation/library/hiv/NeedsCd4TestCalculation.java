@@ -67,6 +67,7 @@ public class NeedsCd4TestCalculation extends AbstractPatientCalculation implemen
         CalculationResultMap prevEncTCADateCalcMap = calculate(new PreviousHIVClinicalVisitTCACalculation(), cohort, context);
 
         Set<Integer> pendingCD4TestResults = CalculationUtils.patientsThatPass(calculate(new PendingCD4ResultCalculation(), cohort, context));
+        Set<Integer> ltfu = CalculationUtils.patientsThatPass(calculate(new LostToFollowUpCalculation(), cohort, context));
 
         ObsService obsService = Context.getObsService();
         PersonService patientService = Context.getPersonService();
@@ -78,7 +79,7 @@ public class NeedsCd4TestCalculation extends AbstractPatientCalculation implemen
             boolean needsCD4 = false;
 
             // Is patient alive and in the HIV program with no active CD4 test order
-            if (inHivProgram.contains(ptId) && !pendingCD4TestResults.contains(ptId)) {
+            if (inHivProgram.contains(ptId) && !pendingCD4TestResults.contains(ptId) && !ltfu.contains(ptId)) {
 
                 ObsResult cd4Count = (ObsResult) lastObsCount.get(ptId);
                 ObsResult cd4CountQual = (ObsResult) lastObsCountQualitative.get(ptId);
