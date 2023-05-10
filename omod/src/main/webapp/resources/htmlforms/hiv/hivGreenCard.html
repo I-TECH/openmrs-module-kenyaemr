@@ -86,6 +86,8 @@ Green Card follow-up visit form
         var REFILL_DOCUMENTATION = 159802;
         var TS = 161642;
         var PREVIOUSLY_BREASTFEEDING = "<lookup expression="fn.latestObs(5632).getValueCoded()"/>"; // this is breastfeeding last obs
+        var PREVIOUS_CHRONIC_ADDED = "<lookup expression="fn.latestObs(162747).getValueCoded()"/>"; // this is chronic illness added last obs
+
         var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
         var PATIENT_ON_IPT = GREENCARD_VELOCITY.split(",")[0].split(":")[1];
         var PATIENT_ON_TB = GREENCARD_VELOCITY.split(",")[1].split(":")[1];
@@ -101,6 +103,12 @@ Green Card follow-up visit form
         var PATIENT_BREASTFEEDING = GREENCARD_VELOCITY.split(",")[11].split(":")[1];
         var PATIENT_ELIGIBLE_FOR_CACX = GREENCARD_VELOCITY.split(",")[16].split(":")[1];
         var PATIENT_DOCUMENTED_OI = GREENCARD_VELOCITY.split(",")[17].split(":")[1];
+        var FIRST_CHRONIC_ILLNESS = GREENCARD_VELOCITY.split(",")[18].split(":")[1];
+        var FIRST_CHRONIC_ONSET = GREENCARD_VELOCITY.split(",")[19].split(":")[1];
+        var FIRST_CHRONIC_CONTROLLED = GREENCARD_VELOCITY.split(",")[20].split(":")[1];
+        var SECOND_CHRONIC_ILLNESS = GREENCARD_VELOCITY.split(",")[21].split(":")[1];
+        var SECOND_CHRONIC_ONSET = GREENCARD_VELOCITY.split(",")[22].split(":")[1];
+        var SECOND_CHRONIC_CONTROLLED = GREENCARD_VELOCITY.split(",")[23].split(":")[1];
 
         var pAge = parseInt('<lookup expression="patient.age"/>');
         var pgender = "<lookup expression="patient.gender" />";
@@ -768,6 +776,35 @@ Green Card follow-up visit form
             var isRecentHeightDateSameAsEncounterDate = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isSame(moment(moment(recentHeightDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'),'day');
             if (isRecentHeightDateSameAsEncounterDate) {
                 setValue('height.value', recentHeightValue);
+            }
+
+            // Previously filled chronic illness
+            jq('#tbl-recorded-chronic').hide();
+            jq('#second-chronic-illness').hide();
+            if(FIRST_CHRONIC_ILLNESS !='') {
+                jq('#tbl-recorded-chronic').show();
+                jq('#chronic-mandatory-star').hide();
+                jq('#first-recorded-chronic-illness:text').val(FIRST_CHRONIC_ILLNESS);
+                if (FIRST_CHRONIC_ONSET != '') {
+                   var recordedOnsetDate =  moment(FIRST_CHRONIC_ONSET, 'DD-MMM-YYYY').format('YYYY-MM-DD');
+                    jq('#first-recorded-onset-date:text').val(recordedOnsetDate);
+                }
+                if (FIRST_CHRONIC_CONTROLLED != '') {
+                    jq('#first-recorded-control-status:text').val(FIRST_CHRONIC_CONTROLLED);
+                }
+            }
+            if(SECOND_CHRONIC_ILLNESS !='') {
+                jq('#tbl-recorded-chronic').show();
+                jq('#second-chronic-illness').show();
+                jq('#chronic-mandatory-star').hide();
+                jq('#second-recorded-chronic-illness:text').val(SECOND_CHRONIC_ILLNESS);
+                if (SECOND_CHRONIC_ONSET != '') {
+                    var secondrecordedOnsetDate =  moment(SECOND_CHRONIC_ONSET, 'DD-MMM-YYYY').format('YYYY-MM-DD');
+                    jq('#second-recorded-onset-date:text').val(secondrecordedOnsetDate);
+                }
+                if (SECOND_CHRONIC_CONTROLLED != '') {
+                    jq('#second-recorded-control-status:text').val(SECOND_CHRONIC_CONTROLLED);
+                }
             }
 
         });   //End of JQuery onReady function
@@ -2261,7 +2298,7 @@ Green Card follow-up visit form
             }else{
                 getField('allergy-field.error').html('Please specify the allergy.').hide();
             }
-            if (chronicIllness == false &amp;&amp; personPresent == SELF) {
+            if (FIRST_CHRONIC_ONSET =='' &amp;&amp; chronicIllness == false &amp;&amp; personPresent == SELF) {
                 jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
                 getField('chronic-illness.error').html('Please specify if patient has any chronic illness.').show();
                 return false;
@@ -2737,6 +2774,7 @@ Management<br />
                             }
                             if (chronicIllness == 1065){
                                 jq("#tbl-chronic-illness").show();
+                                jq('#tbl-recorded-chronic').hide();
                             }else{
                                 jq("#tbl-chronic-illness").hide();
                             }
@@ -3565,15 +3603,50 @@ Management<br />
                 <!--Chronic Illnesses-->
                 <fieldset class="patient-details">
                     <legend>Chronic Illnesses and Cormobidities</legend>
-                    <div>
+                   <table>
+                       <tr>
+                           <td>
                         Patient has any chronic illnesse(s)? &#160;&#160;&#160;&#160;&#160;&#160;&#160;
                         <obs id="chronic-illness" conceptId="162747AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                              style="radio" answerLabels="Yes,No"
                         />
-                        <span style="color:red;"><strong>*</strong></span>
-                            <span class="value"><recentObs conceptId="1284AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span>
-                    </div>
+                        <span id="chronic-mandatory-star" style="color:red;"><strong>*</strong></span>
+                           </td><td> &#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160;</td>
+                        <td>
+                            <table id="tbl-recorded-chronic" border="1">
+                                <tr><td>  <strong>Chronic Illnesses Recorded Recently</strong></td></tr>
+                                <tr>
+                                        <th align="left">Chronic Illness</th>
+                                        <th align="left">Onset Date</th>
+                                        <th align="left">Controlled</th>
+                                </tr>
+                                <tr>
+                                     <td>
+                                        <input type="text" name="first-recorded-chronic-illness" id="first-recorded-chronic-illness" readonly="True" />
+                                     </td>
+                                       <td>
+                                        <input type="text" name="first-recorded-onset-date" id="first-recorded-onset-date" readonly="True" />
+                                       </td>
+                                       <td>
+                                        <input type="text" name="first-recorded-control-status" id="first-recorded-control-status" readonly="True" />
+                                       </td>
+                                </tr>
+                                <tr id="second-chronic-illness">
+                                    <td>
+                                        <input type="text" name="second-recorded-chronic-illness" id="second-recorded-chronic-illness" readonly="True" />
+                                    </td>
+                                    <td>
+                                        <input type="text" name="second-recorded-onset-date" id="second-recorded-onset-date" readonly="True" />
+                                    </td>
+                                    <td>
+                                        <input type="text" name="second-recorded-control-status" id="second-recorded-control-status" readonly="True" />
+                                    </td>
+                                </tr>
+                                </table>
+                              </td>
+                                </tr>
+                            </table>
                     <table id="tbl-chronic-illness">
                         <tr>
                             <th style="color: #888">Illness</th>
