@@ -25,6 +25,7 @@ import org.openmrs.Program;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.FormService;
+import org.openmrs.api.ObsService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -53,6 +54,7 @@ import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -100,18 +102,9 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
         //Checking adherence
         Concept AdherenceQuestion = Context.getConceptService().getConcept(1658);
 
-        //Check chronic illnesses in greencard
-        Concept ChronicIllnessQuestion = Context.getConceptService().getConcept(1284);
-        Concept ChronicIllnessOnsetDateQuestion = Context.getConceptService().getConcept(159948);
-        Concept ChronicIllnessControlQuestion = Context.getConceptService().getConcept(166937);
-
         CalculationResultMap lastVLObs = Calculations.lastObs(latestVL, inHivProgram, context);
         CalculationResultMap lastLDLObs = Calculations.lastObs(LDLQuestion, inHivProgram, context);
         CalculationResultMap lastAdherenceObs = Calculations.lastObs(AdherenceQuestion, inHivProgram, context);
-        CalculationResultMap lastChronicIllnessObs = Calculations.allObs(ChronicIllnessQuestion, inHivProgram, context);
-        CalculationResultMap lastChronicIllnessOnsetDateObs = Calculations.allObs(ChronicIllnessOnsetDateQuestion, inHivProgram, context);
-        CalculationResultMap lastChronicIllnessControlObs = Calculations.allObs(ChronicIllnessControlQuestion, inHivProgram, context);
-
         // Get active ART regimen of each patient
 
         //find pregnant women
@@ -151,9 +144,6 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             String regimenName = null;
             Obs lastVLObsResult = null;
             String ldlResult = null;
-            String chronicIllness = "";
-            Date chronicIllnessOnsetDate = null;
-            String chronicIllnessControlStatus = "";
             Double vlResult = 0.0;
             Concept cacxResult = null;
             Concept vmmcMethodResult  = null;
@@ -279,48 +269,49 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
                 }
             }
 
-            ListResult chronicIllnessResults = (ListResult) lastChronicIllnessObs.get(ptId);
-                if (!chronicIllnessResults.isEmpty()) {
-                    //Has chronic illness results
-                    List<Obs> obsListChronicIllness;
-                    obsListChronicIllness = CalculationUtils.extractResultValues(chronicIllnessResults);
-                    if (obsListChronicIllness.size() > 0) {
-                        for (Obs obs : obsListChronicIllness) {
-                            if (obs.getConcept().equals(ChronicIllnessQuestion)) {
-                                chronicIllness = obs.getValueCoded().getName().getName();
-                                break;
-                            }
-                        }
+            Form hivGreencardForm = MetadataUtils.existing(Form.class, HivMetadata._Form.HIV_GREEN_CARD);
+            List<Encounter> encounters = Context.getEncounterService().getEncounters(patientService.getPatient(ptId), null,
+                    null, null, Arrays.asList(hivGreencardForm), null, null, null, null, false);
+
+            //Collections.reverse(encounters);
+            List<SimpleObject> chronicIllnessesObservationsList = new ArrayList<SimpleObject>();
+            String firstChronicIllnessName = "";
+            String firstChronicIllnessOnset = null;
+            String firstChronicIllnessControl = "";
+            String secondChronicIllnessName = "";
+            String secondChronicIllnessOnset = null;
+            String secondChronicIllnessControl = "";
+            for (Encounter e : encounters) {
+                SimpleObject so = extractEncounterData(e);
+                if (so != null) {
+                    List<SimpleObject> chronicIllnessesListData = (List<SimpleObject>) so.get("chronicIllnessData");
+                    if (chronicIllnessesListData.size() > 0) {
+                        chronicIllnessesObservationsList.addAll(chronicIllnessesListData);
+                        firstChronicIllnessName = chronicIllnessesObservationsList.get(0).get("chronicIllnessType").toString() != null ? chronicIllnessesObservationsList
+                                .get(0).get("chronicIllnessType").toString()
+                                : "";
+                        firstChronicIllnessOnset = chronicIllnessesObservationsList.get(0).get("onsetDate").toString() != null ? chronicIllnessesObservationsList
+                                .get(0).get("onsetDate").toString()
+                                : "";
+                        firstChronicIllnessControl = chronicIllnessesObservationsList.get(0).get("controlStatus").toString() != null ? chronicIllnessesObservationsList
+                                .get(0).get("controlStatus").toString()
+                                : "";
                     }
-                }
-            ListResult chronicIllnessOnsetResults = (ListResult) lastChronicIllnessOnsetDateObs.get(ptId);
-            if (!chronicIllnessOnsetResults.isEmpty()) {
-                //Has chronic illness results
-                List<Obs> obsListChronicIllnessOnset;
-                obsListChronicIllnessOnset = CalculationUtils.extractResultValues(chronicIllnessOnsetResults);
-                if (obsListChronicIllnessOnset.size() > 0) {
-                    for (Obs obs : obsListChronicIllnessOnset) {
-                         if (obs.getConcept().equals(ChronicIllnessOnsetDateQuestion)) {
-                            chronicIllnessOnsetDate = obs.getValueDate();
-                             break;
-                        }
+                    if (chronicIllnessesListData.size() > 1) {
+                        secondChronicIllnessName = chronicIllnessesObservationsList.get(chronicIllnessesListData.size() - 1)
+                                .get("chronicIllnessType").toString() != null ? chronicIllnessesObservationsList
+                                .get(chronicIllnessesListData.size() - 1).get("chronicIllnessType").toString() : "";
+                        secondChronicIllnessOnset = chronicIllnessesObservationsList.get(chronicIllnessesListData.size() - 1)
+                                .get("onsetDate").toString() != null ? chronicIllnessesObservationsList
+                                .get(chronicIllnessesListData.size() - 1).get("onsetDate").toString() : "";
+                        secondChronicIllnessControl = chronicIllnessesObservationsList.get(chronicIllnessesListData.size() - 1)
+                                .get("controlStatus").toString() != null ? chronicIllnessesObservationsList
+                                .get(chronicIllnessesListData.size() - 1).get("controlStatus").toString() : "";
+
                     }
                 }
             }
-            ListResult chronicIllnessControlResults = (ListResult) lastChronicIllnessControlObs.get(ptId);
-            if (!chronicIllnessControlResults.isEmpty()) {
-                //Has chronic illness results
-                List<Obs> obsListChronicIllnessControlStatus;
-                obsListChronicIllnessControlStatus = CalculationUtils.extractResultValues(chronicIllnessControlResults);
-                if (obsListChronicIllnessControlStatus.size() > 0) {
-                    for (Obs obs : obsListChronicIllnessControlStatus) {
-                        if (obs.getConcept().equals(ChronicIllnessControlQuestion)) {
-                            chronicIllnessControlStatus = obs.getValueCoded().getName().getName();
-                            break;
-                        }
-                    }
-                }
-            }
+            // End chronic illnesses computations
 
             //On ART -- find if client has active ART
             Encounter lastDrugRegimenEditorEncounter = EncounterBasedRegimenUtils.getLastEncounterForCategory(Context.getPatientService().getPatient(ptId), "ARV");   //last DRUG_REGIMEN_EDITOR encounter
@@ -380,9 +371,12 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
             sb.append("vmmcProcedureResult:").append(vmmcMethodResult).append(",");
             sb.append("eligibleForCacx:").append(isEligibleForCacx).append(",");
             sb.append("oiObserved:").append(oiObserved).append(",");
-            sb.append("chronicIllness:").append(chronicIllness).append(",");
-            sb.append("chronicIllnessOnsetDate:").append(chronicIllnessOnsetDate).append(",");
-            sb.append("chronicIllnessControlStatus:").append(chronicIllnessControlStatus);
+            sb.append("firstChronicIllnessName:").append(firstChronicIllnessName).append(",");
+            sb.append("firstChronicIllnessOnset:").append(firstChronicIllnessOnset).append(",");
+            sb.append("firstChronicIllnessControl:").append(firstChronicIllnessControl).append(",");
+            sb.append("secondChronicIllnessName:").append(secondChronicIllnessName).append(",");
+            sb.append("secondChronicIllnessOnset:").append(secondChronicIllnessOnset).append(",");
+            sb.append("secondChronicIllnessControl:").append(secondChronicIllnessControl);
 
             ret.put(ptId, new SimpleResult(sb.toString(), this, context));
         }
@@ -420,5 +414,61 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
         def.setEnrolledOnOrBefore(context.getNow());
         CalculationResultMap results = CalculationUtils.evaluateWithReporting(def, cohort, new HashMap<String, Object>(), null, context);
         return CalculationUtils.ensureEmptyListResults(results, cohort);
+    }
+
+     /* Extracts Chronic Illness data from an encounter
+	 *
+     * @param encounter e
+	 * @return
+     */
+    private SimpleObject extractEncounterData(Encounter e) {
+
+        List<SimpleObject> chronicIllnessObservationsData = new ArrayList<SimpleObject>();
+        // get observations for chronic illnesses
+        String CHRONIC_ILLNESSES_GROUPING_CONCEPT = "159392AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+        ObsService obsService = Context.getObsService();
+        ConceptService conceptService = Context.getConceptService();
+        List<Obs> chronicIllnessObs = obsService.getObservations(
+                Arrays.asList(Context.getPersonService().getPerson(e.getPatient().getPersonId())), Arrays.asList(e),
+                Arrays.asList(conceptService.getConceptByUuid(CHRONIC_ILLNESSES_GROUPING_CONCEPT)), null, null, null,
+                Arrays.asList("obsId"), null, null, null, null, false);
+
+        for (Obs o : chronicIllnessObs) {
+            SimpleObject data = extractChronicIllnessData(o.getGroupMembers());
+            chronicIllnessObservationsData.add(data);
+        }
+
+        return SimpleObject.create("chronicIllnessData", chronicIllnessObservationsData);
+    }
+
+    /**
+     * Extracts and organizes chronic illnesses grouped observations
+     *
+     * @param groupMembers
+     * @return
+     */
+    private SimpleObject extractChronicIllnessData(Set<Obs> groupMembers) {
+
+        int chronicIllnessConcept = 1284;
+        int onsetDateConcept = 159948;
+        int controlStatusConcept = 166937;
+
+        String chronicIllnessType = null;
+        String onsetDate = null;
+        String controlStatus = null;
+
+        for (Obs obs : groupMembers) {
+
+            if (obs.getConcept().getConceptId().equals(chronicIllnessConcept)) {
+                chronicIllnessType = obs.getValueCoded().getName().getName();
+            } else if (obs.getConcept().getConceptId().equals(onsetDateConcept)) {
+                onsetDate = DATE_FORMAT.format(obs.getValueDatetime());
+            } else if (obs.getConcept().getConceptId().equals(controlStatusConcept)) {
+                controlStatus = obs.getValueCoded().getName().getName();
+            }
+        }
+
+        return SimpleObject.create("chronicIllnessType", chronicIllnessType, "onsetDate", onsetDate, "controlStatus",
+                controlStatus);
     }
 }

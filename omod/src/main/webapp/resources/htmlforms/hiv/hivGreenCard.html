@@ -103,9 +103,12 @@ Green Card follow-up visit form
         var PATIENT_BREASTFEEDING = GREENCARD_VELOCITY.split(",")[11].split(":")[1];
         var PATIENT_ELIGIBLE_FOR_CACX = GREENCARD_VELOCITY.split(",")[16].split(":")[1];
         var PATIENT_DOCUMENTED_OI = GREENCARD_VELOCITY.split(",")[17].split(":")[1];
-        var PREVIOUS_CHRONIC_ILLNESS = GREENCARD_VELOCITY.split(",")[18].split(":")[1];
-        var PREVIOUS_CHRONIC_ONSET = GREENCARD_VELOCITY.split(",")[19].split(":")[1];
-        var PREVIOUS_CHRONIC_CONTROLLED = GREENCARD_VELOCITY.split(",")[20].split(":")[1];
+        var FIRST_CHRONIC_ILLNESS = GREENCARD_VELOCITY.split(",")[18].split(":")[1];
+        var FIRST_CHRONIC_ONSET = GREENCARD_VELOCITY.split(",")[19].split(":")[1];
+        var FIRST_CHRONIC_CONTROLLED = GREENCARD_VELOCITY.split(",")[20].split(":")[1];
+        var SECOND_CHRONIC_ILLNESS = GREENCARD_VELOCITY.split(",")[21].split(":")[1];
+        var SECOND_CHRONIC_ONSET = GREENCARD_VELOCITY.split(",")[22].split(":")[1];
+        var SECOND_CHRONIC_CONTROLLED = GREENCARD_VELOCITY.split(",")[23].split(":")[1];
 
         var pAge = parseInt('<lookup expression="patient.age"/>');
         var pgender = "<lookup expression="patient.gender" />";
@@ -777,17 +780,30 @@ Green Card follow-up visit form
 
             // Previously filled chronic illness
             jq('#tbl-recorded-chronic').hide();
-            if(PREVIOUS_CHRONIC_ILLNESS !='') {
+            jq('#second-chronic-illness').hide();
+            if(FIRST_CHRONIC_ILLNESS !='') {
                 jq('#tbl-recorded-chronic').show();
                 jq('#chronic-mandatory-star').hide();
-                jq('#recorded-chronic-illness:text').val(PREVIOUS_CHRONIC_ILLNESS);
-
-                if (PREVIOUS_CHRONIC_ONSET != '') {
-                   var recordedOnsetDate =  moment(PREVIOUS_CHRONIC_ONSET, 'YYYY-MM-DD').format('YYYY-MM-DD');
-                    jq('#recorded-onset-date:text').val(recordedOnsetDate);
+                jq('#first-recorded-chronic-illness:text').val(FIRST_CHRONIC_ILLNESS);
+                if (FIRST_CHRONIC_ONSET != '') {
+                   var recordedOnsetDate =  moment(FIRST_CHRONIC_ONSET, 'DD-MMM-YYYY').format('YYYY-MM-DD');
+                    jq('#first-recorded-onset-date:text').val(recordedOnsetDate);
                 }
-                if (PREVIOUS_CHRONIC_CONTROLLED != '') {
-                    jq('#recorded-control-status:text').val(PREVIOUS_CHRONIC_CONTROLLED);
+                if (FIRST_CHRONIC_CONTROLLED != '') {
+                    jq('#first-recorded-control-status:text').val(FIRST_CHRONIC_CONTROLLED);
+                }
+            }
+            if(SECOND_CHRONIC_ILLNESS !='') {
+                jq('#tbl-recorded-chronic').show();
+                jq('#second-chronic-illness').show();
+                jq('#chronic-mandatory-star').hide();
+                jq('#second-recorded-chronic-illness:text').val(SECOND_CHRONIC_ILLNESS);
+                if (SECOND_CHRONIC_ONSET != '') {
+                    var secondrecordedOnsetDate =  moment(SECOND_CHRONIC_ONSET, 'DD-MMM-YYYY').format('YYYY-MM-DD');
+                    jq('#second-recorded-onset-date:text').val(secondrecordedOnsetDate);
+                }
+                if (SECOND_CHRONIC_CONTROLLED != '') {
+                    jq('#second-recorded-control-status:text').val(SECOND_CHRONIC_CONTROLLED);
                 }
             }
 
@@ -2282,7 +2298,7 @@ Green Card follow-up visit form
             }else{
                 getField('allergy-field.error').html('Please specify the allergy.').hide();
             }
-            if (PREVIOUS_CHRONIC_ILLNESS =='' &amp;&amp; chronicIllness == false &amp;&amp; personPresent == SELF) {
+            if (FIRST_CHRONIC_ONSET =='' &amp;&amp; chronicIllness == false &amp;&amp; personPresent == SELF) {
                 jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
                 getField('chronic-illness.error').html('Please specify if patient has any chronic illness.').show();
                 return false;
@@ -3599,22 +3615,32 @@ Management<br />
                            </td><td> &#160;&#160;&#160;&#160; &#160;&#160;&#160;&#160;</td>
                         <td>
                             <table id="tbl-recorded-chronic" border="1">
+                                <tr><td>  <strong>Chronic Illnesses Recorded Recently</strong></td></tr>
                                 <tr>
+                                        <th align="left">Chronic Illness</th>
+                                        <th align="left">Onset Date</th>
+                                        <th align="left">Controlled</th>
+                                </tr>
+                                <tr>
+                                     <td>
+                                        <input type="text" name="first-recorded-chronic-illness" id="first-recorded-chronic-illness" readonly="True" />
+                                     </td>
+                                       <td>
+                                        <input type="text" name="first-recorded-onset-date" id="first-recorded-onset-date" readonly="True" />
+                                       </td>
+                                       <td>
+                                        <input type="text" name="first-recorded-control-status" id="first-recorded-control-status" readonly="True" />
+                                       </td>
+                                </tr>
+                                <tr id="second-chronic-illness">
                                     <td>
-                                        <u>
-                                            Chronic Illnesses Recorded Recently
-                                        </u>
-                                        <br/>
-                                        <br/>Chronic Illness:
-                                        <input type="text" name="recorded-chronic-illness" id="recorded-chronic-illness" readonly="True" />
-                                        &#160;&#160;&#160;&#160;
-                                        <br/>
-                                        <br/>Onset Date:
-                                        <input type="text" name="recorded-onset-date" id="recorded-onset-date" readonly="True" />
-                                        &#160;&#160;&#160;&#160;
-                                        Controlled:
-                                        <input type="text" name="recorded-control-status" id="recorded-control-status" readonly="True" />
-                                        <br/>
+                                        <input type="text" name="second-recorded-chronic-illness" id="second-recorded-chronic-illness" readonly="True" />
+                                    </td>
+                                    <td>
+                                        <input type="text" name="second-recorded-onset-date" id="second-recorded-onset-date" readonly="True" />
+                                    </td>
+                                    <td>
+                                        <input type="text" name="second-recorded-control-status" id="second-recorded-control-status" readonly="True" />
                                     </td>
                                 </tr>
                                 </table>
