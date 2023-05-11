@@ -13,6 +13,7 @@
         -->
 
 <htmlform>
+    <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
     <script type="text/javascript">
 
         $(document).ready(function () {
@@ -315,6 +316,7 @@
 
             var surgeonName = getValue('clinician.value');
             var surgeonCadre = getValue('clinician_cadre.value');
+            var encounterDate = getValue('encounter-date.value');
 
             if(circumcisionMethod == 167119 &amp;&amp; conventionalVal == 5622  &amp;&amp; otherConventional == ""){
                 getField('conventional-specify.error').html('Please specify other method').show();
@@ -359,9 +361,22 @@
            } else {
                 getField('adverse_events.error').html('Please specify if there were any adverse events').hide();
            }
-
+            var isTimeOfLastSlitInFutureDate = moment(moment(moment(timeOfLastSlit, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD')).isAfter(moment().format('YYYY-MM-DD'));
+            if (isTimeOfLastSlitInFutureDate) {
+                getField('time_of_slit.error').html('Time of slit should not be in future').show();
+                return false;
+            } else {
+                getField('time_of_slit.error').html('Time of slit should be not in future').hide();
+            }
+            var isTimeOfPlacementInFutureDate = moment(moment(moment(timeOfPlacement, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD')).isAfter(moment().format('YYYY-MM-DD'));
+            if (isTimeOfPlacementInFutureDate) {
+                getField('time_of_placement.error').html('Time of slit should not be in future').show();
+                return false;
+            } else {
+                getField('time_of_slit.error').html('Time of placement should be not in future').hide();
+            }
            if(timeOfLastSlit  &lt; timeOfPlacement){
-                getField('time_of_slit.error').html('Time of slit should be after time of placement').show();
+                getField('time_of_placement.error').html('Time of placement should be after time of placement').show();
                 return false;
            } else {
                 getField('time_of_slit.error').html('Time of slit should be after time of placement').hide();
@@ -699,7 +714,7 @@
 
                 <tr>
                     <td>Time of Placement(device) or first surgical cut(conventional surgical)[time in 24 hour clock:
-                        <obs conceptId="160715AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="time_of_placement" required="true" allowFutureDates="false" />
+                        <obs conceptId="160715AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="time_of_placement" required="true" allowFutureDates="true" />
 
                     </td>
                 </tr>
@@ -707,7 +722,7 @@
                 <tr>
                     <td>Time of making the last slit(device) or time of wound closure (conventional surgical)[time in 24
                         hour clock:
-                        <obs conceptId="167132" id="time_of_slit" required="true" allowFutureDates="false" />
+                        <obs conceptId="167132" id="time_of_slit" required="true" allowFutureDates="true" />
                     </td>
                 </tr>
 
