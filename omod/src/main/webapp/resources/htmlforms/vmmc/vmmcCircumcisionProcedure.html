@@ -363,10 +363,10 @@
            }
             var isTimeOfLastSlitInFutureDate = moment(moment(moment(timeOfLastSlit, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD')).isAfter(moment().format('YYYY-MM-DD'));
             if (isTimeOfLastSlitInFutureDate) {
-                getField('time_of_slit.error').html('Time of slit should not be in future').show();
+                getField('time_of_slit.error').html('Time of last slit should not be in future').show();
                 return false;
             } else {
-                getField('time_of_slit.error').html('Time of slit should be not in future').hide();
+                getField('time_of_slit.error').html('Time of last slit should be not in future').hide();
             }
             var isTimeOfPlacementInFutureDate = moment(moment(moment(timeOfPlacement, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD')).isAfter(moment().format('YYYY-MM-DD'));
             if (isTimeOfPlacementInFutureDate) {
@@ -379,7 +379,7 @@
                 getField('time_of_slit.error').html('Time of last slit should be after time of placement').show();
                 return false;
            } else {
-                getField('time_of_slit.error').html('Time of slit should be after time of placement').hide();
+                getField('time_of_slit.error').html('Time of last slit should be after time of placement').hide();
            }
 
            if(adverseEventsVal == 1065 &amp;&amp; managementVal == ""){
