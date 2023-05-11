@@ -18,7 +18,6 @@ import org.openmrs.calculation.result.ListResult;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyaemr.Dictionary;
-import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.wrapper.EncounterWrapper;
 import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
@@ -49,31 +48,31 @@ public class MchcsCarePanelFragmentController {
 		String heiOutcomes;
 		Integer prophylaxisQuestion = 1282;
 		Integer feedingMethodQuestion = 1151;
+		Integer heiOutcomesQuestion = 159427;
 
 		PatientWrapper patientWrapper = new PatientWrapper(patient);
 
 		EncounterType mchcs_consultation_encounterType = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHCS_CONSULTATION);
 		Encounter lastMchcsConsultation = patientWrapper.lastEncounter(mchcs_consultation_encounterType);
+
 		Concept pcrInitialTest = Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE);
+		Concept rapidTest = Dictionary.getConcept(Dictionary.RAPID_HIV_CONFIRMATORY_TEST);
 		PatientCalculationContext context = Context.getService(PatientCalculationService.class).createCalculationContext();
-		CalculationResultMap lastChildHivStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS),  Arrays.asList(patient.getPatientId()), context);
 		CalculationResultMap pcrObs = Calculations.allObs(Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE), Arrays.asList(patient.getPatientId()), context);
+		CalculationResultMap rapidTestObs = Calculations.allObs(Dictionary.getConcept(Dictionary.RAPID_HIV_CONFIRMATORY_TEST), Arrays.asList(patient.getPatientId()), context);
 		Encounter lastHeiCWCFollowupEncounter = Utils.lastEncounter(patient, Context.getEncounterService().getEncounterTypeByUuid(MchMetadata._EncounterType.MCHCS_CONSULTATION));
 		Encounter lastHeiEnrollmentEncounter = Utils.lastEncounter(patient, Context.getEncounterService().getEncounterTypeByUuid(MchMetadata._EncounterType.MCHCS_ENROLLMENT));
+		Encounter lastHeiOutComeEncounter = Utils.lastEncounter(patient, Context.getEncounterService().getEncounterTypeByUuid(MchMetadata._EncounterType.MCHCS_HEI_COMPLETION));
 
+         if(lastHeiOutComeEncounter !=null){
+			 for (Obs obs : lastHeiOutComeEncounter.getAllObs() ){
+				 if (obs.getConcept().getConceptId().equals(heiOutcomesQuestion)) {
+					 heiOutcomes = obs.getValueCoded().getName().toString();
+					 calculations.put("heiOutcomes", heiOutcomes);
+				 }
+			 }
+		 }
 
-		Obs hivStatusObs = EmrCalculationUtils.obsResultForPatient(lastChildHivStatus, patient.getPatientId());
-			if (hivStatusObs != null) {
-				if(hivStatusObs.getValueCoded().getConceptId().equals(822)){
-					heiOutcomes = hivStatusObs.getValueCoded().getName().toString();
-					calculations.put("heiOutcomes", heiOutcomes);
-				}else if(hivStatusObs.getValueCoded().getConceptId().equals(1169)){
-					heiOutcomes = hivStatusObs.getValueCoded().getName().toString();
-					calculations.put("heiOutcomes", heiOutcomes);
-				}else{
-					calculations.put("heiOutcomes", "Not Specified");
-				}
-			}
 		if (lastHeiEnrollmentEncounter != null) {
 			for (Obs obs : lastHeiEnrollmentEncounter.getObs()) {
 				if (obs.getConcept().getConceptId().equals(prophylaxisQuestion)) {
@@ -166,6 +165,31 @@ public class MchcsCarePanelFragmentController {
 					}
 				}
 			}
+
+			ListResult rapidObsResults = (ListResult) rapidTestObs.get(patient.getPatientId());
+			List<Obs> obsListRapidTest;
+			obsListRapidTest = CalculationUtils.extractResultValues(rapidObsResults);
+			if(obsListRapidTest !=null){
+				if(obsListRapidTest.size() > 0){
+					List<SimpleObject> rapidTestListView = new ArrayList<SimpleObject>();
+					for (Obs obs:obsListRapidTest){
+						if(obs.getConcept().equals(rapidTest)){
+							Order rapidTestOrder = obs.getOrder();
+							String rapidOrderReason = "";
+							if(rapidTestOrder!= null){
+								rapidOrderReason = rapidTestOrder.getOrderReason().getName().toString();
+								Date rapidTestDate = obs.getObsDatetime();
+								String rapidTestResults = obs.getValueCoded().getName().toString();
+								SimpleObject rapidTests = SimpleObject.create("rapidOrderReason", rapidOrderReason, "rapidTestDate", rapidTestDate, "rapidTestResults", rapidTestResults);
+								rapidTestListView.add(rapidTests);
+								calculations.put("rapidTestListView",rapidTestListView);
+
+							}
+						}
+					}
+				}
+			}
+
 		}
 
 		model.addAttribute("calculations", calculations);

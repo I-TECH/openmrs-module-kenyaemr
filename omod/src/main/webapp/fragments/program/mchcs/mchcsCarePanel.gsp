@@ -4,7 +4,8 @@
 	dataPointsLeft << [label: "Current prophylaxis used: ", value: calculations.prophylaxis]
 	dataPointsLeft << [label: "Current Feeding Option", value: calculations.feeding]
 	dataPointsLeft << [label: "Milestones Attained", value: calculations.milestones]
-	dataPointsLeft << [label: "HEI Outcome", value: calculations.heiOutcomes]
+	def heiOutcomeValue = calculations.heiOutcomes ?: "Not Specified"
+    dataPointsLeft << [label: "HEI Outcome", value: heiOutcomeValue]
     def dataPointsRight = []
 
     obbList = calculations.obbListView
@@ -17,22 +18,41 @@
         switch (orderReason) {
             case "HIV RAPID TEST 1, QUALITATIVE":
                 if (ageInWeeks <= 6 || ageInWeeks > 26  ) {
-                    latestResults."PCR test for 6 weeks" = [label: "PCRs Done:6 weeks -", value: "$testResults($pcrDate)"]
+                    latestResults."PCR test for 6 weeks" = [label: "PCR at 6weeks ", value: "$testResults($pcrDate)"]
                 }
                 break
             case "HIV RAPID TEST 2, QUALITATIVE":
                 if (ageInWeeks > 26 && ageInWeeks <= 51 || ageInWeeks > 51 ) {
-                    latestResults."PCR test for 6 months" = [label: "PCRs Done:6 months -", value: "$testResults($pcrDate)"]
+                    latestResults."PCR test for 6 months" = [label: "PCR at 6months ", value: "$testResults($pcrDate)"]
                 }
                 break
             case "HIV DNA POLYMERASE CHAIN REACTION":
                 if (ageInWeeks > 51) {
-                    latestResults."PCR test for 12 months" = [label: "PCRs Done:12 months -", value: "$testResults($pcrDate)"]
+                    latestResults."PCR test for 12 months" = [label: "PCR at 12months ", value: "$testResults($pcrDate)"]
                 }
                 break
         }
     }
+
     dataPointsRight.addAll(latestResults.values())
+
+    rapidList = calculations.rapidTestListView
+    def latestRapidResults = [:]
+    rapidList.each { testResult ->
+        def orderReason = testResult.rapidOrderReason
+        def pcrDate = testResult.rapidTestDate.format("yyyy-MM-dd")
+        def testResults = testResult.rapidTestResults
+        switch (orderReason) {
+            case "Child HIV antibody test result":
+                latestRapidResults."Child HIV antibody test result" = [label: "Ab test at 6weeks ", value: "$testResults($pcrDate)"]
+                break
+            case "Rapid HIV antibody test result at 18 months of age":
+                latestRapidResults."Rapid HIV antibody test result at 18 months of age" = [label: "Ab test at 18months ", value: "$testResults($pcrDate)"]
+                break
+        }
+    }
+    dataPointsRight.addAll(latestRapidResults.values())
+
     def hivStatus = "Not Specified"
     obbList.each { testResult ->
         def result = testResult.testResults
