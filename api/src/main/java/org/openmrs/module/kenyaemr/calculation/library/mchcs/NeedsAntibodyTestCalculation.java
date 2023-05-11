@@ -66,7 +66,8 @@ public class NeedsAntibodyTestCalculation extends AbstractPatientCalculation imp
         CalculationResultMap lastChildHivStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.CHILDS_CURRENT_HIV_STATUS), cohort, context);
         Set<Integer> pendingDNARapidTestResults = CalculationUtils.patientsThatPass(calculate(new PendingDNAPCRRapidTestResultCalculation(), cohort, context));
         CalculationResultMap lastPcrCWCTest = Calculations.lastObs(Dictionary.getConcept(Dictionary.EID_CWC_TEST), cohort, context);
-        CalculationResultMap lastDNATestQualitative = Calculations.lastObs(Dictionary.getConcept(Dictionary.RAPID_HIV_CONFIRMATORY_TEST), cohort, context);
+        CalculationResultMap lastDNATestQualitative = Calculations.lastObs(Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE), cohort, context);
+        CalculationResultMap lastABTest = Calculations.lastObs(Dictionary.getConcept(Dictionary.RAPID_HIV_CONFIRMATORY_TEST), cohort, context);
         Concept hivExposedUnknown = Dictionary.getConcept(Dictionary.UNKNOWN);
         Concept hivExposed = Dictionary.getConcept(Dictionary.EXPOSURE_TO_HIV);
         CalculationResultMap ret = new CalculationResultMap();
@@ -90,6 +91,7 @@ public class NeedsAntibodyTestCalculation extends AbstractPatientCalculation imp
             Obs latestBFStatus = EmrCalculationUtils.obsResultForPatient(lastBreastFeedingStatus, ptId);
             Obs cwcDNATestObs = EmrCalculationUtils.obsResultForPatient(lastPcrCWCTest, ptId);
             Obs dnaTestLab = EmrCalculationUtils.obsResultForPatient(lastDNATestQualitative, ptId);
+            Obs rapidABTestLab = EmrCalculationUtils.obsResultForPatient(lastABTest, ptId);
             Date obsBFStatusDate = latestBFStatus != null && latestBFStatus.getValueCoded().equals(INFANT_NOT_BREASTFEEDING) ? latestBFStatus.getObsDatetime() : null;
 
             Integer ageInMonths = getAge(person.getBirthdate(), context.getNow());
@@ -106,7 +108,8 @@ public class NeedsAntibodyTestCalculation extends AbstractPatientCalculation imp
                         if (dnaTestLab != null) {
 
                             if (dnaTestLab.getValueCoded() == NEGATIVE) {
-                                labOrder = dnaTestLab.getOrder();
+
+                                labOrder = rapidABTestLab != null ? rapidABTestLab.getOrder() : null;
 
                                 if (labOrder != null) {
 
@@ -144,10 +147,11 @@ public class NeedsAntibodyTestCalculation extends AbstractPatientCalculation imp
                                     }
                                 }
                             }
-                        } else {
-                        needsAntibodyTest = true;
-                        flagMsg.append("Due for month-18 Rapid AB test");
-                    }
+                        }
+                        else if (rapidABTestLab == null){
+                            needsAntibodyTest = true;
+                            flagMsg.append("Due for month-18 Rapid AB test");
+                        }
                     }
                 }
             }
