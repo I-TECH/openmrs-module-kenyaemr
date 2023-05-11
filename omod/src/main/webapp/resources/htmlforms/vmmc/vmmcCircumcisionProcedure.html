@@ -370,13 +370,13 @@
             }
             var isTimeOfPlacementInFutureDate = moment(moment(moment(timeOfPlacement, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD')).isAfter(moment().format('YYYY-MM-DD'));
             if (isTimeOfPlacementInFutureDate) {
-                getField('time_of_placement.error').html('Time of slit should not be in future').show();
+                getField('time_of_placement.error').html('Time of placement should be not in future').show();
                 return false;
             } else {
-                getField('time_of_slit.error').html('Time of placement should be not in future').hide();
+                getField('time_of_placement.error').html('Time of placement should be not in future').hide();
             }
            if(timeOfLastSlit  &lt; timeOfPlacement){
-                getField('time_of_placement.error').html('Time of placement should be after time of placement').show();
+                getField('time_of_slit.error').html('Time of last slit should be after time of placement').show();
                 return false;
            } else {
                 getField('time_of_slit.error').html('Time of slit should be after time of placement').hide();
