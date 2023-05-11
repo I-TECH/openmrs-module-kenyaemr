@@ -46,6 +46,9 @@
 	<button type="button" onclick="ui.navigate('${ ui.pageLink("kenyaemr", "registration/editRelationship", [ patientId: patient.id, appId: currentApp.id, returnUrl: ui.thisUrl() ])}')">
 		<img src="${ ui.resourceLink("kenyaui", "images/glyphs/add.png") }" /> Add Relationship
 	</button>
+	<button type="button" onclick="ui.navigate('${ ui.pageLink("kenyaemr", "registration/editCaseManager", [ patientId: patient.id, appId: currentApp.id, returnUrl: ui.thisUrl() ])}')">
+		<img src="${ ui.resourceLink("kenyaui", "images/glyphs/add.png") }" /> Add Case Manager
+	</button>
 
 	<button type="button" onclick="ui.navigate('${ ui.pageLink("hivtestingservices", "patientContactList", [ patientId: patient.id ])}')">
 		<img src="${ ui.resourceLink("kenyaui", "images/glyphs/edit.png") }" /> Family/Partner List
