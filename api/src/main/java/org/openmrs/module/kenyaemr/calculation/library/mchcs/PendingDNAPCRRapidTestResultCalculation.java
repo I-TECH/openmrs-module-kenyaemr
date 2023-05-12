@@ -83,19 +83,46 @@ public class PendingDNAPCRRapidTestResultCalculation extends AbstractPatientCalc
                                 msgFlag.append("Pending week-6 PCR results");
                             } else if (o.getOrderReason() != null && o.getConcept().equals(HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE) && o.getOrderReason().equals(PCR_6_MONTHS)) {
                                 pendingHIVTestResult = true;
-                                msgFlag.append("Pending month-6 PCR results");
+                                if(msgFlag.length() == 0){
+                                    msgFlag.append("Pending month-6 PCR results");
+                                }
+                                else{
+                                    msgFlag.append(", ").append("Pending month-6 PCR results");
+                                }
+
                             } else if (o.getOrderReason() != null && o.getConcept().equals(HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE) && o.getOrderReason().equals(PCR_12_MONTHS)) {
                                 pendingHIVTestResult = true;
-                                msgFlag.append("Pending month-12 PCR results");
+                                if(msgFlag.length() == 0) {
+                                    msgFlag.append("Pending month-12 PCR results");
+                                }
+                                else{
+                                    msgFlag.append(", ").append("Pending month-12 PCR results");
+                                }
+
                             } else if (o.getOrderReason() != null && o.getOrderReason() != null && o.getConcept().getConceptId().equals(163722) && o.getOrderReason().equals(RAPID_HIV_ANTIBODY_TEST_AT_18_MONTHS)) {
                                 pendingHIVTestResult = true;
-                                msgFlag.append("Pending month-18 HIV antibody results");
+                                if(msgFlag.length() == 0) {
+                                    msgFlag.append("Pending month-18 HIV antibody results");
+                                }
+                                else{
+                                    msgFlag.append(", ").append("Pending month-18 HIV antibody results");
+                                }
                             } else if (o.getOrderReason() != null && o.getConcept().getConceptId().equals(163722) && o.getOrderReason().equals(AB_TEST_6_WEEKS_AFTER_CESSATION_OF_BREASTFEEDING)) {
                                 pendingHIVTestResult = true;
-                                msgFlag.append("Pending week-6 after breastfeeding HIV antibody results");
+                                if(msgFlag.length() == 0) {
+                                    msgFlag.append("Pending week-6 after breastfeeding HIV antibody results");
+                                }
+                                else {
+                                    msgFlag.append(", ").append("Pending week-6 after breastfeeding HIV antibody results");
+                                }
                             } else if (o.getOrderReason() != null && o.getConcept().equals(HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE) && o.getOrderReason().equals(Dictionary.getConcept(Dictionary.CONFIRMATION_STATUS))) {
                                 pendingHIVTestResult = true;
-                                msgFlag.append("Pending Confirmatory Test results");
+                                if(msgFlag.length() == 0) {
+                                    msgFlag.append("Pending Confirmatory Test results");
+                                }
+                                else{
+                                    msgFlag.append(", ").append("Pending Confirmatory Test results");
+                                }
                             }
                         }
                     }
