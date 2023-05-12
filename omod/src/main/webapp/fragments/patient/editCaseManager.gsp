@@ -3,10 +3,10 @@
 
 	def rows = [
 		[
-			[ object: command, property: "person", label: "Person" ]
+			[ object: command, property: "person", label: "Provider" ]
 		],
 		[
-			[ object: command, property: "isToPatient", label: "Case Manager to patient", config: [ options: typeOptions ] ]
+			[ object: command, property: "isToPatient", label: "Relationship to patient", config: [ options: typeOptions ] ]
 		],
 		[
 			[ object: command, property: "startDate", label: "Start date" ],
