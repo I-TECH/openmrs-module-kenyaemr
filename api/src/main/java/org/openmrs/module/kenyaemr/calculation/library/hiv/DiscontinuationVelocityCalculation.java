@@ -40,7 +40,6 @@ public class DiscontinuationVelocityCalculation extends BaseEmrCalculation {
         for (Integer ptId : cohort) {
             Date artStartDat = EmrCalculationUtils.datetimeResultForPatient(artStartDates, ptId);
             Date lastEncDate = EmrCalculationUtils.datetimeResultForPatient(lastEncounterDateResMap, ptId);
-
             Long artStartDate = null;
             Long enrollmentDate = null;
             Long discDate = null;
@@ -50,7 +49,7 @@ public class DiscontinuationVelocityCalculation extends BaseEmrCalculation {
             List<PatientProgram> programs = service.getPatientPrograms(Context.getPatientService().getPatient(ptId), hivProgram, null, null, null,null, true);
             if (programs.size() > 0) {
                 enrollmentDate = programs.get(0).getDateEnrolled().getTime();
-                discDate = programs.get(0).getDateCompleted().getTime();
+                discDate = programs.get(0).getDateCompleted() != null ? programs.get(0).getDateCompleted().getTime() : null;
             }
             if(artStartDat != null) {
                 artStartDate = artStartDat.getTime();
