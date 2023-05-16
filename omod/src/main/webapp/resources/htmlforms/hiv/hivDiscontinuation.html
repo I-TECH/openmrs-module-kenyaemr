@@ -18,7 +18,7 @@
         var Discontinuation_VELOCITY = "<lookup expression="kenyaemr.DiscontinuationVelocityCalculation()" />";
         var artStartDate = Discontinuation_VELOCITY.split(",")[0].split(":")[1];
         var enrollmentDate = Discontinuation_VELOCITY.split(",")[1].split(":")[1];
-        var lastVisitEncDate = Discontinuation_VELOCITY.split(",")[3].split(":")[1];
+        var lastHIVVisitEncDate = Discontinuation_VELOCITY.split(",")[4].split(":")[1];
 
         jq(document).ready(function(){
 
@@ -241,7 +241,7 @@
                     getField('discontinue-date.error').html('Discontinue date, should not be earlier than Enrollment').hide();
                 }
 
-				if(discontinueDate  &lt; lastVisitEncDate){
+				if(discontinueDate  &lt; lastHIVVisitEncDate){
 					getField('discontinue-date.error').html('Discontinue date should not be earlier than last visit date').show();
 					return false;
 				}else {
@@ -264,7 +264,7 @@
 
                 }
 
-				if(encounterDate &lt; lastVisitEncDate){
+				if(encounterDate &lt; lastHIVVisitEncDate){
 					getField('encounter-date.error').html('Encounter date, should not be earlier than last visit date').show();
 					return false;
 				}else {

@@ -12,6 +12,7 @@ package org.openmrs.module.kenyaemr.calculation.library.hiv;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.*;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -22,13 +23,16 @@ import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.rdqa.PatientLastEncounterDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
+
 import java.util.*;
 
 
 public class DiscontinuationVelocityCalculation extends BaseEmrCalculation {
 
     protected static final Log log = LogFactory.getLog(DiscontinuationVelocityCalculation.class);
+
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {
 
@@ -36,31 +40,43 @@ public class DiscontinuationVelocityCalculation extends BaseEmrCalculation {
         CalculationResultMap ret = new CalculationResultMap();
         CalculationResultMap artStartDates = calculate(new InitialArtStartDateCalculation(), cohort, context);
         CalculationResultMap lastEncounterDateResMap = calculate(new PatientLastEncounterDateCalculation(), cohort, context);
+
+        Form pocHivFollowup = MetadataUtils.existing(Form.class, HivMetadata._Form.HIV_GREEN_CARD);
+        Form rdeHivFollowup = MetadataUtils.existing(Form.class, HivMetadata._Form.MOH_257_VISIT_SUMMARY);
+        EncounterType hivFollowup = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
+
         StringBuilder sb = new StringBuilder();
         for (Integer ptId : cohort) {
+            PatientService patientService = Context.getPatientService();
             Date artStartDat = EmrCalculationUtils.datetimeResultForPatient(artStartDates, ptId);
             Date lastEncDate = EmrCalculationUtils.datetimeResultForPatient(lastEncounterDateResMap, ptId);
             Long artStartDate = null;
             Long enrollmentDate = null;
             Long discDate = null;
             Long lastEncounterDate = null;
+            Long lastHIVEncounterDate = null;
 
             ProgramWorkflowService service = Context.getProgramWorkflowService();
-            List<PatientProgram> programs = service.getPatientPrograms(Context.getPatientService().getPatient(ptId), hivProgram, null, null, null,null, true);
+            List<PatientProgram> programs = service.getPatientPrograms(Context.getPatientService().getPatient(ptId), hivProgram, null, null, null, null, true);
             if (programs.size() > 0) {
                 enrollmentDate = programs.get(0).getDateEnrolled().getTime();
                 discDate = programs.get(0).getDateCompleted() != null ? programs.get(0).getDateCompleted().getTime() : null;
             }
-            if(artStartDat != null) {
+            if (artStartDat != null) {
                 artStartDate = artStartDat.getTime();
             }
             if (lastEncDate != null) {
                 lastEncounterDate = lastEncDate.getTime();
             }
+            //last greencard followup encounter
+            Encounter lastHivEncounter = EmrUtils.lastEncounter(patientService.getPatient(ptId), hivFollowup, Arrays.asList(pocHivFollowup, rdeHivFollowup));
+            lastHIVEncounterDate = lastHivEncounter != null ? lastHivEncounter.getEncounterDatetime().getTime() : null;
+
             sb.append("artStartDate:").append(artStartDate).append(",");
             sb.append("enrollmentDate:").append(enrollmentDate).append(",");
             sb.append("discDate:").append(discDate).append(",");
-            sb.append("lastEncounterDate:").append(lastEncounterDate);
+            sb.append("lastEncounterDate:").append(lastEncounterDate).append(",");
+            sb.append("lastHIVEncounterDate:").append(lastHIVEncounterDate);
 
             ret.put(ptId, new SimpleResult(sb.toString(), this, context));
         }

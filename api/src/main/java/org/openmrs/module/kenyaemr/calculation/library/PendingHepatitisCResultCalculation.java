@@ -38,7 +38,7 @@ public class PendingHepatitisCResultCalculation extends AbstractPatientCalculati
      */
     @Override
     public String getFlagMessage() {
-        return "Pending Hepatitis C result";
+        return "Pending HepC result";
     }
 
     protected static final Log log = LogFactory.getLog(PendingHepatitisCResultCalculation.class);

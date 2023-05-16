@@ -44,7 +44,7 @@ public class NeedsCd4TestCalculation extends AbstractPatientCalculation implemen
         return flagMsg;
     }
 
-    String flagMsg = ("Needs CD4 test");
+    String flagMsg = ("Due for CD4 test");
 
     /**
      * @should determine whether patients need a CD4
