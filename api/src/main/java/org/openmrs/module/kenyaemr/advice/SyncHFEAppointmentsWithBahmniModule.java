@@ -371,6 +371,8 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
                     appointmentServiceDefinition.setAppointmentServiceId(appointmentServiceDefinitionService.getAppointmentServiceByUuid(TB_SERVICE).getId());
                 } else if (enc.getForm() != null && enc.getForm().getUuid().equals(KP_CLINICAL_VISIT_FORM) && appointmentServiceDefinitionService.getAppointmentServiceByUuid(KP_CLINICAL_SERVICE) != null) {
                     appointmentServiceDefinition.setAppointmentServiceId(appointmentServiceDefinitionService.getAppointmentServiceByUuid(KP_CLINICAL_SERVICE).getId());
+                } else {
+                    return;
                 }
                 Appointment appointment = new Appointment();
                 Date appointmentStartDateTime = DateUtil.convertToDate(dateFormat.format(o.getValueDatetime()).concat("T07:00:00.0Z"), DateUtil.DateFormatType.UTC);
