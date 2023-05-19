@@ -287,25 +287,25 @@ public class GreenCardVelocityCalculation extends BaseEmrCalculation {
                     List<SimpleObject> chronicIllnessesListData = (List<SimpleObject>) so.get("chronicIllnessData");
                     if (chronicIllnessesListData.size() > 0) {
                         chronicIllnessesObservationsList.addAll(chronicIllnessesListData);
-                        firstChronicIllnessName = chronicIllnessesObservationsList.get(0).get("chronicIllnessType").toString() != null ? chronicIllnessesObservationsList
+                        firstChronicIllnessName = chronicIllnessesObservationsList.get(0).get("chronicIllnessType") != null ? chronicIllnessesObservationsList
                                 .get(0).get("chronicIllnessType").toString()
                                 : "";
-                        firstChronicIllnessOnset = chronicIllnessesObservationsList.get(0).get("onsetDate").toString() != null ? chronicIllnessesObservationsList
+                        firstChronicIllnessOnset = chronicIllnessesObservationsList.get(0).get("onsetDate") != null ? chronicIllnessesObservationsList
                                 .get(0).get("onsetDate").toString()
                                 : "";
-                        firstChronicIllnessControl = chronicIllnessesObservationsList.get(0).get("controlStatus").toString() != null ? chronicIllnessesObservationsList
+                        firstChronicIllnessControl = chronicIllnessesObservationsList.get(0).get("controlStatus") != null ? chronicIllnessesObservationsList
                                 .get(0).get("controlStatus").toString()
                                 : "";
                     }
                     if (chronicIllnessesListData.size() > 1) {
                         secondChronicIllnessName = chronicIllnessesObservationsList.get(chronicIllnessesListData.size() - 1)
-                                .get("chronicIllnessType").toString() != null ? chronicIllnessesObservationsList
+                                .get("chronicIllnessType") != null ? chronicIllnessesObservationsList
                                 .get(chronicIllnessesListData.size() - 1).get("chronicIllnessType").toString() : "";
                         secondChronicIllnessOnset = chronicIllnessesObservationsList.get(chronicIllnessesListData.size() - 1)
-                                .get("onsetDate").toString() != null ? chronicIllnessesObservationsList
+                                .get("onsetDate") != null ? chronicIllnessesObservationsList
                                 .get(chronicIllnessesListData.size() - 1).get("onsetDate").toString() : "";
                         secondChronicIllnessControl = chronicIllnessesObservationsList.get(chronicIllnessesListData.size() - 1)
-                                .get("controlStatus").toString() != null ? chronicIllnessesObservationsList
+                                .get("controlStatus") != null ? chronicIllnessesObservationsList
                                 .get(chronicIllnessesListData.size() - 1).get("controlStatus").toString() : "";
 
                     }
