@@ -22,10 +22,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class EditRelationshipPageController {
 
 	public void controller(@RequestParam(value = "relationshipId", required = false) Relationship relationship,
-						   @RequestParam("returnUrl") String returnUrl,
+						   @RequestParam(value = "providerId", required = false) String providerId,
+						    @RequestParam("returnUrl") String returnUrl,
 						   PageModel model) {
 
 		model.addAttribute("relationship", relationship);
+		model.addAttribute("providerId", providerId);
 		model.addAttribute("returnUrl", returnUrl);
 	}
 }

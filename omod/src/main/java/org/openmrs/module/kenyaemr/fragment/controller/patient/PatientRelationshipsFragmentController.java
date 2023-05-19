@@ -10,11 +10,17 @@
 package org.openmrs.module.kenyaemr.fragment.controller.patient;
 
 import org.openmrs.Patient;
+import org.openmrs.PatientProgram;
 import org.openmrs.Person;
+import org.openmrs.Program;
+import org.openmrs.Provider;
 import org.openmrs.Relationship;
+import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.ui.framework.Link;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -24,6 +30,7 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.page.PageRequest;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +48,7 @@ public class PatientRelationshipsFragmentController {
 
 		// Get all relationships as simple objects
 		List<SimpleObject> relationships = new ArrayList<SimpleObject>();
+		String providerId = null;
 		for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
 			Person person = null;
 			String type = null;
@@ -53,6 +61,17 @@ public class PatientRelationshipsFragmentController {
 				person = relationship.getPersonA();
 				type = relationship.getRelationshipType().getaIsToB();
 			}
+
+			//Provide for case manager
+			if(type.equalsIgnoreCase("Case manager")){
+				List<Provider> provider = (List<Provider>) Context.getProviderService().getProvidersByPerson(person);
+				for (Provider p : provider) {
+					if (p.getId() != null) {
+						providerId = p.getId().toString();
+						break;
+					 }
+				  }
+				}
 
 			String genderCode = person.getGender().toLowerCase();
 			String linkUrl, linkIcon;
@@ -80,8 +99,20 @@ public class PatientRelationshipsFragmentController {
 					"endDate", relationship.getEndDate()
 			));
 		}
+		//Determine if HIV Enrolled
+		Boolean inHivProgram = false;
+		ProgramWorkflowService pws = Context.getProgramWorkflowService();
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+		for (PatientProgram pp : pws.getPatientPrograms((Patient) patient, hivProgram, null, null, null, null, false)) {
+			if (pp.getActive()) {
+				inHivProgram = true;
+			}
+		}
 
 		model.addAttribute("patient", patient);
+		model.addAttribute("inHivProgram", inHivProgram);
 		model.addAttribute("relationships", relationships);
+		model.addAttribute("providerId", providerId);
 	}
+
 }
