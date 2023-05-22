@@ -13,8 +13,10 @@ import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
 import org.openmrs.RelationshipType;
+import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrWebConstants;
+import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaui.form.ValidatingCommandObject;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -203,15 +205,17 @@ public class EditRelationshipFragmentController {
 	 */
 	protected List<SimpleObject> getTypeOptions() {
 		List<SimpleObject> options = new ArrayList<SimpleObject>();
-
+		PersonService service = Context.getPersonService();
+		RelationshipType caseManagerRelType = service.getRelationshipTypeByUuid(CommonMetadata._RelationshipType.CASE_MANAGER);
 		for (RelationshipType type : Context.getPersonService().getAllRelationshipTypes()) {
-			if (type.getaIsToB().equals(type.getbIsToA())) {
-				options.add(SimpleObject.create("value", type.getId() + "", "label", type.getaIsToB()));
-			}
-			else {
-				options.add(SimpleObject.create("value", type.getId() + ":A", "label", type.getaIsToB()));
-				options.add(SimpleObject.create("value", type.getId() + ":B", "label", type.getbIsToA()));
-			}
+		   if(!type.equals(caseManagerRelType)) {
+			   if (type.getaIsToB().equals(type.getbIsToA())) {
+				   options.add(SimpleObject.create("value", type.getId() + "", "label", type.getaIsToB()));
+			   } else {
+				   options.add(SimpleObject.create("value", type.getId() + ":A", "label", type.getaIsToB()));
+				   options.add(SimpleObject.create("value", type.getId() + ":B", "label", type.getbIsToA()));
+			   }
+		   }
 		}
 
 		return options;
