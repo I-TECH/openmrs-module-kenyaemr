@@ -509,14 +509,14 @@ public class ETLMoh731GreenCardIndicatorLibrary {
     }
 
     /**
-     * Number of Known HIV+ First contacts
-     * Known positive status 1st contact HV02-29
+     * Number of Known HIV status for partners at First contacts
+     * Known HIV status for partners 1st contact HV02-29
      *
      * @return the indicator
      */
-    public CohortIndicator knownHIVPositive1stContact() {
+    public CohortIndicator knownHIVStatusAt1stContact() {
         return cohortIndicator("knownHIVPositive1stContact",
-                map(moh731Cohorts.knownHIVPositive1stContact(), "startDate=${startDate},endDate=${endDate}")
+                map(moh731Cohorts.knownHIVStatusAt1stContact(), "startDate=${startDate},endDate=${endDate}")
         );
     }
 

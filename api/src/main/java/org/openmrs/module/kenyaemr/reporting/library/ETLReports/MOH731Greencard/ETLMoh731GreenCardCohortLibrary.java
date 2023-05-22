@@ -2180,14 +2180,15 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "from kenyaemr_etl.etl_mch_enrollment e\n" +
                 "         inner join kenyaemr_etl.etl_mch_antenatal_visit v on e.patient_id = v.patient_id\n" +
                 "         left join (select patient_id,\n" +
-                "                           max(visit_date)                                         as last_reg_date\n" +
+                "                           min(date_started) as date_started_art\n" +
                 "                    from kenyaemr_etl.etl_drug_event d\n" +
                 "                    where program = 'HIV'\n" +
                 "                      and d.date_started <= date(:endDate)\n" +
                 "                    GROUP BY patient_id) d on v.patient_id = d.patient_id\n" +
                 "where date(v.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "  and v.anc_visit_number = 1\n" +
                 "  and (date(e.ti_date_started_art) < date(v.visit_date) or\n" +
-                "       (d.last_reg_date < date(v.visit_date)));";
+                "       (d.date_started_art < date(v.visit_date)));";
 
         cd.setName("totalOnHAARTAtFirstANC");
         cd.setQuery(sqlQuery);
@@ -2449,19 +2450,22 @@ public class ETLMoh731GreenCardCohortLibrary {
         return cd;
     }
 
-    //Known Positive Status 1st Contact	HV02-29
-    public CohortDefinition knownHIVPositive1stContact(){
+    //Known partner HIV Status 1st Contact	HV02-29
+    public CohortDefinition knownHIVStatusAt1stContact(){
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery =  "select distinct patient_id\n" +
+        String sqlQuery =  "select e.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_enrollment e\n" +
-                "where (e.hiv_status=703 and  e.visit_date between date(:startDate) and date(:endDate))";
-
-        cd.setName("knownHIVPositive1stContact");
+                "         inner join kenyaemr_etl.etl_mch_antenatal_visit v on e.patient_id = v.patient_id\n" +
+                "where date(v.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "    and v.anc_visit_number = 1\n" +
+                "    and v.partner_hiv_status in (703, 664)\n" +
+                "   or date(e.visit_date) between date(:startDate) and date(:endDate) and e.partner_hiv_status in (703, 664);";
+        cd.setName("knownHIVStatusAt1stContact");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("HIV Positive at First Contact");
+        cd.setDescription("Known partner HIV status at First Contact");
 
         return cd;
     }
