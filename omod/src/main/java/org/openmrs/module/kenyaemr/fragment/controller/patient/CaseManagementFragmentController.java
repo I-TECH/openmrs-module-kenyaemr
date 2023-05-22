@@ -79,7 +79,7 @@ public class CaseManagementFragmentController {
 			else {
 				Map<String, Object> params = new HashMap<String, Object>();
 				params.put("personId", person.getId());
-				linkUrl = ui.pageLink(EmrConstants.MODULE_ID, "admin/editAccount", params);
+				linkUrl = ui.pageLink(EmrConstants.MODULE_ID, "admin/providerCaseManager", params);
 				linkIcon = ui.resourceLink("kenyaui", "images/glyphs/person_" + genderCode + ".png");
 			}
 
