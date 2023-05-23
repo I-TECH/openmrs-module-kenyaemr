@@ -17,6 +17,7 @@
 					${ ui.includeFragment("kenyaemr", "patient/patientSummary", [ patient: currentPatient ]) }
 					<% if (inHivProgram) { %>
 						${ ui.includeFragment("kenyaemrml", "iitRiskScore/iitPatientRiskScore", [ patient: currentPatient ]) }
+					    ${ ui.includeFragment("kenyaemr", "patient/caseManagement", [ patient: currentPatient ]) }
 					<%}%>
 					${ ui.includeFragment("kenyaemr", "patient/patientRelationships", [ patient: currentPatient ]) }
 					${ ui.includeFragment("kenyaemr", "program/programHistories", [ patient: currentPatient, showClinicalData: true ]) }

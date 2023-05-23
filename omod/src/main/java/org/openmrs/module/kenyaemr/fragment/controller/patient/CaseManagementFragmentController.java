@@ -10,17 +10,12 @@
 package org.openmrs.module.kenyaemr.fragment.controller.patient;
 
 import org.openmrs.Patient;
-import org.openmrs.PatientProgram;
 import org.openmrs.Person;
-import org.openmrs.Program;
 import org.openmrs.Provider;
 import org.openmrs.Relationship;
-import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.ui.framework.Link;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -30,15 +25,14 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.page.PageRequest;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Controller for patient relationships panel
+ * Controller for patient case management panel
  */
-public class PatientRelationshipsFragmentController {
+public class CaseManagementFragmentController {
 
 	public void controller(@FragmentParam(value="patient") Patient patient,
 						   @SpringBean KenyaUiUtils kenyaUi,
@@ -85,7 +79,7 @@ public class PatientRelationshipsFragmentController {
 			else {
 				Map<String, Object> params = new HashMap<String, Object>();
 				params.put("personId", person.getId());
-				linkUrl = ui.pageLink(EmrConstants.MODULE_ID, "admin/editAccount", params);
+				linkUrl = ui.pageLink(EmrConstants.MODULE_ID, "admin/providerCaseManager", params);
 				linkIcon = ui.resourceLink("kenyaui", "images/glyphs/person_" + genderCode + ".png");
 			}
 

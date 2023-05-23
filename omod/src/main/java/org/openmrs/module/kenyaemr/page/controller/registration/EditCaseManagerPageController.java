@@ -16,18 +16,18 @@ import org.openmrs.ui.framework.page.PageModel;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * Controller for relationship edit page
+ * Controller for case manager edit page
  */
 @SharedPage({EmrConstants.APP_REGISTRATION, EmrConstants.APP_INTAKE, EmrConstants.APP_CLINICIAN, EmrConstants.APP_HIV_TESTING, EmrConstants.APP_PREP})
-public class EditRelationshipPageController {
+public class EditCaseManagerPageController {
 
 	public void controller(@RequestParam(value = "relationshipId", required = false) Relationship relationship,
-						   @RequestParam(value = "providerId", required = false) String providerId,
-						    @RequestParam("returnUrl") String returnUrl,
+						   @RequestParam(value = "providerId" , required = false) String providerId,
+						   @RequestParam("returnUrl") String returnUrl,
 						   PageModel model) {
 
-		model.addAttribute("relationship", relationship);
 		model.addAttribute("providerId", providerId);
+		model.addAttribute("relationship", relationship);
 		model.addAttribute("returnUrl", returnUrl);
 	}
 }

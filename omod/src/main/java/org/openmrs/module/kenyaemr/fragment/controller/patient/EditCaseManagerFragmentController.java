@@ -11,6 +11,8 @@ package org.openmrs.module.kenyaemr.fragment.controller.patient;
 
 import org.openmrs.Patient;
 import org.openmrs.Person;
+import org.openmrs.PersonName;
+import org.openmrs.Provider;
 import org.openmrs.Relationship;
 import org.openmrs.RelationshipType;
 import org.openmrs.api.PersonService;
@@ -35,7 +37,7 @@ import java.util.List;
 /**
  * Controller for editing patient relationships in the registration app
  */
-public class EditRelationshipFragmentController {
+public class EditCaseManagerFragmentController {
 
 	public void controller(@FragmentParam(value = "relationship", required = false) Relationship relationship,
 						   @FragmentParam("returnUrl") String returnUrl,
@@ -46,11 +48,13 @@ public class EditRelationshipFragmentController {
 		model.addAttribute("command", new EditRelationshipForm(relationship, patient));
 		model.addAttribute("typeOptions", getTypeOptions());
 		model.addAttribute("returnUrl", returnUrl);
+		//create list of providers
+		List<Provider> providers = Context.getProviderService().getAllProviders();
+		model.addAttribute("providersList", providers);
 	}
 
 	public Object saveRelationship(@MethodParam("getEditRelationshipForm") @BindParams EditRelationshipForm form,
 								   UiUtils ui) {
-
 		ui.validate(form, form, null);
 		form.save();
 
@@ -72,6 +76,10 @@ public class EditRelationshipFragmentController {
 		private String isToPatient;
 
 		private Person person;
+
+		private String providerId;
+
+		private Provider provider;
 
 		private Date startDate;
 
@@ -99,16 +107,13 @@ public class EditRelationshipFragmentController {
 		}
 
 		/**
-		 * @see ValidatingCommandObject#validate(Object, org.springframework.validation.Errors)
+		 * @see ValidatingCommandObject#validate(Object, Errors)
 		 */
 		@Override
 		public void validate(Object o, Errors errors) {
-			require(errors, "person");
+			require(errors, "providerId");
 			require(errors, "isToPatient");
 
-			if (patient.equals(person)) {
-				errors.rejectValue("person", "Can't be the patient");
-			}
 			Date today = new Date();
 			if(startDate != null && startDate.after(today)) {
 				errors.rejectValue("startDate", "Relationship start date can't be in the future");
@@ -128,26 +133,13 @@ public class EditRelationshipFragmentController {
 		public void save() {
 			Relationship rel = (existing != null) ? existing : new Relationship();
 			RelationshipType type;
-			Person personA, personB;
+			Person personA,personB;
 
-			if (isToPatient.contains(":")) {
-				String[] relTypeParts = isToPatient.split(":");
-				type = Context.getPersonService().getRelationshipType(Integer.valueOf(relTypeParts[0]));
-				char personSide = relTypeParts[1].charAt(0);
-
-				if (personSide == 'A') {
-					personA = person;
-					personB = patient;
-				} else { // personSide == 'B'
-					personA = patient;
-					personB = person;
-				}
-			}
-			else { // Doesn't matter who is A or B, e.g. Sibling
-				type = Context.getPersonService().getRelationshipType(Integer.valueOf(isToPatient));
+		 // Doesn't matter who is A or B, since case manager is one way for patients
+	    	// We do not assign relationships to providers
+				type = Context.getPersonService().getRelationshipTypeByUuid(isToPatient);
 				personA = patient;
-				personB = person;
-			}
+				personB = Context.getProviderService().getProvider(Integer.valueOf(providerId)).getPerson();
 
 			rel.setRelationshipType(type);
 			rel.setPersonA(personA);
@@ -174,6 +166,22 @@ public class EditRelationshipFragmentController {
 			this.person = person;
 		}
 
+		public Provider getProvider() {
+			return provider;
+		}
+
+		public void setProvider(Provider provider) {
+			this.provider = provider;
+		}
+
+		public String getProviderId() {
+			return providerId;
+		}
+
+		public void setProviderId(String providerId) {
+			this.providerId = providerId;
+		}
+
 		public String getIsToPatient() {
 			return isToPatient;
 		}
@@ -181,6 +189,7 @@ public class EditRelationshipFragmentController {
 		public void setIsToPatient(String isToPatient) {
 			this.isToPatient = isToPatient;
 		}
+
 
 		public Date getStartDate() {
 			return startDate;
@@ -207,17 +216,17 @@ public class EditRelationshipFragmentController {
 		List<SimpleObject> options = new ArrayList<SimpleObject>();
 		PersonService service = Context.getPersonService();
 		RelationshipType caseManagerRelType = service.getRelationshipTypeByUuid(CommonMetadata._RelationshipType.CASE_MANAGER);
-		for (RelationshipType type : Context.getPersonService().getAllRelationshipTypes()) {
-		   if(!type.equals(caseManagerRelType)) {
-			   if (type.getaIsToB().equals(type.getbIsToA())) {
-				   options.add(SimpleObject.create("value", type.getId() + "", "label", type.getaIsToB()));
-			   } else {
-				   options.add(SimpleObject.create("value", type.getId() + ":A", "label", type.getaIsToB()));
-				   options.add(SimpleObject.create("value", type.getId() + ":B", "label", type.getbIsToA()));
-			   }
-		   }
-		}
 
+		for (RelationshipType type : Context.getPersonService().getAllRelationshipTypes()) {
+			if (type.equals(caseManagerRelType)) {
+				if (type.getaIsToB().equals(type.getbIsToA())) {
+					options.add(SimpleObject.create("value", type.getId() + "", "label", type.getaIsToB()));
+				} else {
+					options.add(SimpleObject.create("value", type.getId() + ":A", "label", type.getaIsToB()));
+					options.add(SimpleObject.create("value", type.getId() + ":B", "label", type.getbIsToA()));
+				}
+			}
+		}
 		return options;
 	}
 }
