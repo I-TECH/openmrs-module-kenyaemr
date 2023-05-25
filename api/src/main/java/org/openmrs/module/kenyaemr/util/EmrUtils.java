@@ -35,6 +35,9 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.util.PrivilegeConstants;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openmrs.Relationship;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,6 +53,7 @@ import java.util.List;
  * Miscellaneous utility methods
  */
 public class EmrUtils {
+	protected static final Log log = LogFactory.getLog(EmrUtils.class);
 
 	/**
 	 * Checks whether a date has any time value
@@ -301,5 +305,16 @@ public class EmrUtils {
 		Context.removeProxyPrivilege(PrivilegeConstants.SQL_LEVEL_ACCESS);
 		return subCountyList;
 	}
+
+	public static List<Person> getPersonChildren(Patient patient) {
+		List<Person> people = new ArrayList<Person>();
+		for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
+			if (relationship.getRelationshipType().getbIsToA().equals("Child")) {
+				people.add(relationship.getPersonB());
+			}
+		}
+		return people;
+	}
+
 
 }

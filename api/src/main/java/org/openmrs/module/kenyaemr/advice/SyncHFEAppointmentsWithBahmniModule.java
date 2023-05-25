@@ -31,6 +31,9 @@ import org.openmrs.module.appointments.service.AppointmentServiceDefinitionServi
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.api.PatientService;
+import org.openmrs.Patient;
 
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
@@ -127,9 +130,7 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
                 processCreateHivFollowupEncounter(enc);
 
             } else if(enc != null && enc.getForm() != null &&
-                    (enc.getForm().getUuid().equals(MchMetadata._Form.MCHMS_DELIVERY) ||
-                            enc.getForm().getUuid().equals(MchMetadata._Form.MCHMS_POSTNATAL_VISIT) ||
-                            enc.getForm().getUuid().equals(MchMetadata._Form.MCHMS_ANTENATAL_VISIT) ||
+                    (enc.getForm().getUuid().equals(MchMetadata._Form.MCHMS_ANTENATAL_VISIT) ||
                             enc.getForm().getUuid().equals(MchMetadata._Form.MCHCS_FOLLOW_UP) ||
                             enc.getForm().getUuid().equals(PREP_FOLLOWUP_FORM) ||
                             enc.getForm().getUuid().equals(PREP_INITIAL_FORM) ||
@@ -138,6 +139,9 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
                             enc.getForm().getUuid().equals(TbMetadata._Form.TB_FOLLOW_UP) )) {
 
                 processProgramEncounter(enc);
+            } else if(enc != null && (enc.getForm() != null && (enc.getForm().getUuid().equals(MchMetadata._Form.MCHMS_POSTNATAL_VISIT) || enc.getForm() != null && enc.getForm().getUuid().equals(MchMetadata._Form.MCHMS_DELIVERY)))) {
+
+                processMCHEncounter(enc);
             }
         }
 
@@ -321,7 +325,7 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
     }
 
     private void processProgramEncounter(Encounter enc) throws Throwable {
-        //MCH or PREP or TB or KP appointments
+        // MCH or PREP or TB or KP appointment
         List<Obs> obs = obsService.getObservations(
                 Arrays.asList(personService.getPerson(enc.getPatient().getPersonId())),
                 Arrays.asList(enc),
@@ -355,9 +359,7 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
 
             } else {
                 // create MCH or TB or KP or PREP appointment
-                if (enc.getForm() != null && (enc.getForm().getUuid().equals(MchMetadata._Form.MCHMS_POSTNATAL_VISIT) || enc.getForm() != null && enc.getForm().getUuid().equals(MchMetadata._Form.MCHMS_DELIVERY)) && appointmentServiceDefinitionService.getAppointmentServiceByUuid(MCH_POSTNATAL_VISIT_SERVICE) != null) {
-                    appointmentServiceDefinition.setAppointmentServiceId(appointmentServiceDefinitionService.getAppointmentServiceByUuid(MCH_POSTNATAL_VISIT_SERVICE).getId());
-                } else if (enc.getForm() != null && enc.getForm().getUuid().equals(MchMetadata._Form.MCHMS_ANTENATAL_VISIT) && appointmentServiceDefinitionService.getAppointmentServiceByUuid(MCH_ANTENATAL_VISIT_SERVICE) != null) {
+                 if (enc.getForm() != null && enc.getForm().getUuid().equals(MchMetadata._Form.MCHMS_ANTENATAL_VISIT) && appointmentServiceDefinitionService.getAppointmentServiceByUuid(MCH_ANTENATAL_VISIT_SERVICE) != null) {
                     appointmentServiceDefinition.setAppointmentServiceId(appointmentServiceDefinitionService.getAppointmentServiceByUuid(MCH_ANTENATAL_VISIT_SERVICE).getId());
                 } else if (enc.getForm() != null && enc.getForm().getUuid().equals(MchMetadata._Form.MCHCS_FOLLOW_UP) && appointmentServiceDefinitionService.getAppointmentServiceByUuid(CWC_FOLLOWUP_SERVICE) != null) {
                     appointmentServiceDefinition.setAppointmentServiceId(appointmentServiceDefinitionService.getAppointmentServiceByUuid(CWC_FOLLOWUP_SERVICE).getId());
@@ -388,6 +390,129 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
                 Appointment app = appointmentsService.validateAndSave(appointment);
 
             }
+        }
+    }
+
+    private void processMCHEncounter(Encounter enc) throws Throwable {
+        //MCH appointments
+        List<Obs> obs = obsService.getObservations(
+                Arrays.asList(personService.getPerson(enc.getPatient().getPersonId())),
+                Arrays.asList(enc),
+                Arrays.asList(
+                         conceptService.getConceptByUuid(NEXT_CLINICAL_APPOINTMENT_DATE_CONCEPT_UUID)
+                ),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                false
+        );
+
+        for (Obs o : obs) { // Loop through the obs and compose Appointment object for Bahmni
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date nextApptStartDateTime = DateUtil.convertToDate(dateFormat.format(o.getValueDatetime()).concat("T07:00:00.0Z"), DateUtil.DateFormatType.UTC);
+            Date nextApptEndDateTime = DateUtil.convertToDate(dateFormat.format(o.getValueDatetime()).concat("T20:00:00.0Z"), DateUtil.DateFormatType.UTC);
+            Appointment editAppointment = appointmentsService.getAppointmentByUuid(enc.getUuid());
+
+            if (editAppointment != null) {
+                AppointmentServiceDefinition appointmentServiceDefinition = new AppointmentServiceDefinition();
+                Appointment postNatalAppointment = appointmentsService.getAppointmentByUuid(enc.getUuid());
+                Appointment cwcFollowUpAppointment = postNatalAppointment.getRelatedAppointment();
+
+                if(postNatalAppointment != null) {
+                    postNatalAppointment.setStartDateTime(nextApptStartDateTime);
+                    postNatalAppointment.setEndDateTime(nextApptEndDateTime);
+                    Appointment app = appointmentsService.validateAndSave(postNatalAppointment);
+                }
+                if(cwcFollowUpAppointment != null) {
+                    cwcFollowUpAppointment.setStartDateTime(nextApptEndDateTime);
+                    cwcFollowUpAppointment.setEndDateTime(nextApptEndDateTime);
+                    Appointment app2 = appointmentsService.validateAndSave(cwcFollowUpAppointment);
+                }
+                if(postNatalAppointment != null && cwcFollowUpAppointment == null && appointmentServiceDefinitionService.getAppointmentServiceByUuid(MCH_POSTNATAL_VISIT_SERVICE) != null ) {
+                    appointmentServiceDefinition.setAppointmentServiceId(appointmentServiceDefinitionService.getAppointmentServiceByUuid(CWC_FOLLOWUP_SERVICE).getId());
+                    List<Person> children = EmrUtils.getPersonChildren(enc.getPatient());
+                    for (Person child : children) {
+                        int ageYears = child.getAge();
+                        int id = child.getId();
+                        PatientService patientService = Context.getPatientService();
+                        Patient patient = patientService.getPatient(id);
+                        // add mothers appointment for all children who are HEI
+                        if (ageYears <= 2) {
+                            Appointment followUpAppointment = new Appointment();
+                            followUpAppointment.setPatient(patient);
+                            followUpAppointment.setService(appointmentServiceDefinition);
+                            followUpAppointment.setStartDateTime(nextApptStartDateTime);
+                            followUpAppointment.setEndDateTime(nextApptEndDateTime);
+                            followUpAppointment.setLocation(enc.getLocation());
+                            followUpAppointment.setProvider(EmrUtils.getProvider(Context.getAuthenticatedUser()));
+                            followUpAppointment.setAppointmentKind(AppointmentKind.Scheduled);
+                            cwcFollowUpAppointment.setRelatedAppointment(postNatalAppointment);
+                            Appointment app3 = appointmentsService.validateAndSave(followUpAppointment);
+
+                            postNatalAppointment.setRelatedAppointment(app3);
+                            Appointment app4 = appointmentsService.validateAndSave(postNatalAppointment);
+                        }
+                    }
+                }
+            }
+
+            // create MCH postnatal appointment
+            if (editAppointment == null && enc.getForm() != null && (enc.getForm().getUuid().equals(MchMetadata._Form.MCHMS_POSTNATAL_VISIT) || enc.getForm().getUuid().equals(MchMetadata._Form.MCHMS_DELIVERY)) && appointmentServiceDefinitionService.getAppointmentServiceByUuid(MCH_POSTNATAL_VISIT_SERVICE) != null) {
+                Appointment mchPostnatalAppointment = new Appointment();
+
+                if(enc.getForm().getUuid().equals(MchMetadata._Form.MCHMS_POSTNATAL_VISIT) || enc.getForm().getUuid().equals(MchMetadata._Form.MCHMS_DELIVERY)) {
+                    nxtAppointment = true;
+                    AppointmentServiceDefinition appointmentServiceDefinition = new AppointmentServiceDefinition();
+                    appointmentServiceDefinition.setAppointmentServiceId(appointmentServiceDefinitionService.getAppointmentServiceByUuid(MCH_POSTNATAL_VISIT_SERVICE).getId());
+
+                    mchPostnatalAppointment.setUuid(enc.getUuid());
+                    mchPostnatalAppointment.setPatient(enc.getPatient());
+                    mchPostnatalAppointment.setService(appointmentServiceDefinition);
+                    mchPostnatalAppointment.setStartDateTime(nextApptStartDateTime);
+                    mchPostnatalAppointment.setEndDateTime(nextApptEndDateTime);
+                    mchPostnatalAppointment.setLocation(enc.getLocation());
+                    mchPostnatalAppointment.setProvider(EmrUtils.getProvider(Context.getAuthenticatedUser()));
+                    mchPostnatalAppointment.setAppointmentKind(AppointmentKind.Scheduled);
+                }
+
+                if(nxtAppointment) {
+                    Appointment app = appointmentsService.validateAndSave(mchPostnatalAppointment);
+                }
+                if(appointmentServiceDefinitionService.getAppointmentServiceByUuid(CWC_FOLLOWUP_SERVICE) != null) {
+                    // create CWC followup appointment for child
+                    List<Person> children = EmrUtils.getPersonChildren(enc.getPatient());
+                    for(Person child : children) {
+                        int ageYears = child.getAge();
+                        int id = child.getId();
+                        PatientService patientService = Context.getPatientService();
+                        Patient patient = patientService.getPatient(id);
+                        if(ageYears <= 2) {
+                            AppointmentServiceDefinition appointmentServiceDefinition = new AppointmentServiceDefinition();
+                            appointmentServiceDefinition.setAppointmentServiceId(appointmentServiceDefinitionService.getAppointmentServiceByUuid(CWC_FOLLOWUP_SERVICE).getId());
+                            Appointment cwcFollowUpAppointment = new Appointment();
+                            Appointment relatedAppointment = appointmentsService.getAppointmentByUuid(enc.getUuid());
+                            cwcFollowUpAppointment.setRelatedAppointment(relatedAppointment);
+                            cwcFollowUpAppointment.setPatient(patient);
+                            cwcFollowUpAppointment.setService(appointmentServiceDefinition);
+                            cwcFollowUpAppointment.setStartDateTime(nextApptStartDateTime);
+                            cwcFollowUpAppointment.setEndDateTime(nextApptEndDateTime);
+                            cwcFollowUpAppointment.setLocation(enc.getLocation());
+                            cwcFollowUpAppointment.setProvider(EmrUtils.getProvider(Context.getAuthenticatedUser()));
+                            cwcFollowUpAppointment.setAppointmentKind(AppointmentKind.Scheduled);
+                            Appointment app2 = appointmentsService.validateAndSave(cwcFollowUpAppointment);
+
+                            relatedAppointment.setRelatedAppointment(app2);
+                            Appointment app3 = appointmentsService.validateAndSave(relatedAppointment);
+                        }
+                    }
+                }
+            }
+
         }
     }
 }
