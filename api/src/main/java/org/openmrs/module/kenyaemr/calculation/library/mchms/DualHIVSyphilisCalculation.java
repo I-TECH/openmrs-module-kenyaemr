@@ -20,6 +20,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.*;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -27,7 +28,8 @@ import org.openmrs.module.metadatadeploy.MetadataUtils;
 import java.util.*;
 
 public class DualHIVSyphilisCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
-    private String dualMessage;
+    StringBuilder dualMessage = new StringBuilder();
+
     private Date currentDate = new Date();
     private Date lmpDate = null;
     private Date syphilisTestDate = null;
@@ -41,6 +43,8 @@ public class DualHIVSyphilisCalculation extends AbstractPatientCalculation imple
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> map, PatientCalculationContext context) {
         Set<Integer> aliveAndFemale = Filters.female(Filters.alive(cohort, context), context);
+        Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+        Set<Integer> inHivProgram = Filters.inProgram(hivProgram, aliveAndFemale, context);
         Concept yes = Dictionary.getConcept(Dictionary.YES);
         CalculationResultMap pregStatusObss = Calculations.lastObs(Dictionary.getConcept(Dictionary.PREGNANCY_STATUS), aliveAndFemale, context);
         CalculationResultMap ret = new CalculationResultMap();
@@ -59,71 +63,80 @@ public class DualHIVSyphilisCalculation extends AbstractPatientCalculation imple
             boolean eligibleDualHivSyphilisFlag = false;
             PatientService patientService = Context.getPatientService();
             Patient patient = patientService.getPatient(ptId);
-
             Form antenatalVisitForm = MetadataUtils.existing(Form.class, MchMetadata._Form.MCHMS_ANTENATAL_VISIT);
             EncounterType mchConsultationEncounterType = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_CONSULTATION);
             Encounter lastANCEnc = EmrUtils.lastEncounter(patient,mchConsultationEncounterType,antenatalVisitForm );
             Obs pregStatusObs = EmrCalculationUtils.obsResultForPatient(pregStatusObss, ptId);
-
             Obs hepBObs = EmrCalculationUtils.obsResultForPatient(lastHepatitisTesting, ptId);
             Obs syphilsObs = EmrCalculationUtils.obsResultForPatient(lastSyphilisTesting, ptId);
             Obs resultOfHivTestingObs = EmrCalculationUtils.obsResultForPatient(resultOfHivTesting, ptId);
             Obs lmpObs = EmrCalculationUtils.obsResultForPatient(lmp, ptId);
-
             lmpDate = lmpObs.getObsDatetime();
+            if(!inHivProgram.contains(ptId)){
+                    if(hepBObs !=null){
+                        if (hepBObs.getObsDatetime() != null){
+                            hepatitisTestDate = hepBObs.getObsDatetime();
+                            hepBTestMonths = monthsBetween(hepatitisTestDate, lmpDate);
+                        }
+                    }
+                    if (syphilsObs != null) {
+                        if (syphilsObs.getObsDatetime() != null) {
+                            syphilisTestDate = syphilsObs.getObsDatetime();
+                            syphilisTestMonths = monthsBetween(syphilisTestDate, lmpDate);
+                        }
+                    }
+                    if(resultOfHivTestingObs !=null) {
+                        if (resultOfHivTestingObs.getObsDatetime() != null) {
+                            hivTestDate = resultOfHivTestingObs.getObsDatetime();
+                            hivTestMonths = monthsBetween(hivTestDate, lmpDate);
+                        }
+                    }
+                    int pregnancyMonths = monthsBetween(currentDate, lmpDate);
+                    boolean syphilisQuestion = lastANCEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastANCEnc, syphilisQ, syphilisNegative) : false;
+                    if(pregStatusObs != null && pregStatusObs.getValueCoded().equals(yes)){
+                       if(lastANCEnc !=null) {
+                           if (pregnancyMonths >= 1 && pregnancyMonths <= 3) {
+                               if (hepBObs ==null || hepBTestMonths > 3 ) {
+                                   eligibleDualHivSyphilisFlag = true;
+                                   dualMessage.append("Due for HepB Test");
+                               }
+                               if (syphilsObs ==null  || syphilisTestMonths > 3) {
+                                   eligibleDualHivSyphilisFlag = true;
+                                   if(dualMessage.length() == 0){
+                                       dualMessage.append("Due for Syphilis Test");
+                                   } else{
+                                       dualMessage.append(", ").append("Due for Syphilis Test");
+                                   }
+                               }
+                               if (resultOfHivTestingObs ==null || hivTestMonths > 3) {
+                                   eligibleDualHivSyphilisFlag = true;
+                                   if(dualMessage.length() == 0){
+                                       dualMessage.append("Due for Hiv Test");
+                                   }else{
+                                       dualMessage.append(", ").append("Due for Hiv Test");
+                                   }
+                               }
+                           }
 
-            if(hepBObs !=null){
-                if (hepBObs.getObsDatetime() !=null){
-                    hepatitisTestDate = hepBObs.getObsDatetime();
-                    hepBTestMonths = monthsBetween(hepatitisTestDate, lmpDate);
-                }
-            }
-            if (syphilsObs != null) {
-                if (syphilsObs.getObsDatetime() != null) {
-                    syphilisTestDate = syphilsObs.getObsDatetime();
-                    syphilisTestMonths = monthsBetween(syphilisTestDate, lmpDate);
-                }
-            }
-
-            if(resultOfHivTestingObs !=null) {
-                if (resultOfHivTestingObs.getObsDatetime() != null) {
-                    hivTestDate = resultOfHivTestingObs.getObsDatetime();
-                    hivTestMonths = monthsBetween(hivTestDate, lmpDate);
-
-                }
-            }
-
-            int pregnancyMonths = monthsBetween(currentDate, lmpDate);
-            int monthsSinceFirstTrimester = monthsBetween(lmpDate, currentDate);
-            boolean syphilisQuestion = lastANCEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastANCEnc, syphilisQ, syphilisNegative) : false;
-
-            if(pregStatusObs != null && pregStatusObs.getValueCoded().equals(yes)){
-               if(lastANCEnc !=null) {
-
-                   if (pregnancyMonths >= 1 && pregnancyMonths <= 3) {
-                       if (hepBObs ==null && (hepBTestMonths < 1 || hepBTestMonths > 3)) {
-                           eligibleDualHivSyphilisFlag = true;
-                        dualMessage = "Due for HepB";
-                       }
-                       if (syphilsObs ==null && (syphilisTestMonths < 1 || syphilisTestMonths > 3)) {
-                           eligibleDualHivSyphilisFlag = true;
-                           dualMessage = "Due for Syphils";
-                       }
-                       if (resultOfHivTestingObs ==null && (hivTestMonths < 1 || hivTestMonths > 3)) {
-                           eligibleDualHivSyphilisFlag = true;
-                           dualMessage = "Due for Hiv Test";
-                       }
-                   }
-                if (pregnancyMonths >= 7 && pregnancyMonths <= 9){
-                       if(resultOfHivTestingObs != null && syphilisQuestion &&  resultOfHivTestingObs.getValueCoded().equals(negative)  && monthsSinceFirstTrimester > 3) {
-                             eligibleDualHivSyphilisFlag = true;
-                             dualMessage = "Due for Hiv-Syphilis";
-                       }
-                     }
-                }
+                        if (pregnancyMonths >= 7 && pregnancyMonths <= 9){
+                            if (syphilsObs ==null || syphilisTestDate.after(lmpDate) && syphilisQuestion ) {
+                                eligibleDualHivSyphilisFlag = true;
+                                dualMessage.append("Due for Syphilis Test");
+                            }
+                            if(resultOfHivTestingObs == null  || hivTestDate.after(lmpDate) &&  resultOfHivTestingObs.getValueCoded().equals(negative) ) {
+                               eligibleDualHivSyphilisFlag = true;
+                               if(dualMessage.length() > 0){
+                                 dualMessage.append(" ");
+                                 dualMessage.append("Due for HIV test");
+                               }else{
+                                 dualMessage.append("Due for HIV test");
+                               }
+                           }
+                         }
+                        }
+                    }
             }
             ret.put(ptId, new BooleanResult(eligibleDualHivSyphilisFlag, this));
-
         }
         return ret;
     }
@@ -132,9 +145,8 @@ public class DualHIVSyphilisCalculation extends AbstractPatientCalculation imple
         DateTime dateTime2 = new DateTime(d2.getTime());
         return Math.abs(Months.monthsBetween(dateTime1, dateTime2).getMonths());
     }
-
     @Override
     public String getFlagMessage() {
-        return dualMessage;
+        return dualMessage.toString();
     }
 }
