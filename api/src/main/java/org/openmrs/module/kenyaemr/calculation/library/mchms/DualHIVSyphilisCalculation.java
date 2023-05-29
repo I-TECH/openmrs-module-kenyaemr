@@ -126,14 +126,13 @@ public class DualHIVSyphilisCalculation extends AbstractPatientCalculation imple
                             if(resultOfHivTestingObs == null  || hivTestDate.after(lmpDate) &&  resultOfHivTestingObs.getValueCoded().equals(negative) ) {
                                eligibleDualHivSyphilisFlag = true;
                                if(dualMessage.length() > 0){
-                                 dualMessage.append(" ");
-                                 dualMessage.append("Due for HIV test");
+                                 dualMessage.append(", ").append("Due for HIV test");
                                }else{
                                  dualMessage.append("Due for HIV test");
                                }
                            }
                          }
-                        }
+                       }
                     }
             }
             ret.put(ptId, new BooleanResult(eligibleDualHivSyphilisFlag, this));
