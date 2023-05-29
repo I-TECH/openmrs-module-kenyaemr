@@ -94,17 +94,31 @@
             var pgender = "<lookup expression="patient.gender" />";
             var pAge = parseInt('<lookup expression="patient.age"/>');
 
-            if (pgender === 'F') {
-                beforeSubmit.push(function () {
-                    var lmpdate = new Date(getValue('lmp-date.value')).getTime();
-                    if (lmpdate &lt; pbirthdate) {
-                        getField('lmp-date.error').html('Should not be earlier than birth date').show();
-                        return false;
-                    }
+
+           beforeSubmit.push(function () {
+               var lmpdate = new Date(getValue('lmp-date.value')).getTime();
+
+                   if(pgender === 'F') {
+                        if (lmpdate &lt; pbirthdate) {
+                               getField('lmp-date.error').html('Should not be earlier than birth date').show();
+                               return false;
+                           }else{
+                               getField('lmp-date.error').html('Should not be earlier than birth date').hide();
+                           }
+                       }
+                   if (pAge &lt; 5) {
+                       var z_score = getField('z-score.value').val();
+                       if (z_score == false) {
+                           getField('z-score.error').html('Please specify Z-Score').show();
+                           return false;
+                       } else {
+                           getField('z-score.error').html('Please specify Z-Score').hide();
+                       }
+                   }
 
                     return true;
                 });
-            }
+
         });
          //Clear hidden sections
     clearHiddenSections = function(parentObj) {
@@ -247,6 +261,22 @@
                             <recentObs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                         </td>
                     </tr>
+                    <includeIf velocityTest="$patient.age &lt; 5">
+                    <tr>
+
+                        <td> <br/> Z-Score </td>
+                        <td><br/>
+                            <obs conceptId="163515AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                   123814AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                   123815AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                   164131AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabels="Normal (Median),Mild (-1 SD),Moderate (-2 SD),Severe (-3 SD and -4 SD)"
+                                 style="dropdown"
+                                 id="z-score"/>
+                        </td>
+                    </tr>
+                    </includeIf>
                     <includeIf velocityTest="$patient.gender == 'F' ">
                         <tr>
                             <td>LMP</td>
