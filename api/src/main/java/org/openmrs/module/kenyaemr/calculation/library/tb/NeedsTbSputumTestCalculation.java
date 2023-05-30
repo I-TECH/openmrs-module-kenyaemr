@@ -45,7 +45,7 @@ public class NeedsTbSputumTestCalculation extends AbstractPatientCalculation imp
 	 */
 	@Override
 	public String getFlagMessage() {
-		return "Due for TB Sputum";
+		return "Due for GeneXpert";
 	}
 
 	/**
