@@ -51,7 +51,7 @@ import java.util.List;
 
 
 @Component
-@Builds({"kenyaemr.mchcs.report.missedSyphilisTestReport"})
+@Builds({"kenyaemr.mchms.report.missedSyphilisTestReport"})
 public class MissedSyphilisTestReportBuilder extends AbstractHybridReportBuilder {
 	public static final String DATE_FORMAT = "dd/MM/yyyy";
 
@@ -105,30 +105,28 @@ public class MissedSyphilisTestReportBuilder extends AbstractHybridReportBuilder
 		PersonAttributeType phoneNumber = MetadataUtils.existing(PersonAttributeType.class,
 				CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT);
 		dsd.addColumn("id", new PersonIdDataDefinition(), "");
-
-		dsd.addColumn("Sex", new GenderDataDefinition(), "");
-
 		String paramMapping = "startDate=${startDate},endDate=${endDate}";
-
-		dsd.addColumn("Name", nameDef, "");
-		dsd.addColumn("Telephone No", new PersonAttributeDataDefinition(phoneNumber), "");
-		dsd.addColumn("Village_Estate_Landmark", new CalculationDataDefinition("Village/Estate/Landmark",
-				new PersonAddressCalculation()), "", new RDQACalculationResultConverter());
-
-		dsd.addColumn("Age", new AgeDataDefinition(), "");
-		MchDateOfLastClinicVisitDataDefinition dateOfLastMCHClinicVisitDataDefinition = new MchDateOfLastClinicVisitDataDefinition();
-		dateOfLastMCHClinicVisitDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		dateOfLastMCHClinicVisitDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
-		dsd.addColumn("Date of MCH clinic visit", dateOfLastMCHClinicVisitDataDefinition, paramMapping, null);
-
-		MchNextVisitAppointmentDateDataDefinition nextMCHVisitAppointmentDateDataDefinition = new MchNextVisitAppointmentDateDataDefinition();
-		nextMCHVisitAppointmentDateDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		nextMCHVisitAppointmentDateDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
-		dsd.addColumn("Next appointment date", nextMCHVisitAppointmentDateDataDefinition, paramMapping, null);
 
 		MchServiceDeliveryPointDataDefinition serviceDeliveryPointDataDefinition = new MchServiceDeliveryPointDataDefinition();
 		serviceDeliveryPointDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		serviceDeliveryPointDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+		MchNextVisitAppointmentDateDataDefinition nextMCHVisitAppointmentDateDataDefinition = new MchNextVisitAppointmentDateDataDefinition();
+		nextMCHVisitAppointmentDateDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		nextMCHVisitAppointmentDateDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+		MchDateOfLastClinicVisitDataDefinition dateOfLastMCHClinicVisitDataDefinition = new MchDateOfLastClinicVisitDataDefinition();
+		dateOfLastMCHClinicVisitDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		dateOfLastMCHClinicVisitDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+
+
+		dsd.addColumn("Unique Patient No", identifierDef, "");
+		dsd.addColumn("Sex", new GenderDataDefinition(), "");
+		dsd.addColumn("Name", nameDef, "");
+		dsd.addColumn("Telephone No", new PersonAttributeDataDefinition(phoneNumber), "");
+		dsd.addColumn("Village_Estate_Landmark", new CalculationDataDefinition("Village/Estate/Landmark",
+				new PersonAddressCalculation()), "", new RDQACalculationResultConverter());
+		dsd.addColumn("Age", new AgeDataDefinition(), "");
+		dsd.addColumn("Date of MCH clinic visit", dateOfLastMCHClinicVisitDataDefinition, paramMapping, null);
+		dsd.addColumn("Next appointment date", nextMCHVisitAppointmentDateDataDefinition, paramMapping, null);
 		dsd.addColumn("Service delivery point", serviceDeliveryPointDataDefinition, paramMapping, null);
 
 		MissedSyphilisTestCohortDefinition cd = new MissedSyphilisTestCohortDefinition();
