@@ -111,12 +111,12 @@
                     jq('#child-status-required').html('HEI Unique Number Required');
                     return false;
                 }
-                if(pcn != "" || pcn != null) {
-                    if (/^[\d]{1,15}$/.test(pcn) === false) {
-                        alert("Invalid Patient Clinic Number Format! Should be at most 15 digits for new enrollments");
-                        return false;
+                if (pcn != "") {
+                        if (/^[\d]{1,15}$/.test(pcn) === false) {
+                            alert("Invalid Patient Clinic Number Format! Should be at most 15 digits for new enrollments");
+                            return false;
+                        }
                     }
-                }
                 if (getValue('hiv-exposed-child.value') == NO_CONCEPT_ID || getValue('hiv-exposed-child.value') == UNKOWN) {
                     jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/getMothersUniquePatientNumber.action', {patientId: patientId}, function (data) {
                         if (data != null || data != "") {
@@ -591,8 +591,7 @@
 						<td><obs conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
 						<td>Patient Clinic No. </td>
 						<td>
-							<span id="pcn-id"><patient id="pcn" field="identifier" identifierTypeId="b4d66522-11fc-45c7-83e3-39a1af21ae0d" /></span>
-							<span id="pcnError" class="error"></span>
+							<span id="pcn-id"><patient id="pcn" field="identifier" identifierTypeId="b4d66522-11fc-45c7-83e3-39a1af21ae0d" required="false"/></span>
 						</td>
 						<td></td>
 						<td></td>
