@@ -2358,7 +2358,8 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
                 "         inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id\n" +
                 "where date(v.visit_date) between date(:startDate) and date(:endDate)\n" +
-                "  and v.syphilis_test_status in (1229, 1228, 1304);";
+                "  and (v.syphilis_test_status in (1229, 1228, 1304) or\n" +
+                "       (e.visit_date between date(:startDate) and date(:endDate) and e.serology in (1229, 1228, 1304)));";
 
         cd.setName("syphilisScreenedAt1stANC");
         cd.setQuery(sqlQuery);
