@@ -187,7 +187,7 @@ public class PMTCTIndicatorLibrary {
     }
 
     public CohortIndicator liveBirths() {
-        return cohortIndicator("Live Births", ReportUtils.<CohortDefinition>map(pmtctCohorts.underWeightBabies(), "startDate=${startDate},endDate=${endDate}"));
+        return cohortIndicator("Live Births", ReportUtils.<CohortDefinition>map(pmtctCohorts.liveBirths(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     public CohortIndicator stillBirths() {
