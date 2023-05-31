@@ -38,7 +38,7 @@ public class PMTCTCohortLibrary {
      * @return
      */
 
-    public CohortDefinition maternityDeliveriesSql() {
+    public CohortDefinition MaternityRegisterCohortDefinitionQuery() {
         String qry = "SELECT ld.patient_id\n" +
                 "from kenyaemr_etl.etl_mchs_delivery ld\n" +
                 "         inner join kenyaemr_etl.etl_mch_enrollment e\n" +
@@ -47,11 +47,11 @@ public class PMTCTCohortLibrary {
                 "  and coalesce(date(ld.date_of_delivery), date(ld.visit_date))\n" +
                 "    BETWEEN date(:startDate) AND date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("Maternity_Delivery");
+        cd.setName("maternityRegisterCohortDefinition");
         cd.setQuery(qry);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Maternity Delivery");
+        cd.setDescription("Maternity Register Cohort Definition");
         return cd;
 
     }
@@ -654,9 +654,9 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("maternityClients",ReportUtils.map(maternityClientsSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND maternityClients");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND maternityClients");
         return cd;
     }
 
@@ -678,9 +678,9 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("clientsWithAPH",ReportUtils.map(clientsWithAPHSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND clientsWithAPH");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND clientsWithAPH");
         return cd;
     }
     public  CohortDefinition clientsWithAPHDeadSql() {
@@ -701,9 +701,9 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("clientsWithAPHDead",ReportUtils.map(clientsWithAPHDeadSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND clientsWithAPHDead");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND clientsWithAPHDead");
         return cd;
     }
     public  CohortDefinition clientsWithPPHSql() {
@@ -724,9 +724,9 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("clientsWithPPH",ReportUtils.map(clientsWithPPHSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND clientsWithPPH");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND clientsWithPPH");
         return cd;
     }
     public  CohortDefinition clientsWithPPHDeadSql() {
@@ -747,9 +747,9 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("clientsWithPPHDead",ReportUtils.map(clientsWithPPHDeadSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND clientsWithPPHDead");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND clientsWithPPHDead");
         return cd;
     }
     public  CohortDefinition clientsWithEclampsiaSql() {
@@ -770,9 +770,9 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("clientsWithEclampsia",ReportUtils.map(clientsWithEclampsiaSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND clientsWithEclampsia");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND clientsWithEclampsia");
         return cd;
     }
     public  CohortDefinition clientsWithEclampsiaDeadSql() {
@@ -793,9 +793,9 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("clientsWithEclampsiaDead",ReportUtils.map(clientsWithEclampsiaDeadSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND clientsWithEclampsiaDead");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND clientsWithEclampsiaDead");
         return cd;
     }
     public  CohortDefinition clientsWithRapturedUterusSql() {
@@ -830,18 +830,18 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("clientsWithRapturedUterus",ReportUtils.map(clientsWithRapturedUterusSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND clientsWithRapturedUterus");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND clientsWithRapturedUterus");
         return cd;
     }
     public CohortDefinition clientsWithRapturedUterusDead() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("clientsWithRapturedUterusDead",ReportUtils.map(clientsWithRapturedUterusDeadSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND clientsWithRapturedUterusDead");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND clientsWithRapturedUterusDead");
         return cd;
     }
     public  CohortDefinition clientsWithObstructedLabourSql() {
@@ -876,18 +876,18 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("clientsWithObstructedLabour",ReportUtils.map(clientsWithObstructedLabourSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND clientsWithObstructedLabour");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND clientsWithObstructedLabour");
         return cd;
     }
     public CohortDefinition clientsWithObstructedLabourDead() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("clientsWithObstructedLabourDead",ReportUtils.map(clientsWithObstructedLabourDeadSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND clientsWithObstructedLabourDead");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND clientsWithObstructedLabourDead");
         return cd;
     }
     public  CohortDefinition clientsWithSepsisSql() {
@@ -922,18 +922,18 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("clientsWithSepsis",ReportUtils.map(clientsWithSepsisSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND clientsWithSepsis");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND clientsWithSepsis");
         return cd;
     }
     public CohortDefinition clientsWithSepsisDead() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("clientsWithSepsisDead",ReportUtils.map(clientsWithSepsisDeadSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND clientsWithSepsisDead");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND clientsWithSepsisDead");
         return cd;
     }
     public  CohortDefinition clientsAlive() {
@@ -964,27 +964,27 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("preTermBaby",ReportUtils.map(preTermBabiesSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND preTermBaby");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND preTermBaby");
         return cd;
     }
     public CohortDefinition underWeightBabies() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("underWeightBaby",ReportUtils.map(underWeightBabiesSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND underWeightBaby");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND underWeightBaby");
         return cd;
     }
     public CohortDefinition liveBirths() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("liveBirth",ReportUtils.map(liveBirthsSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND liveBirth");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND liveBirth");
         return cd;
     }
 
@@ -1004,9 +1004,9 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("stillBirth",ReportUtils.map(stillBirthsSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND stillBirth");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND stillBirth");
         return cd;
     }
     public CohortDefinition initialTestAtMaternity() {
@@ -1103,9 +1103,9 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("startedHAARTMaternity",ReportUtils.map(startedHAARTMaternitySql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND startedHAARTMaternity");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND startedHAARTMaternity");
         return cd;
     }
     public CohortDefinition infantARVProphylaxisMaternitySql() {
@@ -1129,45 +1129,45 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("infantARVProphylaxisMaternity",ReportUtils.map(infantARVProphylaxisMaternitySql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND infantARVProphylaxisMaternity");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND infantARVProphylaxisMaternity");
         return cd;
     }
     public CohortDefinition normalDeliveries() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("normalDelivery",ReportUtils.map(normalDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND normalDelivery");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND normalDelivery");
         return cd;
     }
     public CohortDefinition caesareanSections() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("cSection",ReportUtils.map(caesareanSectionsSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND cSection");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND cSection");
         return cd;
     }
     public CohortDefinition breechDeliveries() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("avd",ReportUtils.map(breechDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND avd");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND avd");
         return cd;
     }
     public CohortDefinition assistedVaginalDeliveries() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("normalDelivery",ReportUtils.map(assistedVaginalDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND normalDelivery");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND normalDelivery");
         return cd;
     }
     public CohortDefinition uterotonicGivenSql() {
@@ -1184,9 +1184,9 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("uterotonicGiven",ReportUtils.map(uterotonicGivenSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND uterotonicGiven");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND uterotonicGiven");
         return cd;
     }
     public CohortDefinition carbetocinSql() {
@@ -1203,9 +1203,9 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("carbetocin",ReportUtils.map(carbetocinSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND carbetocin");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND carbetocin");
         return cd;
     }
     public CohortDefinition oxytocinSql() {
@@ -1222,18 +1222,18 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("oxytocin",ReportUtils.map(oxytocinSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND oxytocin");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND oxytocin");
         return cd;
     }
     public CohortDefinition deformity() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("deformity",ReportUtils.map(deformitySql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND deformity");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND deformity");
         return cd;
     }
     public CohortDefinition lowApgarSql() {
@@ -1250,9 +1250,9 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("lowApgar",ReportUtils.map(lowApgarSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND lowApgar");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND lowApgar");
         return cd;
     }
     public CohortDefinition deathAuditedSql() {
@@ -1269,9 +1269,9 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("deathAudited",ReportUtils.map(deathAuditedSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND deathAudited");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND deathAudited");
         return cd;
     }
     public CohortDefinition appliedChlorhexidineSql() {
@@ -1288,9 +1288,9 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("appliedChlorhexidine",ReportUtils.map(appliedChlorhexidineSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND appliedChlorhexidine");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND appliedChlorhexidine");
         return cd;
     }
     public CohortDefinition givenTetracyclineSql() {
@@ -1307,9 +1307,9 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("givenTetracycline",ReportUtils.map(givenTetracyclineSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND givenTetracycline");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND givenTetracycline");
         return cd;
     }
     public CohortDefinition vitaminKSql() {
@@ -1326,9 +1326,9 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("vitaminK",ReportUtils.map(vitaminKSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND vitaminK");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND vitaminK");
         return cd;
     }
     public CohortDefinition maceratedStillbirthSql() {
@@ -1345,9 +1345,9 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("maceratedStillbirth",ReportUtils.map(maceratedStillbirthSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND maceratedStillbirth");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND maceratedStillbirth");
         return cd;
     }
     public CohortDefinition noHIVpositiveDeliveriesSql() {
@@ -1368,9 +1368,9 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("noHIVpositiveDeliveries",ReportUtils.map(noHIVpositiveDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND noHIVpositiveDeliveries");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND noHIVpositiveDeliveries");
         return cd;
     }
 
@@ -1392,9 +1392,9 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("deaths10to14Years",ReportUtils.map(deaths10to14YearsSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND deaths10to14Years");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND deaths10to14Years");
         return cd;
     }
     public CohortDefinition deaths15to19YearsSql() {
@@ -1415,9 +1415,9 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("deaths15to19Years",ReportUtils.map(deaths15to19YearsSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND deaths15to19Years");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND deaths15to19Years");
         return cd;
     }
     public CohortDefinition deaths20toplusSql() {
@@ -1438,9 +1438,9 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("deaths20toplus",ReportUtils.map(deaths20toplusSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND deaths20toplus");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND deaths20toplus");
         return cd;
     }
     //PNC COHORTS
@@ -1599,12 +1599,12 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("noOfBabiesDischargedAlive",ReportUtils.map(noOfBabiesDischargedAliveSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND noOfBabiesDischargedAlive");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND noOfBabiesDischargedAlive");
         return cd;
     }
-   public CohortDefinition earlyNeonatalDeathsSql() {
+    public CohortDefinition earlyNeonatalDeathsSql() {
         String sqlQuery = "SELECT DISTINCT v.patient_id\n" +
                 "FROM kenyaemr_etl.etl_mchs_delivery v\n" +
                 "INNER JOIN kenyaemr_etl.etl_mch_enrollment e ON e.patient_id = v.patient_id\n" +
@@ -1624,19 +1624,19 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("earlyNeonatalDeaths",ReportUtils.map(earlyNeonatalDeathsSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND earlyNeonatalDeaths");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND earlyNeonatalDeaths");
         return cd;
     }
-   public CohortDefinition lateNeonatalDeathsSql() {
-       String sqlQuery = "SELECT DISTINCT v.patient_id\n" +
-               "FROM kenyaemr_etl.etl_mchs_delivery v\n" +
-               "INNER JOIN kenyaemr_etl.etl_mch_enrollment e ON e.patient_id = v.patient_id\n" +
-               "INNER JOIN kenyaemr_etl.etl_patient_demographics d ON d.patient_id = v.patient_id\n" +
-               "WHERE DATEDIFF(v.visit_date, d.DOB) BETWEEN 8 AND 28\n" +
-               "AND v.condition_of_mother = 134612\n" +
-               "AND v.visit_date BETWEEN DATE(:startDate) AND DATE(:endDate);";
+    public CohortDefinition lateNeonatalDeathsSql() {
+        String sqlQuery = "SELECT DISTINCT v.patient_id\n" +
+                "FROM kenyaemr_etl.etl_mchs_delivery v\n" +
+                "INNER JOIN kenyaemr_etl.etl_mch_enrollment e ON e.patient_id = v.patient_id\n" +
+                "INNER JOIN kenyaemr_etl.etl_patient_demographics d ON d.patient_id = v.patient_id\n" +
+                "WHERE DATEDIFF(v.visit_date, d.DOB) BETWEEN 8 AND 28\n" +
+                "AND v.condition_of_mother = 134612\n" +
+                "AND v.visit_date BETWEEN DATE(:startDate) AND DATE(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("Late Neonatal deaths (8-28days)");
         cd.setQuery(sqlQuery);
@@ -1649,9 +1649,9 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("lateNeonatalDeaths",ReportUtils.map(lateNeonatalDeathsSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND lateNeonatalDeaths");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND lateNeonatalDeaths");
         return cd;
     }
     public CohortDefinition initialTestLDSql() {
@@ -1668,9 +1668,9 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("initialTestLD",ReportUtils.map(initialTestLDSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND initialTestLD");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND initialTestLD");
         return cd;
     }
 
@@ -1688,9 +1688,9 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("positiveResultsLD",ReportUtils.map(positiveResultsLDSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND positiveResultsLD");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND positiveResultsLD");
         return cd;
     }
     public  CohortDefinition hivPositiveResultAtPNCSql() {
@@ -1723,9 +1723,9 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("hivPositiveResultAtPNC",ReportUtils.map(hivPositiveResultAtPNCSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND hivPositiveResultAtPNC");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND hivPositiveResultAtPNC");
         return cd;
     }
     public  CohortDefinition partnerTestedAtPNC() {
@@ -1756,9 +1756,9 @@ public class PMTCTCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("maternityDelivery",ReportUtils.map(maternityDeliveriesSql(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("maternityRegisterCohortDefinition",ReportUtils.map(MaternityRegisterCohortDefinitionQuery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("startedHAARTAtPNC",ReportUtils.map(startedHAARTAtPNCSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("maternityDelivery AND startedHAARTAtPNC");
+        cd.setCompositionString("maternityRegisterCohortDefinition AND startedHAARTAtPNC");
         return cd;
     }
     public  CohortDefinition infantARVProphylaxis() {
