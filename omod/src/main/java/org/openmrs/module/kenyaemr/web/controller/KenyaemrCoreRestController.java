@@ -297,6 +297,28 @@ public class KenyaemrCoreRestController extends BaseRestController {
         return resultNode.toString();
 
     }
+
+    /**
+     *
+     * @param sex
+     * @param weight
+     * @param height
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/zscoreoptimized")
+    @ResponseBody
+    public Object calculateZScoreOptimized(@RequestParam("sex") String sex, @RequestParam("weight") Double weight, @RequestParam("height") Double height) {
+        ObjectNode resultNode = JsonNodeFactory.instance.objectNode();
+        Integer result =  ZScoreUtil.calculateZScoreOptimized(height, weight, sex);
+
+        if (result < -4) { // this is an indication of error. We can break it down further for appropriate messages
+            return new ResponseEntity<Object>("Could not compute the zscore for the patient!",
+                    new HttpHeaders(), HttpStatus.NOT_FOUND);
+        }
+        resultNode.put("wfl_score", result);
+        return resultNode.toString();
+
+    }
     /**
      * Generate payload for a form descriptor. Required when serving forms to the frontend
      * @param descriptor
