@@ -31,10 +31,10 @@ import org.openmrs.module.kenyacore.form.FormManager;
 import org.openmrs.module.kenyacore.program.ProgramDescriptor;
 import org.openmrs.module.kenyacore.program.ProgramManager;
 import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.module.kenyaemr.util.ZScoreUtil;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.openmrs.ui.framework.annotation.SpringBean;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -276,6 +276,27 @@ public class KenyaemrCoreRestController extends BaseRestController {
         return programList.toString();
     }
 
+    /**
+     *
+     * @param sex
+     * @param weight
+     * @param height
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/zscore")
+    @ResponseBody
+    public Object calculateZScore(@RequestParam("sex") String sex, @RequestParam("weight") Double weight, @RequestParam("height") Double height) {
+        ObjectNode resultNode = JsonNodeFactory.instance.objectNode();
+       Integer result =  ZScoreUtil.calculateZScore(height, weight, sex);
+
+       if (result < -4) { // this is an indication of error. We can break it down further for appropriate messages
+           return new ResponseEntity<Object>("Could not compute the zscore for the patient!",
+                   new HttpHeaders(), HttpStatus.NOT_FOUND);
+       }
+        resultNode.put("wfl_score", result);
+        return resultNode.toString();
+
+    }
     /**
      * Generate payload for a form descriptor. Required when serving forms to the frontend
      * @param descriptor
