@@ -113,6 +113,13 @@ public class EditRelationshipFragmentController {
 			if(startDate != null && startDate.after(today)) {
 				errors.rejectValue("startDate", "Relationship start date can't be in the future");
 			}
+			Date dob = patient.getBirthdate();
+			if(startDate != null && dob != null && startDate.before(dob)) {
+				errors.rejectValue("startDate", "Relationship start date can't be before client's date of birth");
+			}
+			if(startDate == null) {
+				errors.rejectValue("startDate", "Relationship start date can't be empty");
+			}
 
 			if(endDate != null && startDate != null && endDate.before(startDate)) {
 				errors.rejectValue("endDate", "Relationship end date can't be before start date");

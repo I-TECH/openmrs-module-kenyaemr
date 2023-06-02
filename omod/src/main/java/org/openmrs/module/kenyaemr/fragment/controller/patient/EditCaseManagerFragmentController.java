@@ -118,7 +118,9 @@ public class EditCaseManagerFragmentController {
 			if(startDate != null && startDate.after(today)) {
 				errors.rejectValue("startDate", "Relationship start date can't be in the future");
 			}
-
+			if(startDate == null) {
+				errors.rejectValue("startDate", "Relationship start date can't be empty");
+			}
 			if(endDate != null && startDate != null && endDate.before(startDate)) {
 				errors.rejectValue("endDate", "Relationship end date can't be before start date");
 			}
