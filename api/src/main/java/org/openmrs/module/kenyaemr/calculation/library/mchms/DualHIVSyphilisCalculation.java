@@ -67,12 +67,14 @@ public class DualHIVSyphilisCalculation extends AbstractPatientCalculation imple
             EncounterType mchConsultationEncounterType = MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_CONSULTATION);
             Encounter lastANCEnc = EmrUtils.lastEncounter(patient,mchConsultationEncounterType,antenatalVisitForm );
             Obs pregStatusObs = EmrCalculationUtils.obsResultForPatient(pregStatusObss, ptId);
-            Obs hepBObs = EmrCalculationUtils.obsResultForPatient(lastHepatitisTesting, ptId);
-            Obs syphilsObs = EmrCalculationUtils.obsResultForPatient(lastSyphilisTesting, ptId);
-            Obs resultOfHivTestingObs = EmrCalculationUtils.obsResultForPatient(resultOfHivTesting, ptId);
-            Obs lmpObs = EmrCalculationUtils.obsResultForPatient(lmp, ptId);
-            lmpDate = lmpObs.getObsDatetime();
-            if(!inHivProgram.contains(ptId)){
+
+            if(!inHivProgram.contains(ptId) && lmpDate != null && pregStatusObs != null && pregStatusObs.getValueCoded().equals(yes)) {
+                Obs hepBObs = EmrCalculationUtils.obsResultForPatient(lastHepatitisTesting, ptId);
+                Obs syphilsObs = EmrCalculationUtils.obsResultForPatient(lastSyphilisTesting, ptId);
+                Obs resultOfHivTestingObs = EmrCalculationUtils.obsResultForPatient(resultOfHivTesting, ptId);
+                Obs lmpObs = EmrCalculationUtils.obsResultForPatient(lmp, ptId);
+                lmpDate = lmpObs.getObsDatetime();
+
                     if(hepBObs !=null){
                         if (hepBObs.getObsDatetime() != null){
                             hepatitisTestDate = hepBObs.getObsDatetime();
@@ -92,15 +94,14 @@ public class DualHIVSyphilisCalculation extends AbstractPatientCalculation imple
                         }
                     }
                     int pregnancyMonths = monthsBetween(currentDate, lmpDate);
-                    boolean syphilisQuestion = lastANCEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastANCEnc, syphilisQ, syphilisNegative) : false;
-                    if(pregStatusObs != null && pregStatusObs.getValueCoded().equals(yes)){
-                       if(lastANCEnc !=null) {
-                           if (pregnancyMonths >= 1 && pregnancyMonths <= 3) {
-                               if (hepBObs ==null || hepBTestMonths > 3 ) {
+                 boolean syphilisQuestion = lastANCEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastANCEnc, syphilisQ, syphilisNegative) : false;
+               if(lastANCEnc !=null) {
+                       if (pregnancyMonths >= 1 && pregnancyMonths <= 3) {
+                               if (hepBObs == null || hepBTestMonths > 3 ) {
                                    eligibleDualHivSyphilisFlag = true;
                                    dualMessage.append("Due for HepB Test");
                                }
-                               if (syphilsObs ==null  || syphilisTestMonths > 3) {
+                               if (syphilsObs == null  || syphilisTestMonths > 3) {
                                    eligibleDualHivSyphilisFlag = true;
                                    if(dualMessage.length() == 0){
                                        dualMessage.append("Due for Syphilis Test");
@@ -108,18 +109,18 @@ public class DualHIVSyphilisCalculation extends AbstractPatientCalculation imple
                                        dualMessage.append(", ").append("Due for Syphilis Test");
                                    }
                                }
-                               if (resultOfHivTestingObs ==null || hivTestMonths > 3) {
+                               if (resultOfHivTestingObs == null || hivTestMonths > 3) {
                                    eligibleDualHivSyphilisFlag = true;
                                    if(dualMessage.length() == 0){
                                        dualMessage.append("Due for Hiv Test");
                                    }else{
                                        dualMessage.append(", ").append("Due for Hiv Test");
                                    }
+                                  }
                                }
-                           }
 
                         if (pregnancyMonths >= 7 && pregnancyMonths <= 9){
-                            if (syphilsObs ==null || syphilisTestDate.after(lmpDate) && syphilisQuestion ) {
+                            if (syphilsObs == null || syphilisTestDate.after(lmpDate) && syphilisQuestion ) {
                                 eligibleDualHivSyphilisFlag = true;
                                 dualMessage.append("Due for Syphilis Test");
                             }
@@ -133,8 +134,8 @@ public class DualHIVSyphilisCalculation extends AbstractPatientCalculation imple
                            }
                          }
                        }
-                    }
-            }
+                   }
+
             ret.put(ptId, new BooleanResult(eligibleDualHivSyphilisFlag, this));
         }
         return ret;
