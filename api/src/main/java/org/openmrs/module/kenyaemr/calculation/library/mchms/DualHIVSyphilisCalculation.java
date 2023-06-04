@@ -9,8 +9,6 @@
  */
 package org.openmrs.module.kenyaemr.calculation.library.mchms;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.joda.time.Months;
 import org.openmrs.Concept;
@@ -32,7 +30,6 @@ import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferOutDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
@@ -45,8 +42,6 @@ import java.util.Map;
 import java.util.Set;
 
 public class DualHIVSyphilisCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
-
-    protected static final Log log = LogFactory.getLog(TransferOutDateCalculation.class);
     StringBuilder dualMessage = new StringBuilder();
 
     private Date currentDate = new Date();
