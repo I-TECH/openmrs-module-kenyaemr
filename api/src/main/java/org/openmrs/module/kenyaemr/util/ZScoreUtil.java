@@ -15,6 +15,7 @@ import org.codehaus.jackson.node.ObjectNode;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -220,16 +221,18 @@ public class ZScoreUtil {
 
         double previousKey = 0;
         for (Map.Entry<Double,String> entry : sdValues.entrySet()) {
-            if (weight <= entry.getKey()) {
-                System.out.println("Key: " + entry.getKey() + ", val: " + entry.getValue());
-                previousKey = entry.getKey();
-                continue;
-            } else {
+            previousKey = entry.getKey();
+            DecimalFormat df = new DecimalFormat("#.#");
+            double formatedVal = Double.parseDouble(df.format(entry.getKey()));
+            if (formatedVal <= weight) {
                 String sdValStringRepresentation = sdValues.get(previousKey);
                 System.out.println("Got the SD: " + previousKey + ", and value of " + sdValues.get(previousKey));
                 if (zScoreValues.containsKey(sdValStringRepresentation)) {
                     return zScoreValues.get(sdValStringRepresentation);
                 }
+            } else {
+                System.out.println("Key: " + entry.getKey() + ", val: " + entry.getValue());
+                continue;
             }
         }
         return ZSCORE_NOT_FOUND_DEFAULT_VALUE;
