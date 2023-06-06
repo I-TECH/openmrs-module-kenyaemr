@@ -14,9 +14,12 @@
 <htmlform>
 
     <script type="text/javascript">
+        var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
         var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
         var PATIENT_PREGNANT = GREENCARD_VELOCITY.split(",")[10].split(":")[1];
         function onWeightOrHeightChange() {
+            var age = parseInt('<lookup expression="patient.age"/>');
+            var gender = "<lookup expression="patient.gender" />";
             var display = '';
             var weightKg = parseFloat(getValue('weight.value'));
             var heightM = parseFloat(getValue('height.value')) / 100;
@@ -27,6 +30,46 @@
                 }
                 else {
                     display = bmi.toFixed(2);
+                }
+             if (age &lt; 5) {
+                    jq.getJSON('/' + ctxPath + '/kenyaemr/ZScoreUtils/calculateZScore.action', {
+                        height: heightM * 100,
+                        weight: weightKg,
+                        sex: gender
+                    }, function (data) {
+                        if (data != null) {
+                            jQuery('#calculated-zscore').html(data);
+                            if (data &gt; -1) {
+                                getField('z-score.value').prop("selectedIndex", 1);
+                                setValue('z-score-value.value', 0);
+                            }else if (data == -1) {
+                                getField('z-score.value').prop("selectedIndex", 2);
+                                setValue('z-score-value.value', -1);
+                            }else if (data == -2) {
+                                getField('z-score.value').prop("selectedIndex", 3);
+                                setValue('z-score-value.value', -1);
+                            }else if (data == -3) {
+                                getField('z-score.value').prop("selectedIndex", 4);
+                                setValue('z-score-value.value', -3);
+                            }
+                            else if (data == -4) {
+                                getField('z-score.value').prop("selectedIndex", 4);
+                                setValue('z-score-value.value', -4);
+                            }
+                            else if (data == -10) {
+                                getField('z-score.value').prop("selectedIndex", 0);
+                                getField('z-score.error').html('Z-score not within acceptable range').show();
+                            }
+                            else if (data == -20) {
+                                getField('z-score.value').prop("selectedIndex", 0);
+                                getField('z-score.error').html('Missing either weight or height').show();
+                            }
+                        } else {
+                            jq("#calculated-zscore").text(data.message).addClass("ke-error-label");
+                        }
+
+                    });
+
                 }
             }
             jQuery('#calculated-bmi').html(display);
@@ -54,18 +97,6 @@
                 jq('#recent-calculated-bmi').html("");
             }
         }
-        function zScoreSelected() {
-            var zScore = getField('z-score.value').val();
-            if (zScore == 1115) {
-                setValue('z-score-value.value', 0);
-            }else if (zScore == 123814) {
-                setValue('z-score-value.value', -1);
-            }else if (zScore == 123815) {
-                setValue('z-score-value.value', -2);
-            }else if (zScore == 164131) {
-                setValue('z-score-value.value', -3);
-            }
-        }
 
         jQuery(function () {
             var pAge = parseInt('<lookup expression="patient.age"/>');
@@ -75,9 +106,9 @@
             babyVal = getValue('baby-last-wee.value');
             getField('weight.value').change(onWeightOrHeightChange);
             getField('height.value').change(onWeightOrHeightChange);
-            jq("#z-score select").change(zScoreSelected);
             onWeightOrHeightChange();
             displayRecentBmi();
+            jq('#z-score').attr("style", "pointer-events: none;");
             jq('#miscariage input').change(onMiscariageChange);
             jq('#baby-last-week').hide();
             //limit letters only in text field
@@ -118,16 +149,6 @@
                                getField('lmp-date.error').html('Should not be earlier than birth date').hide();
                            }
                        }
-                   if (pAge &lt; 5) {
-                       var z_score = getField('z-score.value').val();
-                       if (z_score == false) {
-                           getField('z-score.error').html('Please specify Z-Score').show();
-                           return false;
-                       } else {
-                           getField('z-score.error').html('Please specify Z-Score').hide();
-                       }
-                   }
-
                     return true;
                 });
 
@@ -275,9 +296,9 @@
                     </tr>
                     <includeIf velocityTest="$patient.age &lt; 5">
                     <tr>
-
-                        <td> <br/> Z-Score </td>
-                        <td><br/>
+                        <td>
+                            Nutritional status:</td>
+                        <td>
                             <obs conceptId="163515AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                  answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
                                                    123814AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
@@ -287,6 +308,11 @@
                                  style="dropdown"
                                  id="z-score"/>
                         </td>
+                        <td><recentObs conceptId="162584AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
+                        <td> Z-Score : &#160;&#160;&#160;&#160;&#160;&#160;</td>
+                        <td><span id="calculated-zscore" class="value"></span></td>
+
+
                        </tr>
                         <tr style="display: none">
                             <td>
