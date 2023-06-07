@@ -109,8 +109,7 @@
             var pAge = parseInt('<lookup expression="patient.age"/>');
            var lastZscore = latestZscore.replace(/[^\d]/g, '');
             var formattedZscoreDate = moment(moment(latestZscoreDate, 'DD/MMM/YYYY').toDate()).format("DD-MMM-YYYY");
-            console.log("lastZscore ==>"+lastZscore);
-            console.log("formattedZscoreDate ==>"+formattedZscoreDate);
+
             if (pAge &lt; 5 &amp;&amp; lastZscore !="" ) {
                 if (lastZscore == 1115) {
                     jq('#recent-calculated-zscore').html('Normal ('+formattedZscoreDate+')');
@@ -166,7 +165,6 @@
             var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
             var pgender = "<lookup expression="patient.gender" />";
             var pAge = parseInt('<lookup expression="patient.age"/>');
-
            beforeSubmit.push(function () {
                var lmpdate = new Date(getValue('lmp-date.value')).getTime();
 
