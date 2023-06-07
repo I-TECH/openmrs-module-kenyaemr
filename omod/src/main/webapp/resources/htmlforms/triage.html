@@ -12,7 +12,7 @@
   ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
 -->
 <htmlform>
-
+    <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
     <script type="text/javascript">
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
         var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
@@ -39,6 +39,13 @@
                     }, function (data) {
                         if (data != null) {
                             jQuery('#calculated-zscore').html(data);
+                            if (data == -10) {
+                                getField('z-score.value').prop("selectedIndex", 0);
+                                getField('z-score.error').html('Z-score not within acceptable range').show();
+                            }else{
+                                getField('z-score.error').html('Z-score not within acceptable range').hide();
+                            }
+
                             if (data &gt; -1) {
                                 getField('z-score.value').prop("selectedIndex", 1);
                                 setValue('z-score-value.value', 0);
@@ -55,10 +62,6 @@
                             else if (data == -4) {
                                 getField('z-score.value').prop("selectedIndex", 4);
                                 setValue('z-score-value.value', -4);
-                            }
-                            else if (data == -10) {
-                                getField('z-score.value').prop("selectedIndex", 0);
-                                getField('z-score.error').html('Z-score not within acceptable range').show();
                             }
                             else if (data == -20) {
                                 getField('z-score.value').prop("selectedIndex", 0);
@@ -98,6 +101,28 @@
             }
         }
 
+        function displayRecentZscore() {
+            var latestZscore = "<lookup expression="fn.latestObs(163515).getValueCoded()"/>"
+            var latestZscoreDate = "<lookup expression="fn.latestObs(163515).getObsDatetime()"/>";
+            var pAge = parseInt('<lookup expression="patient.age"/>');
+           var lastZscore = latestZscore.replace(/[^\d]/g, '');
+            var formattedZscoreDate = moment(moment(latestZscoreDate, 'DD/MMM/YYYY').toDate()).format("DD-MMM-YYYY");
+
+            if (pAge &lt; 5 &amp;&amp; lastZscore !="" ) {
+                if (lastZscore == 1115) {
+                    jq('#recent-calculated-zscore').html('Normal ('+formattedZscoreDate+')');
+                }else if (lastZscore == 123814) {
+                    jq('#recent-calculated-zscore').html('Mild ('+formattedZscoreDate+')');
+                }else if (lastZscore == 123815) {
+                    jq('#recent-calculated-zscore').html('Moderate ('+formattedZscoreDate+')');
+                }else if (lastZscore == 164131) {
+                    jq('#recent-calculated-zscore').html('Severe (' + formattedZscoreDate + ')');
+                }else{
+                    jq('#recent-calculated-zscore').html("");
+                 }
+            }
+        }
+
         jQuery(function () {
             var pAge = parseInt('<lookup expression="patient.age"/>');
             var miscariageVal = getValue('miscariage.value');
@@ -108,6 +133,7 @@
             getField('height.value').change(onWeightOrHeightChange);
             onWeightOrHeightChange();
             displayRecentBmi();
+            displayRecentZscore();
             jq('#z-score').attr("style", "pointer-events: none;");
             jq('#miscariage input').change(onMiscariageChange);
             jq('#baby-last-week').hide();
@@ -137,7 +163,6 @@
             var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
             var pgender = "<lookup expression="patient.gender" />";
             var pAge = parseInt('<lookup expression="patient.age"/>');
-
            beforeSubmit.push(function () {
                var lmpdate = new Date(getValue('lmp-date.value')).getTime();
 
@@ -308,11 +333,9 @@
                                  style="dropdown"
                                  id="z-score"/>
                         </td>
-                        <td><recentObs conceptId="162584AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></td>
-                        <td> Z-Score : &#160;</td>
+                        <td><span id="recent-calculated-zscore"></span></td>
+                        <td>&#160;&#160;&#160;  Z-Score : &#160;</td>
                         <td><span id="calculated-zscore" class="value"></span></td>
-
-
                        </tr>
                         <tr style="display: none">
                             <td>
