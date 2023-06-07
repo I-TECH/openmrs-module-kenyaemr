@@ -147,6 +147,10 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         eTLLastVLJustificationDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
         NCDsDataDefinition ncDsDataDefinition = new NCDsDataDefinition();
         ncDsDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+        NCDDateDataDefinition ncdDateDataDefinition = new NCDDateDataDefinition();
+        ncdDateDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+        NCDStatusDataDefinition ncdStatusDataDefinition = new NCDStatusDataDefinition();
+        ncdStatusDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 
         DataConverter formatter = new ObjectFormatter("{familyName}, {givenName}");
         DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), formatter);
@@ -191,6 +195,8 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("Refill Date", eTLRefillDateDataDefinition, "endDate=${endDate}", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Case Manager", etlCaseManagerDataDefinition, "endDate=${endDate}");
         dsd.addColumn("NCDs", ncDsDataDefinition, "endDate=${endDate}");
+        dsd.addColumn("NCDs Onset Date", ncdDateDataDefinition, "endDate=${endDate}");
+        dsd.addColumn("NCDs status", ncdStatusDataDefinition, "endDate=${endDate}");
 
         return dsd;
     }
