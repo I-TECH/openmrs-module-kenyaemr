@@ -146,7 +146,7 @@ public class DualHIVSyphilisCalculation extends AbstractPatientCalculation imple
                                    }
                                }
                        // Check  Tested HIV- clients in MCH - ANC module
-                              boolean patientHasNegativeTestHivAncResult = lastANCHtsEnc != null ? EmrUtils.encounterThatPassCodedAnswer(lastHtsEnc, htsFinalTestQuestion, htsNegativeResult) : false;
+                              boolean patientHasNegativeTestHivAncResult = lastANCHtsEnc != null && EmrUtils.encounterThatPassCodedAnswer(lastANCHtsEnc, htsFinalTestQuestion, htsNegativeResult);
                                  if(patientHasNegativeTestHivAncResult ) {
                                      if(lastHtsInitialEnc != null) {
                                          if (lastANCHtsEnc.getEncounterDatetime().after(lastHtsInitialEnc.getEncounterDatetime())) {
