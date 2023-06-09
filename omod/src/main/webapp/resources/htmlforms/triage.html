@@ -39,6 +39,7 @@
                     }, function (data) {
                         if (data != null) {
                             jQuery('#calculated-zscore').html(data);
+                            setValue('z-score-value.value', data);
                             if (data == -10) {
                                 getField('z-score.value').prop("selectedIndex", 0);
                                 getField('z-score.error').html('Z-score not within acceptable range').show();
@@ -48,27 +49,20 @@
 
                             if (data &gt; -1) {
                                 getField('z-score.value').prop("selectedIndex", 1);
-                                setValue('z-score-value.value', 0);
                             }else if (data == -1) {
                                 getField('z-score.value').prop("selectedIndex", 2);
-                                setValue('z-score-value.value', -1);
                             }else if (data == -2) {
                                 getField('z-score.value').prop("selectedIndex", 3);
-                                setValue('z-score-value.value', -1);
                             }else if (data == -3) {
                                 getField('z-score.value').prop("selectedIndex", 4);
-                                setValue('z-score-value.value', -3);
-                            }
-                            else if (data == -4) {
+                            }else if (data == -4) {
                                 getField('z-score.value').prop("selectedIndex", 4);
-                                setValue('z-score-value.value', -4);
-                            }
-                            else if (data == -20) {
+                            }else if (data == -20) {
                                 getField('z-score.value').prop("selectedIndex", 0);
                                 getField('z-score.error').html('Missing either weight or height').show();
                             }
                         } else {
-                            jq("#calculated-zscore").text(data.message).addClass("ke-error-label");
+                            jq("#calculated-zscore").text("Error computing z-score").addClass("ke-error-label");
                         }
 
                     });
