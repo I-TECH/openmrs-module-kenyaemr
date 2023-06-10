@@ -276,11 +276,11 @@
                 setValue('maturity.value', diffInWeeks);
             }
 			//Prepopulate Visit number from last visit. Need to check for current enrollment
-			if (LATEST_VISIT_NUMBER != "" &amp;&amp; LATEST_VISIT_NUMBER != null &amp;&amp; moment(latestLMPFormatted).isBefore(latestancVisitNoDateFormatted,'day')) {
+			/*if (LATEST_VISIT_NUMBER != "" &amp;&amp; LATEST_VISIT_NUMBER != null &amp;&amp; moment(latestLMPFormatted).isBefore(latestancVisitNoDateFormatted,'day')) {
 				setValue('visit-number.value', (parseInt(LATEST_VISIT_NUMBER) + 1))
 			} else {
 				setValue('visit-number.value', 1);
-			}
+			}*/
 		}
 
 	});
