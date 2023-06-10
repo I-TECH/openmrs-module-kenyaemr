@@ -454,7 +454,7 @@
         }else{
             getField('visit-number.error').html('Please specify visit number.').hide();
         }
-		if (parseInt(visit_number) &lt; 1 || parseInt(visit_number) &gt; 99 || parseInt(visit_number) &lt; parseInt(LATEST_VISIT_NUMBER) || parseInt(visit_number) == parseInt(LATEST_VISIT_NUMBER) || parseInt(visit_number) &gt; parseInt(LATEST_VISIT_NUMBER) + 1) {
+		if (parseInt(visit_number) &lt; 1 || parseInt(visit_number) &gt; 99 || parseInt(visit_number) &lt; parseInt(LATEST_VISIT_NUMBER) || parseInt(visit_number) == parseInt(LATEST_VISIT_NUMBER)) {
 			getField('visit-number.error').html('Invalid visit number').show();
 			return false;
 		}
