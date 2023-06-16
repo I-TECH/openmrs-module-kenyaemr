@@ -155,6 +155,7 @@ public class KenyaemrCoreRestController extends BaseRestController {
     public static String PREP_PROGRAM_UUID = "214cad1c-bb62-4d8e-b927-810a046daf62";
     public static String KP_PROGRAM_UUID = "7447305a-18a7-11e9-ab14-d663bd873d93";
     public static final String KP_CLIENT_ENROLMENT = "c7f47cea-207b-11e9-ab14-d663bd873d93";
+    public static final String KP_CLIENT_DISCONTINUATION = "1f76643e-2495-11e9-ab14-d663bd873d93";
 
     public static final String PREP_ENROLLMENT_FORM = "d5ca78be-654e-4d23-836e-a934739be555";
 
@@ -828,7 +829,6 @@ public class KenyaemrCoreRestController extends BaseRestController {
                             }
                             programDetails.put("enrollmentEncounterUuid", hivEnrollmentEncounter.getUuid());
                             programDetails.put("lastEncounter", lastEncDetails);
-                            programDetails.put("enrollmentFormUuid", HivMetadata._Form.HIV_ENROLLMENT);
                         }
                     }
                     if(hivCompletionEncounter != null) {
@@ -838,8 +838,11 @@ public class KenyaemrCoreRestController extends BaseRestController {
                             }
                         }
                         programDetails.put("discontinuationEncounterUuid", hivCompletionEncounter.getUuid());
-                        programDetails.put("discontinuationFormUuid", HivMetadata._Form.HIV_DISCONTINUATION);
                     }
+                    programDetails.put("discontinuationFormUuid", HivMetadata._Form.HIV_DISCONTINUATION);
+                    programDetails.put("discontinuationFormName", "HIV Discontinuation");
+                    programDetails.put("enrollmentFormUuid", HivMetadata._Form.HIV_ENROLLMENT);
+                    programDetails.put("enrollmentFormName", "HIV Enrollment");
                 }
 
                 // tpt program
@@ -855,13 +858,15 @@ public class KenyaemrCoreRestController extends BaseRestController {
                             }
                         }
                         programDetails.put("enrollmentEncounterUuid", tptEnrollmentEncounter.getUuid());
-                        programDetails.put("enrollmentFormUuid", IPTMetadata._Form.IPT_INITIATION);
 
                     }
                     if(tptDiscontinuationEncounter != null) {
                         programDetails.put("discontinuationEncounterUuid", tptDiscontinuationEncounter.getUuid());
-                        programDetails.put("discontinuationFormUuid", IPTMetadata._Form.IPT_FOLLOWUP);
                     }
+                    programDetails.put("enrollmentFormUuid", IPTMetadata._Form.IPT_INITIATION);
+                    programDetails.put("enrollmentFormName", "IPT Initiation");
+                    programDetails.put("discontinuationFormUuid", IPTMetadata._Form.IPT_OUTCOME);
+                    programDetails.put("discontinuationFormName", "IPT Outcome");
                 }
 
                 //tb program
@@ -876,13 +881,15 @@ public class KenyaemrCoreRestController extends BaseRestController {
                                 programDetails.put("referredFrom", obs.getValueCoded().getName().getName());
                             }
                             programDetails.put("enrollmentEncounterUuid", tbEnrollmentEncounter.getUuid());
-                            programDetails.put("enrollmentFormUuid", TbMetadata._Form.TB_ENROLLMENT);
                         }
                     }
                     if(tbDiscontinuationEncounter != null) {
                         programDetails.put("discontinuationEncounterUuid", tbDiscontinuationEncounter.getUuid());
-                        programDetails.put("discontinuationFormUuid", TbMetadata._Form.TB_COMPLETION);
                     }
+                    programDetails.put("enrollmentFormUuid", TbMetadata._Form.TB_ENROLLMENT);
+                    programDetails.put("enrollmentFormName", "TB Enrollment");
+                    programDetails.put("discontinuationFormUuid", TbMetadata._Form.TB_COMPLETION);
+                    programDetails.put("discontinuationFormName", "TB Discontinuation");
                 }
 
                 //mch mother program
@@ -927,14 +934,16 @@ public class KenyaemrCoreRestController extends BaseRestController {
                                 programDetails.put("parity", parityTerm + gravida);
                             }
                             programDetails.put("enrollmentEncounterUuid", mchmEnrollmentEncounter.getUuid());
-                            programDetails.put("enrollmentFormUuid", MchMetadata._Form.MCHMS_ENROLLMENT);
                         }
 
                     }
                     if(mchmDiscontinuationEncounter != null) {
                         programDetails.put("discontinuationEncounterUuid", mchmDiscontinuationEncounter.getUuid());
-                        programDetails.put("discontinuationFormUuid", MchMetadata._Form.MCHMS_DISCONTINUATION);
                     }
+                    programDetails.put("enrollmentFormUuid", MchMetadata._Form.MCHMS_ENROLLMENT);
+                    programDetails.put("enrollmentFormName", "MCH-MS Enrollment");
+                    programDetails.put("discontinuationFormUuid", MchMetadata._Form.MCHMS_DISCONTINUATION);
+                    programDetails.put("discontinuationFormName", "MCH-MS Discontinuation");
                 }
 
                 //mch child program
@@ -949,13 +958,15 @@ public class KenyaemrCoreRestController extends BaseRestController {
                                 programDetails.put("entryPoint", entryPointAbbriviations(obs.getValueCoded()));
                             }
                             programDetails.put("enrollmentEncounterUuid", mchcEnrollmentEncounter.getUuid());
-                            programDetails.put("enrollmentFormUuid", MchMetadata._Form.MCHCS_ENROLLMENT);
                         }
                     }
                     if(mchcDiscontinuationEncounter != null) {
                         programDetails.put("discontinuationEncounterUuid", mchcDiscontinuationEncounter.getUuid());
-                        programDetails.put("discontinuationFormUuid", MchMetadata._Form.MCHCS_DISCONTINUATION);
                     }
+                    programDetails.put("enrollmentFormUuid", MchMetadata._Form.MCHCS_ENROLLMENT);
+                    programDetails.put("enrollmentFormName", "Mch Child Enrolment Form");
+                    programDetails.put("discontinuationFormUuid", MchMetadata._Form.MCHCS_DISCONTINUATION);
+                    programDetails.put("discontinuationFormName", "Child Welfare Services Discontinuation");
                 }
 
                 //otz program
@@ -966,12 +977,14 @@ public class KenyaemrCoreRestController extends BaseRestController {
 
                     if(otzEnrollmentEncounter != null) {
                         programDetails.put("enrollmentEncounterUuid", otzEnrollmentEncounter.getUuid());
-                        programDetails.put("enrollmentFormUuid", OTZMetadata._Form.OTZ_ENROLLMENT_FORM);
                     }
                     if(otzDiscontinuationEncounter != null) {
                         programDetails.put("discontinuationEncounterUuid", otzDiscontinuationEncounter.getUuid());
-                        programDetails.put("discontinuationFormUuid", OTZMetadata._Form.OTZ_DISCONTINUATION_FORM);
                     }
+                    programDetails.put("enrollmentFormUuid", OTZMetadata._Form.OTZ_ENROLLMENT_FORM);
+                    programDetails.put("enrollmentFormName", "OTZ Enrollment Form");
+                    programDetails.put("discontinuationFormUuid", OTZMetadata._Form.OTZ_DISCONTINUATION_FORM);
+                    programDetails.put("discontinuationFormName", "OTZ Discontinuation Form");
                 }
 
                 //ovc program
@@ -982,12 +995,14 @@ public class KenyaemrCoreRestController extends BaseRestController {
 
                     if(ovcEnrollmentEncounter != null) {
                         programDetails.put("enrollmentEncounterUuid", ovcEnrollmentEncounter.getUuid());
-                        programDetails.put("enrollmentFormUuid", OVCMetadata._Form.OVC_ENROLLMENT_FORM);
                     }
                     if(ovcDiscontinuationEncounter != null) {
                         programDetails.put("discontinuationEncounterUuid", ovcDiscontinuationEncounter.getUuid());
-                        programDetails.put("discontinuationFormUuid", OVCMetadata._Form.OVC_DISCONTINUATION_FORM);
                     }
+                    programDetails.put("enrollmentFormUuid", OVCMetadata._Form.OVC_ENROLLMENT_FORM);
+                    programDetails.put("enrollmentFormName", "OVC Enrollment Form");
+                    programDetails.put("discontinuationFormUuid", OVCMetadata._Form.OVC_DISCONTINUATION_FORM);
+                    programDetails.put("discontinuationFormName", "OVC Discontinuation Form");
                 }
 
                 //vmmc program
@@ -998,12 +1013,14 @@ public class KenyaemrCoreRestController extends BaseRestController {
 
                     if(vmmcEnrollmentEncounter != null) {
                         programDetails.put("enrollmentEncounterUuid", vmmcEnrollmentEncounter.getUuid());
-                        programDetails.put("enrollmentFormUuid", VMMCMetadata._Form.VMMC_ENROLLMENT_FORM);
                     }
                     if(vmmcDiscontinuationEncounter != null) {
                         programDetails.put("discontinuationEncounterUuid", vmmcDiscontinuationEncounter.getUuid());
-                        programDetails.put("discontinuationFormUuid", VMMCMetadata._Form.VMMC_DISCONTINUATION_FORM);
                     }
+                    programDetails.put("enrollmentFormUuid", VMMCMetadata._Form.VMMC_ENROLLMENT_FORM);
+                    programDetails.put("enrollmentFormName", "VMMC Enrollment Form");
+                    programDetails.put("discontinuationFormUuid", VMMCMetadata._Form.VMMC_DISCONTINUATION_FORM);
+                    programDetails.put("discontinuationFormUuid", "VMMC Discontinuation Form");
                 }
 
                 //prep program
@@ -1014,12 +1031,14 @@ public class KenyaemrCoreRestController extends BaseRestController {
 
                     if(prepEnrollmentEncounter != null) {
                         programDetails.put("enrollmentEncounterUuid", prepEnrollmentEncounter.getUuid());
-                        programDetails.put("enrollmentFormUuid", PREP_ENROLLMENT_FORM);
                     }
                     if(prepDiscontinuationEncounter != null) {
                         programDetails.put("discontinuationEncounterUuid", prepDiscontinuationEncounter.getUuid());
-                        programDetails.put("discontinuationFormUuid", PREP_DISCONTINUATION_FORM);
                     }
+                    programDetails.put("enrollmentFormUuid", PREP_ENROLLMENT_FORM);
+                    programDetails.put("enrollmentFormName", "PrEP Enrollment");
+                    programDetails.put("discontinuationFormUuid", PREP_DISCONTINUATION_FORM);
+                    programDetails.put("discontinuationFormName", "PrEP Client Discontinuation");
                 }
 
                 //kp program
@@ -1030,12 +1049,14 @@ public class KenyaemrCoreRestController extends BaseRestController {
 
                     if(kpEnrollmentEncounter != null) {
                         programDetails.put("enrollmentEncounterUuid", kpEnrollmentEncounter.getUuid());
-                        programDetails.put("enrollmentFormUuid", KP_CLIENT_ENROLMENT);
                     }
                     if(kpDiscontinuationEncounter != null) {
                         programDetails.put("discontinuationEncounterUuid", kpDiscontinuationEncounter.getUuid());
-                        //programDetails.put("discontinuationFormUuid", CommonMetadata._Form.VMMC_DISCONTINUATION_FORM);
                     }
+                    programDetails.put("enrollmentFormUuid", KP_CLIENT_ENROLMENT);
+                    programDetails.put("enrollmentFormUuid", "KP Enrollment");
+                    programDetails.put("discontinuationFormUuid", KP_CLIENT_DISCONTINUATION);
+                    programDetails.put("discontinuationFormName", "KP Discontinuation");
                 }
 
                 programDetails.put("programName", patientProgram.getProgram().getName());
