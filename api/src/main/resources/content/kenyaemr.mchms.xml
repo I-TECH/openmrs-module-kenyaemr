@@ -52,6 +52,9 @@
 				<ref bean="kenyaemr.mchms.report.currentlyEnrolledInMCH"/>
 				<ref bean="kenyaemr.mchms.report.cohort.analysis" />
 				<ref bean="kenyaemr.mchms.report.missedSyphilisTestReport" />
+				<ref bean="kenyaemr.mchms.report.missedHIVTestReport" />
+				<ref bean="kenyaemr.mchms.report.missedHAARTReport" />
+				<ref bean="kenyaemr.mchms.report.missedInfantProphylaxisReport" />
 
 			</set>
 		</property>
@@ -296,6 +299,42 @@
 			</set></property>
 		<property name="template" value="kenyaemr:pmtct/missed_syphilis_test_template.xls" />
 		<property name="repeatingSection" value="sheet:1,row:6,dataset:missedSyphilisTestCohort" />
+	</bean>
+
+	<bean id="kenyaemr.mchms.report.missedHIVTestReport" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="9a8fa087-9560-4617-b169-af78539193d1" />
+		<property name="name" value="Missed HIV Test Report" />
+		<property name="description" value="A Report of MCH Mothers who missed HIV Test" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:pmtct/missed_hiv_test_template.xls" />
+		<property name="repeatingSection" value="sheet:1,row:6,dataset:missedHIVTestCohort" />
+	</bean>
+
+	<bean id="kenyaemr.mchms.report.missedHAARTReport" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="e87c33ef-1f8a-474c-a85f-2e9129a7d4ec" />
+		<property name="name" value="Missed HAART Report" />
+		<property name="description" value="A Report of MCH Mothers who Missed HAART" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:pmtct/missed_haart_template.xls" />
+		<property name="repeatingSection" value="sheet:1,row:6,dataset:missedHAARTCohort" />
+	</bean>
+
+	<bean id="kenyaemr.mchms.report.missedInfantProphylaxisReport" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="74e5c106-2a06-4374-bdb8-2cc55b34caf0" />
+		<property name="name" value="Missed Infant Prophylaxis Report" />
+		<property name="description" value="A report of MCH mothers who missed Infant Prophylaxis" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:pmtct/missed_infant_prophylaxis_template.xls" />
+		<property name="repeatingSection" value="sheet:1,row:6,dataset:missedInfantProphylaxisCohort" />
 	</bean>
 
 </beans>
