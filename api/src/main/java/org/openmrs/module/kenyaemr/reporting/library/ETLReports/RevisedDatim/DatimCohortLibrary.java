@@ -5351,7 +5351,7 @@ public class DatimCohortLibrary {
      * @return
      */
     public CohortDefinition completedTPTCurrentOrPrevPeriod() {
-        String sqlQuery = "select o.patient_id, o.visit_date, date_sub(:startDate, interval 6 MONTH), date(:endDate)\n" +
+        String sqlQuery = "select o.patient_id\n" +
                 "from kenyaemr_etl.etl_ipt_outcome o\n" +
                 "where date(o.visit_date) between date_sub(:startDate, interval 6 MONTH)\n" +
                 "    and date(:endDate)\n" +

@@ -541,11 +541,14 @@ public class PublicHealthActionCohortLibrary {
      * @return
      */
     public CohortDefinition allHEIsLinkedToMothers() {
-        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_hei_enrollment e\n" +
-                "                             inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
-                "                             left join relationship r on e.patient_id = r.person_b\n" +
-                "                          inner join (select d.patient_id, d.gender from kenyaemr_etl.etl_patient_demographics d where d.gender = 'F')m on m.patient_id = r.person_a \n" +
-                "inner join relationship_type t on ``r.relationship = t.relationship_type_id and t.uuid='8d91a210-c2cc-11de-8d13-0010c6dffd0f'``;";
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "         inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = e.patient_id\n" +
+                "         left join relationship r on e.patient_id = r.person_b\n" +
+                "         inner join (select d.patient_id, d.gender from kenyaemr_etl.etl_patient_demographics d where d.gender = 'F') m\n" +
+                "                    on m.patient_id = r.person_a\n" +
+                "         inner join relationship_type t\n" +
+                "                    on r.relationship = t.relationship_type_id and t.uuid = '8d91a210-c2cc-11de-8d13-0010c6dffd0f';";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("allHEIsLinkedToMothers");
         cd.setQuery(sqlQuery);
