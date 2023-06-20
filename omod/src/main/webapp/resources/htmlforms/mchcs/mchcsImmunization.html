@@ -276,14 +276,14 @@
                 }else{
                     getField('encounter-date.error').html('Immunization encounter date should not be empty').hide();
 				}
-                var isDateGivenBeforeEncounterDate = moment(moment(moment(dateGiven, 'YYYY-MM-DD').toDate())).isBefore(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()));
-                if (isDateGivenBeforeEncounterDate) {
-                    getField('date-given.error').html('Date given vaccine cannot be before encounter date').show();
+                var isDateGivenInFutureDate = moment(moment(moment(dateGiven, 'YYYY-MM-DD').toDate())).isAfter(moment().format('YYYY-MM-DD'));
+                if (isDateGivenInFutureDate) {
+                    getField('date-given.error').html('Date given vaccine cannot be in future').show();
                     return false;
                 }else{
-                    getField('date-given.error').html('Date given vaccine cannot be before encounter date').hide();
+                    getField('date-given.error').html('Date given vaccine cannot be in future').hide();
 				}
-                var isExpiryDateBeforeDateGiven = moment(moment(moment(expiryDate, 'YYYY-MM-DD').toDate())).isBefore(moment(moment(dateGiven, 'YYYY-MM-DD').toDate()));
+				var isExpiryDateBeforeDateGiven = moment(moment(moment(expiryDate, 'YYYY-MM-DD').toDate())).isBefore(moment(moment(dateGiven, 'YYYY-MM-DD').toDate()));
                 if (isExpiryDateBeforeDateGiven) {
                     getField('expiry-date.error').html('This vaccine is expired').show();
                     return false;
@@ -365,7 +365,7 @@
 									<obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="2" />
 								</td>
 								<td>
-									<obs conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="false" class="dateGiven" id="date-given"/>
+									<obs conceptId="1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" class="dateGiven" id="date-given"/>
 								</td>
 								<td>
 									<obs conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" class="{class} nextVisitDate" id="next-dose-date"/>
