@@ -13,9 +13,7 @@ import org.openmrs.module.kenyacore.report.ReportUtils;
 
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.KPTypeDataDefinition;
 
-import org.openmrs.module.kenyaemr.reporting.library.ETLReports.RevisedDatim.DatimCohortLibrary;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.evaluation.parameter.Parameterizable;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -1300,32 +1298,32 @@ public class DatimIndicatorLibrary {
     /**
      * Previously enrolled on IPT and have completed during this reporting period
      */
-    public CohortIndicator previouslyOnIPTCompleted() {
-        return cohortIndicator("Number of individuals who were previously on TPT and have completed", ReportUtils.<CohortDefinition>map(datimCohorts.previouslyOnIPTandCompleted(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator onARTAndCompletedTPT() {
+        return cohortIndicator("Number of individuals who were previously on TPT and have completed", ReportUtils.<CohortDefinition>map(datimCohorts.onARTAndCompletedTPT(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * Newly initiated on ART initiated on IPT
      */
-    public CohortIndicator newARTpreviouslyOnIPTInitiated() {
-        return cohortIndicator("Number of individuals who are newly initiated on ART and initiated on TPT", ReportUtils.<CohortDefinition>map(datimCohorts.newOnARTprevOnIPTandInitiated(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator newOnARTAndInitiatedTPT() {
+        return cohortIndicator("Number of individuals who are newly initiated on ART and initiated on TPT", ReportUtils.<CohortDefinition>map(datimCohorts.newOnARTAndInitiatedTPT(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * Previously initiated on ART and initiated on IPT
      */
-    public CohortIndicator previouslyARTandIPTInitiated() {
-        return cohortIndicator("Number of individuals who are previously initiated on ART and initiated on TPT", ReportUtils.<CohortDefinition>map(datimCohorts.previousOnARTandIPTandInitiated(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator previouslyOnARTAndInitiatedTPT() {
+        return cohortIndicator("Number of individuals who are previously initiated on ART and initiated on TPT", ReportUtils.<CohortDefinition>map(datimCohorts.previouslyOnARTAndInitiatedTPT(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * Newly initiated on ART Previously enrolled on IPT and have completed during this reporting period
      */
-    public CohortIndicator newARTpreviouslyOnIPTCompleted() {
-        return cohortIndicator("Number of individuals who are newly initiated on ART and were previously on TPT and have completed", ReportUtils.<CohortDefinition>map(datimCohorts.newOnARTprevOnIPTandCompleted(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator newOnARTAndCompletedTPT() {
+        return cohortIndicator("Number of individuals who are newly initiated on ART and were previously on TPT and have completed", ReportUtils.<CohortDefinition>map(datimCohorts.newOnARTAndCompletedTPT(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * Previously initiated on ART and enrolled on IPT and have completed during this reporting period
      */
-    public CohortIndicator previouslyARTandIPTCompleted() {
-        return cohortIndicator("Number of individuals who are previously initiated on ART and were previously on TPT and have now completed", ReportUtils.<CohortDefinition>map(datimCohorts.previousOnARTandIPTandCompleted(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator previouslyOnARTAndCompletedTPT() {
+        return cohortIndicator("Number of individuals who are previously initiated on ART and were previously on TPT and have now completed", ReportUtils.<CohortDefinition>map(datimCohorts.previouslyOnARTAndCompletedTPT(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * Number of beneficiaries served by PEPFAR OVC comprehensive programs for children and families affected by HIV
