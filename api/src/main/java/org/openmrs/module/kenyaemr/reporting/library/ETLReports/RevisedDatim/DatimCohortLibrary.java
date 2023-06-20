@@ -2512,7 +2512,7 @@ public class DatimCohortLibrary {
      * Patients who received initial HIV test with Positive result within a reporting period
      */
     public CohortDefinition positiveHIVTestResult() {
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.test_type =2 and hts.final_test_result ='Positive' and hts.patient_given_result ='Yes'" +
+        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts where hts.test_type =1 and hts.final_test_result ='Positive' and hts.patient_given_result ='Yes'" +
                 " and hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("HTS_TST_Positive");
