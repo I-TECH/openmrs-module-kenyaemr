@@ -2460,8 +2460,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "         inner join kenyaemr_etl.etl_mch_antenatal_visit v on e.patient_id = v.patient_id\n" +
                 "where date(v.visit_date) between date(:startDate) and date(:endDate)\n" +
                 "    and v.anc_visit_number = 1\n" +
-                "    and v.partner_hiv_status in (703, 664)\n" +
-                "   or date(e.visit_date) between date(:startDate) and date(:endDate) and e.partner_hiv_status in (703, 664);";
+                "    and coalesce(v.partner_hiv_status,e.partner_hiv_status) in (703, 664);";
         cd.setName("knownHIVStatusAt1stContact");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
