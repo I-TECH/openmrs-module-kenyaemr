@@ -11,6 +11,9 @@
 			<tr>
 				<td width="30%" valign="top">
 					${ ui.includeFragment("kenyaemr", "patient/patientSummary", [ patient: currentPatient ]) }
+					<% if (inHivProgram) { %>
+					${ ui.includeFragment("kenyaemr", "patient/caseManagement", [ patient: currentPatient ]) }
+					<%}%>
 					${ ui.includeFragment("kenyaemr", "patient/patientRelationships", [ patient: currentPatient ]) }
 				</td>
 				<td width="55%" valign="top" style="padding-left: 5px">
