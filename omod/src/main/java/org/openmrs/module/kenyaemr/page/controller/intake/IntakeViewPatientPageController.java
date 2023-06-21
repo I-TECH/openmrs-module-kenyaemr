@@ -9,8 +9,16 @@
  */
 package org.openmrs.module.kenyaemr.page.controller.intake;
 
+import org.openmrs.Patient;
+import org.openmrs.Program;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.module.kenyaemr.EmrWebConstants;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaui.annotation.AppPage;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.ui.framework.UiUtils;
+import org.openmrs.ui.framework.page.PageModel;
 
 /**
  * View patient page for intake app
@@ -18,6 +26,11 @@ import org.openmrs.module.kenyaui.annotation.AppPage;
 @AppPage(EmrConstants.APP_INTAKE)
 public class IntakeViewPatientPageController {
 
-	public void controller() {
+	public void controller(PageModel model,
+						   UiUtils ui) {
+		Patient patient = (Patient) model.getAttribute(EmrWebConstants.MODEL_ATTR_CURRENT_PATIENT);
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+		model.addAttribute("inHivProgram", Context.getProgramWorkflowService().getPatientPrograms(patient, hivProgram, null, null, null, null, true));
+
 	}
 }

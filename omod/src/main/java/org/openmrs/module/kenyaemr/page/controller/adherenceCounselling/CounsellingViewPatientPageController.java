@@ -12,6 +12,7 @@ package org.openmrs.module.kenyaemr.page.controller.adherenceCounselling;
 import org.openmrs.Encounter;
 import org.openmrs.Form;
 import org.openmrs.Patient;
+import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.EmrWebConstants;
@@ -19,6 +20,7 @@ import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
+import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.page.PageModel;
 
 import java.util.Arrays;
@@ -30,12 +32,17 @@ import java.util.List;
 @AppPage(EmrConstants.APP_ADHERENCE_COUNSELOR)
 public class CounsellingViewPatientPageController {
 
-	public void controller(PageModel model) {
+	public void controller(PageModel model,
+						   UiUtils ui) {
 		Patient patient = (Patient) model.getAttribute(EmrWebConstants.MODEL_ATTR_CURRENT_PATIENT);
 		Form enhancedAdherenceForm = MetadataUtils.existing(Form.class, HivMetadata._Form.ENHANCED_ADHERENCE_SCREENING);
 
 		List<Encounter> encounters = Context.getEncounterService().getEncounters(patient, null, null, null, Arrays.asList(enhancedAdherenceForm), null, null, null, null, false);
 
 		model.put("hasEncounters", encounters.size() > 0 ? true : false);
+
+		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
+		model.addAttribute("inHivProgram", Context.getProgramWorkflowService().getPatientPrograms(patient, hivProgram, null, null, null, null, true));
+
 	}
 }

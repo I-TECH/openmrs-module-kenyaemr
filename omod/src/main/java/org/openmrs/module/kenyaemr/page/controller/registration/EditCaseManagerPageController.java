@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * Controller for case manager edit page
  */
-@SharedPage({EmrConstants.APP_REGISTRATION, EmrConstants.APP_INTAKE, EmrConstants.APP_CLINICIAN, EmrConstants.APP_HIV_TESTING, EmrConstants.APP_PREP})
+@SharedPage({EmrConstants.APP_REGISTRATION, EmrConstants.APP_INTAKE, EmrConstants.APP_CLINICIAN, EmrConstants.APP_HIV_TESTING, EmrConstants.APP_PREP, EmrConstants.APP_ADHERENCE_COUNSELOR})
 public class EditCaseManagerPageController {
 
 	public void controller(@RequestParam(value = "relationshipId", required = false) Relationship relationship,
