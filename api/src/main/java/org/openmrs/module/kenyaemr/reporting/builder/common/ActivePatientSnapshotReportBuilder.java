@@ -173,6 +173,8 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         //dsd.addColumn("First Substitution Date", new ETLFirstSubstitutionDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Current Regimen", new ETLCurrentRegimenDataDefinition(), "");
         dsd.addColumn("Current Regimen Line", new ETLCurrentRegLineDataDefinition(), "");
+        dsd.addColumn("Baseline CD4", new BaselineCD4CountDataDefinition(), "");
+        dsd.addColumn("Date of Baseline CD4 test", new BaselineCD4DateDataDefinition(), "");
         dsd.addColumn("Last WHO Stage", new WHOStageArtDataDefinition(), "");
         dsd.addColumn("Last WHO Stage Date", new ETLLastWHOStageDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Last VL Result",  lastVlResultDataDefinition, "endDate=${endDate}");
