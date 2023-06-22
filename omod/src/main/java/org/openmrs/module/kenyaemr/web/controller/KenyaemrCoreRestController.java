@@ -1776,7 +1776,6 @@ public class KenyaemrCoreRestController extends BaseRestController {
             String values = vlResults.getValue().toString();
             //split by brace
             String value = values.replaceAll("\\{", "").replaceAll("\\}","");
-            String value = values.replaceAll("\\{", "").replaceAll("\\}","");
             if(!value.isEmpty()) {
                 String[] splitByEqualSign = value.split("=");
                 patientSummary.put("viralLoadValue", splitByEqualSign[0]);
