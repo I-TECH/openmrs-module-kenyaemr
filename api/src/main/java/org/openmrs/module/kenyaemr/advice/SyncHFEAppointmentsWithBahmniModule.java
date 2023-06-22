@@ -20,18 +20,15 @@ import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.appointments.model.Appointment;
 import org.openmrs.module.appointments.model.AppointmentKind;
-import org.openmrs.module.appointments.model.AppointmentProvider;
 import org.openmrs.module.appointments.model.AppointmentServiceDefinition;
 import org.openmrs.module.appointments.service.AppointmentsService;
 import org.openmrs.module.appointments.util.DateUtil;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.springframework.aop.AfterReturningAdvice;
-import org.openmrs.module.appointments.model.AppointmentServiceType;
 import org.openmrs.module.appointments.service.AppointmentServiceDefinitionService;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.api.PatientService;
 import org.openmrs.Patient;
 
@@ -40,7 +37,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Synchronizes appointments documented in HTML forms with Bahmni appointments module
@@ -58,6 +54,7 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
 
     public static final String HIV_FOLLOWUP_SERVICE = "885b4ad3-fd4c-4a16-8ed3-08813e6b01fa";
     public static final String DRUG_REFILL_SERVICE = "a96921a1-b89e-4dd2-b6b4-7310f13bbabe";
+    public static final String HIV_LAB_TEST_SERVICE = "61488cf6-fad4-11ed-be56-0242ac120002";
 
     // MCH appointments
     public static final String MCH_POSTNATAL_VISIT_SERVICE = "dcde8ca4-32a5-4c67-9982-33346e39813f";
@@ -87,6 +84,12 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
     PersonService personService = Context.getPersonService();
     boolean followUpAppointment = false;
     boolean nxtAppointment = false;
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    Date nextApptDate = null;
+    Date refillApptDate = null;
+    Integer appointmentReason = null;
+   
+
 
     @Override
     public void afterReturning(Object returnValue, Method method, Object[] args, Object target) throws Throwable {
@@ -181,7 +184,6 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
             // edit HIV followup appointment
             if((o.getConcept().getUuid().equals(NEXT_CLINICAL_APPOINTMENT_DATE_CONCEPT_UUID)) && hivFollowUpAppointment != null ) {
                 nxtAppointment = true;
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 Date nextApptStartDateTime = DateUtil.convertToDate(dateFormat.format(o.getValueDatetime()).concat("T07:00:00.0Z"), DateUtil.DateFormatType.UTC);
                 Date nextApptEndDateTime = DateUtil.convertToDate(dateFormat.format(o.getValueDatetime()).concat("T20:00:00.0Z"), DateUtil.DateFormatType.UTC);
                 hivFollowUpAppointment.setStartDateTime(nextApptStartDateTime);
@@ -199,7 +201,6 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
 
             // edit existing appointment for drug refill
             if((o.getConcept().getUuid().equals(NEXT_DRUG_REFILL_APPOINTMENT_DATE_CONCEPT_UUID)) && drugRefillAppointment != null) {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 Date refillStartDateTime = DateUtil.convertToDate(dateFormat.format(o.getValueDatetime()).concat("T07:00:00.0Z"), DateUtil.DateFormatType.UTC);
                 Date refillEndDateTime = DateUtil.convertToDate(dateFormat.format(o.getValueDatetime()).concat("T20:00:00.0Z"), DateUtil.DateFormatType.UTC);
                 drugRefillAppointment.setStartDateTime(refillStartDateTime);
@@ -218,7 +219,6 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
                     appointmentServiceDefinitionService.getAppointmentServiceByUuid(DRUG_REFILL_SERVICE) != null) {
                 AppointmentServiceDefinition appointmentServiceDefinition = new AppointmentServiceDefinition();
                 appointmentServiceDefinition.setAppointmentServiceId(appointmentServiceDefinitionService.getAppointmentServiceByUuid(DRUG_REFILL_SERVICE).getId());
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
                 Appointment editedFollowUpAppointment = appointmentsService.getAppointmentByUuid(enc.getUuid());
 
@@ -267,58 +267,78 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
         );
 
         for (Obs o : obs) { // Loop through the obs and compose Appointment object for Bahmni
-            AppointmentServiceDefinition appointmentServiceDefinition = new AppointmentServiceDefinition();
-            if(o.getConcept().getUuid().equals(APPOINTMENT_REASON_CONCEPT_UUID) ) {
-                if(o.getValueCoded().getConceptId() == 160523 || o.getValueCoded().getConceptId() == 160521 ) {
-                    followUpAppointment = true;
+            if (o.getConcept().getUuid().equals(NEXT_CLINICAL_APPOINTMENT_DATE_CONCEPT_UUID)) {
+                nextApptDate = o.getValueDatetime();
+            }
+            if (o.getConcept().getUuid().equals(APPOINTMENT_REASON_CONCEPT_UUID)) {
+                appointmentReason = o.getValueCoded().getConceptId();
+            }
+            if (o.getConcept().getUuid().equals(NEXT_DRUG_REFILL_APPOINTMENT_DATE_CONCEPT_UUID)) {
+                refillApptDate = o.getValueDatetime();
+            }
+
+            if(appointmentReason != null && appointmentReason == 160523  || appointmentReason != null && appointmentReason == 160521 ) {
+                AppointmentServiceDefinition appointmentServiceDefinition = new AppointmentServiceDefinition();
+
+                // create HIV followup appointment
+                if(nextApptDate != null && appointmentServiceDefinitionService.getAppointmentServiceByUuid(HIV_FOLLOWUP_SERVICE) != null ) {
+
+                    appointmentServiceDefinition.setAppointmentServiceId(appointmentServiceDefinitionService.getAppointmentServiceByUuid(HIV_FOLLOWUP_SERVICE).getId());
+                    Date nextApptStartDateTime = DateUtil.convertToDate(dateFormat.format(nextApptDate).concat("T07:00:00.0Z"), DateUtil.DateFormatType.UTC);
+                    Date nextApptEndDateTime = DateUtil.convertToDate(dateFormat.format(nextApptDate).concat("T20:00:00.0Z"), DateUtil.DateFormatType.UTC);
+                    nextAppointment.setUuid(enc.getUuid());
+                    nextAppointment.setPatient(enc.getPatient());
+                    nextAppointment.setService(appointmentServiceDefinition);
+                    nextAppointment.setStartDateTime(nextApptStartDateTime);
+                    nextAppointment.setEndDateTime(nextApptEndDateTime);
+                    nextAppointment.setLocation(enc.getLocation());
+                    nextAppointment.setProvider(EmrUtils.getProvider(Context.getAuthenticatedUser()));
+                    nextAppointment.setAppointmentKind(AppointmentKind.Scheduled);
+                    Appointment app = appointmentsService.validateAndSave(nextAppointment);
                 }
-            }
 
-            // create HIV followup appointment
-            if(o.getConcept().getUuid().equals(NEXT_CLINICAL_APPOINTMENT_DATE_CONCEPT_UUID) && appointmentServiceDefinitionService.getAppointmentServiceByUuid(HIV_FOLLOWUP_SERVICE) != null ) {
-                nxtAppointment = true;
+                            // create appointment for drug refill
+                if (refillApptDate != null &&  nextApptDate != null &&  appointmentReason == 160521 &&
+                 appointmentServiceDefinitionService.getAppointmentServiceByUuid(DRUG_REFILL_SERVICE) != null ) {
+                    AppointmentServiceDefinition refillApptServiceDefinition = new AppointmentServiceDefinition();
+                    refillApptServiceDefinition.setAppointmentServiceId(appointmentServiceDefinitionService.getAppointmentServiceByUuid(DRUG_REFILL_SERVICE).getId());
+                    Appointment currentFollowUpAppointment = appointmentsService.getAppointmentByUuid(enc.getUuid());
+                    Appointment refillAppointment = new Appointment();
+                    Date refillStartDateTime = DateUtil.convertToDate(dateFormat.format(refillApptDate).concat("T07:00:00.0Z"), DateUtil.DateFormatType.UTC);
+                    Date refillEndDateTime = DateUtil.convertToDate(dateFormat.format(refillApptDate).concat("T20:00:00.0Z"), DateUtil.DateFormatType.UTC);
+                    refillAppointment.setRelatedAppointment(currentFollowUpAppointment);
+                    refillAppointment.setPatient(enc.getPatient());
+                    refillAppointment.setService(refillApptServiceDefinition);
+                    refillAppointment.setStartDateTime(refillStartDateTime);
+                    refillAppointment.setEndDateTime(refillEndDateTime);
+                    refillAppointment.setLocation(enc.getLocation());
+                    refillAppointment.setProvider(EmrUtils.getProvider(Context.getAuthenticatedUser()));
+                    refillAppointment.setAppointmentKind(AppointmentKind.Scheduled);
+                    Appointment app = appointmentsService.validateAndSave(refillAppointment);
 
-                appointmentServiceDefinition.setAppointmentServiceId(appointmentServiceDefinitionService.getAppointmentServiceByUuid(HIV_FOLLOWUP_SERVICE).getId());
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                Date nextApptStartDateTime = DateUtil.convertToDate(dateFormat.format(o.getValueDatetime()).concat("T07:00:00.0Z"), DateUtil.DateFormatType.UTC);
-                Date nextApptEndDateTime = DateUtil.convertToDate(dateFormat.format(o.getValueDatetime()).concat("T20:00:00.0Z"), DateUtil.DateFormatType.UTC);
-                nextAppointment.setUuid(enc.getUuid());
-                nextAppointment.setPatient(enc.getPatient());
-                nextAppointment.setService(appointmentServiceDefinition);
-                nextAppointment.setStartDateTime(nextApptStartDateTime);
-                nextAppointment.setEndDateTime(nextApptEndDateTime);
-                nextAppointment.setLocation(enc.getLocation());
-                nextAppointment.setProvider(EmrUtils.getProvider(Context.getAuthenticatedUser()));
-                nextAppointment.setAppointmentKind(AppointmentKind.Scheduled);
-            }
+                    currentFollowUpAppointment.setRelatedAppointment(app);
+                    Appointment app2 = appointmentsService.validateAndSave(currentFollowUpAppointment);
+                }
 
-            if(nxtAppointment && followUpAppointment) {
-                Appointment app = appointmentsService.validateAndSave(nextAppointment);
-            }
-
-            // create appointment for drug refill
-            if(o.getConcept().getUuid().equals(NEXT_DRUG_REFILL_APPOINTMENT_DATE_CONCEPT_UUID) && appointmentServiceDefinitionService.getAppointmentServiceByUuid(DRUG_REFILL_SERVICE) != null) {
-                appointmentServiceDefinition.setAppointmentServiceId(appointmentServiceDefinitionService.getAppointmentServiceByUuid(DRUG_REFILL_SERVICE).getId());
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-                Appointment currentFollowUpAppointment = appointmentsService.getAppointmentByUuid(enc.getUuid());
-
-                Appointment refillAppointment = new Appointment();
-                Date refillStartDateTime = DateUtil.convertToDate(dateFormat.format(o.getValueDatetime()).concat("T07:00:00.0Z"), DateUtil.DateFormatType.UTC);
-                Date refillEndDateTime = DateUtil.convertToDate(dateFormat.format(o.getValueDatetime()).concat("T20:00:00.0Z"), DateUtil.DateFormatType.UTC);
-                refillAppointment.setRelatedAppointment(currentFollowUpAppointment);
-                refillAppointment.setPatient(enc.getPatient());
-                refillAppointment.setService(appointmentServiceDefinition);
-                refillAppointment.setStartDateTime(refillStartDateTime);
-                refillAppointment.setEndDateTime(refillEndDateTime);
-                refillAppointment.setLocation(enc.getLocation());
-                refillAppointment.setProvider(EmrUtils.getProvider(Context.getAuthenticatedUser()));
-                refillAppointment.setAppointmentKind(AppointmentKind.Scheduled);
-                Appointment app = appointmentsService.validateAndSave(refillAppointment);
-
-                currentFollowUpAppointment.setRelatedAppointment(app);
-                Appointment app2 = appointmentsService.validateAndSave(currentFollowUpAppointment);
-            }
+            } else if ( appointmentReason != null && appointmentReason == 1283) {
+                // create lab tests appointment
+                if ( appointmentServiceDefinitionService.getAppointmentServiceByUuid(HIV_LAB_TEST_SERVICE) != null && nextApptDate != null ) {
+                    AppointmentServiceDefinition labApptServiceDefinition = new AppointmentServiceDefinition();
+                    labApptServiceDefinition.setAppointmentServiceId(appointmentServiceDefinitionService.getAppointmentServiceByUuid(HIV_LAB_TEST_SERVICE).getId());
+                    Date labApptStartDateTime = DateUtil.convertToDate(dateFormat.format(nextApptDate).concat("T07:00:00.0Z"), DateUtil.DateFormatType.UTC);
+                    Date labApptEndDateTime = DateUtil.convertToDate(dateFormat.format(nextApptDate).concat("T20:00:00.0Z"), DateUtil.DateFormatType.UTC);
+                    Appointment labAppointment = new Appointment();
+                    labAppointment.setUuid(enc.getUuid());
+                    labAppointment.setPatient(enc.getPatient());
+                    labAppointment.setService(labApptServiceDefinition);
+                    labAppointment.setStartDateTime(labApptStartDateTime);
+                    labAppointment.setEndDateTime(labApptEndDateTime);
+                    labAppointment.setLocation(enc.getLocation());
+                    labAppointment.setProvider(EmrUtils.getProvider(Context.getAuthenticatedUser()));
+                    labAppointment.setAppointmentKind(AppointmentKind.Scheduled);
+                    Appointment app = appointmentsService.validateAndSave(labAppointment);
+                }  
+            } 
 
         }
 
@@ -345,7 +365,6 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
 
         for (Obs o : obs) { // Loop through the obs and compose Appointment object for Bahmni
             AppointmentServiceDefinition appointmentServiceDefinition = new AppointmentServiceDefinition();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Appointment editAppointment = appointmentsService.getAppointmentByUuid(enc.getUuid());
 
             if(editAppointment != null) {
@@ -413,7 +432,6 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
         );
 
         for (Obs o : obs) { // Loop through the obs and compose Appointment object for Bahmni
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date nextApptStartDateTime = DateUtil.convertToDate(dateFormat.format(o.getValueDatetime()).concat("T07:00:00.0Z"), DateUtil.DateFormatType.UTC);
             Date nextApptEndDateTime = DateUtil.convertToDate(dateFormat.format(o.getValueDatetime()).concat("T20:00:00.0Z"), DateUtil.DateFormatType.UTC);
             Appointment editAppointment = appointmentsService.getAppointmentByUuid(enc.getUuid());
