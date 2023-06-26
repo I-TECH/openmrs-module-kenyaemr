@@ -3290,6 +3290,21 @@ public class DatimCohortLibrary {
         cd.setDescription("HIV Infected HEI");
         return cd;
     }
+    public CohortDefinition hivInfectedHEIHTS() {
+        String sqlQuery = "select d.patient_id\n" +
+                "from kenyaemr_etl.etl_patient_demographics d\n" +
+                "         inner join kenyaemr_etl.etl_hts_test t on d.patient_id = t.patient_id\n" +
+                "where timestampdiff(MONTH, date(d.dob), date(t.visit_date)) between 18 and 24\n" +
+                "group by t.patient_id\n" +
+                "having mid(max(concat(date(t.visit_date), t.final_test_result)), 11) = 'Positive';";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("PMTCT_FO_INFECTED_HEI");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("HIV Infected HEI HTS");
+        return cd;
+    }
     /*Uninfected HEI Cohort*/
     public CohortDefinition hivUninfectedHEIOutcomeSql() {
         String sqlQuery = "select e.patient_id\n" +
@@ -3317,6 +3332,21 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("HIV uninfected HEI");
+        return cd;
+    }
+    public CohortDefinition hivUninfectedHEIHTS() {
+        String sqlQuery = "select d.patient_id\n" +
+                "from kenyaemr_etl.etl_patient_demographics d\n" +
+                "         inner join kenyaemr_etl.etl_hts_test t on d.patient_id = t.patient_id\n" +
+                "where timestampdiff(MONTH, date(d.dob), date(t.visit_date)) between 18 and 24\n" +
+                "group by t.patient_id\n" +
+                "having mid(max(concat(date(t.visit_date), t.final_test_result)), 11) = 'Negative';";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("hivUninfectedHEIHTS");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("HIV uninfected HEI hts");
         return cd;
     }
     /*Unknown HIV Status HEI Cohort*/
@@ -3365,7 +3395,8 @@ public class DatimCohortLibrary {
         cd.addSearch("pmtctFoDenominator",ReportUtils.map(pmtctFoDenominator(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("hivInfectedHEIOutcomeSql", ReportUtils.map(hivInfectedHEIOutcomeSql(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("hivInfectedHEILabs", ReportUtils.map(hivInfectedHEILabs(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("pmtctFoDenominator AND (hivInfectedHEILabs OR hivInfectedHEIOutcomeSql)");
+        cd.addSearch("hivInfectedHEIHTS", ReportUtils.map(hivInfectedHEIHTS(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("pmtctFoDenominator AND (hivInfectedHEILabs OR hivInfectedHEIOutcomeSql OR hivInfectedHEIHTS)");
         return cd;
     }
     /**
@@ -3379,7 +3410,8 @@ public class DatimCohortLibrary {
         cd.addSearch("pmtctFoDenominator",ReportUtils.map(pmtctFoDenominator(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("hivUninfectedHEIOutcomeSql",ReportUtils.map(hivUninfectedHEIOutcomeSql(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("hivUninfectedHEILabsSql",ReportUtils.map(hivUninfectedHEILabsSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("pmtctFoDenominator AND (hivUninfectedHEILabsSql OR hivUninfectedHEIOutcomeSql)");
+        cd.addSearch("hivUninfectedHEIHTS",ReportUtils.map(hivUninfectedHEIHTS(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("pmtctFoDenominator AND (hivUninfectedHEILabsSql OR hivUninfectedHEIOutcomeSql OR hivUninfectedHEIHTS)");
         return cd;
     }
     /**
