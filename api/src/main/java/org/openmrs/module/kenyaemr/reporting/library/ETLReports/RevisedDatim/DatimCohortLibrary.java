@@ -3391,8 +3391,9 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("pmtctFoDenominator",ReportUtils.map(pmtctFoDenominator(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("unknownHIVStatusHEICohortSql",ReportUtils.map(unknownHIVStatusHEICohortSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("pmtctFoDenominator AND unknownHIVStatusHEICohortSql");
+        cd.addSearch("hivInfectedHEICohort",ReportUtils.map(hivInfectedHEICohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("hivUninfectedHEICohort",ReportUtils.map(hivUninfectedHEICohort(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("pmtctFoDenominator AND NOT (hivInfectedHEICohort OR hivUninfectedHEICohort)");
         return cd;
     }
 
@@ -5324,8 +5325,10 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("currentlyOnART", ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("initiatedTPTWithin6MonthsStartingART", ReportUtils.map(initiatedTPTWithin6MonthsStartingART(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("initiatedTPTAfter6MonthsStartingART", ReportUtils.map(initiatedTPTAfter6MonthsStartingART(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("completedTPTCurrentOrPrevPeriod", ReportUtils.map(completedTPTCurrentOrPrevPeriod(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("currentlyOnART AND completedTPTCurrentOrPrevPeriod");
+        cd.setCompositionString("currentlyOnART AND (initiatedTPTAfter6MonthsStartingART OR initiatedTPTWithin6MonthsStartingART) AND completedTPTCurrentOrPrevPeriod");
         return cd;
     }
     /**
@@ -5445,9 +5448,9 @@ public class DatimCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("currentlyOnArt", ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("newOnARTAndInitiatedTPT", ReportUtils.map(newOnARTAndInitiatedTPT(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("completedTPTCurrentOrPrevPeriod", ReportUtils.map(completedTPTCurrentOrPrevPeriod(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("currentlyOnArt AND completedTPTCurrentOrPrevPeriod");
+        cd.setCompositionString("newOnARTAndInitiatedTPT AND completedTPTCurrentOrPrevPeriod");
         return cd;
     }
     /**
@@ -5460,10 +5463,9 @@ public class DatimCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("currentlyOnArt", ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("previouslyOnARTAndInitiatedTPT", ReportUtils.map(previouslyOnARTAndInitiatedTPT(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("completedTPTCurrentOrPrevPeriod", ReportUtils.map(completedTPTCurrentOrPrevPeriod(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("currentlyOnArt AND previouslyOnARTAndInitiatedTPT AND completedTPTCurrentOrPrevPeriod");
+        cd.setCompositionString("previouslyOnARTAndInitiatedTPT AND completedTPTCurrentOrPrevPeriod");
         return cd;
     }
     /**
