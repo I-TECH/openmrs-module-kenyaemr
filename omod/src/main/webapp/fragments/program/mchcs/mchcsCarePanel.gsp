@@ -1,7 +1,7 @@
 <%
 	ui.decorateWith("kenyaui", "panel", [heading: "Child Services Care"])
 	def dataPointsLeft = []
-	dataPointsLeft << [label: "Current prophylaxis used: ", value: calculations.prophylaxis]
+	dataPointsLeft << [label: "Current prophylaxis used ", value: calculations.prophylaxis]
 	dataPointsLeft << [label: "Current Feeding Option", value: calculations.feeding]
 	dataPointsLeft << [label: "Milestones Attained", value: calculations.milestones]
 	def heiOutcomeValue = calculations.heiOutcomes ?: "Not Specified"
@@ -31,6 +31,8 @@
                     latestResults."PCR test for 12 months" = [label: "PCR at 12months ", value: "$testResults($pcrDate)"]
                 }
                 break
+            case "":
+                latestResults."" = [label: "PCR Test ", value: "$testResults($pcrDate)"]
         }
     }
 
@@ -40,15 +42,17 @@
     def latestRapidResults = [:]
     rapidList.each { testResult ->
         def orderReason = testResult.rapidOrderReason
-        def pcrDate = testResult.rapidTestDate.format("yyyy-MM-dd")
+        def rapidABTestDate = testResult.rapidTestDate.format("yyyy-MM-dd")
         def testResults = testResult.rapidTestResults
         switch (orderReason) {
             case "Child HIV antibody test result":
-                latestRapidResults."Child HIV antibody test result" = [label: "Ab test at 6weeks ", value: "$testResults($pcrDate)"]
+                latestRapidResults."Child HIV antibody test result" = [label: "Ab test at 6weeks ", value: "$testResults($rapidABTestDate)"]
                 break
             case "Rapid HIV antibody test result at 18 months of age":
-                latestRapidResults."Rapid HIV antibody test result at 18 months of age" = [label: "Ab test at 18months ", value: "$testResults($pcrDate)"]
+                latestRapidResults."Rapid HIV antibody test result at 18 months of age" = [label: "Ab test at 18months ", value: "$testResults($rapidABTestDate)"]
                 break
+            case "":
+                latestRapidResults."" = [label: "Rapid AB Test ", value: "$testResults($rapidABTestDate)"]
         }
     }
     dataPointsRight.addAll(latestRapidResults.values())

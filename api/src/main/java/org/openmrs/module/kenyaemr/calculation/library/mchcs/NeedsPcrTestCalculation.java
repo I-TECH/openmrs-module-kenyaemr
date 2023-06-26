@@ -111,7 +111,7 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
                                     Integer orderId = labOrder.getOrderId();
                                     Order order = orderService.getOrder(orderId);
 
-                                    if (!order.getOrderReason().equals(PCR_6_MONTHS)) {
+                                    if (order.getOrderReason()!= null && !order.getOrderReason().equals(PCR_6_MONTHS)) {
 
                                         needsPcr = true;
                                     }
@@ -151,7 +151,7 @@ public class NeedsPcrTestCalculation extends AbstractPatientCalculation implemen
                                     Integer orderId = labOrder.getOrderId();
                                     Order order = orderService.getOrder(orderId);
 
-                                    if (!order.getOrderReason().equals(PCR_12_MONTHS)) {
+                                    if (order.getOrderReason()!= null && !order.getOrderReason().equals(PCR_12_MONTHS)) {
 
                                         needsPcr = true;
                                     }
