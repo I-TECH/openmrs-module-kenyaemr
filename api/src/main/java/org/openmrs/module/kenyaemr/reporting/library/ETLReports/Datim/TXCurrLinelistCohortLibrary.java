@@ -46,17 +46,24 @@ public class TXCurrLinelistCohortLibrary {
         return cd;
     }
     /**
-     *Patients transferred in within the quarter
+     *Patients transferred in within the reporting period
      */
-    public  CohortDefinition transferInReportingQuarter() {
-        String sqlQuery="Select e.patient_id\n" +
-                "from kenyaemr_etl.etl_hiv_enrollment e\n" +
-                "where coalesce(e.transfer_in_date, e.visit_date) between DATE_SUB(date(:endDate), INTERVAL 3 MONTH) and date(:endDate)\n" +
-                "  and e.patient_type = 160563;";
+    public  CohortDefinition transferInReportingPeriod() {
+        String sqlQuery="select a.patient_id\n" +
+                "from (select e.patient_id,\n" +
+                "             e.patient_type,\n" +
+                "             max(if(e.date_started_art_at_transferring_facility is not null and e.facility_transferred_from is not null,\n" +
+                "                    1, 0)) as TI\n" +
+                "      from kenyaemr_etl.etl_hiv_enrollment e\n" +
+                "      where coalesce(e.transfer_in_date, e.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "      group by e.patient_id) a\n" +
+                "where a.patient_type = 160563\n" +
+                "   or a.TI = 1;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("TX_Curr_Missing_in_previous_TI");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.setDescription("TI Present in current report but missing in previous report");
         return cd;
     }
@@ -337,7 +344,7 @@ public class TXCurrLinelistCohortLibrary {
      * Patients included in the current report- quarter
      * @return
      */
-    public  CohortDefinition txCurLinelistCurrentQuarter() {
+    public  CohortDefinition txCurLinelistCurrentPeriod() {
         String sqlQuery="select t.patient_id\n" +
                 "              from(\n" +
                 "                  select fup.visit_date,fup.patient_id, max(e.visit_date) as enroll_date,\n" +
@@ -420,7 +427,7 @@ public class TXCurrLinelistCohortLibrary {
     public CohortDefinition txCurLinelistForPatientsPresentInCurrentReport() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("txCurLinelistCurrentQuarter", ReportUtils.map(txCurLinelistCurrentQuarter(), "endDate=${endDate}"));
+        cd.addSearch("txCurLinelistCurrentQuarter", ReportUtils.map(txCurLinelistCurrentPeriod(), "endDate=${endDate}"));
         cd.addSearch("discInReportQuarterWithFutureReenrollment", ReportUtils.map(discInReportQuarterWithFutureReenrollment(), "endDate=${endDate}"));
         cd.setCompositionString("txCurLinelistCurrentQuarter AND NOT discInReportQuarterWithFutureReenrollment");
         return cd;
@@ -456,7 +463,7 @@ public class TXCurrLinelistCohortLibrary {
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("txCurLinelistForPatientsPresentInCurrentButMissingInPreviousReport", ReportUtils.map(txCurLinelistForPatientsPresentInCurrentButMissingInPreviousReport(), "endDate=${endDate}"));
         cd.addSearch("newlyARTReportingQuarter", ReportUtils.map(newlyARTReportingQuarter(), "endDate=${endDate}"));
-        cd.addSearch("transferInReportingQuarter", ReportUtils.map(transferInReportingQuarter(), "endDate=${endDate}"));
+        cd.addSearch("transferInReportingQuarter", ReportUtils.map(transferInReportingPeriod(), "endDate=${endDate}"));
         cd.setCompositionString("txCurLinelistForPatientsPresentInCurrentButMissingInPreviousReport AND (newlyARTReportingQuarter AND NOT transferInReportingQuarter)");
         return cd;
     }
@@ -466,9 +473,10 @@ public class TXCurrLinelistCohortLibrary {
     public CohortDefinition txCurLinelistForPatientsPresentInCurrentButMissingInPreviousReportTrfIn() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("txCurLinelistForPatientsPresentInCurrentButMissingInPreviousReport", ReportUtils.map(txCurLinelistForPatientsPresentInCurrentButMissingInPreviousReport(), "endDate=${endDate}"));
-        cd.addSearch("transferInReportingQuarter", ReportUtils.map(transferInReportingQuarter(), "endDate=${endDate}"));
-        cd.setCompositionString("txCurLinelistForPatientsPresentInCurrentButMissingInPreviousReport AND transferInReportingQuarter");
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addSearch("txCurrThisPeriodNotTXCurrPreviousPeriod", ReportUtils.map(datimCohortLibrary.txCurrThisPeriodNotTXCurrPreviousPeriod(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("transferInReportingPeriod", ReportUtils.map(transferInReportingPeriod(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txCurrThisPeriodNotTXCurrPreviousPeriod AND transferInReportingPeriod");
         return cd;
     }
     /**
@@ -477,12 +485,12 @@ public class TXCurrLinelistCohortLibrary {
     public CohortDefinition txCurLinelistForPatientsPresentInCurrentButMissingInPreviousReportReEnrollment() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("txCurLinelistForPatientsPresentInCurrentButMissingInPreviousReport", ReportUtils.map(txCurLinelistForPatientsPresentInCurrentButMissingInPreviousReport(), "endDate=${endDate}"));
-        cd.addSearch("reEnrollmentToHIVReportingQuarter", ReportUtils.map(reEnrollmentToHIVReportingQuarter(), "endDate=${endDate}"));
-        cd.addSearch("noPrevHIVFUPEncQuarterly", ReportUtils.map(noPrevHIVFUPEncQuarterly(), "endDate=${endDate}"));
-        cd.addSearch("experiencedIITPreviousReportingPeriod", ReportUtils.map(datimCohortLibrary.experiencedIITPreviousReportingPeriod(), "endDate=${endDate}"));
-        cd.addSearch("transferInReportingQuarter", ReportUtils.map(transferInReportingQuarter(), "endDate=${endDate}"));
-        cd.addSearch("discWithFutureEffectiveDate", ReportUtils.map(discWithFutureEffectiveDate(), "endDate=${endDate}"));
+        cd.addSearch("txCurLinelistForPatientsPresentInCurrentButMissingInPreviousReport", ReportUtils.map(datimCohortLibrary.txCurrThisPeriodNotTXCurrPreviousPeriod(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("reEnrollmentToHIVReportingQuarter", ReportUtils.map(reEnrollmentToHIVReportingQuarter(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("noPrevHIVFUPEncQuarterly", ReportUtils.map(noPrevHIVFUPEncQuarterly(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("experiencedIITPreviousReportingPeriod", ReportUtils.map(datimCohortLibrary.experiencedIITPreviousReportingPeriod(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("transferInReportingQuarter", ReportUtils.map(transferInReportingPeriod(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("discWithFutureEffectiveDate", ReportUtils.map(discWithFutureEffectiveDate(), "startDate=${startDate},endDate=${endDate}"));
         cd.setCompositionString("txCurLinelistForPatientsPresentInCurrentButMissingInPreviousReport AND (reEnrollmentToHIVReportingQuarter OR experiencedIITPreviousReportingPeriod OR noPrevHIVFUPEncQuarterly OR discWithFutureEffectiveDate) AND NOT transferInReportingQuarter");
         return cd;
     }

@@ -15,6 +15,7 @@ import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.reporting.ColumnParameters;
 import org.openmrs.module.kenyaemr.reporting.EmrReportingUtils;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731Greencard.ETLMoh731GreenCardIndicatorLibrary;
+import org.openmrs.module.kenyaemr.reporting.library.ETLReports.RevisedDatim.DatimIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.shared.common.CommonDimensionLibrary;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -40,6 +41,8 @@ public class Moh731ReportBuilder extends AbstractReportBuilder {
     @Autowired
     private ETLMoh731GreenCardIndicatorLibrary moh731GreenCardIndicators;
 
+    @Autowired
+    private DatimIndicatorLibrary datimIndicators;
 
     public static final String DATE_FORMAT = "yyyy-MM-dd";
 
@@ -200,9 +203,9 @@ public class Moh731ReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("HV02-44", "Initial PCR <8 weeks", ReportUtils.map(moh731GreenCardIndicators.initialPCRLessThan8Weeks(), indParams), "");
         dsd.addColumn("HV02-45", "Initial PCR >8 weeks to 12 months", ReportUtils.map(moh731GreenCardIndicators.initialPCROver8WeeksTo12Months(), indParams), "");
         dsd.addColumn("HV02-46", "Total Initial PCR Test <12 months", ReportUtils.map(moh731GreenCardIndicators.totalInitialPCRTestLessThan12Months(), indParams), "");
-        dsd.addColumn("HV02-47", "Infected in 24 months", ReportUtils.map(moh731GreenCardIndicators.infectedIn24Months(), indParams), "");
-        dsd.addColumn("HV02-48", "Uninfected in 24 months", ReportUtils.map(moh731GreenCardIndicators.uninfectedIn24Months(), indParams), "");
-        dsd.addColumn("HV02-49", "Unknown Outcomes in 24 months", ReportUtils.map(moh731GreenCardIndicators.unknownOutcomesIn24Months(), indParams), "");
+        dsd.addColumn("HV02-47", "Infected in 24 months", ReportUtils.map(datimIndicators.hivInfectedHEI(), indParams), "");
+        dsd.addColumn("HV02-48", "Uninfected in 24 months", ReportUtils.map(datimIndicators.hivUninfectedHEI(), indParams), "");
+        dsd.addColumn("HV02-49", "Unknown Outcomes in 24 months", ReportUtils.map(datimIndicators.unknownHIVStatusHEI(), indParams), "");
         dsd.addColumn("HV02-50", "Net Cohort HEI in 24 months", ReportUtils.map(moh731GreenCardIndicators.netCohortHeiIn24Months(), indParams), "");
         dsd.addColumn("HV02-51", "Mother-baby pairs in 24 months", ReportUtils.map(moh731GreenCardIndicators.motherBabyPairsIn24Months(), indParams), "");
         dsd.addColumn("HV02-52", "Pair net cohort in 24 months", ReportUtils.map(moh731GreenCardIndicators.pairNetCohortIn24Months(), indParams), "");

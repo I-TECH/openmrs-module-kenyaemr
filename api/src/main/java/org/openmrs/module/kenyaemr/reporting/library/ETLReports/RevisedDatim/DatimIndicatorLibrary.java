@@ -1066,6 +1066,15 @@ public class DatimIndicatorLibrary {
                 "startDate=${startDate},endDate=${endDate}"));
     }
 
+    public CohortIndicator txCurrThisPeriodNotTXCurrPreviousPeriod() {
+        return cohortIndicator("TX Curr current period and not TX Curr pervious period", ReportUtils.<CohortDefinition>map(datimCohorts.txCurrThisPeriodNotTXCurrPreviousPeriod(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    public CohortIndicator txCurrThisPeriodNotTXCurrPreviousPeriodNewOnART() {
+        return cohortIndicator("TX Curr current period and not TX Curr pervious period new on ART", ReportUtils.<CohortDefinition>map(datimCohorts.txCurrThisPeriodNotTXCurrPreviousPeriodNewOnART(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
     /**
      * TX_ML Number of ART patients with no clinical contact since their last expected contact
      */
