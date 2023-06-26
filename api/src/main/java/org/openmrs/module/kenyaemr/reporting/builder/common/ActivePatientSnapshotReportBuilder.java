@@ -37,6 +37,8 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.Activ
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ActiveInOvcDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ActiveInTbDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.AgeAtReportingDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.BaselineCD4CountDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.BaselineCD4DateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.BloodPressureDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLArtStartDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLCaseManagerDataDefinition;
