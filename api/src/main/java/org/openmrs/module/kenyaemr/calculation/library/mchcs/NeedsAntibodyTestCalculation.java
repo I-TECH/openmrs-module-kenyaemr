@@ -46,9 +46,7 @@ public class NeedsAntibodyTestCalculation extends AbstractPatientCalculation imp
     public String getFlagMessage() {
         return flagMsg.toString();
     }
-
     StringBuilder flagMsg = new StringBuilder();
-
     /**
      * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
      */
@@ -116,21 +114,26 @@ public class NeedsAntibodyTestCalculation extends AbstractPatientCalculation imp
                                     Integer orderId = labOrder.getOrderId();
                                     Order order = orderService.getOrder(orderId);
 
-                                    if (!order.getOrderReason().equals(AB_18_MONTHS)) {
+                                    if (order.getOrderReason()!= null && !order.getOrderReason().equals(AB_18_MONTHS)) {
 
                                         needsAntibodyTest = true;
                                         flagMsg.append("Due for month-18 Rapid AB test ");
-                                    } else if (obsBFStatusDate != null && getAgeInWeeks(obsBFStatusDate, context.getNow()) >= 6 && !order.getOrderReason().equals(AB_6_MONTHS_AFTER_CESSATION_OF_BF)) {
+                                    } else if (obsBFStatusDate != null && getAgeInWeeks(obsBFStatusDate, context.getNow()) >= 6 && order.getOrderReason()!= null && !order.getOrderReason().equals(AB_6_MONTHS_AFTER_CESSATION_OF_BF)) {
                                         needsAntibodyTest = true;
                                         flagMsg.append("Due for week-6 Rapid AB test after cessation of breastfeeding");
                                     }
                                 }
+                                else {
+                                    needsAntibodyTest = true;
+                                    flagMsg.append("Due for month-18 Rapid AB test");
+                                }
                             }
                         } else if (cwcDNATestObs != null) {
                             Encounter e = cwcDNATestObs.getEncounter();
+                            boolean needsABTestAfterCessationOfBF = false;
+                            boolean needsMonth18ABTest = false;
                             Set<Obs> o = e.getObs();
                             for (Obs obs : o) {
-
                                 Concept dnaABTest = cwcDNATestObs.getValueCoded();
                                 Concept obsTestReason = obs.getValueCoded();
                                 Concept obsTest = obs.getConcept();
@@ -138,14 +141,19 @@ public class NeedsAntibodyTestCalculation extends AbstractPatientCalculation imp
                                 if (dnaABTest != null && obsTestReason != null && obsTest != null) {
 
                                     if (obs.getConcept().getConceptId().equals(EID_CWC_TEST.getConceptId()) && !obs.getValueCoded().equals(AB_18_MONTHS)) {
-
+                                        needsMonth18ABTest = true;
                                         needsAntibodyTest = true;
-                                        flagMsg.append("Due for month-18 Rapid AB test ");
                                     } else if (obsBFStatusDate != null && !obsTest.equals(AB_6_MONTHS_AFTER_CESSATION_OF_BF) && getAgeInWeeks(obsBFStatusDate, context.getNow()) >= 6) {
+                                        needsABTestAfterCessationOfBF = true;
                                         needsAntibodyTest = true;
-                                        flagMsg.append("Due for week-6 Rapid AB test after cessation of breastfeeding");
                                     }
                                 }
+                            }
+                            if (needsABTestAfterCessationOfBF && needsMonth18ABTest) {
+                                flagMsg.append("Due for week-6 Rapid AB test after cessation of breastfeeding");
+                            }
+                            else if(needsMonth18ABTest){
+                                flagMsg.append("Due for month-18 Rapid AB test ");
                             }
                         }
                         else if (rapidABTestLab == null){

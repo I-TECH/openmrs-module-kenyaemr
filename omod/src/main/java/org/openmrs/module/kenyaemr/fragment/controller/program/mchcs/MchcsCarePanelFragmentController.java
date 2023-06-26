@@ -152,7 +152,7 @@ public class MchcsCarePanelFragmentController {
 							Order pcrTestOrder = obs.getOrder();
 							String orderReason = "";
 							if(pcrTestOrder!= null){
-								orderReason = pcrTestOrder.getOrderReason().getName().toString();
+								orderReason = pcrTestOrder.getOrderReason()!= null ? pcrTestOrder.getOrderReason().getName().toString() : "";
 								Date pcrDate = obs.getObsDatetime();
 								String testResults = obs.getValueCoded().getName().toString();
 								SimpleObject pcrTests = SimpleObject.create("orderReason", orderReason, "pcrDate", pcrDate, "testResults", testResults);
@@ -177,7 +177,7 @@ public class MchcsCarePanelFragmentController {
 							Order rapidTestOrder = obs.getOrder();
 							String rapidOrderReason = "";
 							if(rapidTestOrder!= null){
-								rapidOrderReason = rapidTestOrder.getOrderReason().getName().toString();
+								rapidOrderReason = rapidTestOrder.getOrderReason() != null ? rapidTestOrder.getOrderReason().getName().toString() : "";
 								Date rapidTestDate = obs.getObsDatetime();
 								String rapidTestResults = obs.getValueCoded().getName().toString();
 								SimpleObject rapidTests = SimpleObject.create("rapidOrderReason", rapidOrderReason, "rapidTestDate", rapidTestDate, "rapidTestResults", rapidTestResults);
