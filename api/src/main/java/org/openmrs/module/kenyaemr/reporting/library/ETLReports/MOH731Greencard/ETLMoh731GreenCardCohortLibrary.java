@@ -2829,9 +2829,10 @@ public class ETLMoh731GreenCardCohortLibrary {
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery =  "select d.patient_id\n" +
                 "from kenyaemr_etl.etl_patient_demographics d\n" +
+                "         inner join kenyaemr_etl.etl_hei_enrollment e on d.patient_id = e.patient_id\n" +
                 "where d.dob between date_sub(date(DATE_SUB(date(:endDate), INTERVAL DAYOFMONTH(date(:endDate)) - 1 DAY)),\n" +
                 "                             interval 24 MONTH)\n" +
-                "          and date_sub(date(:endDate), interval 24 MONTH);";
+                "          and date_sub(date(:endDate), interval 24 MONTH) and timestampdiff(month, (d.dob), date(e.visit_date)) between 0 and 18;";
         cd.setName("twentyFourMonthCohort");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -3024,7 +3025,7 @@ public class ETLMoh731GreenCardCohortLibrary {
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery = "select d.patient_id\n" +
                 "from kenyaemr_etl.etl_patient_program_discontinuation d\n" +
-                "where program_name = 'MCH Child HEI'\n" +
+                "where program_name in ('MCH Child HEI', 'MCH Child')\n" +
                 "  and d.discontinuation_reason = 159492\n" +
                 "  and date(coalesce(d.effective_discontinuation_date, d.visit_date)) <= date(:endDate);";
         cd.setName("heiTransferredOut");

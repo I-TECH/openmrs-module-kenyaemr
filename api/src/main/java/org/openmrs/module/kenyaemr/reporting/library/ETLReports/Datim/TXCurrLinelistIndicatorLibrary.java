@@ -14,7 +14,6 @@ import org.openmrs.module.kenyaemr.reporting.library.ETLReports.RevisedDatim.Dat
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.openmrs.module.kenyaemr.reporting.library.ETLReports.Datim.TXCurrLinelistCohortLibrary;
 
 import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.cohortIndicator;
 
@@ -27,6 +26,8 @@ public class TXCurrLinelistIndicatorLibrary {
     @Autowired
     private TXCurrLinelistCohortLibrary datimCohorts;
 
+    @Autowired
+    private DatimCohortLibrary datimCohortLibrary;
 
     /**
      * Present in current but missing in previous report
@@ -44,8 +45,8 @@ public class TXCurrLinelistIndicatorLibrary {
     /**
      * Present in current but missing in previous report - Transfer in
      */
-    public CohortIndicator txCurLinelistForPatientsPresentInCurrentButMissingInPreviousTrfInQuarterlyReport() {
-        return cohortIndicator("Present in current but missing in previous report as a result of transfer in", ReportUtils.map(datimCohorts.txCurLinelistForPatientsPresentInCurrentButMissingInPreviousReportTrfIn(), "endDate=${endDate}"));
+    public CohortIndicator txCurLinelistForPatientsPresentInCurrentButMissingInPreviousTrfInReport() {
+        return cohortIndicator("Present in current but missing in previous report as a result of transfer in", ReportUtils.map(datimCohorts.txCurLinelistForPatientsPresentInCurrentButMissingInPreviousReportTrfIn(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * Present in current but missing in previous report - returned to care
@@ -58,31 +59,31 @@ public class TXCurrLinelistIndicatorLibrary {
      * present in previous but missing in present report
      */
     public CohortIndicator txCurLinelistForPatientsPresentInPreviousButMissingInCurrentReport() {
-        return cohortIndicator("present in previous but missing in present report", ReportUtils.map(datimCohorts.txCurLinelistForPatientsPresentInPreviousButMissingInCurrentReport(), "endDate=${endDate}"));
+        return cohortIndicator("present in previous but missing in present report", ReportUtils.map(datimCohortLibrary.txML(), "endDate=${endDate}"));
     }
     /**
      * present in previous but missing in present report due to death - Quarterly
      */
     public CohortIndicator txCurLinelistForPatientsPresentInPreviousButMissingInCurrentDueToDeathReport() {
-        return cohortIndicator("present in previous but missing in present report due to death", ReportUtils.map(datimCohorts.txCurLinelistForPatientsPresentInPreviousButMissingInCurrentDueToDeathReport(), "endDate=${endDate}"));
+        return cohortIndicator("present in previous but missing in present report due to death", ReportUtils.map(datimCohortLibrary.txmlPatientDied(), "endDate=${endDate}"));
     }
     /**
      * present in previous but missing in present report due to LTFU - Quarterly
      */
     public CohortIndicator txCurLinelistForPatientsPresentInPreviousButMissingInCurrentLTFUReport() {
-        return cohortIndicator("present in previous but missing in present report due to LTFU", ReportUtils.map(datimCohorts.txCurLinelistForPatientsPresentInPreviousButMissingInCurrentLTFUReport(), "endDate=${endDate}"));
+        return cohortIndicator("present in previous but missing in present report due to LTFU", ReportUtils.map(datimCohortLibrary.txMLIIT(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * present in previous but missing in present report due to Transfer Out - Quarterly
      */
     public CohortIndicator txCurLinelistForPatientsPresentInPreviousButMissingInCurrentTrfOutReport() {
-        return cohortIndicator("present in previous but missing in present report due to Transfer out", ReportUtils.map(datimCohorts.txCurLinelistForPatientsPresentInPreviousButMissingInCurrentTrfOutReport(), "endDate=${endDate}"));
+        return cohortIndicator("present in previous but missing in present report due to Transfer out", ReportUtils.map(datimCohortLibrary.txmlTrfOut(), "endDate=${endDate}"));
     }
     /**
      * present in previous but missing in present report due to stopping treatment - Quarterly
      */
     public CohortIndicator txCurLinelistForPatientsPresentInPreviousButMissingInCurrentReportStoppedTxQuarterly() {
-        return cohortIndicator("present in previous but missing in present report due to Stopping Treatment", ReportUtils.map(datimCohorts.txCurLinelistForPatientsPresentInPreviousButMissingInCurrentReportStoppedTxQuarterly(), "endDate=${endDate}"));
+        return cohortIndicator("present in previous but missing in present report due to Stopping Treatment", ReportUtils.map(datimCohortLibrary.txmlPatientByTXStopReason(), "endDate=${endDate}"));
     }
     /**
      * Present in current but missing in previous report - monthly
