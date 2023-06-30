@@ -809,19 +809,15 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "             max(d.visit_date)                                                          as date_discontinued,\n" +
                 "             d.effective_disc_date                                                      as effective_disc_date,\n" +
                 "             d.patient_id                                                               as disc_patient,\n" +
-                "             if(mid(max(concat(date(dr.visit_date), dr.is_ctx)), 11) = 1, 1,\n" +
-                "                if(mid(max(concat(date(dr.visit_date), dr.is_dapsone)), 11) = 1, 1, 0)) as prophylaxis_given,\n" +
                 "             if(mid(max(concat(date(fup.visit_date), fup.ctx_dispensed)), 11) in (105281, 74250, 1065), 1,\n" +
                 "                0)                                                                      as ctx_dispensed,\n" +
                 "             if(mid(max(concat(date(fup.visit_date), fup.dapsone_dispensed)), 11) in (105281, 74250, 1065), 1,\n" +
                 "                0)                                                                      as dapsone_dispensed,\n" +
                 "             if(mid(max(concat(date(fup.visit_date), fup.prophylaxis_given)), 11) in (105281, 74250), 1,\n" +
-                "                0)                                                                      as prophylaxis_given_greencard\n" +
+                "                0)                                                                      as prophylaxis_dispensed\n" +
                 "      from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
                 "               join kenyaemr_etl.etl_patient_demographics p on p.patient_id = fup.patient_id\n" +
                 "               join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id = e.patient_id\n" +
-                "               left join kenyaemr_etl.etl_pharmacy_extract dr\n" +
-                "                         on date(fup.visit_date) = date(dr.visit_date) and dr.patient_id = fup.patient_id\n" +
                 "               left outer JOIN\n" +
                 "           (select patient_id,\n" +
                 "                   coalesce(date(effective_discontinuation_date), visit_date) visit_date,\n" +
@@ -833,8 +829,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "      where fup.visit_date <= date(:endDate)\n" +
                 "      group by fup.patient_id\n" +
                 "      having (\n" +
-                "                     (((ctx_dispensed = 1 or dapsone_dispensed = 1) and prophylaxis_given_greencard = 1) or\n" +
-                "                      prophylaxis_given = 1)\n" +
+                "                     ((ctx_dispensed = 1 or dapsone_dispensed = 1) and prophylaxis_dispensed = 1)\n" +
                 "                     AND\n" +
                 "                     (((timestampdiff(DAY, date(latest_tca), date(:endDate)) <= 30 or\n" +
                 "                        timestampdiff(DAY, date(latest_tca), date(curdate())) <= 30) and\n" +
