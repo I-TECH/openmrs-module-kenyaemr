@@ -36,22 +36,26 @@
 
 	var NOT_HIV_TESTED_ID = 1402;
 	var NEGATIVE = 664;
+	var REVISIT = 164142;
     var HIV_POSITIVE = 703;
+    var INCONCLUSIVE = 1138;
 	var UNKNOWN = 1067;
     var ANC_CLIENT = 1622;
     var DELIVERY_CLIENT = 164835;
     var PNC_CLIENT = 1623;
+    var HIV_TEST = "159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
-    var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.earliestObs(159427).getValueCoded()"/>";
 	var ANC_START_DATE =  "<lookup expression="fn.latestObs(163547).getValueDatetime()"/>";
 	var HIV_TEST_DATE =  "<lookup expression="fn.latestObs(160554).getValueDatetime()"/>";
 	var LATEST_LMP_DATE =  "<lookup expression="fn.latestObs(1427).getValueDatetime()"/>";
 	var LATEST_LMP_OBSDATE =  "<lookup expression="fn.latestObs(1427).getObsDatetime()"/>";
-
+	var HIV_TEST_DATE =  "<lookup expression="fn.latestObs(160554).getValueDatetime()"/>";
+	var LATEST_HTS_RESULT = "<lookup expression="fn.latestObs(159427).getValueCoded().getConceptId()"/>";
+	var HTS_DATE =  "<lookup expression="fn.latestObs(159427).getObsDatetime()"/>";
     var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
     var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
     var REGIMEN_NAME = GREENCARD_VELOCITY.split(",")[4].split(":")[1];
-
+	var latestTestDate = null;
     //Start on ready
 	jq(function () {
 	    //Service area validations
@@ -79,29 +83,57 @@
         if(ANC_START_DATE !="" || ANC_START_DATE != null){
             getField('first-anc-date.value').val(ANC_START_DATE);
         }
-        //Prepopulate HIV positive if already enrolled or reported HIV POSITIVE
-        if(PATIENT_IS_REPORTED_HIV == 703 || PATIENT_IS_ENROLLED_HIV){
-            if(HIV_TEST_DATE != "") {
-                var formattedTestDate = moment(moment(HIV_TEST_DATE, 'DD/MMM/YYYY').toDate()).format("DD-MMM-YYYY");
-                getField('patient-hiv-test-date.value').val(formattedTestDate);
-            }
-            jq('#patient-hiv-test-date input').prop('disabled', false);
-            getField('patient-hiv-status.value').val(HIV_POSITIVE);
-            jq('#tbl-known-positive').show();
-            jq('#hiv-known-positive:text').val('Positive');
+		var formattedEncounterDate = moment(moment(getValue('encounter-date.value')).toDate()).format('DD-MMM-YYYY');
+		var formattedLatestHTSDate = null;
+		var formattedLatestHIVTestDate = null;
 
-            //Prepopulate if already on HAART
-            if(PATIENT_ON_ART =="true") {
-                jq('#on-art:text').val('Yes');
-            }else {
-                jq('#on-art:text').val('No');
-            }
-        }else{
-            jq('#tbl-known-positive').hide();
+		if (HTS_DATE != "" &amp;&amp; HTS_DATE != null) {
+			formattedLatestHTSDate = moment(moment(HTS_DATE).toDate()).format("DD-MMM-YYYY");
+		}
+		if (HIV_TEST_DATE != "" &amp;&amp; HIV_TEST_DATE != null) {
+			formattedLatestHIVTestDate = moment(moment(HIV_TEST_DATE).toDate()).format("DD-MMM-YYYY");
+		}
+		if (formattedLatestHTSDate &amp;&amp; (!formattedLatestHIVTestDate || formattedLatestHTSDate > formattedLatestHIVTestDate)) {
+			latestTestDate = formattedLatestHTSDate;
+		} else {
+			latestTestDate = formattedLatestHIVTestDate;
 		}
 
+		if (moment(latestTestDate).isBefore(formattedEncounterDate, 'day')) {
+			jq('#patient-hiv-test-date input').prop('disabled', false);
+			getField('patient-hiv-test-date.value').val(latestTestDate);
+			if (LATEST_HTS_RESULT == HIV_POSITIVE || PATIENT_IS_ENROLLED_HIV) {
+				getField('patient-hiv-status.value').val(HIV_POSITIVE);
+			} else if (LATEST_HTS_RESULT == NEGATIVE) {
+				getField('patient-hiv-status.value').val(REVISIT);
+			}
+			else if (LATEST_HTS_RESULT == INCONCLUSIVE) {
+				getField('patient-hiv-status.value').val(UNKNOWN);
+			}
+		}
+		else{
+			getField('patient-hiv-status.value').val(UNKNOWN);
+		}
+		if (LATEST_HTS_RESULT != null &amp;&amp; LATEST_HTS_RESULT != "") {
+			jq('#tbl-known-positive').show();
+			if (LATEST_HTS_RESULT == HIV_POSITIVE) {
+				jq('#hiv-known-positive:text').val('Positive');
+				//Prepopulate if already on HAART
+				if (PATIENT_ON_ART == "true") {
+					jq('#on-art:text').val('Yes');
+				} else {
+					jq('#on-art:text').val('No');
+				}
+			} else if (LATEST_HTS_RESULT == NEGATIVE) {
+				jq('#hiv-known-positive:text').val('Negative');
+			} else if (LATEST_HTS_RESULT == INCONCLUSIVE) {
+				jq('#hiv-known-positive:text').val('Inconclusive');
+			}
 
-        jq('#first-anc-today').click(defaultFirstAncDateChange);
+		} else{
+            jq('#tbl-known-positive').hide();
+		}
+		jq('#first-anc-today').click(defaultFirstAncDateChange);
 
         //Prepopulate last LMP if added in previous forms
         if(LATEST_LMP_DATE !="" || LATEST_LMP_DATE != null) {
@@ -258,7 +290,7 @@
 
         }else{
 			var hivTestDate = getValue('patient-hiv-test-date.value');
-			if (hivTestDate == "" &amp;&amp; HIV_TEST_DATE == "") {
+			if (hivTestDate == "" &amp;&amp; latestTestDate == "") {
 				getField('patient-hiv-test-date.error').html('Specify the date when the patient was tested for HIV.').show();
 				return false;
 			}
@@ -489,8 +521,8 @@
 				<td>
 					<obs conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 id="patient-hiv-status"
-						 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						 answerLabels="Positive,Negative,Unknown"/>
+						 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164142AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerLabels="Known Positive,Revisit,Unknown"/>
 					<span id="hivStar" style="color:red;"><strong>*</strong></span>
 					<div id="patient-hiv-status-mismatch" class="ke-warning">Patient is enrolled in HIV program</div>
 				</td>
