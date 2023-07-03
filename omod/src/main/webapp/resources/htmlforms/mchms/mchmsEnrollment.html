@@ -45,7 +45,6 @@
     var PNC_CLIENT = 1623;
     var HIV_TEST = "159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
-    var PATIENT_IS_REPORTED_HIV = "<lookup expression="fn.earliestObs(159427).getValueCoded()"/>";
 	var ANC_START_DATE =  "<lookup expression="fn.latestObs(163547).getValueDatetime()"/>";
 	var HIV_TEST_DATE =  "<lookup expression="fn.latestObs(160554).getValueDatetime()"/>";
 	var LATEST_LMP_DATE =  "<lookup expression="fn.latestObs(1427).getValueDatetime()"/>";
@@ -53,11 +52,10 @@
 	var HIV_TEST_DATE =  "<lookup expression="fn.latestObs(160554).getValueDatetime()"/>";
 	var LATEST_HTS_RESULT = "<lookup expression="fn.latestObs(159427).getValueCoded().getConceptId()"/>";
 	var HTS_DATE =  "<lookup expression="fn.latestObs(159427).getObsDatetime()"/>";
-	var TRF_IN_HIV_CLIENT = "<lookup expression="fn.latestObs(164932).getValueCoded().getConceptId()"/>";
     var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
     var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
     var REGIMEN_NAME = GREENCARD_VELOCITY.split(",")[4].split(":")[1];
-
+	var latestTestDate = null;
     //Start on ready
 	jq(function () {
 	    //Service area validations
@@ -88,7 +86,6 @@
 		var formattedEncounterDate = moment(moment(getValue('encounter-date.value')).toDate()).format('DD-MMM-YYYY');
 		var formattedLatestHTSDate = null;
 		var formattedLatestHIVTestDate = null;
-		var latestTestDate = null;
 
 		if (HTS_DATE != "" &amp;&amp; HTS_DATE != null) {
 			formattedLatestHTSDate = moment(moment(HTS_DATE).toDate()).format("DD-MMM-YYYY");
@@ -110,6 +107,12 @@
 			} else if (LATEST_HTS_RESULT == NEGATIVE) {
 				getField('patient-hiv-status.value').val(REVISIT);
 			}
+			else if (LATEST_HTS_RESULT == INCONCLUSIVE) {
+				getField('patient-hiv-status.value').val(UNKNOWN);
+			}
+		}
+		else{
+			getField('patient-hiv-status.value').val(UNKNOWN);
 		}
 		if (LATEST_HTS_RESULT != null &amp;&amp; LATEST_HTS_RESULT != "") {
 			jq('#tbl-known-positive').show();
@@ -287,7 +290,7 @@
 
         }else{
 			var hivTestDate = getValue('patient-hiv-test-date.value');
-			if (hivTestDate == "" &amp;&amp; HIV_TEST_DATE == "") {
+			if (hivTestDate == "" &amp;&amp; latestTestDate == "") {
 				getField('patient-hiv-test-date.error').html('Specify the date when the patient was tested for HIV.').show();
 				return false;
 			}
