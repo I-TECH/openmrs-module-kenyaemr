@@ -5374,10 +5374,10 @@ public class DatimCohortLibrary {
                 "         inner join (select de.patient_id, min(de.date_started) as arv_start_date\n" +
                 "                     from kenyaemr_etl.etl_drug_event de\n" +
                 "                     where de.program = 'HIV'\n" +
-                "                       and date(de.date_started) <= date(:startDate)\n" +
+                "                       and date(de.date_started) <= date(:endDate)\n" +
                 "                     group by de.patient_id) de on i.patient_id = de.patient_id\n" +
                 "where i.program = 'TPT'\n" +
-                "  and date(i.date_enrolled) between date_sub(:startDate, interval 6 MONTH) and date_sub(date(:startDate), interval 1 day)\n" +
+                "  and date(i.date_enrolled) between date_add(date_sub(:endDate, interval 12 MONTH), interval  1 day) and LAST_DAY(date_sub(date(:endDate), interval 6 MONTH))\n" +
                 "  and timestampdiff(MONTH, date(de.arv_start_date),date(i.date_enrolled)) < 6;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -5401,10 +5401,10 @@ public class DatimCohortLibrary {
                 "         inner join (select de.patient_id, min(de.date_started) as arv_start_date\n" +
                 "                     from kenyaemr_etl.etl_drug_event de\n" +
                 "                     where de.program = 'HIV'\n" +
-                "                       and date(de.date_started) <= date(:startDate)\n" +
+                "                       and date(de.date_started) <= date(:endDate)\n" +
                 "                     group by de.patient_id) de on i.patient_id = de.patient_id\n" +
                 "where i.program = 'TPT'\n" +
-                "  and date(i.date_enrolled) between date_sub(:startDate, interval 6 MONTH) and date_sub(date(:startDate), interval 1 day)\n" +
+                "  and date(i.date_enrolled) between date_add(date_sub(:endDate, interval 12 MONTH), interval  1 day) and LAST_DAY(date_sub(date(:endDate), interval 6 MONTH))\n" +
                 "  and timestampdiff(MONTH, date(de.arv_start_date), date(i.date_enrolled)) >= 6;";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -5457,7 +5457,7 @@ public class DatimCohortLibrary {
     public CohortDefinition completedTPTCurrentOrPrevPeriod() {
         String sqlQuery = "select o.patient_id\n" +
                 "from kenyaemr_etl.etl_ipt_outcome o\n" +
-                "where date(o.visit_date) between date_sub(:startDate, interval 6 MONTH)\n" +
+                "where date(o.visit_date) between date_add(date_sub(:endDate, interval 12 MONTH), interval  1 day)\n" +
                 "    and date(:endDate)\n" +
                 "  and o.outcome = 1267;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
