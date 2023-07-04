@@ -20,17 +20,9 @@ import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDa
 import org.openmrs.module.kenyaemr.calculation.library.mchcs.PersonAddressCalculation;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.EncounterProviderConverter;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQACalculationResultConverter;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.CCCDefaulterTracingRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.MissedAppointmentsDuringPeriodCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.MissedAppointmentReasonsConverter;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.anc.ANCVisitNumberDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLCaseManagerDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLLastVisitDateDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLNextAppointmentDateDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.FinalOutcomeDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.HonouredAppointmentDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentDaysToRTCDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentLastDateBookedDataDefinition;
@@ -41,12 +33,6 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulter
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentTracingAttemptsDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentTracingFinalOutcomeDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentTracingMethodsDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.ProviderCommentsDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.ReasonForMissedAppointmentDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.ReturnToCareDateDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.TracingNumberDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.TracingOutcomeDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.TracingTypeDataDefinition;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.SortCriteria;
@@ -80,7 +66,7 @@ import java.util.List;
 
 @Component
 @Builds({"kenyaemr.common.report.missedAppointmentTrackerReport"})
-public class MissedAppointmentsDuringPeriodReportBuilder extends AbstractHybridReportBuilder {
+public class MissedAppointmentsTrackerReportBuilder extends AbstractHybridReportBuilder {
 	public static final String DATE_FORMAT = "dd/MM/yyyy";
 
 	@Override
