@@ -15,7 +15,7 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * Visit ID Column
+ * Evaluates tracing attempts on a missed appointment
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 public class MissedAppointmentTracingAttemptsDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {

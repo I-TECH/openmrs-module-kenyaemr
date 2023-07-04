@@ -9,89 +9,190 @@
  */
 package org.openmrs.module.kenyaemr.reporting.builder.hiv;
 
-import org.openmrs.EncounterType;
 import org.openmrs.PatientIdentifierType;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.module.kenyacore.report.HybridReportDescriptor;
+import org.openmrs.module.kenyacore.report.ReportDescriptor;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyacore.report.builder.AbstractHybridReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyacore.report.data.patient.definition.CalculationDataDefinition;
-import org.openmrs.module.kenyaemr.calculation.library.NumberOfDaysLateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.TelephoneNumberCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.LastReturnVisitDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.rdqa.PatientProgramEnrollmentCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.mchcs.PersonAddressCalculation;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.EncounterDatetimeConverter;
-import org.openmrs.module.kenyaemr.reporting.calculation.converter.PatientProgramEnrollmentConverter;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLMissedAppointmentsCohortDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
+import org.openmrs.module.kenyaemr.reporting.calculation.converter.EncounterProviderConverter;
+import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQACalculationResultConverter;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.CCCDefaulterTracingRegisterCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.MissedAppointmentsDuringPeriodCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.MissedAppointmentReasonsConverter;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.anc.ANCVisitNumberDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLCaseManagerDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLLastVisitDateDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLNextAppointmentDateDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.FinalOutcomeDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.HonouredAppointmentDateDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentDateDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentDaysToRTCDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentLastDateBookedDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentLastTracingCommentsDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentLastTracingDateDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentLastTracingOutcomeDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentRTCDateDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentTracingAttemptsDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentTracingFinalOutcomeDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentTracingMethodsDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.ProviderCommentsDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.ReasonForMissedAppointmentDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.ReturnToCareDateDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.TracingNumberDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.TracingOutcomeDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.TracingTypeDataDefinition;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.SortCriteria;
-import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
+import org.openmrs.module.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.reporting.data.converter.DataConverter;
+import org.openmrs.module.reporting.data.converter.DateConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
+import org.openmrs.module.reporting.data.encounter.definition.EncounterDatetimeDataDefinition;
+import org.openmrs.module.reporting.data.encounter.definition.EncounterProviderDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
-import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.PatientIdDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.AgeDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.BirthdateDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.ConvertedPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.PersonIdDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.PersonAttributeDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
+import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Component
-@Builds({"kenyaemr.common.report.etlMissedAppointments"})
+@Builds({"kenyaemr.common.report.missedAppointmentTrackerReport"})
 public class MissedAppointmentsDuringPeriodReportBuilder extends AbstractHybridReportBuilder {
 	public static final String DATE_FORMAT = "dd/MM/yyyy";
-	/**
-	 *
-	 * @see org.openmrs.module.kenyacore.report.builder.AbstractCohortReportBuilder#addColumns(org.openmrs.module.kenyacore.report.CohortReportDescriptor, PatientDataSetDefinition)
-	 */
+
 	@Override
-	protected void addColumns(HybridReportDescriptor report, PatientDataSetDefinition dsd) {
+	protected List<Parameter> getParameters(ReportDescriptor reportDescriptor) {
+		return Arrays.asList(
+				new Parameter("startDate", "Start Date", Date.class),
+				new Parameter("endDate", "End Date", Date.class),
+				new Parameter("dateBasedReporting", "", String.class)
+		);
+	}
+
+	@Override
+	protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor reportDescriptor, ReportDefinition reportDefinition) {
+		return Arrays.asList(
+				ReportUtils.map(datasetColumns(), "startDate=${startDate},endDate=${endDate}")
+		);
+	}
+
+	@Override
+	protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor hybridReportDescriptor, PatientDataSetDefinition patientDataSetDefinition) {
+		return null;
+	}
+
+	protected DataSetDefinition datasetColumns() {
+		EncounterDataSetDefinition dsd = new EncounterDataSetDefinition();
+		dsd.setName("CCCDefaulterTracking");
+		dsd.setDescription("Defaulter Tracking");
+		dsd.addSortCriteria("Date of Tracing", SortCriteria.SortDirection.ASC);
+		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+
+		String paramMapping = "startDate=${startDate},endDate=${endDate}";
+
+		DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName} {middleName}");
+		DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
 
 		PatientIdentifierType upn = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
 		DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
 		DataDefinition identifierDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(upn.getName(), upn), identifierFormatter);
 
-		DataConverter nameFormatter = new ObjectFormatter("{familyName}, {givenName}");
-		DataDefinition nameDef = new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), nameFormatter);
-		dsd.addSortCriteria("Number of days late", SortCriteria.SortDirection.ASC);
-		dsd.setName("missedAppointments");
-		dsd.addColumn("id", new PersonIdDataDefinition(), "");
+		EncounterProviderDataDefinition providerDataDefinition = new EncounterProviderDataDefinition();
+		providerDataDefinition.setSingleProvider(true);
+		PersonAttributeType phoneNumber = MetadataUtils.existing(PersonAttributeType.class, CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT);
+
+		MissedAppointmentDateDataDefinition missedAppointmentDateDataDefinition = new MissedAppointmentDateDataDefinition();
+		missedAppointmentDateDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+		missedAppointmentDateDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+
+		MissedAppointmentTracingAttemptsDataDefinition tracingAttemptsDataDefinition = new MissedAppointmentTracingAttemptsDataDefinition();
+		tracingAttemptsDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+		tracingAttemptsDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+
+		MissedAppointmentLastTracingDateDataDefinition lastTraceDateDataDefinition = new MissedAppointmentLastTracingDateDataDefinition();
+		lastTraceDateDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+		lastTraceDateDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+
+		MissedAppointmentLastTracingOutcomeDataDefinition lastTraceOutcomeDataDefinition = new MissedAppointmentLastTracingOutcomeDataDefinition();
+		lastTraceOutcomeDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+		lastTraceOutcomeDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+
+		MissedAppointmentLastTracingCommentsDataDefinition lastTraceCommentsDataDefinition = new MissedAppointmentLastTracingCommentsDataDefinition();
+		lastTraceCommentsDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+		lastTraceCommentsDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+
+		MissedAppointmentTracingMethodsDataDefinition tracingMethods = new MissedAppointmentTracingMethodsDataDefinition();
+		tracingMethods.addParameter(new Parameter("endDate", "End Date", Date.class));
+		tracingMethods.addParameter(new Parameter("startDate", "Start Date", Date.class));
+
+		MissedAppointmentTracingFinalOutcomeDataDefinition finalOutcome = new MissedAppointmentTracingFinalOutcomeDataDefinition();
+		finalOutcome.addParameter(new Parameter("endDate", "End Date", Date.class));
+		finalOutcome.addParameter(new Parameter("startDate", "Start Date", Date.class));
+
+		MissedAppointmentDaysToRTCDataDefinition daysToRTC = new MissedAppointmentDaysToRTCDataDefinition();
+		daysToRTC.addParameter(new Parameter("endDate", "End Date", Date.class));
+		daysToRTC.addParameter(new Parameter("startDate", "Start Date", Date.class));
+
+		MissedAppointmentRTCDateDataDefinition rtcDate = new MissedAppointmentRTCDateDataDefinition();
+		rtcDate.addParameter(new Parameter("endDate", "End Date", Date.class));
+		rtcDate.addParameter(new Parameter("startDate", "Start Date", Date.class));
+
+		MissedAppointmentLastDateBookedDataDefinition dateBooked = new MissedAppointmentLastDateBookedDataDefinition();
+		dateBooked.addParameter(new Parameter("endDate", "End Date", Date.class));
+		dateBooked.addParameter(new Parameter("startDate", "Start Date", Date.class));
+
 		dsd.addColumn("Name", nameDef, "");
-		dsd.addColumn("Unique Patient No", identifierDef, "");
-		dsd.addColumn("Age", new AgeDataDefinition(), "", new DataConverter[0]);
-		dsd.addColumn("Sex", new GenderDataDefinition(), "", new DataConverter[0]);
-		EncountersForPatientDataDefinition definition = new EncountersForPatientDataDefinition();
-		EncounterType hivConsultation = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_CONSULTATION);
-		EncounterType hivEnrollment = MetadataUtils.existing(EncounterType.class, HivMetadata._EncounterType.HIV_ENROLLMENT);
-		EncounterType consultation = MetadataUtils.existing(EncounterType.class, CommonMetadata._EncounterType.CONSULTATION);
+		dsd.addColumn("id", new PatientIdDataDefinition(), "");
+		dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
+		dsd.addColumn("Age", new AgeDataDefinition(), "");
+		dsd.addColumn("Sex", new GenderDataDefinition(), "");
+		dsd.addColumn("Telephone No", new PersonAttributeDataDefinition(phoneNumber), "");
+		dsd.addColumn("Unique Patient Number", identifierDef, null);
+		dsd.addColumn("Village_Estate_Landmark", new CalculationDataDefinition("Village/Estate/Landmark", new PersonAddressCalculation()), "", new RDQACalculationResultConverter());
+		dsd.addColumn("Date appointment given", new EncounterDatetimeDataDefinition(),"", new DateConverter(DATE_FORMAT));
+		dsd.addColumn("Date Appointment missed", missedAppointmentDateDataDefinition, paramMapping, new DateConverter(DATE_FORMAT));
+		dsd.addColumn("Tracing attempts", tracingAttemptsDataDefinition, paramMapping, null);
+		dsd.addColumn("Last Tracing Date", lastTraceDateDataDefinition, paramMapping, new DateConverter(DATE_FORMAT));
+		dsd.addColumn("Last Tracing outcome", lastTraceOutcomeDataDefinition, paramMapping, null);
+		dsd.addColumn("Tracing methods", tracingMethods, paramMapping, null);
+		dsd.addColumn("Date patient promised to come", dateBooked, paramMapping, new DateConverter(DATE_FORMAT));
+		dsd.addColumn("Final outcome", finalOutcome, paramMapping, null);
+		dsd.addColumn("Last Tracing comments", lastTraceCommentsDataDefinition, paramMapping, null);
+		dsd.addColumn("RTC Date", rtcDate, paramMapping, new DateConverter(DATE_FORMAT));
+		dsd.addColumn("No of Days to RTC", daysToRTC, paramMapping, null);
+		dsd.addColumn("Case Manager", new ETLCaseManagerDataDefinition(), "", null);
 
-		List<EncounterType> encounterTypes = Arrays.asList(hivConsultation, consultation, hivEnrollment);
 
-		definition.setWhich(TimeQualifier.LAST);
-		definition.setTypes(encounterTypes);
-		dsd.addColumn("Last Visit Date", definition, "", new EncounterDatetimeConverter());
-		dsd.addColumn("Last HIV Appointment date", new CalculationDataDefinition("Appointment date", new LastReturnVisitDateCalculation()), "", new DataConverter[]{new CalculationResultConverter()});
-		dsd.addColumn("Number of days late", new CalculationDataDefinition("Number of days late", new NumberOfDaysLateCalculation()), "", new DataConverter[]{new CalculationResultConverter()});
-		dsd.addColumn("Program", new CalculationDataDefinition("Program", new PatientProgramEnrollmentCalculation()), "", new PatientProgramEnrollmentConverter());
-		dsd.addColumn("Phone number", new CalculationDataDefinition("Phone number", new TelephoneNumberCalculation()), "", new DataConverter[]{new CalculationResultConverter()});
-	}
+		MissedAppointmentsDuringPeriodCohortDefinition cd = new MissedAppointmentsDuringPeriodCohortDefinition();
+		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		cd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
-	@Override
-	protected Mapped<CohortDefinition> buildCohort(HybridReportDescriptor descriptor, PatientDataSetDefinition dsd) {
-		CohortDefinition cd = new ETLMissedAppointmentsCohortDefinition();
-        cd.setName("ETL Missed Appointments");
-		return ReportUtils.map(cd, "");
+		dsd.addRowFilter(cd, paramMapping);
+		return dsd;
+
 	}
 }

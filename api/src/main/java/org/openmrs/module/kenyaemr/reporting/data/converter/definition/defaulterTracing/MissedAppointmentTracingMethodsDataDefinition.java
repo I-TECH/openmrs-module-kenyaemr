@@ -15,24 +15,24 @@ import org.openmrs.module.reporting.definition.configuration.ConfigurationProper
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
 /**
- * Evaluates tracing attempts final outcome
+ * Evaluates tracing methods and returns a coma separated list
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class MissedAppointmentTracingFinalOutcomeDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class MissedAppointmentTracingMethodsDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public MissedAppointmentTracingFinalOutcomeDataDefinition() {
+    public MissedAppointmentTracingMethodsDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public MissedAppointmentTracingFinalOutcomeDataDefinition(String name) {
+    public MissedAppointmentTracingMethodsDataDefinition(String name) {
         super(name);
     }
 

@@ -11,6 +11,7 @@ package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluato
 
 import org.openmrs.annotation.Handler;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.FinalOutcomeDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentDateDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -20,12 +21,13 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
- * Evaluates final tracing outcome to produce a VisitData
+ * Returns the date when a patient missed an appointment
  */
-@Handler(supports=FinalOutcomeDataDefinition.class, order=50)
+@Handler(supports= MissedAppointmentDateDataDefinition.class, order=50)
 public class MissedAppointmentDateDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
@@ -34,9 +36,13 @@ public class MissedAppointmentDateDataEvaluator implements EncounterDataEvaluato
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select encounter_id, (case true_status  when 160432 then 'Dead' when 1693 then 'Receiving ART from another clinic/Transferred' when 160037 then 'Still in care at CCC' when 5240 then 'Lost to follow up' when 142917 then 'Other' else ''  end) as outcome from kenyaemr_etl.etl_ccc_defaulter_tracing ";
+        String qry = "select encounter_id, next_appointment_date from kenyaemr_etl.etl_patient_hiv_followup where next_appointment_date between date(:startDate) and date(:endDate) ";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
+        Date startDate = (Date)context.getParameterValue("startDate");
+        Date endDate = (Date)context.getParameterValue("endDate");
+        queryBuilder.addParameter("endDate", endDate);
+        queryBuilder.addParameter("startDate", startDate);
         queryBuilder.append(qry);
         Map<Integer, Object> data = evaluationService.evaluateToMap(queryBuilder, Integer.class, Object.class, context);
         c.setData(data);

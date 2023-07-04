@@ -17,24 +17,24 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
 import java.util.Date;
 
 /**
- * Evaluates last tracing date on a missed appointment
+ * Evaluates last tracing outcome on a missed appointment
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class MissedAppointmentLastTracingDateDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class MissedAppointmentLastTracingOutcomeDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public MissedAppointmentLastTracingDateDataDefinition() {
+    public MissedAppointmentLastTracingOutcomeDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public MissedAppointmentLastTracingDateDataDefinition(String name) {
+    public MissedAppointmentLastTracingOutcomeDataDefinition(String name) {
         super(name);
     }
 
@@ -44,6 +44,6 @@ public class MissedAppointmentLastTracingDateDataDefinition extends BaseDataDefi
      * @see org.openmrs.module.reporting.data.DataDefinition#getDataType()
      */
     public Class<?> getDataType() {
-        return Date.class;
+        return Integer.class;
     }
 }

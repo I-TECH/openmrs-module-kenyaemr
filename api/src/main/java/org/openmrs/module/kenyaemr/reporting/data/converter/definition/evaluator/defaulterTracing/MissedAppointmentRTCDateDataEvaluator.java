@@ -10,7 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.defaulterTracing;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentTracingMethodsDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentRTCDateDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -24,9 +24,9 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Returns a tracing methods used. It is a comma separated list
+ * Returns date when a patient returned to care after missing a visit
  */
-@Handler(supports= MissedAppointmentTracingMethodsDataDefinition.class, order=50)
+@Handler(supports= MissedAppointmentRTCDateDataDefinition.class, order=50)
 public class MissedAppointmentRTCDateDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
@@ -35,11 +35,16 @@ public class MissedAppointmentRTCDateDataEvaluator implements EncounterDataEvalu
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select fup.encounter_id, group_concat(distinct case tr.tracing_type when 1650 then 'Client Called' when 161642 then 'Treatment Supporter' else 'Physical' end) trace_methods\n" +
+        String qry = "select fup.encounter_id,  min(firstVisit.visit_date) as rtcDate\n" +
                 "from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
-                "         join kenyaemr_etl.etl_ccc_defaulter_tracing tr on tr.patient_id = fup.patient_id and fup.next_appointment_date = tr.missed_appointment_date and tr.tracing_type is not null\n" +
-                "where next_appointment_date between date(:startDate) and date(:endDate)\n" +
-                "group by fup.encounter_id;";
+                "         left join kenyaemr_etl.etl_patient_hiv_followup firstVisit\n" +
+                "                   on firstVisit.patient_id = fup.patient_id and\n" +
+                "                      fup.next_appointment_date < firstVisit.visit_date\n" +
+                "         join kenyaemr_etl.etl_patient_demographics p on p.patient_id = fup.patient_id\n" +
+                "         join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id = e.patient_id\n" +
+                "where date(fup.next_appointment_date) between date(:startDate) and date(:endDate)\n" +
+                "group by fup.encounter_id, fup.patient_id\n" +
+                "having rtcDate is not null;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");

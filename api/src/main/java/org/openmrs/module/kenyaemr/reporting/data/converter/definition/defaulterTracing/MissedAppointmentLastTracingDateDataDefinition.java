@@ -14,8 +14,10 @@ import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefin
 import org.openmrs.module.reporting.definition.configuration.ConfigurationPropertyCachingStrategy;
 import org.openmrs.module.reporting.evaluation.caching.Caching;
 
+import java.util.Date;
+
 /**
- * Evaluates tracing attempts on a missed appointment
+ * Evaluates last tracing date on a missed appointment
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 public class MissedAppointmentLastTracingDateDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
@@ -42,6 +44,6 @@ public class MissedAppointmentLastTracingDateDataDefinition extends BaseDataDefi
      * @see org.openmrs.module.reporting.data.DataDefinition#getDataType()
      */
     public Class<?> getDataType() {
-        return Double.class;
+        return Date.class;
     }
 }

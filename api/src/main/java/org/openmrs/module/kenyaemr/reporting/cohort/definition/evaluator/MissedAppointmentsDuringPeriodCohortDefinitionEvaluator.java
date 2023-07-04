@@ -13,70 +13,59 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLMissedAppointmentsCohortDefinition;
-import org.openmrs.module.reporting.cohort.EvaluatedCohort;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
+import org.openmrs.module.kenyaemr.reporting.cohort.definition.MissedAppointmentsDuringPeriodCohortDefinition;
+import org.openmrs.module.reporting.common.ObjectUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
+import org.openmrs.module.reporting.query.encounter.EncounterQueryResult;
+import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
+import org.openmrs.module.reporting.query.encounter.evaluator.EncounterQueryEvaluator;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashSet;
+import java.util.Date;
 import java.util.List;
 
 /**
- * Evaluator for patients who have missed their appointments
+ * Evaluator for patients who have missed their appointments during a reporting period
  */
-@Handler(supports = {ETLMissedAppointmentsCohortDefinition.class})
-public class ETLMissedAppointmentsDuringPeriodCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
+@Handler(supports = {MissedAppointmentsDuringPeriodCohortDefinition.class})
+public class MissedAppointmentsDuringPeriodCohortDefinitionEvaluator implements EncounterQueryEvaluator {
 
     private final Log log = LogFactory.getLog(this.getClass());
 
 	@Autowired
 	EvaluationService evaluationService;
     @Override
-    public EvaluatedCohort evaluate(CohortDefinition cohortDefinition, EvaluationContext context) throws EvaluationException {
-		ETLMissedAppointmentsCohortDefinition definition = (ETLMissedAppointmentsCohortDefinition) cohortDefinition;
+	public EncounterQueryResult evaluate(EncounterQuery definition, EvaluationContext context) throws EvaluationException {
+		context = ObjectUtil.nvl(context, new EvaluationContext());
+		EncounterQueryResult queryResult = new EncounterQueryResult(definition, context);
 
 		if (definition == null)
 			return null;
 
-		Cohort newCohort = new Cohort();
-		String qry="select t.patient_id\n" +
-				"from(\n" +
-				"select fup.visit_date,fup.patient_id, max(e.visit_date) as enroll_date,\n" +
-				"greatest(max(e.visit_date), ifnull(max(date(e.transfer_in_date)),'0000-00-00')) as latest_enrolment_date,\n" +
-				"greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
-				"greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
-				"d.patient_id as disc_patient,\n" +
-				"d.effective_disc_date as effective_disc_date,\n" +
-				"max(d.visit_date) as date_discontinued,\n" +
-				"d.discontinuation_reason,\n" +
-				"de.patient_id as started_on_drugs\n" +
-				"from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
-				"join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
-				"join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
-				"left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(curdate())\n" +
-				"left outer JOIN\n" +
-				"(select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date,discontinuation_reason from kenyaemr_etl.etl_patient_program_discontinuation\n" +
-				"where date(visit_date) <= date(curdate()) and program_name='HIV'\n" +
-				"group by patient_id\n" +
-				") d on d.patient_id = fup.patient_id\n" +
-				"where fup.visit_date <= date(curdate())\n" +
-				"group by patient_id\n" +
-				"having (\n" +
-				"(timestampdiff(DAY,date(latest_tca),date(curdate())) between 1 and 30) and ((date(d.effective_disc_date) > date(curdate()) or date(enroll_date) > date(d.effective_disc_date)) or d.effective_disc_date is null)\n" +
-				"and (date(latest_vis_date) > date(date_discontinued) and date(latest_tca) > date(date_discontinued) or disc_patient is null)\n" +
-				")\n" +
-				") t;";
+		String qry="select encounter_id\n" +
+				"from (select fup.encounter_id, honoredVisit.patient_id honored_appt\n" +
+				"      from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+				"               left join kenyaemr_etl.etl_patient_hiv_followup honoredVisit\n" +
+				"                         on honoredVisit.patient_id = fup.patient_id and\n" +
+				"                            honoredVisit.next_appointment_date = fup.visit_date\n" +
+				"               join kenyaemr_etl.etl_patient_demographics p on p.patient_id = fup.patient_id\n" +
+				"               join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id = e.patient_id\n" +
+				"      where date(fup.next_appointment_date) between date(:startDate) and date(:endDate)\n" +
+				"      having honored_appt is null) mApp;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
+		Date startDate = (Date)context.getParameterValue("startDate");
+		Date endDate = (Date)context.getParameterValue("endDate");
+		builder.addParameter("endDate", endDate);
+		builder.addParameter("startDate", startDate);
 		builder.append(qry);
-		List<Integer> ptIds = evaluationService.evaluateToList(builder, Integer.class, context);
-		newCohort.setMemberIds(new HashSet<Integer>(ptIds));
-		return new EvaluatedCohort(newCohort, definition, context);
+
+		List<Integer> results = evaluationService.evaluateToList(builder, Integer.class, context);
+		queryResult.getMemberIds().addAll(results);
+		return queryResult;
     }
 
 }

@@ -10,7 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.defaulterTracing;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentLastTracingOutcomeDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentLastTracingCommentsDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -24,10 +24,10 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Returns the last missed appointment tracing outcome
+ * Returns the last missed appointment tracing comments
  */
-@Handler(supports= MissedAppointmentLastTracingOutcomeDataDefinition.class, order=50)
-public class MissedAppointmentLastTracingOutcomeDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports= MissedAppointmentLastTracingCommentsDataDefinition.class, order=50)
+public class MissedAppointmentLastTracingCommentsDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -35,7 +35,7 @@ public class MissedAppointmentLastTracingOutcomeDataEvaluator implements Encount
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select fup.encounter_id, mid(max(concat(tr.visit_date,tr.tracing_outcome)), 11) last_trace_outcome\n" +
+        String qry = "select fup.encounter_id, mid(max(concat(tr.visit_date,tr.comments)), 11) last_trace_comments\n" +
                 "from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
                 "         join kenyaemr_etl.etl_ccc_defaulter_tracing tr on tr.patient_id = fup.patient_id and fup.next_appointment_date = tr.missed_appointment_date\n" +
                 "where next_appointment_date between date(:startDate) and date(:endDate)\n" +

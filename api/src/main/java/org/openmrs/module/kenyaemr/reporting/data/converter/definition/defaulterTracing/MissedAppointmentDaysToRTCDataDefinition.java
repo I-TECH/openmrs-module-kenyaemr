@@ -17,7 +17,7 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
 import java.util.Date;
 
 /**
- * Evaluates date a patient returned to care after a missed appointment
+ * Evaluates the number of days between missed appointment and a patient's return to care date
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
 public class MissedAppointmentDaysToRTCDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
@@ -44,6 +44,6 @@ public class MissedAppointmentDaysToRTCDataDefinition extends BaseDataDefinition
      * @see org.openmrs.module.reporting.data.DataDefinition#getDataType()
      */
     public Class<?> getDataType() {
-        return Date.class;
+        return Integer.class;
     }
 }

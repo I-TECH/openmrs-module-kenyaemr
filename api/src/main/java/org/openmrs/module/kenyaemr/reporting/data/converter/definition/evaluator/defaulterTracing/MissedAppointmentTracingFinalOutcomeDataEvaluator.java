@@ -10,7 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.defaulterTracing;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentTracingAttemptsDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentTracingFinalOutcomeDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -24,9 +24,9 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Returns the number a patient has been traced for a missed appointment
+ * Returns a patients tracing final outcome
  */
-@Handler(supports= MissedAppointmentTracingAttemptsDataDefinition.class, order=50)
+@Handler(supports= MissedAppointmentTracingFinalOutcomeDataDefinition.class, order=50)
 public class MissedAppointmentTracingFinalOutcomeDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
@@ -35,9 +35,18 @@ public class MissedAppointmentTracingFinalOutcomeDataEvaluator implements Encoun
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select fup.encounter_id, count(tr.patient_id) traced\n" +
+        String qry = "select fup.encounter_id,\n" +
+                "       case tr.true_status\n" +
+                "           when 160432 then 'Dead'\n" +
+                "           when 1693 then 'Receiving ART from another clinic'\n" +
+                "           when 160037 then 'Still in care at CCC'\n" +
+                "           when 5240 then 'Lost to follow up'\n" +
+                "           when 164435 then 'Stopped treatment'\n" +
+                "           when 142917 then 'Other'\n" +
+                "       else '' end\n" +
+                "               final_outcome\n" +
                 "from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
-                "join kenyaemr_etl.etl_ccc_defaulter_tracing tr on tr.patient_id = fup.patient_id and fup.next_appointment_date = tr.missed_appointment_date\n" +
+                "         join kenyaemr_etl.etl_ccc_defaulter_tracing tr on tr.patient_id = fup.patient_id and fup.next_appointment_date = tr.missed_appointment_date and tr.true_status is not null and tr.true_status > 0\n" +
                 "where next_appointment_date between date(:startDate) and date(:endDate)\n" +
                 "group by fup.encounter_id;";
 
