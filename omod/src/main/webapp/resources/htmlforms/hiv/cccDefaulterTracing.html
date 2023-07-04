@@ -80,15 +80,37 @@
 
         function onContactStatusChange(){
             var val = getValue('contact-status.value');
+            var tracingType = getValue('tracing_type.value');
             if(val == 1267) {
                 jq('#booking-date :input').prop('disabled', false);
                 jq('#missed-appointment').show();
                 jq("#reasonForNotContact").hide();
                 clearHiddenSections(jq("#reasonForNotContact"));
-            }else{
+            }else if(val == 1118 &amp;&amp; tracingType == 1650){    //called
+                 jq('#booking-date :input').prop('disabled', true);
+                 jq('#missed-appointment').hide();
+                 jq("#reasonForNotContact").show();
+                 jq('#idNotContactReason option[value=166538]').show();
+                 jq('#idNotContactReason option[value=165075]').show();
+                 jq('#idNotContactReason option[value=160034]').show();
+                 jq('#idNotContactReason option[value=1302]').show();
+                 jq('#idNotContactReason option[value=1567]').show();
+                 jq('#idNotContactReason option[value=160415]').hide();
+                 jq('#idNotContactReason option[value=1706]').hide();
+                 jq('#idNotContactReason option[value=5622]').show();
+                clearHiddenSections(jq("#missed-appointment"));
+            }else if(val == 1118 &amp;&amp; tracingType == 164965){    //physical
                 jq('#booking-date :input').prop('disabled', true);
                 jq('#missed-appointment').hide();
-                 jq("#reasonForNotContact").show();
+                jq("#reasonForNotContact").show();
+                jq('#idNotContactReason option[value=166538]').show();
+                jq('#idNotContactReason option[value=165075]').show();
+                jq('#idNotContactReason option[value=160034]').show();
+                jq('#idNotContactReason option[value=1302]').hide();
+                jq('#idNotContactReason option[value=1567]').hide();
+                jq('#idNotContactReason option[value=160415]').show();
+                jq('#idNotContactReason option[value=1706]').show();
+                jq('#idNotContactReason option[value=5622]').show();
                 clearHiddenSections(jq("#missed-appointment"));
             }
         }
@@ -204,7 +226,7 @@
                 <tr></tr><tr></tr>
                 <td>Type of tracing</td>
                 <td>
-                    <obs id="tracing_type" conceptId="a55f9516-ddb6-47ec-b10d-cb99d1d0bd41" answerConceptIds="1650AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,eb113c76-aef8-4890-a611-fe22ba003123,161642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                    <obs id="tracing_type" conceptId="a55f9516-ddb6-47ec-b10d-cb99d1d0bd41" answerConceptIds="1650AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164965,161642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                          answerLabels="Client Called,Physical Tracing,Treatment Supporter" required="true" style="radio"/>
                 </td>
                 </tr>
@@ -229,8 +251,25 @@
                 </tr>
                 <tr id="reasonForNotContact">
                     <td >
-                        Reason not Contact:
-                        <obs conceptId="166541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="163723AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,166538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165075,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Tracking ongoing,No locator information,Inaccurate locator information,Died,Calls not going through,Other" id="idNotContactReason" /></td>
+                        Reason not Contacted:
+                        <obs conceptId="166541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="166538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               165075,
+                                               160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               1302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               1567AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               160415AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               1706AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="No locator information,
+                             Inaccurate locator information,
+                             Died,
+                             Calls not going through,
+                             Not picking calls,
+                             Migrated from reported location,
+                             Not found at home,
+                             Other"
+                             id="idNotContactReason"  style="dropdown"/></td>
                 </tr>
                 <td id="other-specify-no-contact">Specify :
                     <obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
