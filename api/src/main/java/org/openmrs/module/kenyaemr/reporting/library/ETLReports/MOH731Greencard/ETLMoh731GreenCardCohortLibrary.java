@@ -890,7 +890,11 @@ public class ETLMoh731GreenCardCohortLibrary {
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("htsAllNumberTested", ReportUtils.map(htsAllNumberTested(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("(htsAllNumberTested");
+        cd.addSearch("testedPositivePmtctANC1",ReportUtils.map(datimCohortLibrary.testedPositivePmtctANC1(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedNegativePmtctANC1",ReportUtils.map(datimCohortLibrary.testedNegativePmtctANC1(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedPositivePmtctPostANC1",ReportUtils.map(datimCohortLibrary.testedPositivePmtctPostANC1(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedNegativePmtctPostANC1",ReportUtils.map(datimCohortLibrary.testedNegativePmtctPostANC1(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(htsAllNumberTested OR testedPositivePmtctANC1 OR testedNegativePmtctANC1 OR testedPositivePmtctPostANC1 OR testedNegativePmtctPostANC1");
         return cd;
     }
     // HIV testing cohort. includes all those who tested during the reporting period
