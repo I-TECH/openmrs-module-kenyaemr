@@ -3087,7 +3087,7 @@ public class DatimCohortLibrary {
         cd.addSearch("positiveHIVTestResult",ReportUtils.map(positiveHIVTestResult(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("testedIndexTesting",ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("testedSocialNetworks",ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("(testedSTIClinic AND positiveHIVTestResult) AND NOT (testedIndexTesting OR testedSocialNetworks)");
+        cd.setCompositionString("testedSTIClinic AND positiveHIVTestResult");
         return cd;
     }
 
@@ -3103,7 +3103,7 @@ public class DatimCohortLibrary {
         cd.addSearch("initialNegativeHIVTestResult",ReportUtils.map(initialNegativeHIVTestResult(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("testedIndexTesting",ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("testedSocialNetworks",ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("(testedSTIClinic AND initialNegativeHIVTestResult) AND NOT (testedIndexTesting OR testedSocialNetworks)");
+        cd.setCompositionString("testedSTIClinic AND initialNegativeHIVTestResult");
         return cd;
     }
     /**
