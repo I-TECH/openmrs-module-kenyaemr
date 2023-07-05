@@ -15,8 +15,8 @@ import org.apache.commons.logging.LogFactory;
 import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
 import org.openmrs.ConceptSearchResult;
-import org.openmrs.Encounter;
 import org.openmrs.Location;
+import org.openmrs.LocationAttribute;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.Provider;
@@ -41,7 +41,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -181,6 +180,53 @@ public class SearchFragmentController {
 
 		// Convert to simple objects
 		return ui.simplifyCollection(results);
+	}
+
+	/**
+	 * Searches for locations by name or MFL code
+	 * @param query the search query
+	 * @return the simplified locations
+	 */
+	public List<SimpleObject> simpleLocations(@RequestParam("q") String query) {
+		List<SimpleObject> finalResult = new ArrayList<SimpleObject>();
+		LocationService svc = Context.getLocationService();
+
+		// Sorts results by name
+		Set<Location> results = new TreeSet<Location>(new Comparator<Location>() {
+			@Override
+			public int compare(Location location1, Location location2) {
+				return location1.getName().compareTo(location2.getName());
+			}
+		});
+
+		// If term looks like an MFL code, add location with that code
+		if (StringUtils.isNumeric(query) && query.length() >= 5) {
+			Location locationByMflCode = Context.getService(KenyaEmrService.class).getLocationByMflCode(query);
+			if (locationByMflCode != null) {
+				results.add(locationByMflCode);
+			}
+		}
+
+		// Add first 20 results of search by name
+		if (StringUtils.isNotBlank(query)) {
+			results.addAll(svc.getLocations(query, null, null, true, 0, 20));
+		}
+
+		for (Location loc: results){
+			SimpleObject object = new SimpleObject();
+			String facilityName = loc.getName();
+			for (LocationAttribute attribute: loc.getActiveAttributes()) {
+				if (attribute.getAttributeType().getUuid().equals("8a845a89-6aa5-4111-81d3-0af31c45c002")) {
+					if (attribute.getValue() != null) {
+						object.put("name", facilityName);
+						object.put("mflCode", attribute.getValue() + "-" + facilityName);
+						finalResult.add(object);
+					}
+				}
+			}
+		}
+
+		return finalResult;
 	}
 
 	/**
