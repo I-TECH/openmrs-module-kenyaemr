@@ -151,6 +151,11 @@ public class MissedAppointmentsTrackerReportBuilder extends AbstractHybridReport
 		dateBooked.addParameter(new Parameter("endDate", "End Date", Date.class));
 		dateBooked.addParameter(new Parameter("startDate", "Start Date", Date.class));
 
+		ETLCaseManagerDataDefinition etlCaseManagerDataDefinition = new ETLCaseManagerDataDefinition();
+		etlCaseManagerDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+		etlCaseManagerDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+
+
 		dsd.addColumn("Name", nameDef, "");
 		dsd.addColumn("id", new PatientIdDataDefinition(), "");
 		dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
@@ -170,7 +175,7 @@ public class MissedAppointmentsTrackerReportBuilder extends AbstractHybridReport
 		dsd.addColumn("Last Tracing comments", lastTraceCommentsDataDefinition, paramMapping, null);
 		dsd.addColumn("RTC Date", rtcDate, paramMapping, new DateConverter(DATE_FORMAT));
 		dsd.addColumn("No of Days to RTC", daysToRTC, paramMapping, null);
-		dsd.addColumn("Case Manager", new ETLCaseManagerDataDefinition(), "", null);
+		dsd.addColumn("Case Manager", etlCaseManagerDataDefinition, paramMapping, null);
 
 
 		MissedAppointmentsDuringPeriodCohortDefinition cd = new MissedAppointmentsDuringPeriodCohortDefinition();
