@@ -49,7 +49,7 @@ kenyaemrApp.controller('PatientHeader', ['$scope', '$http', '$timeout', function
 					$scope.flags = [];
 				}
 
-				$timeout($scope.refresh, 30 * 1000); // update every 30 seconds
+				$timeout($scope.refresh, 3000 * 1000); // update every 50 min. The flags ideally won't need to refresh regularly
 			});
 	};
 }]);
