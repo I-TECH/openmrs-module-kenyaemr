@@ -19,11 +19,13 @@
         var artStartDate = Discontinuation_VELOCITY.split(",")[0].split(":")[1];
         var enrollmentDate = Discontinuation_VELOCITY.split(",")[1].split(":")[1];
         var lastHIVVisitEncDate = Discontinuation_VELOCITY.split(",")[4].split(":")[1];
+        var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
 
         jq(document).ready(function(){
 
             jq("#reason-died").hide();
             jq("#reason-trf").hide();
+            jq('#selectedToFacility input[type=text]').attr('readonly','readonly');
 
             if ((getValue('idReason.value')) == 160034) {
                 jq('#pdied :input').prop('disabled', false);
@@ -212,6 +214,48 @@
                 }
             });
 
+            jq("#btnTransferFacility").click(function(e){
+                e.preventDefault();
+                jq("#dlgSelectToFacility").dialog({bgiframe: true,
+                    title : "Transfer To Facility",
+                    buttons: {
+                        "Select Facility": updateMflCode,
+                        "Cancel": function () {
+                            jq("#dlgSelectToFacility").dialog("close");
+                        }
+                    },
+                    height: 350,
+                    width: 600,
+                    modal: true });
+            });
+
+            jq('#transferFacility').keyup(function(){
+                var searchTerm = jq('#transferFacility').val(); 
+                if(searchTerm.length > 2) {
+                    var facilitySelect = jq("#theSelect");
+                    jq("#theSelect").find('option').remove().end();
+
+                    jq.getJSON('/' + ctxPath + '/kenyaemr/search/simpleLocations.action', { q: searchTerm
+                    }, function (data) {
+                        if (data != null) {
+                            jq(data).each(function() {
+                                var option = jq("<option />");
+
+                                option.html(this.name);
+                                option.val(this.mflCode);
+                                facilitySelect.append(option); 
+                            });
+                        }
+                     }) 
+                };
+            });
+
+            function updateMflCode() {
+                var selectedMflCode = jq("#theSelect").find(":selected").val();
+                setValue('selectedToFacility.value',selectedMflCode);
+                jq("#dlgSelectToFacility").dialog("close");
+            }
+
             var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
             var discontinueDate;
             var encounterDate;
@@ -312,6 +356,7 @@
     <ifMode mode="EDIT">
         <script type="text/javascript">
             jq(function(){
+                jq('#selectedToFacility input[type=text]').attr('readonly','readonly');
 
                 //Died as cause of death
                 var val = getField("idReason.value").val();
@@ -329,6 +374,18 @@
                     jq('#ptrfVerification').show();
                 }
 
+            });
+        </script>
+    </ifMode>
+
+    <ifMode mode="VIEW">
+        <script type="text/javascript">
+            jq(function(){   
+                // show transfer-out section 
+                if((getValue('idReason.value')) == 'Transferred Out') {
+                    jq("#reason-trf").show();
+                    
+				}
             });
         </script>
     </ifMode>
@@ -460,7 +517,8 @@
 					<table>
 						<tr>
 							<td width="200px"><i>(If transferred out)</i> <br/>Transfer to Facility:</td>
-							<td ><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "/></td>
+                            <td ><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="selectedToFacility" required="true" size="60"/></td>
+                            <td><button type="button"  style="height:35px;width:200px;font-size:12px" id="btnTransferFacility" class="ke-program-outcome-button">Click to select transfer to facility</button></td>
                         </tr>
                         <tr>
 							<td>Date Transferred Out<br /></td>
@@ -481,6 +539,27 @@
 							<td>Date verified</td>
 							<td><obs conceptId="164133AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="trf-verification-date" /></td>
 						</tr>
+                        <tr>
+                            <td>
+                            <div id="dlgSelectToFacility" style="display: none">
+                                <span class="ui-helper-hidden-accessible"><input type="text"/></span>
+                                <table>
+                                    <tr>
+                                        <td>Select Transfer To Facility : &#160;&#160;&#160;&#160;</td>
+                                        <td><input type="text" size="30" id="transferFacility" autocomplete="off"/></td>
+                                    </tr>
+                                    <tr></tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <select id="theSelect">
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </td>
+                        </tr>
 					</table>
 				</div>
 			</div>
