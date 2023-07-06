@@ -24,7 +24,9 @@ import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQACalculati
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.MissedAppointmentsDuringPeriodCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLCaseManagerDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentDateDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentDaysToRTCDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentDaysMissedDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentEffectiveDiscontinuationDateDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentInterruptionDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentLastDateBookedDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentLastTracingCommentsDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentLastTracingDateDataDefinition;
@@ -139,9 +141,9 @@ public class MissedAppointmentsTrackerReportBuilder extends AbstractHybridReport
 		finalOutcome.addParameter(new Parameter("endDate", "End Date", Date.class));
 		finalOutcome.addParameter(new Parameter("startDate", "Start Date", Date.class));
 
-		MissedAppointmentDaysToRTCDataDefinition daysToRTC = new MissedAppointmentDaysToRTCDataDefinition();
-		daysToRTC.addParameter(new Parameter("endDate", "End Date", Date.class));
-		daysToRTC.addParameter(new Parameter("startDate", "Start Date", Date.class));
+		MissedAppointmentDaysMissedDataDefinition daysMissed = new MissedAppointmentDaysMissedDataDefinition();
+		daysMissed.addParameter(new Parameter("endDate", "End Date", Date.class));
+		daysMissed.addParameter(new Parameter("startDate", "Start Date", Date.class));
 
 		MissedAppointmentRTCDateDataDefinition rtcDate = new MissedAppointmentRTCDateDataDefinition();
 		rtcDate.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -154,6 +156,14 @@ public class MissedAppointmentsTrackerReportBuilder extends AbstractHybridReport
 		ETLCaseManagerDataDefinition etlCaseManagerDataDefinition = new ETLCaseManagerDataDefinition();
 		etlCaseManagerDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		etlCaseManagerDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+
+		MissedAppointmentInterruptionDataDefinition patientImmediateStatusAfterVisit = new MissedAppointmentInterruptionDataDefinition();
+		patientImmediateStatusAfterVisit.addParameter(new Parameter("endDate", "End Date", Date.class));
+		patientImmediateStatusAfterVisit.addParameter(new Parameter("startDate", "Start Date", Date.class));
+
+		MissedAppointmentEffectiveDiscontinuationDateDataDefinition discontinuationDate = new MissedAppointmentEffectiveDiscontinuationDateDataDefinition();
+		discontinuationDate.addParameter(new Parameter("endDate", "End Date", Date.class));
+		discontinuationDate.addParameter(new Parameter("startDate", "Start Date", Date.class));
 
 
 		dsd.addColumn("Name", nameDef, "");
@@ -174,7 +184,9 @@ public class MissedAppointmentsTrackerReportBuilder extends AbstractHybridReport
 		dsd.addColumn("Final outcome", finalOutcome, paramMapping, null);
 		dsd.addColumn("Last Tracing comments", lastTraceCommentsDataDefinition, paramMapping, null);
 		dsd.addColumn("RTC Date", rtcDate, paramMapping, new DateConverter(DATE_FORMAT));
-		dsd.addColumn("No of Days to RTC", daysToRTC, paramMapping, null);
+		dsd.addColumn("No of days missed", daysMissed, paramMapping, null);
+		dsd.addColumn("Immediate patient status", patientImmediateStatusAfterVisit, paramMapping, null);
+		dsd.addColumn("Date discontinued", discontinuationDate, paramMapping, new DateConverter(DATE_FORMAT));
 		dsd.addColumn("Case Manager", etlCaseManagerDataDefinition, paramMapping, null);
 
 
