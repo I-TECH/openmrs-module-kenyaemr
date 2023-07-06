@@ -216,6 +216,8 @@
 
             jq("#btnTransferFacility").click(function(e){
                 e.preventDefault();
+                jq("#transferFacility").val('');
+                jq("#theSelect").find('option').remove().end();
                 jq("#dlgSelectToFacility").dialog({bgiframe: true,
                     title : "Transfer To Facility",
                     buttons: {
@@ -234,19 +236,27 @@
                 if(searchTerm.length > 2) {
                     var facilitySelect = jq("#theSelect");
                     jq("#theSelect").find('option').remove().end();
-
                     jq.getJSON('/' + ctxPath + '/kenyaemr/search/simpleLocations.action', { q: searchTerm
                     }, function (data) {
                         if (data != null) {
-                            jq(data).each(function() {
-                                var option = jq("<option />");
+                            if (data.length > 0) {
+                                var optionBlank = jq("<option />");
+                                optionBlank.html('Select facility from list');
+                                optionBlank.val('');
+                                facilitySelect.append(optionBlank);
 
-                                option.html(this.name);
-                                option.val(this.mflCode);
-                                facilitySelect.append(option); 
-                            });
+                                jq(data).each(function() {
+                                    var option = jq("<option />");
+
+                                    option.html(this.name);
+                                    option.val(this.mflCode);
+                                    facilitySelect.append(option); 
+                                });
+                            }
                         }
                      }) 
+                } else {
+                    jq("#theSelect").find('option').remove().end();
                 };
             });
 
@@ -545,7 +555,7 @@
                                 <span class="ui-helper-hidden-accessible"><input type="text"/></span>
                                 <table>
                                     <tr>
-                                        <td>Select Transfer To Facility : &#160;&#160;&#160;&#160;</td>
+                                        <td>Transfer To Facility : &#160;&#160;&#160;&#160;</td>
                                         <td><input type="text" size="30" id="transferFacility" autocomplete="off"/></td>
                                     </tr>
                                     <tr></tr>

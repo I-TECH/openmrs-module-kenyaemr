@@ -129,6 +129,59 @@
             if (facility_confirmed != null) {
                 getField('facility-confirmed.value').val(facility_confirmed);
             }
+
+            jq('#selectedFromFacility input[type=text]').attr('readonly','readonly');
+
+            jq("#btnTransferFromFacility").click(function(e){
+                e.preventDefault();
+                jq("#transferFacility").val('');
+                jq("#theSelect").find('option').remove().end();
+                jq("#dlgSelectFromFacility").dialog({bgiframe: true,
+                    title : "Transferred From Facility",
+                    buttons: {
+                        "Select Facility": updateMflCode,
+                        "Cancel": function () {
+                            jq("#dlgSelectFromFacility").dialog("close");
+                        }
+                    },
+                    height: 350,
+                    width: 600,
+                    modal: true });
+            });
+            jq('#transferFacility').keyup(function(){
+                var searchTerm = jq('#transferFacility').val(); 
+                if(searchTerm.length > 2) {
+                    var facilitySelect = jq("#theSelect");
+                    jq("#theSelect").find('option').remove().end();
+
+                    jq.getJSON('/' + ctxPath + '/kenyaemr/search/simpleLocations.action', { q: searchTerm
+                    }, function (data) {
+                        if (data != null) {
+                            if (data.length > 0) {
+                                var optionBlank = jq("<option />");
+                                optionBlank.html('Select facility from list');
+                                optionBlank.val('');
+                                facilitySelect.append(optionBlank);
+                                jq(data).each(function() {
+                                    var option = jq("<option />");
+
+                                    option.html(this.name);
+                                    option.val(this.mflCode);
+                                    facilitySelect.append(option); 
+                                });
+                            }
+                        }
+                     }) 
+                } else {
+                    jq("#theSelect").find('option').remove().end();
+                };
+            });
+
+            function updateMflCode() {
+                var selectedMflCode = jq("#theSelect").find(":selected").val();
+                setValue('selectedFromFacility.value',selectedMflCode);
+                jq("#dlgSelectFromFacility").dialog("close");
+            }
             //TODO: Consider validation for pmtct
             //Not all ART regimens have answers
             //jq('#pmtctChecked input').click(onPmtctSelected);
@@ -591,6 +644,13 @@
         }
 
 	</script>
+    <ifMode mode="VIEW">
+        <script type="text/javascript">
+            jq(function(){   
+                jq("#btnTransferFromFacility").hide()
+            });
+        </script>
+    </ifMode>
 
 	<div class="ke-form-header">
 		<table style="width: 100%">
@@ -600,6 +660,8 @@
 						<script type="text/javascript">
                             var patientId = <lookup expression="patient.patientId"/>;
                             jq(function(){
+                                jq('#selectedFromFacility input[type=text]').attr('readonly','readonly');
+
                                 jq("#transfer-in-status input[value=164144]").prop("disabled", false);
                                // setValue("encounter-date.value", "");
                                 if (getValue('art-status.value') == 'true') {
@@ -725,16 +787,37 @@
 					</tr>
 					<tr>
 						<td>Transferred from facility:</td>
-						<td><obs conceptId="160535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  size="20"/></td>
+                        <td><obs conceptId="160535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="selectedFromFacility" required="true" size="60"/></td>
+                        <td><button type="button"  style="height:35px;width:200px;font-size:12px" id="btnTransferFromFacility" class="ke-program-outcome-button">Click to select transferred from facility</button></td>
 					</tr>
 					<tr>
 						<td>Date <i>first</i> enrolled in HIV care:</td>
 						<td><obs conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="first-enrolled-date"/></td>
 					</tr>
-					<tr>
+		<tr>
 						<td>Date started ART at transferring facility:</td>
 						<td><obs conceptId="159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id ="art-start-date"/></td>
 					</tr>
+                    <tr>
+                        <td>
+                            <div id="dlgSelectFromFacility" style="display: none">
+                                <span class="ui-helper-hidden-accessible"><input type="text"/></span>
+                                <table>
+                                    <tr>
+                                        <td>Select Facility : &#160;&#160;&#160;&#160;</td>
+                                        <td><input type="text" size="30" id="transferFacility" autocomplete="off"/></td>
+                                    </tr>
+                                    <tr></tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <select id="theSelect"></select>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
 				</table>
 			</div>
 		</fieldset>
