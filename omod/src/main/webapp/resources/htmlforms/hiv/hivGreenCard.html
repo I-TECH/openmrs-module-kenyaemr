@@ -2447,15 +2447,15 @@ Green Card follow-up visit form
                 getField('systems-review.error').html('Please specify if patient has any findings on systems review.').show();
                 return false;
             }
-            if (recentWHO =="" &amp;&amp; pAge &gt; 15 &amp;&amp; adultWhoStage == false &amp;&amp; personPresent == SELF ) {
-                jq('#greencard').smartWizard('setError', {stepnum: 1, iserror: true});
+            if (pAge &gt; 15 &amp;&amp; adultWhoStage == false &amp;&amp; personPresent == SELF ) {
+                jq('#greencard').smartWizard('setError', {stepnum: 3, iserror: true});
                 getField('whoStage-adult.error').html('Please specify adult WHO stage').show();
                 return false;
             }else{
                 getField('whoStage-adult.error').html('Please specify adult WHO stage').hide();
             }
-            if (recentWHO =="" &amp;&amp; pAge &lt; 16 &amp;&amp; childWhoStage == false &amp;&amp; personPresent == SELF) {
-                jq('#greencard').smartWizard('setError',{stepnum:1,iserror:true});
+            if (pAge &lt; 16 &amp;&amp; childWhoStage == false &amp;&amp; personPresent == SELF) {
+                jq('#greencard').smartWizard('setError',{stepnum:3, iserror:true});
                 getField('whoStage-child.error').html('Please specify child WHO stage').show();
                 return false;
             }
@@ -4229,14 +4229,16 @@ Management<br />
                                 <div id="whoAdult">
                                     <table>
                                         <tr>
-                                            <td><strong>Adult</strong></td><td><obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4" id="whoStage-adult"/></td>
+                                            <td><strong>Adult</strong></td><td><obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1204AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1206AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1207AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4" id="whoStage-adult"/>
+                                            <span style="color:red;"><strong>*</strong></span></td>
                                         </tr>
                                     </table>
                                 </div>
                                 <div id="whoChild">
                                     <table>
                                         <tr>
-                                            <td><strong>Child</strong></td><td><obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1220AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4" id="whoStage-child" /></td>
+                                            <td><strong>Child</strong></td><td><obs conceptId="5356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1220AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1221AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="dropdown" answerLabels="WHO Stage1,WHO Stage2,WHO Stage3,WHO Stage4" id="whoStage-child" />
+                                            <span style="color:red;"><strong>*</strong></span></td>
                                         </tr>
                                     </table>
                                 </div>
