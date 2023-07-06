@@ -131,6 +131,7 @@
             }
 
             jq('#selectedFromFacility input[type=text]').attr('readonly','readonly');
+            jq('#selectedTransitFacility input[type=text]').attr('readonly','readonly');
 
             jq("#btnTransferFromFacility").click(function(e){
                 e.preventDefault();
@@ -148,6 +149,24 @@
                     width: 600,
                     modal: true });
             });
+
+            jq("#btnTransitFacility").click(function(e){
+                e.preventDefault();
+                jq("#transferFacility").val('');
+                jq("#theSelect").find('option').remove().end();
+                jq("#dlgSelectFromFacility").dialog({bgiframe: true,
+                    title : "Facility",
+                    buttons: {
+                        "Select Facility": updateFacilityMflCode,
+                        "Cancel": function () {
+                            jq("#dlgSelectFromFacility").dialog("close");
+                        }
+                    },
+                    height: 350,
+                    width: 600,
+                    modal: true });
+            });
+
             jq('#transferFacility').keyup(function(){
                 var searchTerm = jq('#transferFacility').val(); 
                 if(searchTerm.length > 2) {
@@ -180,6 +199,12 @@
             function updateMflCode() {
                 var selectedMflCode = jq("#theSelect").find(":selected").val();
                 setValue('selectedFromFacility.value',selectedMflCode);
+                jq("#dlgSelectFromFacility").dialog("close");
+            }
+
+            function updateFacilityMflCode() {
+                var selectedFacilityMflCode = jq("#theSelect").find(":selected").val();
+                setValue('selectedTransitFacility.value',selectedFacilityMflCode);
                 jq("#dlgSelectFromFacility").dialog("close");
             }
             //TODO: Consider validation for pmtct
@@ -250,6 +275,17 @@
 			var Discontinuation_VELOCITY = "<lookup expression="kenyaemr.DiscontinuationVelocityCalculation()" />";
 			var discontinuationDate = Discontinuation_VELOCITY.split(",")[2].split(":")[1];
 			var effectiveDiscDate = "<lookup expression="fn.latestObs(164384).getValueDatetime()"/>";
+            var selectedFromFacilityVal = getValue('selectedFromFacility.value');
+            var selectedTransitFacilityVal = getValue('selectedTransitFacility.value');
+
+            if (entryPointStatus == TRANSFER_IN &amp;&amp; selectedFromFacilityVal == "") {
+                    getField('selectedFromFacility.error').html('Facility required').show();
+                    return false;
+            }
+            if (entryPointStatus == TRANSIT &amp;&amp; selectedTransitFacilityVal == "") {
+                    getField('selectedTransitFacility.error').html('Facility required').show();
+                    return false;
+            }
 
             if(IS_KDoD_SITE==false){
             if (PATIENT_HAS_UPN) {
@@ -648,6 +684,7 @@
         <script type="text/javascript">
             jq(function(){   
                 jq("#btnTransferFromFacility").hide()
+                jq("#btnTransitFacility").hide()
             });
         </script>
     </ifMode>
@@ -661,7 +698,7 @@
                             var patientId = <lookup expression="patient.patientId"/>;
                             jq(function(){
                                 jq('#selectedFromFacility input[type=text]').attr('readonly','readonly');
-
+                                jq('#selectedTransitFacility input[type=text]').attr('readonly','readonly');
                                 jq("#transfer-in-status input[value=164144]").prop("disabled", false);
                                // setValue("encounter-date.value", "");
                                 if (getValue('art-status.value') == 'true') {
@@ -773,10 +810,11 @@
 					<td>Facility from: </td>
 					<td> &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
 						<obsgroup groupingConceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-							<obs conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+							<obs conceptId="161550AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="selectedTransitFacility" size="60"/>
 						</obsgroup>
 
 					</td>
+                    <td><button type="button"  style="height:35px;width:200px;font-size:12px" id="btnTransitFacility" class="ke-program-outcome-button">Click to select facility</button></td>
 				</tr>
 			</table>
 			<div id="transfer-details">
@@ -787,7 +825,7 @@
 					</tr>
 					<tr>
 						<td>Transferred from facility:</td>
-                        <td><obs conceptId="160535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="selectedFromFacility" required="true" size="60"/></td>
+                        <td><obs conceptId="160535AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="selectedFromFacility" size="60"/></td>
                         <td><button type="button"  style="height:35px;width:200px;font-size:12px" id="btnTransferFromFacility" class="ke-program-outcome-button">Click to select transferred from facility</button></td>
 					</tr>
 					<tr>

@@ -277,6 +277,7 @@
                 var discReason = getValue('idReason.value');
                 var deathReason = getValue('death-reason.value');
                 var specificDeathReason = getValue('specific-cause-of-death.value');
+                var validateFacilityVal = getValue('selectedToFacility.value');
 
                 var trfVerificationDate = getValue('trf-verification-date.value');
 
@@ -344,6 +345,11 @@
                     return false;
                 }else{
                     getField('specific-cause-of-death.error').html('Specific cause of death is required').hide();
+                }
+
+                if (discReason == 159492 &amp;&amp; validateFacilityVal == "") {
+                    getField('selectedToFacility.error').html('Facility required').show();
+                    return false;
                 }
                 return true;
             });
@@ -527,7 +533,7 @@
 					<table>
 						<tr>
 							<td width="200px"><i>(If transferred out)</i> <br/>Transfer to Facility:</td>
-                            <td ><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="selectedToFacility" required="true" size="60"/></td>
+                            <td ><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="selectedToFacility" size="60"/></td>
                             <td><button type="button"  style="height:35px;width:200px;font-size:12px" id="btnTransferFacility" class="ke-program-outcome-button">Click to select transfer to facility</button></td>
                         </tr>
                         <tr>
