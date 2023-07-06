@@ -10,7 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.defaulterTracing;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentDaysToRTCDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentEffectiveDiscontinuationDateDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -24,10 +24,11 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Returns duration taken by a patient to return to care
+ * Indicates whether a missed appointment require tracing or not.
+ * Returns the date when a patient was discontinued
  */
-@Handler(supports= MissedAppointmentDaysToRTCDataDefinition.class, order=50)
-public class MissedAppointmentDaysToRTCEvaluator implements EncounterDataEvaluator {
+@Handler(supports= MissedAppointmentEffectiveDiscontinuationDateDataDefinition.class, order=50)
+public class MissedAppointmentEffectiveDiscontinuationDateDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -35,17 +36,15 @@ public class MissedAppointmentDaysToRTCEvaluator implements EncounterDataEvaluat
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select encounter_id, timestampdiff(DAY, missed_appointment_date, rtc_date) daysToRtc\n" +
-                "from (select fup.encounter_id, fup.next_appointment_date missed_appointment_date, min(firstVisit.visit_date) as rtc_date\n" +
+        String qry = "select encounter_id, if(discontinued is not null, date(discontinuation_date), null) effective_disc_date\n" +
+                "from (select fup.encounter_id,\n" +
+                "             d.patient_id   discontinued,\n" +
+                "             coalesce(d.effective_discontinuation_date, d.visit_date) discontinuation_date\n" +
                 "      from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
-                "               left join kenyaemr_etl.etl_patient_hiv_followup firstVisit\n" +
-                "                         on firstVisit.patient_id = fup.patient_id and\n" +
-                "                            fup.next_appointment_date < firstVisit.visit_date\n" +
-                "               join kenyaemr_etl.etl_patient_demographics p on p.patient_id = fup.patient_id\n" +
-                "               join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id = e.patient_id\n" +
-                "      where date(fup.next_appointment_date) between date(:startDate) and date(:endDate)\n" +
-                "      group by fup.encounter_id, fup.patient_id\n" +
-                "      having rtc_date is not null) t;";
+                "               left join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id = fup.patient_id and d.program_name='HIV' and\n" +
+                "                                                                               coalesce(d.effective_discontinuation_date, d.visit_date) between fup.visit_date and fup.next_appointment_date\n" +
+                "      where next_appointment_date between date(:startDate) and date(:endDate)\n" +
+                "      group by fup.encounter_id) t;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");

@@ -17,24 +17,26 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
 import java.util.Date;
 
 /**
- * Evaluates the number of days between missed appointment and a patient's return to care date
+ * Evaluates whether a client had any discontinuation between the date an appointment was given and the missed appointment.
+ * It show the date when a patient was discontinued between the last visit date and the given appointment.
+ * Returns null if one isn't discontinued
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class MissedAppointmentDaysToRTCDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class MissedAppointmentEffectiveDiscontinuationDateDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public MissedAppointmentDaysToRTCDataDefinition() {
+    public MissedAppointmentEffectiveDiscontinuationDateDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public MissedAppointmentDaysToRTCDataDefinition(String name) {
+    public MissedAppointmentEffectiveDiscontinuationDateDataDefinition(String name) {
         super(name);
     }
 
@@ -44,6 +46,6 @@ public class MissedAppointmentDaysToRTCDataDefinition extends BaseDataDefinition
      * @see org.openmrs.module.reporting.data.DataDefinition#getDataType()
      */
     public Class<?> getDataType() {
-        return Integer.class;
+        return Date.class;
     }
 }
