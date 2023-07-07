@@ -165,7 +165,6 @@ public class MissedAppointmentsTrackerReportBuilder extends AbstractHybridReport
 		discontinuationDate.addParameter(new Parameter("endDate", "End Date", Date.class));
 		discontinuationDate.addParameter(new Parameter("startDate", "Start Date", Date.class));
 
-
 		dsd.addColumn("Name", nameDef, "");
 		dsd.addColumn("id", new PatientIdDataDefinition(), "");
 		dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
@@ -176,19 +175,18 @@ public class MissedAppointmentsTrackerReportBuilder extends AbstractHybridReport
 		dsd.addColumn("Village_Estate_Landmark", new CalculationDataDefinition("Village/Estate/Landmark", new PersonAddressCalculation()), "", new RDQACalculationResultConverter());
 		dsd.addColumn("Date appointment given", new EncounterDatetimeDataDefinition(),"", new DateConverter(DATE_FORMAT));
 		dsd.addColumn("Date Appointment missed", missedAppointmentDateDataDefinition, paramMapping, new DateConverter(DATE_FORMAT));
+		dsd.addColumn("No of days missed", daysMissed, paramMapping, null);
 		dsd.addColumn("Tracing attempts", tracingAttemptsDataDefinition, paramMapping, null);
+		dsd.addColumn("Tracing methods", tracingMethods, paramMapping, null);
 		dsd.addColumn("Last Tracing Date", lastTraceDateDataDefinition, paramMapping, new DateConverter(DATE_FORMAT));
 		dsd.addColumn("Last Tracing outcome", lastTraceOutcomeDataDefinition, paramMapping, null);
-		dsd.addColumn("Tracing methods", tracingMethods, paramMapping, null);
 		dsd.addColumn("Date patient promised to come", dateBooked, paramMapping, new DateConverter(DATE_FORMAT));
 		dsd.addColumn("Final outcome", finalOutcome, paramMapping, null);
 		dsd.addColumn("Last Tracing comments", lastTraceCommentsDataDefinition, paramMapping, null);
-		dsd.addColumn("RTC Date", rtcDate, paramMapping, new DateConverter(DATE_FORMAT));
-		dsd.addColumn("No of days missed", daysMissed, paramMapping, null);
-		dsd.addColumn("Immediate patient status", patientImmediateStatusAfterVisit, paramMapping, null);
-		dsd.addColumn("Date discontinued", discontinuationDate, paramMapping, new DateConverter(DATE_FORMAT));
+		dsd.addColumn("Patient status", patientImmediateStatusAfterVisit, paramMapping, null); // before and up to the missed appointment
+		dsd.addColumn("Effective Discontinuation Date", discontinuationDate, paramMapping, new DateConverter(DATE_FORMAT));
+		dsd.addColumn("RTC Date", rtcDate, paramMapping, new DateConverter(DATE_FORMAT)); // first visit after missed appointment
 		dsd.addColumn("Case Manager", etlCaseManagerDataDefinition, paramMapping, null);
-
 
 		MissedAppointmentsDuringPeriodCohortDefinition cd = new MissedAppointmentsDuringPeriodCohortDefinition();
 		cd.addParameter(new Parameter("startDate", "Start Date", Date.class));

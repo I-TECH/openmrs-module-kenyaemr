@@ -36,7 +36,7 @@ public class MissedAppointmentDaysMissedEvaluator implements EncounterDataEvalua
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select encounter_id, timestampdiff(DAY, missed_appointment_date, coalesce(rtcDate,date(:endDate))) daysMissed\n" +
+        String qry = "select encounter_id, timestampdiff(DAY, missed_appointment_date, least(rtcDate,date(:endDate))) daysMissed\n" +
                 "from (select fup.encounter_id, fup.next_appointment_date missed_appointment_date, min(firstVisit.visit_date) as rtcDate\n" +
                 "                          from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
                 "                                   left join kenyaemr_etl.etl_patient_hiv_followup firstVisit\n" +
