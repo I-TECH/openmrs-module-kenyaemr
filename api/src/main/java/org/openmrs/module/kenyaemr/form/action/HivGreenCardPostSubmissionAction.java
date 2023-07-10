@@ -22,6 +22,8 @@ import org.openmrs.module.htmlformentry.CustomFormSubmissionAction;
 import org.openmrs.module.htmlformentry.FormEntrySession;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.WebConstants;
+import org.apache.http.HttpHeaders;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  *
@@ -50,6 +52,12 @@ public class HivGreenCardPostSubmissionAction implements CustomFormSubmissionAct
             GlobalProperty globalIITMLbackEndURL = Context.getAdministrationService().getGlobalPropertyObject(iitMLbackEndURLGlobal);
             String strIITMLbackEndURL = globalIITMLbackEndURL.getPropertyValue();
             strIITMLbackEndURL = strIITMLbackEndURL.trim();
+
+            GlobalProperty gpPwd = Context.getAdministrationService().getGlobalPropertyObject("scheduler.password");
+            GlobalProperty gpUsername = Context.getAdministrationService().getGlobalPropertyObject("scheduler.username");
+            String pwd = gpPwd.getPropertyValue();
+            String username = gpUsername.getPropertyValue();
+
             // System.out.println("Got global IIT update score url part as: " + strIITMLbackEndURL);
             // final String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString().trim();
             // System.out.println("Got base url part as: " + baseUrl);
@@ -63,10 +71,16 @@ public class HivGreenCardPostSubmissionAction implements CustomFormSubmissionAct
 		
 			URL url = new URL(strIITMLbackEndURL);
 			// System.out.println("Calling IIT update backend using: " + url);
+
+            String auth = username.trim() + ":" + pwd.trim();
+            byte[] encodedAuth = Base64.encodeBase64(auth.getBytes("UTF-8"));
+            String authHeader = "Basic " + new String(encodedAuth);
+
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("POST");
 			connection.setRequestProperty("Content-Type", "application/json");
 			connection.setRequestProperty("Accept", "application/json");
+            connection.setRequestProperty(HttpHeaders.AUTHORIZATION, authHeader);
 			connection.setDoOutput(true);
 			OutputStream outputStream = connection.getOutputStream();
 			byte[] output = payload.getBytes("utf-8");
