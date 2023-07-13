@@ -379,8 +379,11 @@
                     }
                 }
             }
-			var isEnrollmentDateEqualsDiscontinuationDate = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isSame(moment(moment(discontinuationDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
-				if (isEnrollmentDateEqualsDiscontinuationDate) {
+			var formattedEncDate =  moment(moment(encounterDate).toDate()).format("DD-MMM-YYYY");
+			var formattedDiscDate =  moment(moment(Number(discontinuationDate)).toDate()).format("DD-MMM-YYYY");
+			var formattedEffectiveDiscDate =  moment(effectiveDiscDate).format("DD-MMM-YYYY");
+
+			if (moment(formattedEncDate).isSame(formattedDiscDate, 'day') || moment(formattedEncDate).isBefore(formattedDiscDate, 'day')) {
 				getField('encounter-date.error').html('Enrollment date should be after discontinuation encounter date').show();
 				return false;
 			}
@@ -388,8 +391,7 @@
 				getField('encounter-date.error').html('Enrollment date should be after discontinuation encounter date').hide();
 			}
 
-			var isEnrollmentDateEqualsEffectiveDiscDate = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isSame(moment(moment(effectiveDiscDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
-			if (isEnrollmentDateEqualsEffectiveDiscDate) {
+			if (moment(formattedEncDate).isSame(formattedEffectiveDiscDate, 'day') || moment(formattedEncDate).isBefore(formattedEffectiveDiscDate, 'day')) {
 				getField('encounter-date.error').html('Enrollment date should be after effective discontinuation date').show();
 				return false;
 			}
@@ -397,7 +399,7 @@
 				getField('encounter-date.error').html('Enrollment date should be after effective discontinuation date').hide();
 			}
 
-            return true;
+			return true;
         });
         //Ckeckbox to prepopulate default location
         var defaultLocationChange = function () {
