@@ -4668,7 +4668,21 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition patientStoppedTreatment() {
 
-        String sqlQuery = "select dt.patient_id from kenyaemr_etl.etl_ccc_defaulter_tracing dt where dt.is_final_trace =1267 and dt.true_status =164435 and date(dt.visit_date) between date(:startDate) and date(:endDate);" ;
+        String sqlQuery = "select d.patient_id\n" +
+                "from kenyaemr_etl.etl_patient_demographics d\n" +
+                "         left join (select dt.patient_id\n" +
+                "                    from kenyaemr_etl.etl_ccc_defaulter_tracing dt\n" +
+                "                    where dt.is_final_trace = 1267\n" +
+                "                      and dt.true_status = 164435\n" +
+                "                      and date(dt.visit_date) between date(:startDate) and date(:endDate)) dt\n" +
+                "                   on d.patient_id = dt.patient_id\n" +
+                "         left join\n" +
+                "     (select dc.patient_id\n" +
+                "      from kenyaemr_etl.etl_patient_program_discontinuation dc\n" +
+                "      where dc.discontinuation_reason = 164349\n" +
+                "        and date(dc.visit_date) between date(:startDate) and date(:endDate)) dc on d.patient_id = dc.patient_id\n" +
+                "where dt.patient_id is not null\n" +
+                "   or dc.patient_id is not null;" ;
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("treatmentStoppedReason");
         cd.setQuery(sqlQuery);
