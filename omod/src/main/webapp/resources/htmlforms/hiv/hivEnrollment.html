@@ -358,6 +358,11 @@
                     getField('art-start-date.error').html('ART start date should not be in future').show();
                     return false;
                 }
+                var firstEnrolledDateInFutureDate = moment(moment(moment(firstEnrolledDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isAfter(moment().format('YYYY-MM-DD'));
+                if (firstEnrolledDateInFutureDate) {
+                    getField('art-start-date.error').html('Date first enrolled in HIV care should not be in future').show();
+                    return false;
+                }
             }
             if (encounterDate =="") {
                 getField('encounter-date.error').html('Enrollment date should not be empty').show();
@@ -837,7 +842,7 @@
 					</tr>
 					<tr>
 						<td>Date <i>first</i> enrolled in HIV care:</td>
-						<td><obs conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="first-enrolled-date"/></td>
+						<td><obs conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" id="first-enrolled-date"/></td>
 					</tr>
 		<tr>
 						<td>Date started ART at transferring facility:</td>
