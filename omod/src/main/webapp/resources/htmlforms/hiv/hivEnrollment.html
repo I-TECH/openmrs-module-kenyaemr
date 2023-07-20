@@ -353,6 +353,11 @@
                     getField('art-start-date.error').html('ART start date , should not be later than date first enrolled in HIV care').show();
                     return false;
                 }
+                var isARTStartDateInFutureDate = moment(moment(moment(artStartDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isAfter(moment().format('YYYY-MM-DD'));
+                if (isARTStartDateInFutureDate) {
+                    getField('art-start-date.error').html('ART start date should not be in future').show();
+                    return false;
+                }
             }
             if (encounterDate =="") {
                 getField('encounter-date.error').html('Enrollment date should not be empty').show();
