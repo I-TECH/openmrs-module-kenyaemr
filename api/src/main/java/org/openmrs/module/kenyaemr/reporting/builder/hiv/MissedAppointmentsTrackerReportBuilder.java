@@ -96,7 +96,7 @@ public class MissedAppointmentsTrackerReportBuilder extends AbstractHybridReport
 		EncounterDataSetDefinition dsd = new EncounterDataSetDefinition();
 		dsd.setName("CCCDefaulterTracking");
 		dsd.setDescription("Defaulter Tracking");
-		dsd.addSortCriteria("Date Appointment missed", SortCriteria.SortDirection.ASC);
+		dsd.addSortCriteria("No of days missed", SortCriteria.SortDirection.ASC);
 		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
 		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
