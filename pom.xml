@@ -60,7 +60,7 @@
         <kenyacoreVersion>3.0.1</kenyacoreVersion>
         <kenyadqVersion>1.4.0</kenyadqVersion>
         <kenyauiVersion>3.0.0</kenyauiVersion>
-        <kenyaemrOrderentryVersion>1.6.0</kenyaemrOrderentryVersion>
+        <kenyaemrOrderentryVersion>1.6.1</kenyaemrOrderentryVersion>
         <logicVersion>0.5.2</logicVersion>
         <facilityReportingVersion>1.2.0</facilityReportingVersion>
         <apacheHttpClientVersion>4.5.10</apacheHttpClientVersion>
