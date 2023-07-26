@@ -27,7 +27,7 @@ jobs:
           sudo chown -R cicd2:cicd2 /apps/github-workflows/kenyaemr-modules/openmrs-module-kenyaemr
           git status
           mvn license:format
-          mvn clean install -DskipTests
+          sudo mvn clean install -DskipTests
           sudo rm -rf /var/lib/OpenMRS/modules/kenyaemr-*.omod
           sudo cp -r /apps/github-workflows/kenyaemr-modules/openmrs-module-kenyaemr/omod/target/kenyaemr-*.omod /var/lib/OpenMRS/modules/
           sudo chown -R tomcat:tomcat /var/lib/OpenMRS/modules/
