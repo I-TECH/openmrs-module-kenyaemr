@@ -35,7 +35,7 @@ public class DateOfFullImmunizationDataEvaluator implements EncounterDataEvaluat
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select encounter_id, date(fully_immunized) from kenyaemr_etl.etl_hei_immunization ";
+        String qry = "select encounter_id, NULLIF(date(fully_immunized),'0000-00-00') as immunization_date from kenyaemr_etl.etl_hei_immunization ";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
