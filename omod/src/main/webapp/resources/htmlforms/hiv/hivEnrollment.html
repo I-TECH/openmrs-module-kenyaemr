@@ -32,7 +32,6 @@
         var mflCode = <lookup expression="kenyaemr.currentFacilityMFLCode()" />;
         var ENROLLED_IN_HIV = GREENCARD_VELOCITY.split(",")[12].split(":")[1];
         var patientId = <lookup expression="patient.patientId"/>;
-
         //On Ready
         jq(function() {
 
@@ -277,6 +276,7 @@
 			var effectiveDiscDate = "<lookup expression="fn.latestObs(164384).getValueDatetime()"/>";
             var selectedFromFacilityVal = getValue('selectedFromFacility.value');
             var selectedTransitFacilityVal = getValue('selectedTransitFacility.value');
+            var rcId = jq('#rt-id input[type=text]').val();
 
             if (entryPointStatus == TRANSFER_IN &amp;&amp; selectedFromFacilityVal == "") {
                     getField('selectedFromFacility.error').html('Facility required').show();
@@ -409,6 +409,13 @@
 				getField('encounter-date.error').html('Enrollment date should be after effective discontinuation date').hide();
 			}
 
+            if(IS_Recency_SITE==true){
+                var recStr = rcId.split("-")[1];
+                if(/^[0-9]{5}$/.test(recStr) === false) {
+                    jq("#rtError").text("Invalid Recency ID Format! Should be REC"+mflCode+"- and 5 digits serial number").show();
+                    return false;
+                }
+            }
 			return true;
         });
         //Ckeckbox to prepopulate default location

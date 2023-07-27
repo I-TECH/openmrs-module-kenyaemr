@@ -817,6 +817,7 @@
             var firstKit = getField("kit-name-1.value").val();
             var secondKit = getField("kit-name-2.value").val();
             var disabilityChecked = jq("#disability input:checkbox:checked");
+            var rcId = jq('#rt-id input[type=text]').val();
 
             if (disabilityChecked.length == 0 &amp;&amp; hasDisability == 1065) {
                 getField('has-disability.error').html('Please specify the disabilty type.').show();
@@ -887,6 +888,13 @@
                 return false;
             }else{
                 getField('kit-name-2.error').html('Please use a different kit.').hide();
+            }
+            if(IS_Recency_SITE==true){
+                   var recStr = rcId.split("-")[1];
+                    if(/^[0-9]{5}$/.test(recStr) === false) {
+                        jq("#rtError").text("Invalid Recency ID Format! Should be REC"+mflCode+"- and 5 digits serial number").show();
+                        return false;
+                }
             }
         });
            </script>
@@ -1606,6 +1614,7 @@
                 <tr id="tbl-recency-id">
                     <td> Recency Id :&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
                         <span id="rt-id"><patient id="rt_id" field="identifier" identifierTypeId="fd52829a-75d2-4732-8e43-4bff8e5b4f1a" required="false" /></span>
+                        <span id="rtError" class="error"></span>
                     </td>
                 </tr>
             </table>
