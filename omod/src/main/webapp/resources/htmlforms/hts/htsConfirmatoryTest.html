@@ -850,6 +850,7 @@
             var secondKit = getField("kit-name-2.value").val();
             var disabilityChecked = jq("#disability input:checkbox:checked");
             var rcId = jq('#rt-id input[type=text]').val();
+            var hasRecencyId =getValue('recency-testing.value');
 
             if (disabilityChecked.length == 0 &amp;&amp; hasDisability == 1065) {
                 getField('has-disability.error').html('Please specify the disabilty type.').show();
@@ -923,10 +924,12 @@
                 getField('kit-name-2.error').html('Please use a different kit.').hide();
             }
             if(IS_Recency_SITE==true){
-                var recStr = rcId.split("-")[1];
-                if(/^[0-9]{5}$/.test(recStr) === false) {
-                    jq("#rtError").text("Invalid Recency ID Format! Should be REC"+mflCode+"- and 5 digits serial number").show();
-                    return false;
+                if(hasRecencyId == 1065) {
+                    var recStr = rcId.split("-")[1];
+                    if (/^[0-9]{5}$/.test(recStr) === false) {
+                        jq("#rtError").text("Invalid Recency ID Format! Should be REC" + mflCode + "- and 5 digits serial number").show();
+                        return false;
+                    }
                 }
             }
 

@@ -277,6 +277,7 @@
             var selectedFromFacilityVal = getValue('selectedFromFacility.value');
             var selectedTransitFacilityVal = getValue('selectedTransitFacility.value');
             var rcId = jq('#rt-id input[type=text]').val();
+            var hasRecencyId =getValue('recency-testing.value');
 
             if (entryPointStatus == TRANSFER_IN &amp;&amp; selectedFromFacilityVal == "") {
                     getField('selectedFromFacility.error').html('Facility required').show();
@@ -410,10 +411,12 @@
 			}
 
             if(IS_Recency_SITE==true){
-                var recStr = rcId.split("-")[1];
-                if(/^[0-9]{5}$/.test(recStr) === false) {
-                    jq("#rtError").text("Invalid Recency ID Format! Should be REC"+mflCode+"- and 5 digits serial number").show();
-                    return false;
+                if(hasRecencyId == 1065) {
+                    var recStr = rcId.split("-")[1];
+                    if (/^[0-9]{5}$/.test(recStr) === false) {
+                        jq("#rtError").text("Invalid Recency ID Format! Should be REC" + mflCode + "- and 5 digits serial number").show();
+                        return false;
+                    }
                 }
             }
 			return true;
