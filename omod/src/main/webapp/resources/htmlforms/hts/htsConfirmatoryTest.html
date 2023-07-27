@@ -811,10 +811,7 @@
             var recencyId;
             jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/getPatientRecencyId.action', {patientId: patientId}, function (data) {
                 if (data != "") {
-                    console.log("Data==>"+data);
                     recencyId = data;
-                    console.log("Data==>"+recencyId);
-                    console.log("includePatientsRecencyIdIfExists==>"+recencyId);
                     jq("#tbl-recency-testing").show();
                     jq("#tbl-recency-id").show();
                     jq("#recency-testing input[value=1065]").prop("checked", true);
@@ -1126,9 +1123,8 @@
             function includePatientsRecencyIdIfExists() {
                 var recencyId;
                 jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/getPatientRecencyId.action', {patientId: patientId}, function (data) {
-                    if (data != null || data != "") {
+                    if (data != "") {
                         recencyId = data;
-                        console.log("includePatientsRecencyIdIfExists"+recencyId);
                         jq("#tbl-recency-testing").show();
                         jq("#tbl-recency-id").show();
                         jq("#recency-testing input[value=1065]").prop("checked", true);
