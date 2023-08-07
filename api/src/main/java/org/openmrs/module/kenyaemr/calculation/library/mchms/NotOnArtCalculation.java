@@ -37,16 +37,17 @@ import java.util.Set;
  * Calculates whether a mother is HIV+ but is not on ART. Calculation returns true if mother
  * is alive, enrolled in the MCH program, gestation is greater than 14 weeks, is HIV+ and was
  * not indicated as being on ART in the last encounter.
+ *  Retired flag
  */
-public class NotOnArtCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
+public class NotOnArtCalculation extends AbstractPatientCalculation  {
 
 	/**
 	 * @see org.openmrs.module.kenyacore.calculation.PatientFlagCalculation#getFlagMessage()
 	 */
-	@Override
-	public String getFlagMessage() {
-		return "Not on ART";
-	}
+//	@Override
+//	public String getFlagMessage() {
+//		return "Not on ART";
+//	}
 
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)

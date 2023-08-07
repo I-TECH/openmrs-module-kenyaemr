@@ -31,16 +31,17 @@ import java.util.Set;
 /**
  * Calculates whether a patient has a declining CD4 count. Calculation returns true if patient
  * is alive, enrolled in the HIV program and last CD4 count is less than CD4 count from 6 months ago
+ *  Retired flag
  */
-public class DecliningCd4Calculation extends AbstractPatientCalculation implements PatientFlagCalculation {
+public class DecliningCd4Calculation extends AbstractPatientCalculation  {
 
 	/**
 	 * @see org.openmrs.module.kenyacore.calculation.PatientFlagCalculation#getFlagMessage()
 	 */
-	@Override
-	public String getFlagMessage() {
-		return "Declining CD4";
-	}
+//	@Override
+//	public String getFlagMessage() {
+//		return "Declining CD4";
+//	}
 
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {

@@ -29,17 +29,18 @@ import java.util.Set;
 
 /**
  * Calculates whether patients are eligible for ART
+ * Retired flag
  */
 
-public class EligibleForArtCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
+public class EligibleForArtCalculation extends AbstractPatientCalculation  {
 
 	/**
 	 * @see org.openmrs.module.kenyacore.calculation.PatientFlagCalculation#getFlagMessage()
 	 */
-	@Override
-	public String getFlagMessage() {
-		return "Eligible for ART";
-	}
+//	@Override
+//	public String getFlagMessage() {
+//		return "Eligible for ART";
+//	}
 
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)

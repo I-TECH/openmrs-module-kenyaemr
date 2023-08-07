@@ -32,16 +32,17 @@ import java.util.Set;
 
 /**
  * Created by schege on 28/03/23.
+ * Retired flag
  */
-public class PendingCrAgResultCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
+public class PendingCrAgResultCalculation extends AbstractPatientCalculation  {
 
     /**
      * @see PatientFlagCalculation#getFlagMessage()
      */
-    @Override
-    public String getFlagMessage() {
-        return "Pending Serum CrAg result";
-    }
+//    @Override
+//    public String getFlagMessage() {
+//        return "Pending Serum CrAg result";
+//    }
     protected static final Log log = LogFactory.getLog(PendingCrAgResultCalculation.class);
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {

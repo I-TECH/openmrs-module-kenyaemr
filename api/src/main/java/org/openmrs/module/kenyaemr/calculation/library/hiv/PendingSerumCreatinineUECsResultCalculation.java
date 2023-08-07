@@ -31,16 +31,17 @@ import java.util.*;
 
 /**
  * Created by schege on 04/05/23.
+ * Retired flag
  */
-public class PendingSerumCreatinineUECsResultCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
+public class PendingSerumCreatinineUECsResultCalculation extends AbstractPatientCalculation  {
 
     /**
      * @see PatientFlagCalculation#getFlagMessage
      */
-    @Override
-    public String getFlagMessage() {
-        return "Pending Serum Creatine (UECs) result";
-    }
+//    @Override
+//    public String getFlagMessage() {
+//        return "Pending Serum Creatine (UECs) result";
+//    }
     protected static final Log log = LogFactory.getLog(PendingSerumCreatinineUECsResultCalculation.class);
     @Override
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {

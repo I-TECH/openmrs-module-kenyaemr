@@ -30,12 +30,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class MissingPyridoxineCalculation extends AbstractPatientCalculation implements PatientFlagCalculation{
+/**
+ * Retired flag
+ */
+public class MissingPyridoxineCalculation extends AbstractPatientCalculation {
 
-	@Override
-	public String getFlagMessage() {
-		return "Missing Pyridoxine";
-	}
+//	@Override
+//	public String getFlagMessage() {
+//		return "Missing Pyridoxine";
+//	}
 	
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
