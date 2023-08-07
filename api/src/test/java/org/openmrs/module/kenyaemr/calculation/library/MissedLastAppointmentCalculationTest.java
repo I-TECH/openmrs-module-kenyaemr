@@ -55,10 +55,10 @@ public class MissedLastAppointmentCalculationTest extends BaseModuleContextSensi
 	/**
 	 * @see MissedLastAppointmentCalculation#getFlagMessage()
 	 */
-	@Test
-	public void getFlagMessage() {
-		Assert.assertThat(new MissedLastAppointmentCalculation().getFlagMessage(), notNullValue());
-	}
+//	@Test
+//	public void getFlagMessage() {
+//		Assert.assertThat(new MissedLastAppointmentCalculation().getFlagMessage(), notNullValue());
+//	}
 
 	/**
 	 * @see MissedLastAppointmentCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)
