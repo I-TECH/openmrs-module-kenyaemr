@@ -115,6 +115,12 @@
 
         //Before Submit
         beforeSubmit.push(function() {
+            var artStart = new Date(getValue('artStartDate.value')).getTime();
+            var linkageDate = new Date(getValue('linkageDate.value')).getTime();
+            	if (artStart &lt; linkageDate)  {
+					getField('artStartDate.error').html('ART start date should be after Date enrolled').show();
+                    return false;
+				}
             return true;
         });
         //Clear hidden sections
@@ -190,19 +196,19 @@
                              style="dropdown" answerLabels="This health facility,Other health facility" />
                     </td>
                     <td>
-                       <div id="tbl-other-facility">
+                        <div id="tbl-other-facility">
 
-                                  &#160;&#160;&#160; Facility name :
-                                    <obs id="other-facility" conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-                                    &#160;&#160;&#160;
+                            &#160;&#160;&#160; Facility name :
+                            <obs id="other-facility" conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                            &#160;&#160;&#160;
 
                         </div>
                     </td> <td>
-                     <div id="tbl-this-facility">
+                    <div id="tbl-this-facility">
 
-                              &#160;&#160;&#160; Name :
-                                <obs id="this-facility" conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
-                                &#160;&#160;&#160;
+                        &#160;&#160;&#160; Name :
+                        <obs id="this-facility" conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                        &#160;&#160;&#160;
 
                     </div>
                 </td>
@@ -247,12 +253,12 @@
                 </tr>
                 <tr>
                     <td><strong>Date enrolled : </strong>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                        <obs class="linkage-date" conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false" required="true" allowFutureDates="false"
+                        <obs id="linkageDate" class="linkage-date" conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false" required="true" allowFutureDates="false"
                         />
                     </td>
                 </tr> <tr>
                 <td><strong>ART start date : </strong>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-                    <obs class="art-date" conceptId="159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false" allowFutureDates="false"
+                    <obs id="artStartDate" class="art-date" conceptId="159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false" allowFutureDates="false"
                     />
                 </td>
             </tr>
