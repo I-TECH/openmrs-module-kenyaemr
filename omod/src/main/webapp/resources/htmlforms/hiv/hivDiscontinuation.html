@@ -336,7 +336,12 @@
 					return false;
 				}else {
 					getField('discontinue-date.error').html('Discontinue date should not be earlier than last visit date').hide();
+				}
+                console.log("lastTcaDateValue === ", lastTcaDateValue)
 
+                if (discReason == 159492 &amp;&amp; (moment(lastTcaDateValue).isBefore(formattedDiscDate, 'day'))) {
+					getField('discontinue-date.error').html('Discontinue date should not be after last appointment date').show();
+					return false;
 				}
 				if(moment(formattedEncDate).isBefore(moment(moment(pbirthdate).toDate()).format("DD-MMM-YYYY"),'day')){
 					getField('encounter-date.error').html('Encounter date, should not be earlier than Birth date').show();
