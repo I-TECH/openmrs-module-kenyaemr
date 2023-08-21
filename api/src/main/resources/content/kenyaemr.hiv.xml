@@ -56,7 +56,6 @@
 				<ref bean="kenyaemr.hiv.report.artRegister" />
 				<ref bean="kenyaemr.hiv.report.scheduledDrugRefills"/>
 				<ref bean="kenyaemr.hiv.report.scheduledAppointment"/>
-				<ref bean="kenyaemr.hiv.report.covid19vaccination"/>
 				<ref bean="kenyaemr.mchcs.report.pamaReport" />
 				<ref bean="kenyaemr.ahd.report.advancedHivDiseaseLineList" />
 				<ref bean="kenyaemr.common.report.missedAppointmentTrackerReport" />
