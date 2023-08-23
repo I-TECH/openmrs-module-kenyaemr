@@ -30,16 +30,17 @@ import java.util.Set;
 
 /**
  * Created by schege on 28/03/23.
+ * Retired flag
  */
-public class PendingHepatitisCResultCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
+public class PendingHepatitisCResultCalculation extends AbstractPatientCalculation  {
 
     /**
      * @see PatientFlagCalculation#getFlagMessage()
      */
-    @Override
-    public String getFlagMessage() {
-        return "Pending HepC result";
-    }
+//    @Override
+//    public String getFlagMessage() {
+//        return "Pending HepC result";
+//    }
 
     protected static final Log log = LogFactory.getLog(PendingHepatitisCResultCalculation.class);
 

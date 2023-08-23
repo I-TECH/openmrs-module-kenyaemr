@@ -30,9 +30,9 @@ import java.util.Set;
 
 /**
  * Calculates whether a patient is currently enrolled in OVC program
- *
+ * Retired flag
  */
-public class OnOVCProgramCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
+public class OnOVCProgramCalculation extends AbstractPatientCalculation  {
 
 	protected static final Log log = LogFactory.getLog(OnOVCProgramCalculation.class);
 
@@ -56,9 +56,9 @@ public class OnOVCProgramCalculation extends AbstractPatientCalculation implemen
 		return ret;
 	}
 
-	@Override
-	public String getFlagMessage() {
-		return "On OVC";
-	}
+//	@Override
+//	public String getFlagMessage() {
+//		return "On OVC";
+//	}
 
 }
