@@ -296,6 +296,19 @@
                 jq("#dlgSelectToFacility").dialog("close");
             }
 
+            jq("#input_in_kenya").click(function(e){
+                val = jq(this).val();
+                if (jq(this).is(':checked')){
+                    jq('#selectedToFacility input[type=text]').attr('readonly','readonly');
+                    jq("#btnTransferFacility").show();
+                    jq('#selectedToFacility input[type=text]').val('');
+                } else {
+                    jq('#selectedToFacility input[type=text]').attr('readonly',false);
+                    jq("#btnTransferFacility").hide();
+                    jq('#selectedToFacility input[type=text]').val('');
+                }
+            });
+
             var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
             var discontinueDate;
             var encounterDate;
@@ -586,7 +599,8 @@
 					<table>
 						<tr>
 							<td width="200px"><i>(If transferred out)</i> <br/>Transfer to Facility:</td>
-                            <td ><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="selectedToFacility" size="60"/></td>
+                            <td><input type="checkbox" name="input_in_kenya" id="input_in_kenya" /><span id="in_kenya_check">In Kenya</span></td>
+                            <td><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="selectedToFacility" size="60"/></td>
                             <td><button type="button"  style="height:35px;width:200px;font-size:12px" id="btnTransferFacility" class="ke-program-outcome-button">Click to select transfer to facility</button></td>
                         </tr>
                         <tr>
