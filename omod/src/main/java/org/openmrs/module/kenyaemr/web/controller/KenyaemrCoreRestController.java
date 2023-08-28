@@ -14,11 +14,14 @@ import org.openmrs.GlobalProperty;
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
+import org.openmrs.CareSetting;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Program;
 import org.openmrs.PatientProgram;
 import org.openmrs.Order;
+import org.openmrs.OrderType;
+import org.openmrs.DrugOrder;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.api.context.Context;
@@ -50,13 +53,13 @@ import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastCd4CountDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.WhoStageAtArtStartCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtRegimenCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastCd4PercentageCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastWhoStageCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.HIVEnrollment;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ViralLoadAndLdlCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.BMICalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferInDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.util.ZScoreUtil;
@@ -74,6 +77,7 @@ import org.openmrs.module.kenyaemr.util.EncounterBasedRegimenUtils;
 import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
 import org.openmrs.module.kenyaemr.wrapper.Enrollment;
 import org.openmrs.module.kenyaemr.metadata.IPTMetadata;
+import org.openmrs.api.OrderService;
 import org.openmrs.module.kenyacore.CoreContext;
 import org.openmrs.module.kenyacore.calculation.CalculationManager;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
@@ -95,7 +99,6 @@ import org.openmrs.module.kenyaemr.calculation.library.tb.TbTreatmentNumberCalcu
 import org.openmrs.module.kenyaemr.calculation.library.tb.PatientInTbProgramCalculation;
 import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.LastCd4CountDateCalculation;
-import org.openmrs.module.kenyaemr.calculation.library.hiv.art.InitialArtStartDateCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CD4AtARTInitiationCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.CurrentArtRegimenCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.LastCd4PercentageCalculation;
@@ -157,6 +160,8 @@ import org.joda.time.Years;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Collections;
+import java.util.Locale;
+import java.util.Comparator;
 
 /**
 * The rest controller for exposing resources through kenyacore and kenyaemr modules
@@ -185,6 +190,13 @@ public class KenyaemrCoreRestController extends BaseRestController {
     public static final String PREP_ENROLLMENT_FORM = "d5ca78be-654e-4d23-836e-a934739be555";
 
     public static final String PREP_DISCONTINUATION_FORM = "467c4cc3-25eb-4330-9cf6-e41b9b14cc10";
+
+    public static final Locale LOCALE = Locale.ENGLISH;
+
+    public String name = null;
+
+    public static String ISONIAZID_DRUG_UUID = "78280AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    public static String RIFAMPIN_ISONIAZID_DRUG_UUID = "1194AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
     /**
      * Gets a list of available/completed forms for a patient
@@ -833,6 +845,17 @@ public class KenyaemrCoreRestController extends BaseRestController {
                         programDetails.put("whoStage", whoObs.getValueCoded().getName().getName());
                     }
 
+                    //art start date
+                    Date artStartDate = null;
+                    CalculationResult artStartDateResults = EmrCalculationUtils.evaluateForPatient(InitialArtStartDateCalculation.class, null, patient);
+                    if(artStartDateResults != null) {
+                        artStartDate = (Date) artStartDateResults.getValue();
+                        programDetails.put("artStartDate", formatDate((Date) artStartDateResults.getValue()));
+                    }
+                    else {
+                        programDetails.put("artStartDate", "");
+                    }
+
                     if(hivEnrollmentEncounter != null) {
                         for (Obs obs : hivEnrollmentEncounter.getAllObs(true)) {
                             if (obs.getConcept().equals(Dictionary.getConcept(Dictionary.METHOD_OF_ENROLLMENT))) {
@@ -847,6 +870,11 @@ public class KenyaemrCoreRestController extends BaseRestController {
                                 programDetails.put("cd4Percentage", obs.getValueNumeric().intValue());
                                 programDetails.put("cd4PercentageDate", formatDate(obs.getObsDatetime()));
                             }
+                            Encounter firstEnc = EncounterBasedRegimenUtils.getFirstEncounterForCategory(patient, "ARV");
+                            SimpleObject firstEncDetails = null;
+                            if (firstEnc != null) {
+                                firstEncDetails = EncounterBasedRegimenUtils.buildRegimenChangeObject(firstEnc.getObs(), firstEnc);
+                            }
                             Encounter lastEnc = EncounterBasedRegimenUtils.getLastEncounterForCategory(patient, "ARV");
                             SimpleObject lastEncDetails = null;
                             if (lastEnc != null) {
@@ -854,6 +882,7 @@ public class KenyaemrCoreRestController extends BaseRestController {
                             }
                             programDetails.put("enrollmentEncounterUuid", hivEnrollmentEncounter.getUuid());
                             programDetails.put("lastEncounter", lastEncDetails);
+                            programDetails.put("firstEncounter", firstEncDetails);
                         }
                     }
                     if(hivCompletionEncounter != null) {
@@ -883,11 +912,33 @@ public class KenyaemrCoreRestController extends BaseRestController {
                             }
                         }
                         programDetails.put("enrollmentEncounterUuid", tptEnrollmentEncounter.getUuid());
-
                     }
                     if(tptDiscontinuationEncounter != null) {
                         programDetails.put("discontinuationEncounterUuid", tptDiscontinuationEncounter.getUuid());
                     }
+                    // get medication patient is on
+                    List<DrugOrder> allDrugOrders = EmrUtils.drugOrdersFromOrders(patient, null);
+                    List<DrugOrder> tptDrugOrders = new ArrayList<DrugOrder>();
+
+                    for (DrugOrder order : allDrugOrders) {
+                        if(order.getDrug().getConcept().getUuid().equals(ISONIAZID_DRUG_UUID) || order.getDrug().getConcept().getUuid().equals(RIFAMPIN_ISONIAZID_DRUG_UUID) ) {
+                            tptDrugOrders.add(order);
+                        }
+                    }
+                    if (!tptDrugOrders.isEmpty()) {
+
+                        Collections.sort(tptDrugOrders, new Comparator<DrugOrder>() {
+                            @Override
+                            public int compare(DrugOrder order1, DrugOrder order2) {
+                                return order2.getDateCreated().compareTo(order1.getDateCreated());
+                            }
+                        });
+                        DrugOrder drugOrder = (DrugOrder) tptDrugOrders.get(0).cloneForRevision();
+                        // Now you can use the latestDrugOrder as needed
+                        programDetails.put("tptDrugName",drugOrder.getDrug() != null ? drugOrder.getDrug().getFullName(LOCALE) : "");
+                        programDetails.put("tptDrugStartDate", formatDate(drugOrder.getEffectiveStartDate()));
+                    }
+
                     programDetails.put("enrollmentFormUuid", IPTMetadata._Form.IPT_INITIATION);
                     programDetails.put("enrollmentFormName", "IPT Initiation");
                     programDetails.put("discontinuationFormUuid", IPTMetadata._Form.IPT_OUTCOME);
@@ -906,6 +957,12 @@ public class KenyaemrCoreRestController extends BaseRestController {
                                 programDetails.put("referredFrom", obs.getValueCoded().getName().getName());
                             }
                             programDetails.put("enrollmentEncounterUuid", tbEnrollmentEncounter.getUuid());
+                            Encounter firstEnc = EncounterBasedRegimenUtils.getFirstEncounterForCategory(patient, "TB");
+                            SimpleObject firstEncDetails = null;
+                            if (firstEnc != null) {
+                                firstEncDetails = EncounterBasedRegimenUtils.buildRegimenChangeObject(firstEnc.getObs(), firstEnc);
+                            }
+                            programDetails.put("firstEncounter", firstEncDetails);
                         }
                     }
                     if(tbDiscontinuationEncounter != null) {
@@ -2152,5 +2209,47 @@ public class KenyaemrCoreRestController extends BaseRestController {
     private String formatDate(Date date) {
         DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
         return date == null?"":dateFormatter.format(date);
+    }
+
+    private String mapConceptNamesToShortNames(String conceptUuid) {
+
+        if (conceptUuid.equalsIgnoreCase("84797AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")) {
+            name = "TDF";
+        } else if (conceptUuid.equalsIgnoreCase("84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")) {
+            name = "D4T";
+        } else if (conceptUuid.equalsIgnoreCase("86663AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")) {
+            name = "AZT";
+        } else if (conceptUuid.equalsIgnoreCase("78643AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")) {
+            name = "3TC";
+        } else if (conceptUuid.equalsIgnoreCase("70057AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")) {
+            name = "ABC";
+        } else if (conceptUuid.equalsIgnoreCase("75628AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")) {
+            name = "FTC";
+        } else if (conceptUuid.equalsIgnoreCase("74807AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")) {
+            name = "DDI";
+        } else if (conceptUuid.equalsIgnoreCase("80586AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")) {
+            name = "NVP";
+        } else if (conceptUuid.equalsIgnoreCase("75523AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")) {
+            name = "EFV";
+        } else if (conceptUuid.equalsIgnoreCase("794AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")) {
+            name = "LPV";
+        } else if (conceptUuid.equalsIgnoreCase("83412AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")) {
+            name = "RTV";
+        } else if (conceptUuid.equalsIgnoreCase("71648AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")) {
+            name = "ATV";
+        } else if (conceptUuid.equalsIgnoreCase("159810AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")) {
+            name = "ETR";
+        } else if (conceptUuid.equalsIgnoreCase("154378AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")) {
+            name = "RAL";
+        } else if (conceptUuid.equalsIgnoreCase("74258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")) {
+            name = "DRV";
+        } else if (conceptUuid.equalsIgnoreCase("d1fd0e18-e0b9-46ae-ac0e-0452a927a94b")) {
+            name = "DTG";
+        } else if (conceptUuid.equalsIgnoreCase("167205AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")) {
+            name = "B";
+        }
+
+        return name;
+
     }
 }
