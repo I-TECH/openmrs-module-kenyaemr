@@ -200,13 +200,7 @@
                 jq("#kit-name-2 option[value='164960']").hide();
                 jq("#kit-name-2 option[value='165351']").hide();
             }
-            else if (val == 164961 ){   //First response kit selected
-                jq('#dual-results-1').hide();
-                getField("kit-name-2.value").val("");
-                jq("#kit-name-2 option[value='164960']").show();
-                jq("#kit-name-2 option[value='165351']").hide();
-                jq("#kit-name-2 option[value='164961']").hide();
-            }
+
         }
 
         var kit2Selected = function () {
@@ -826,7 +820,7 @@
             }else{
                 getField('has-disability.error').html('Please specify the disabilty type.').hide();
             }
-            if(firstKit ==164960 &amp;&amp; secondKit == 164960 || firstKit ==164961 &amp;&amp; secondKit == 164961 ) {
+            if(firstKit ==164960 &amp;&amp; secondKit == 164960) {
                 getField('kit-name-2.error').html('Cannot use same test kit for both tests.').show();
                 return false;
             }
@@ -1396,8 +1390,8 @@
                             <obs class="kit-name"
                                  id="kit-name-1"
                                  conceptId="164962"
-                                 answerConceptIds="164960,164961,165351"
-                                 style="dropdown" answerLabels="Determine,First Response,Dual Kit"
+                                 answerConceptIds="164960,165351"
+                                 style="dropdown" answerLabels="Determine,Dual Kit"
                             />
                         </td>
                         <td>&#160;&#160;&#160;&#160;Lot Number

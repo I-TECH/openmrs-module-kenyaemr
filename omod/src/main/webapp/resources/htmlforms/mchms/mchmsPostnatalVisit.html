@@ -574,12 +574,7 @@
                 $("#kit-name-2 option[value='164960']").remove();
                 $("#kit-name-2 option[value='165351']").remove();
             }
-            if (val == 164961 ){   //Determine kit selected
-                jq('#dual-results-1').hide();
-                $("#kit-name-2 option[value='164960']").add();
-                $("#kit-name-2 option[value='165351']").add();
-                $("#kit-name-2 option[value='164961']").remove();
-            }
+
         }
 
         var expiryDateSelected  = function () {
@@ -811,11 +806,7 @@
                                     $("#kit-name-2 option[value='164960']").remove();
                                     $("#kit-name-2 option[value='165351']").remove();
                                 }
-                                if (testKit1 == 164961 ){   //Determine kit selected
-                                    $("#kit-name-2 option[value='164960']").add();
-                                    $("#kit-name-2 option[value='165351']").remove();
-                                    $("#kit-name-2 option[value='164961']").remove();
-                                }
+
                                 var syphylisTest1Results = getField("syphilis-test-results.value").val();
                                 if(syphylisTest1Results != ""){
                                     jq('#dual-results-1').show();
@@ -1364,8 +1355,8 @@
                                                                 <obs class="kit-name"
                                                                      id="kit-name-1"
                                                                      conceptId="164962"
-                                                                     answerConceptIds="164960,164961,165351"
-                                                                     style="dropdown" answerLabels="Determine,First Response,Dual Kit"
+                                                                     answerConceptIds="164960,165351"
+                                                                     style="dropdown" answerLabels="Determine,Dual Kit"
                                                                 />
 
                                                             </td>
