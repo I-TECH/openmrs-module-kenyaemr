@@ -29,6 +29,7 @@ import org.openmrs.module.kenyaemr.reporting.calculation.converter.EncounterDate
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.ETLTransferOutPatientsCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.CalculationResultDateYYMMDDConverter;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.FacilityTransferToDataDefinition;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.SortCriteria;
@@ -101,6 +102,7 @@ public class ETLTransferOutPatientsReportBuilder extends AbstractHybridReportBui
 		dsd.addColumn("Transfer out effective date", new CalculationDataDefinition("Transfer out effective date", new TransferOutEffectiveDateCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Transfer out verified", new CalculationDataDefinition("Transfer out verified", new TransferOutVerificationCalculation()), "", new CalculationResultConverter());
 		dsd.addColumn("Transfer out verification date", new CalculationDataDefinition("Transfer out verification date", new TransferOutVerificationDateCalculation()), "", new CalculationResultConverter());
+		dsd.addColumn("Facility Transferred to", new FacilityTransferToDataDefinition(), "");
 		dsd.addColumn("Last Visit Date", definition, "", new EncounterDatetimeConverter());
 		dsd.addColumn("Last Appointment date", new CalculationDataDefinition("Appointment date", new LastReturnVisitDateCalculation()), "", new DataConverter[]{new CalculationResultDateYYMMDDConverter()});
 		dsd.addColumn("Phone number", new CalculationDataDefinition("Phone number", new TelephoneNumberCalculation()), "", new DataConverter[]{new CalculationResultConverter()});
