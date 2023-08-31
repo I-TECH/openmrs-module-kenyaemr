@@ -221,7 +221,6 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
                 appointmentServiceDefinition.setAppointmentServiceId(appointmentServiceDefinitionService.getAppointmentServiceByUuid(DRUG_REFILL_SERVICE).getId());
 
                 Appointment editedFollowUpAppointment = appointmentsService.getAppointmentByUuid(enc.getUuid());
-
                 Appointment refillAppointment = new Appointment();
                 Date refillStartDateTime = DateUtil.convertToDate(dateFormat.format(o.getValueDatetime()).concat("T07:00:00.0Z"), DateUtil.DateFormatType.UTC);
                 Date refillEndDateTime = DateUtil.convertToDate(dateFormat.format(o.getValueDatetime()).concat("T20:00:00.0Z"), DateUtil.DateFormatType.UTC);
@@ -234,10 +233,11 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
                 refillAppointment.setProvider(EmrUtils.getProvider(Context.getAuthenticatedUser()));
                 refillAppointment.setAppointmentKind(AppointmentKind.Scheduled);
                 Appointment app = appointmentsService.validateAndSave(refillAppointment);
-
-                editedFollowUpAppointment.setRelatedAppointment(app);
-                Appointment app2 = appointmentsService.validateAndSave(editedFollowUpAppointment);
-
+                
+                if (editedFollowUpAppointment != null) {
+                    editedFollowUpAppointment.setRelatedAppointment(app);
+                    Appointment app2 = appointmentsService.validateAndSave(editedFollowUpAppointment);
+                }
             }
 
         }
@@ -277,7 +277,7 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
                 refillApptDate = o.getValueDatetime();
             }
 
-            if(appointmentReason != null && appointmentReason == 160523  || appointmentReason != null && appointmentReason == 160521 ) {
+            if((appointmentReason != null && appointmentReason == 160523) || (appointmentReason != null && appointmentReason == 160521) ) {
                 AppointmentServiceDefinition appointmentServiceDefinition = new AppointmentServiceDefinition();
 
                 // create HIV followup appointment
@@ -316,8 +316,10 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
                     refillAppointment.setAppointmentKind(AppointmentKind.Scheduled);
                     Appointment app = appointmentsService.validateAndSave(refillAppointment);
 
-                    currentFollowUpAppointment.setRelatedAppointment(app);
-                    Appointment app2 = appointmentsService.validateAndSave(currentFollowUpAppointment);
+                    if (currentFollowUpAppointment != null ) {
+                        currentFollowUpAppointment.setRelatedAppointment(app);
+                        Appointment app2 = appointmentsService.validateAndSave(currentFollowUpAppointment);
+                    }
                 }
 
             } else if ( appointmentReason != null && appointmentReason == 1283) {
@@ -369,7 +371,6 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
 
             if(editAppointment != null) {
                 //edit MCH or PREP or TB or KP appointment
-
                 Date nextApptStartDateTime = DateUtil.convertToDate(dateFormat.format(o.getValueDatetime()).concat("T07:00:00.0Z"), DateUtil.DateFormatType.UTC);
                 Date nextApptEndDateTime = DateUtil.convertToDate(dateFormat.format(o.getValueDatetime()).concat("T20:00:00.0Z"), DateUtil.DateFormatType.UTC);
                 editAppointment.setStartDateTime(nextApptStartDateTime);
