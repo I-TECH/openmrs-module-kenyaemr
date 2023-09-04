@@ -141,6 +141,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.JsonNodeFactory;
 import org.codehaus.jackson.node.ObjectNode;
@@ -339,6 +340,48 @@ public class KenyaemrCoreRestController extends BaseRestController {
         patientObj.put("results", patientNode);
 
 		return patientObj.toString();
+        
+    }
+
+    /**
+     * Returns regimen history for a patient
+     * @param request
+     * @param category // ARV or TB
+     * @param patientUuid
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/regimenHistory") 
+    @ResponseBody
+    public Object getRegimenHistory(@RequestParam("patientUuid") String patientUuid, @RequestParam("category") String category) {
+        ObjectNode regimenObj = JsonNodeFactory.instance.objectNode();
+        if (StringUtils.isBlank(patientUuid)) {
+            return new ResponseEntity<Object>("You must specify patientUuid in the request!",
+                    new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        }
+
+        Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
+
+        if (patient == null) {
+            return new ResponseEntity<Object>("The provided patient was not found in the system!",
+                    new HttpHeaders(), HttpStatus.NOT_FOUND);
+        }
+        ArrayNode regimenNode = JsonNodeFactory.instance.arrayNode();
+        List<SimpleObject> obshistory = EncounterBasedRegimenUtils.getRegimenHistoryFromObservations(patient, category);
+        for (SimpleObject obj : obshistory) {
+            ObjectNode node = JsonNodeFactory.instance.objectNode();;
+            node.put("startDate", obj.get("startDate").toString());
+            node.put("endDate", obj.get("endDate").toString());
+            node.put("regimenShortDisplay", obj.get("regimenShortDisplay").toString());
+            node.put("regimenLine", obj.get("regimenLine").toString());
+            node.put("regimenLongDisplay", obj.get("regimenLongDisplay").toString());
+            node.put("changeReasons", obj.get("changeReasons").toString());
+            node.put("regimenUuid", obj.get("regimenUuid").toString());
+            node.put("current", obj.get("current").toString());
+            regimenNode.add(node);
+        }
+
+        regimenObj.put("results", regimenNode);
+		return regimenObj.toString();
         
     }
 
