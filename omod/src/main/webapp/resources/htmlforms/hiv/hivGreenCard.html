@@ -2065,6 +2065,7 @@ Green Card follow-up visit form
         var returnReasonSelected = function() {
             var stabilityStatus = getValue('stability.value');
             var tca_reason = getField('returnVisitReason.value').val();
+            var refilldate = jq('#refillVisitDate input').val('');
             if (tca_reason == 160521){
                 jq("#refill-label").show();
                 jq("#refill-date").show();
@@ -2073,6 +2074,7 @@ Green Card follow-up visit form
             }else {
                 jq("#refill-label").hide();
                 jq("#refill-date").hide();
+                clearHiddenSections([refilldate]);
                 jq('#refill-label input').prop('disabled', true);
                 jq('#refill-date input').prop('disabled', true);
             }
@@ -2595,6 +2597,12 @@ Green Card follow-up visit form
                 return false;
             }else{
                 getField('refill-facility-name.error').html('Please specify refill facility visited.').hide();
+            }
+            if (tca_reason == 160521 &amp;&amp; refill_date == "") {
+                getField('refillVisitDate.error').html('Please specify drug refill date.').show();
+                return false;
+            }else{
+                getField('refillVisitDate.error').html('Please specify drug refill date').hide();
             }
             return true;
         });
@@ -4744,7 +4752,7 @@ Management<br />
                                 <span style="color:red;"><strong>*</strong></span>
                             </td><td>&#160;&#160;&#160;&#160;</td>
                             <td id="refill-label">Refill Date:&#160;&#160;</td>
-                            <td id="refill-date"><obs conceptId="162549AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" labelText=" " id="refillVisitDate" /></td>
+                            <td id="refill-date"><obs conceptId="162549AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" labelText=" " id="refillVisitDate" /><span style="color:red;"><strong>*</strong></span></td>
                             <td>&#160;&#160;&#160;&#160;</td>
                             <td>
                                 Willing to receive reminders/notifications about the appointments?  &#160;&#160;&#160;&#160;
