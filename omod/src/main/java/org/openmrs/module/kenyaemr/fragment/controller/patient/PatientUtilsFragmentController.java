@@ -21,8 +21,18 @@ import org.openmrs.calculation.result.ListResult;
 import org.openmrs.module.kenyacore.calculation.CalculationManager;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
+import org.openmrs.OrderType;
+import org.openmrs.Patient;
+import org.openmrs.Order;
+import org.openmrs.module.kenyacore.calculation.Calculations;
+import org.openmrs.calculation.result.ListResult;
+import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.module.kenyacore.calculation.CalculationUtils;
+import org.openmrs.module.kenyacore.calculation.Calculations;
+import org.openmrs.api.OrderService;
 import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
 import org.openmrs.module.kenyaemr.calculation.library.ScheduledVisitOnDayCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.VisitsOnDayCalculation;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
@@ -630,6 +640,53 @@ public SimpleObject currentMothersArvRegimen(@RequestParam("patientId") Patient 
 
 						}
 					}
+				}
+			}
+		}
+		return object;
+	}
+
+	/**
+	 * Gets week-6 PCR lab order: Lab date, results and results date if any.
+	 * @param patient
+	 * @param ui
+	 * @return
+	 */
+	public SimpleObject getFirstDNAPCR(@RequestParam("patientId") Patient patient, UiUtils ui) {
+		SimpleObject object = null;
+		Concept PCR_6_WEEKS = Dictionary.getConcept(Dictionary.HIV_RAPID_TEST_1_QUALITATIVE);
+
+		OrderService orderService = Context.getOrderService();
+		PatientCalculationContext context = Context.getService(PatientCalculationService.class).createCalculationContext();
+		CalculationResultMap pcrTestQualitatives = Calculations.firstObs(Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE), Arrays.asList(patient.getPatientId()), context);
+		Obs firstPCRObs = EmrCalculationUtils.obsResultForPatient(pcrTestQualitatives, patient.getPatientId());
+
+		OrderType patientLabOrders = orderService.getOrderTypeByUuid(OrderType.TEST_ORDER_TYPE_UUID);
+		if (patientLabOrders != null) {
+			//Get all lab orders
+			CareSetting careSetting = orderService.getCareSetting(1);
+			List<Order> allOrders = orderService.getOrders(patient, careSetting, patientLabOrders, true);
+			if (allOrders.size() > 0) {
+				for (Order o : allOrders) {
+
+					Date orderDate = null;
+					String pcrResults = null;
+					Date pcrResultsDate = null;
+
+					if (o.getOrderReason().equals(PCR_6_WEEKS)) {
+						orderDate = o.getDateActivated();
+						if (!o.isActive() && firstPCRObs != null) {
+							pcrResults = firstPCRObs.getValueCoded().getName().getName();
+							pcrResultsDate = firstPCRObs.getObsDatetime();
+						}
+					}
+					System.out.println("Order date ==>"+orderDate);
+					System.out.println("Results ==>"+pcrResults);
+					System.out.println("Results date ==>"+pcrResultsDate);
+
+					object = SimpleObject.create("orderDate", orderDate,
+							"pcrResults", pcrResults,
+							"pcrResultsDate", pcrResultsDate);
 				}
 			}
 		}

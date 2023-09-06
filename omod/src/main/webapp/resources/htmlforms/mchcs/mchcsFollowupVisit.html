@@ -55,7 +55,7 @@
 		}
 	</style>
 	<script type="text/javascript">
-
+        var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
 		var YES_CONCEPT_ID = 1065;
 		var NO_CONCEPT_ID = 1066;
 		var WHITE_COLOR_CONCEPT_ID = 1075;
@@ -164,6 +164,24 @@
 					});
 		}
 
+        function getFirstPCRLabData() {
+            var patientId = <lookup expression="patient.patientId"/>;
+            console.log("Get first pcr lab data ==>");
+            jq.getJSON('/' + ctxPath + '/kenyaemr/patient/patientUtils/getFirstDNAPCR.action', {patientId: patientId}, function (data) {
+                if (data) {
+                    console.log("Data"+data.orderDate);
+                    console.log("Data"+data.pcrResults);
+                    console.log("Data"+data.pcrResultsDate);
+                    console.log("Data End")
+                    jq('first-pcr').text('First PCR');
+                    jq('first-pcr-order-date').text(data.orderDate);
+                    jq('first-pcr-results').text(data.pcrResults);
+                    jq('first-pcr-results-date').text(data.pcrResultsDate);
+                }
+                //jq('first-pcr').val = "";
+                //getField('first-pcr.value').val("");
+            });
+        }
 		function getTetracycline() {
 			if (getValue('tetracycline-geven.value') == YES_CONCEPT_ID ) {
 				jq('#teo-given').html("ONLY at birth");
@@ -325,6 +343,7 @@
 			loadPreviousVitals();
 			includeMotherCurrentVL();
 			includeMothersCccNumber();
+            getFirstPCRLabData();
 		});
 
 		beforeSubmit.push(function () {
@@ -537,80 +556,43 @@
 			</tr>
 			<tr>
 				<td colspan="3">
-					<obsgroup groupingConceptId="162085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-						<table class="hei" width="100%">
-							<tbody>
-							<tr>
-								<th>Type of Test</th>
-								<th>Date of Sample <br />Collection</th>
-								<th>Test Contextual <br />Status</th>
-								<th>Results</th>
-								<th>DBS Sample Code</th>
-								<th>Date Results Collected</th>
-							</tr>
-							<tr>
-								<td>
-									<obs conceptId="b61c1482-1697-404c-ab96-fd698d5fd317" answerConceptIds="844AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="1st DNA PCR" />
-								</td>
-								<td><obs conceptId="159951AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime="false" /></td>
-								<td><obs conceptId="162084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-								<td><obs conceptId="1030AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-								<td><obs conceptId="162086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-								<td><obs conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-							</tr>
-							<tr>
-								<td>
-									<obs conceptId="b61c1482-1697-404c-ab96-fd698d5fd317" answerConceptIds="167015AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="2nd DNA PCR at 6 months " />
-								</td>
-								<td><obs conceptId="159951AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime="false" /></td>
-								<td><obs conceptId="162084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-								<td><obs conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-								<td><obs conceptId="162086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-								<td><obs conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-							</tr>
-							<tr>
-								<td>
-									<obs conceptId="b61c1482-1697-404c-ab96-fd698d5fd317" answerConceptIds="bbd5d81e-d694-48e6-a948-ed82e63e2030" answerLabels="3rd DNA PCR at 12 months" />
-								</td>
-								<td><obs conceptId="159951AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime="false" /></td>
-								<td><obs conceptId="162084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-								<td><obs conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-								<td><obs conceptId="162086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-								<td><obs conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-							</tr>
-							<tr id="confirmatoryPCRTbl">
-								<td>
-									<obs conceptId="b61c1482-1697-404c-ab96-fd698d5fd317" answerConceptIds="1030AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Confirmatory PCR for positives " />
-								</td>
-								<td><obs conceptId="159951AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime="false" /></td>
-								<td><obs conceptId="162084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-								<td><obs conceptId="1040AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-								<td><obs conceptId="162086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-								<td><obs conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-							</tr>
-							<tr id="baseVlTbl">
-								<td>
-									<obs conceptId="b61c1482-1697-404c-ab96-fd698d5fd317" answerConceptIds="4da97634-7e25-4b96-8d21-62106c7e1c68 " answerLabels="Baseline viral load for positives" />
-								</td>
-								<td><obs conceptId="159951AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime="false" /></td>
-								<td><obs conceptId="162084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-								<td><obs conceptId="1305AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="LDL" id="ldl" /> <obs id="baselineResults" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-								<td><obs conceptId="162086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-								<td><obs conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-							</tr>
-							<tr>
-								<td>
-									<obs conceptId="b61c1482-1697-404c-ab96-fd698d5fd317" answerConceptIds="164860AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " answerLabels="Final antibody at 18 months " />
-								</td>
-								<td><obs conceptId="159951AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowTime="false" /></td>
-								<td><obs conceptId="162084AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-								<td><obs conceptId="1326AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-								<td><obs conceptId="162086AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-								<td><obs conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" /></td>
-							</tr>
-							</tbody>
-						</table>
-					</obsgroup>
+					<table id="tbl-recorded-chronic" border="1">
+						<tr><td>  <strong>Laboratory Tests Recorded</strong></td></tr>
+						<tr>
+							<th align="left">Test Type</th>
+							<th align="left">Order Date</th>
+							<th align="left">Results</th>
+							<th align="left">Results Date</th>
+						</tr>
+						<tr>
+							<td>
+								<input type="text" name="first-pcr" id="first-pcr" readonly="True" />
+							</td>
+							<td>
+								<input type="text" name="first-pcr-order-date" id="first-pcr-order-date" readonly="True" />
+							</td>
+							<td>
+								<input type="text" name="first-pcr-results" id="first-pcr-results" readonly="True" />
+							</td>
+							<td>
+								<input type="text" name="first-pcr-results-date" id="first-pcr-results-date" readonly="True" />
+							</td>
+						</tr>
+						<tr id="second-pcr-test-type">
+							<td>
+								<input type="text" name="second-pcr" id="second-pcr" readonly="True" />
+							</td>
+							<td>
+								<input type="text" name="second-pcr-order-date" id="second-pcr-order-date" readonly="True" />
+							</td>
+							<td>
+								<input type="text" name="second-pcr-results" id="second-pcr-results" readonly="True" />
+							</td>
+							<td>
+								<input type="text" name="second-pcr-results-date" id="second-pcr-results-date" readonly="True" />
+							</td>
+						</tr>
+					</table>
 				</td>
 			</tr>
 			<tr>
