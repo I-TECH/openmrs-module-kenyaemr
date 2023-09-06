@@ -46,15 +46,20 @@ public class MissedAppointmentsDuringPeriodCohortDefinitionEvaluator implements 
 			return null;
 
 		String qry="select encounter_id\n" +
-				"from (select fup.encounter_id, honoredVisit.patient_id honored_appt\n" +
+				"from (select fup.encounter_id,fup.patient_id, honoredVisit.patient_id honored_appt, honoured_refill.patient_id as honouredRefill\n" +
 				"      from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
 				"               left join kenyaemr_etl.etl_patient_hiv_followup honoredVisit\n" +
 				"                         on honoredVisit.patient_id = fup.patient_id and\n" +
-				"                            honoredVisit.next_appointment_date = fup.visit_date\n" +
+				"                            honoredVisit.next_appointment_date = fup.visit_date and honoredVisit.visit_date > fup.visit_date\n" +
+				"               left join kenyaemr_etl.etl_art_fast_track honoured_refill\n" +
+				"                         on honoured_refill.patient_id = fup.patient_id and honoured_refill.visit_date = fup.refill_date and honoured_refill.visit_date > fup.visit_date\n" +
 				"               join kenyaemr_etl.etl_patient_demographics p on p.patient_id = fup.patient_id\n" +
 				"               join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id = e.patient_id\n" +
 				"      where date(fup.next_appointment_date) between date(:startDate) and date(:endDate)\n" +
-				"      having honored_appt is null) mApp;";
+				"         or date(fup.refill_date) between date(:startDate) and date(:endDate)\n" +
+				"      group by fup.encounter_id, fup.patient_id\n" +
+				"      having honored_appt is null\n" +
+				"         and honouredRefill is null) mApp;";
 
 		SqlQueryBuilder builder = new SqlQueryBuilder();
 		Date startDate = (Date)context.getParameterValue("startDate");
