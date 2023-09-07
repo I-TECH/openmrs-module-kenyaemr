@@ -36,8 +36,8 @@ public class AppointmentMissedTypeDataEvaluator implements PersonDataEvaluator {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
         String qry = "select t.patient_id,\n" +
-                "       if(timestampdiff(DAY, date(latest_tca), date(curdate())) between 1 and 30, 'Clinical followup',\n" +
-                "          if(timestampdiff(DAY, date(refill_tca), date(curdate())) between 1 and 30, 'Pharmacy Refill',\n" +
+                "       if(timestampdiff(DAY, date(latest_tca), date(curdate())) between 1 and 30, 'Clinical',\n" +
+                "          if(timestampdiff(DAY, date(refill_tca), date(curdate())) between 1 and 30, 'Refill',\n" +
                 "             '')) as type_of_appointment_missed\n" +
                 "from (select fup.visit_date,\n" +
                 "             fup.patient_id,\n" +
