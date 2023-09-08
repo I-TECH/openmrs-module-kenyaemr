@@ -32,7 +32,6 @@
         var mflCode = <lookup expression="kenyaemr.currentFacilityMFLCode()" />;
         var ENROLLED_IN_HIV = GREENCARD_VELOCITY.split(",")[12].split(":")[1];
         var patientId = <lookup expression="patient.patientId"/>;
-
         //On Ready
         jq(function() {
 
@@ -277,6 +276,8 @@
 			var effectiveDiscDate = "<lookup expression="fn.latestObs(164384).getValueDatetime()"/>";
             var selectedFromFacilityVal = getValue('selectedFromFacility.value');
             var selectedTransitFacilityVal = getValue('selectedTransitFacility.value');
+            var rcId = jq('#rt-id input[type=text]').val();
+            var hasRecencyId =getValue('recency-testing.value');
 
             if (entryPointStatus == TRANSFER_IN &amp;&amp; selectedFromFacilityVal == "") {
                     getField('selectedFromFacility.error').html('Facility required').show();
@@ -353,6 +354,16 @@
                     getField('art-start-date.error').html('ART start date , should not be later than date first enrolled in HIV care').show();
                     return false;
                 }
+                var isARTStartDateInFutureDate = moment(moment(moment(artStartDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isAfter(moment().format('YYYY-MM-DD'));
+                if (isARTStartDateInFutureDate) {
+                    getField('art-start-date.error').html('ART start date should not be in future').show();
+                    return false;
+                }
+                var firstEnrolledDateInFutureDate = moment(moment(moment(firstEnrolledDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isAfter(moment().format('YYYY-MM-DD'));
+                if (firstEnrolledDateInFutureDate) {
+                    getField('art-start-date.error').html('Date first enrolled in HIV care should not be in future').show();
+                    return false;
+                }
             }
             if (encounterDate =="") {
                 getField('encounter-date.error').html('Enrollment date should not be empty').show();
@@ -379,8 +390,11 @@
                     }
                 }
             }
-			var isEnrollmentDateEqualsDiscontinuationDate = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isSame(moment(moment(discontinuationDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
-				if (isEnrollmentDateEqualsDiscontinuationDate) {
+			var formattedEncDate =  moment(moment(encounterDate).toDate()).format("DD-MMM-YYYY");
+			var formattedDiscDate =  moment(moment(Number(discontinuationDate)).toDate()).format("DD-MMM-YYYY");
+			var formattedEffectiveDiscDate =  moment(effectiveDiscDate).format("DD-MMM-YYYY");
+
+			if (moment(formattedEncDate).isSame(formattedDiscDate, 'day') || moment(formattedEncDate).isBefore(formattedDiscDate, 'day')) {
 				getField('encounter-date.error').html('Enrollment date should be after discontinuation encounter date').show();
 				return false;
 			}
@@ -388,8 +402,7 @@
 				getField('encounter-date.error').html('Enrollment date should be after discontinuation encounter date').hide();
 			}
 
-			var isEnrollmentDateEqualsEffectiveDiscDate = moment(moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD')).isSame(moment(moment(effectiveDiscDate, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD'));
-			if (isEnrollmentDateEqualsEffectiveDiscDate) {
+			if (moment(formattedEncDate).isSame(formattedEffectiveDiscDate, 'day') || moment(formattedEncDate).isBefore(formattedEffectiveDiscDate, 'day')) {
 				getField('encounter-date.error').html('Enrollment date should be after effective discontinuation date').show();
 				return false;
 			}
@@ -397,7 +410,16 @@
 				getField('encounter-date.error').html('Enrollment date should be after effective discontinuation date').hide();
 			}
 
-            return true;
+            if(IS_Recency_SITE==true){
+                if(hasRecencyId == 1065) {
+                    var recStr = rcId.split("-")[1];
+                    if (/^[0-9]{5}$/.test(recStr) === false) {
+                        jq("#rtError").text("Invalid Recency ID Format! Should be REC" + mflCode + "- and 5 digits serial number").show();
+                        return false;
+                    }
+                }
+            }
+			return true;
         });
         //Ckeckbox to prepopulate default location
         var defaultLocationChange = function () {
@@ -830,11 +852,11 @@
 					</tr>
 					<tr>
 						<td>Date <i>first</i> enrolled in HIV care:</td>
-						<td><obs conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="first-enrolled-date"/></td>
+						<td><obs conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" id="first-enrolled-date"/></td>
 					</tr>
 		<tr>
 						<td>Date started ART at transferring facility:</td>
-						<td><obs conceptId="159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id ="art-start-date"/></td>
+						<td><obs conceptId="159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" id ="art-start-date"/></td>
 					</tr>
                     <tr>
                         <td>

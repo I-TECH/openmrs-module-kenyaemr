@@ -34,9 +34,9 @@ import java.util.Set;
  * Calculates whether patients are (alive and) in the TB program
  * Eligibility criteria include:
  * Is currently active in TB program
- *
+ * Retired flag
  */
-public class PatientInTbProgramCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
+public class PatientInTbProgramCalculation extends AbstractPatientCalculation  {
 
     protected static final Log log = LogFactory.getLog(PatientInTbProgramCalculation.class);
 
@@ -65,9 +65,9 @@ public class PatientInTbProgramCalculation extends AbstractPatientCalculation im
         return ret;
         }
 
-    @Override
-    public String getFlagMessage() {
-        return "On TB";
-    }
+//    @Override
+//    public String getFlagMessage() {
+//        return "On TB";
+//    }
 
 }

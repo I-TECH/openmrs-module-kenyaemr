@@ -12,19 +12,23 @@
   ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
 -->
 <htmlform>
-
+	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
 	<script type="text/javascript">
 
         var Discontinuation_VELOCITY = "<lookup expression="kenyaemr.DiscontinuationVelocityCalculation()" />";
         var artStartDate = Discontinuation_VELOCITY.split(",")[0].split(":")[1];
         var enrollmentDate = Discontinuation_VELOCITY.split(",")[1].split(":")[1];
         var lastHIVVisitEncDate = Discontinuation_VELOCITY.split(",")[4].split(":")[1];
+        var lastTcaDateValue = Discontinuation_VELOCITY.split(",")[5].split(":")[1];
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
 
         jq(document).ready(function(){
 
             jq("#reason-died").hide();
             jq("#reason-trf").hide();
+            jq("#input-use-tca-date").hide();
+            jq("#use-tca-value").hide();
+            jq("#latest-tca-date").hide();
             jq('#selectedToFacility input[type=text]').attr('readonly','readonly');
 
             if ((getValue('idReason.value')) == 160034) {
@@ -51,11 +55,19 @@
                     jq('#ptrfVerification :input').prop('disabled', true);
                     jq("#reason-died").show();
                     jq("#reason-trf").hide();
+                    jq("#input-use-tca-date").hide();
+                    jq("#use-tca-value").hide();
+                    jq("#latest-tca-date").hide();
                     clearHiddenSections(jq('#ptransferred'));
                     clearHiddenSections(jq('#ptrfVerification'));
                 }
                 else if((getValue('idReason.value')) == 159492) {
                     jq("#reason-trf").show();
+                    if (lastTcaDateValue !="") {
+                        jq("#input-use-tca-date").show();
+                        jq("#use-tca-value").show();
+                        jq("#latest-tca-date").show();
+                    }
                     jq('#pdied :input').prop('disabled', true);
                     jq('#ptransferred :input').prop('disabled', false);
                     jq('#ptrfVerification :input').prop('disabled', false);
@@ -64,6 +76,9 @@
 				}
                 else {
 					jq("#reason-trf").hide();
+                    jq("#input-use-tca-date").hide();
+                    jq("#use-tca-value").hide();
+                    jq("#latest-tca-date").hide();
                     jq("#reason-died").hide();
                     clearHiddenSections(jq('#ptransferred'));
                     clearHiddenSections(jq('#ptrfVerification'));
@@ -260,11 +275,39 @@
                 };
             });
 
+            if (lastTcaDateValue !="" ) {
+                jq('#latest-tca-date').html(lastTcaDateValue);
+            }
+
+            jq("#input-use-tca-date").click(function(e){
+                val = jq(this).val();
+                if (jq(this).is(':checked')){
+                    getField('discontinue-date.value').val(lastTcaDateValue);    
+                    setDatetimeValue('discontinue-date.value', lastTcaDateValue);
+                } else {
+                    getField('discontinue-date.value').val("");
+                }
+            });
+
+
             function updateMflCode() {
                 var selectedMflCode = jq("#theSelect").find(":selected").val();
                 setValue('selectedToFacility.value',selectedMflCode);
                 jq("#dlgSelectToFacility").dialog("close");
             }
+
+            jq("#input_in_kenya").click(function(e){
+                val = jq(this).val();
+                if (jq(this).is(':checked')){
+                    jq('#selectedToFacility input[type=text]').attr('readonly','readonly');
+                    jq("#btnTransferFacility").show();
+                    jq('#selectedToFacility input[type=text]').val('');
+                } else {
+                    jq('#selectedToFacility input[type=text]').attr('readonly',false);
+                    jq("#btnTransferFacility").hide();
+                    jq('#selectedToFacility input[type=text]').val('');
+                }
+            });
 
             var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
             var discontinueDate;
@@ -278,55 +321,64 @@
                 var deathReason = getValue('death-reason.value');
                 var specificDeathReason = getValue('specific-cause-of-death.value');
                 var validateFacilityVal = getValue('selectedToFacility.value');
-
                 var trfVerificationDate = getValue('trf-verification-date.value');
 
-                if(discontinueDate &lt; pbirthdate){
-                    getField('discontinue-date.error').html('Discontinue date, should not be earlier than Birth date').show();
-                    return false;
-                }
-                if(discontinueDate &lt; artStartDate){
-                    getField('discontinue-date.error').html('Discontinue date, should not be earlier than art start date').show();
-                    return false;
-                }
-                if(discontinueDate &lt; enrollmentDate){
-                    getField('discontinue-date.error').html('Discontinue date, should not be earlier than Enrollment date').show();
-                    return false;
-                }else {
-                    getField('discontinue-date.error').html('Discontinue date, should not be earlier than Enrollment').hide();
-                }
+				var formattedEnrollmentDate =  moment(moment(Number(enrollmentDate)).toDate()).format("DD-MMM-YYYY");
+				var formattedARTStartDate =  moment(moment(Number(artStartDate)).toDate()).format("DD-MMM-YYYY");
+				var formattedDiscDate =  moment(moment(discontinueDate).toDate()).format("DD-MMM-YYYY");
+				var formattedLastHIVEncDate =  moment(Number(lastHIVVisitEncDate)).format("DD-MMM-YYYY");
+				var formattedEncDate =  moment(moment(encounterDate).toDate()).format("DD-MMM-YYYY");
 
-				if(discontinueDate  &lt; lastHIVVisitEncDate){
+				if(moment(formattedDiscDate).isBefore(moment(moment(pbirthdate).toDate()).format("DD-MMM-YYYY"),'day')){
+					getField('discontinue-date.error').html('Discontinue date, should not be earlier than Birth date').show();
+					return false;
+				}
+				if(moment(formattedDiscDate).isBefore(formattedARTStartDate,'day')){
+					getField('discontinue-date.error').html('Discontinue date, should not be earlier than art start date').show();
+					return false;
+				}
+				if(moment(formattedDiscDate).isBefore(formattedEnrollmentDate,'day')){
+					getField('discontinue-date.error').html('Discontinue date, should not be earlier than Enrollment date').show();
+					return false;
+				}else {
+					getField('discontinue-date.error').html('Discontinue date, should not be earlier than Enrollment').hide();
+				}
+
+				if (moment(formattedDiscDate).isBefore(formattedLastHIVEncDate, 'day')) {
 					getField('discontinue-date.error').html('Discontinue date should not be earlier than last visit date').show();
 					return false;
 				}else {
 					getField('discontinue-date.error').html('Discontinue date should not be earlier than last visit date').hide();
+				}
+                console.log("lastTcaDateValue === ", lastTcaDateValue)
+
+                if (discReason == 159492 &amp;&amp; (moment(lastTcaDateValue).isBefore(formattedDiscDate, 'day'))) {
+					getField('discontinue-date.error').html('Discontinue date should not be after last appointment date').show();
+					return false;
+				}
+				if(moment(formattedEncDate).isBefore(moment(moment(pbirthdate).toDate()).format("DD-MMM-YYYY"),'day')){
+					getField('encounter-date.error').html('Encounter date, should not be earlier than Birth date').show();
+					return false;
+				}
+				if(moment(formattedEncDate).isBefore(formattedARTStartDate,'day')){
+					getField('encounter-date.error').html('Encounter date, should not be earlier than art start date').show();
+					return false;
+				}
+				if(moment(formattedEncDate).isBefore(formattedEnrollmentDate,'day')){
+					getField('encounter-date.error').html('Encounter date, should not be earlier than Enrollment date').show();
+					return false;
+				}else {
+					getField('encounter-date.error').html('Encounter date, should not be earlier than Enrollment').hide();
 
 				}
-                if(encounterDate &lt; pbirthdate){
-                    getField('encounter-date.error').html('Encounter date, should not be earlier than Birth date').show();
-                    return false;
-                }
-                if(encounterDate &lt; artStartDate){
-                    getField('encounter-date.error').html('Encounter date, should not be earlier than art start date').show();
-                    return false;
-                }
-                if(encounterDate &lt; enrollmentDate){
-                    getField('encounter-date.error').html('Encounter date, should not be earlier than Enrollment date').show();
-                    return false;
-                }else {
-                    getField('encounter-date.error').html('Encounter date, should not be earlier than Enrollment').hide();
 
-                }
-
-				if(encounterDate &lt; lastHIVVisitEncDate){
+				if(moment(formattedEncDate).isBefore(formattedLastHIVEncDate, 'day')){
 					getField('encounter-date.error').html('Encounter date, should not be earlier than last visit date').show();
 					return false;
 				}else {
 					getField('encounter-date.error').html('Encounter date, should not be earlier than last visit date').hide();
 
 				}
-
                 if (trfVerified == 1065 &amp;&amp; trfVerificationDate == "") {
                     getField('trf-verification-date.error').html('Please enter date transfer was verified').show();
                     return false;
@@ -381,9 +433,17 @@
                     jq("#reason-died").show();
                 }else if (val == 159492) {
                     jq("#reason-trf").show();
+                    if (lastTcaDateValue !="") {
+                        jq("#input-use-tca-date").show();
+                        jq("#use-tca-value").show();
+                        jq("#latest-tca-date").show();
+                    }
                 } else {
                     jq("#reason-died").hide();
                     jq("#reason-trf").hide();
+                    jq("#input-use-tca-date").hide();
+                    jq("#use-tca-value").hide();
+                    jq("#latest-tca-date").hide();
                 }
 
                 if(verifiedObs == 1065) {
@@ -400,7 +460,9 @@
                 // show transfer-out section 
                 if((getValue('idReason.value')) == 'Transferred Out') {
                     jq("#reason-trf").show();
-                    
+                    jq("#input-use-tca-date").show();
+                    jq("#use-tca-value").show();
+                    jq("#latest-tca-date").show();
 				}
             });
         </script>
@@ -422,13 +484,17 @@
 					<td width="200px">Encounter Date:</td>
 					<td><encounterDate id="encounter-date" showTime="true" /></td>
 				</tr>
+                <br/>
+                <tr>
+					<td>Reason:</td>
+					<td><obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,819AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164349AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Transferred Out,Died,Lost to Follow,Cannot afford Treatment,Other,Unknown,Stopped Treatment" id="idReason" required="true"/></td>
+				</tr>
+                <br/>
 				<tr>
 					<td>Effective discontinuation date</td>
 					<td><obs id= "discontinue-date" conceptId="164384AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" required="true" /></td>
-				</tr>
-				<tr>
-					<td>Reason:</td>
-					<td><obs conceptId="161555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="159492AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,819AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164349AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Transferred Out,Died,Lost to Follow,Cannot afford Treatment,Other,Unknown,Stopped Treatment" id="idReason" required="true"/></td>
+                    <td><input type="checkbox" name="appnt-date" id="input-use-tca-date" /><span id="use-tca-value">Use TCA Date</span></td>
+                    <td><span id="latest-tca-date"></span></td>
 				</tr>
 
 
@@ -533,7 +599,8 @@
 					<table>
 						<tr>
 							<td width="200px"><i>(If transferred out)</i> <br/>Transfer to Facility:</td>
-                            <td ><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="selectedToFacility" size="60"/></td>
+                            <td><input type="checkbox" name="input_in_kenya" id="input_in_kenya" /><span id="in_kenya_check">In Kenya</span></td>
+                            <td><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="selectedToFacility" size="60"/></td>
                             <td><button type="button"  style="height:35px;width:200px;font-size:12px" id="btnTransferFacility" class="ke-program-outcome-button">Click to select transfer to facility</button></td>
                         </tr>
                         <tr>

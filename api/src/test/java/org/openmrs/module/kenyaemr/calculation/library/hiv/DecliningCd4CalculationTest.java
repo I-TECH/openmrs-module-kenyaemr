@@ -57,10 +57,10 @@ public class DecliningCd4CalculationTest extends BaseModuleContextSensitiveTest 
 	/**
 	 * @see DecliningCd4Calculation#getFlagMessage()
 	 */
-	@Test
-	public void getFlagMessage() {
-		Assert.assertThat(new DecliningCd4Calculation().getFlagMessage(), notNullValue());
-	}
+//	@Test
+//	public void getFlagMessage() {
+//		Assert.assertThat(new DecliningCd4Calculation().getFlagMessage(), notNullValue());
+//	}
 
 	/**
 	 * @see DecliningCd4Calculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)

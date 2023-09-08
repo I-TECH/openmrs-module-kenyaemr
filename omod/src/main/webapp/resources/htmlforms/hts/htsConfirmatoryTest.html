@@ -21,7 +21,6 @@
         var IS_Recency_SITE = <lookup expression="kenyaemr.getRecencySite()" />;
         var mflCode = <lookup expression="kenyaemr.currentFacilityMFLCode()" />;
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
-        var mlCaseFindingEnabled = "<lookup expression="fn.globalProperty('kenyaemrml.casefinding.feature.enabled')"/>";
         var patientId = <lookup expression="patient.patientId"/>;
 
         var populationTypeSelected = function () {
@@ -309,13 +308,6 @@
                 jq('.result-given select').prop("disabled", false);
                 jq("#couple-discordant input").prop("disabled", false);
                 jq("#tb-screening input").prop("disabled", false);
-
-                if(mlCaseFindingEnabled === 'true') {
-		            jq('#div-ml-prediction').show();
-                } else {
-                    jq('#div-ml-prediction').hide();
-                }
-
             }
             if (val == 'false' ){
                 jq('#couple-testing input').prop("disabled", true);
@@ -331,8 +323,6 @@
                 jq('.result-given select').prop("disabled", true);
                 jq("#couple-discordant input").prop("disabled", true);
                 jq("#tb-screening input").prop("disabled", true);
-
-                jq('#div-ml-prediction').hide();
 
                 clearHiddenSections(jq('#tbl-couple-testing'));
                 clearHiddenSections(jq('#hiv-test1-result'));
@@ -509,7 +499,6 @@
 
         //On Ready
         $(document).ready(function () {
-            jq('#div-ml-prediction').hide();
 
             var pgender = "<lookup expression="patient.gender" />";
             var pAge = parseInt('<lookup expression="patient.age"/>');
@@ -744,7 +733,6 @@
                 jq('#negative-referral').hide();
                 if(IS_Recency_SITE==true){
                         jq('#hts-recency-testing').show();
-                        jq('#tbl-recency-id').show();
                     } else {
                         jq('#hts-recency-testing').hide();
                     }
@@ -765,253 +753,6 @@
                 getField('hiv-final-result.value').val(1138);
                 jq('#hts-recency-testing').hide();
             }
-
-        // add code for ML feature
-
-    // handle ML prediction button
-	jq("#btn-ml-prediction").click(function () {
-        var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
-		var casefindingURL = "<lookup expression="fn.globalProperty('kenyaemrml.casefinding.endpoint')"/>";
-		var latestMaritalStatus = "<lookup expression="fn.latestObs(1054).getValueCoded()"/>";
-		var monthsSinceLastTest = getValue('duration_months.value');
-		var populationType = getValue('population-type.value');
-		var isDisabled = getValue('has-disability.value');
-		var everTested = getValue("ever-tested.value");
-		var testedAs = getValue("couple-testing.value");
-		var entryPoint = getValue("hts-entry-point.value");
-		var testStrategy = getValue("strategy.value");
-		var tbScreening = getValue("tb-screening.value");
-		var selfTested = getValue("client-done-test.value");
-        var monthsSinceLastTestInt = parseInt(monthsSinceLastTest);
-        160581
-
-        if (populationType == '' || isDisabled == '' || everTested == '' || entryPoint == '' || testStrategy == '' || tbScreening == '' || selfTested == '' || testedAs == '') {
-            jq('#ml-prediction-desc').html('Please ensure that you have provided answers to all questions above');
-            return;
-        }
-
-		var predictionVariables = {
-			AgeAtTest: pAge,
-			MonthsSinceLastTest: monthsSinceLastTestInt &gt; 0 ? monthsSinceLastTestInt : 0,
-			GenderMale: pgender == 'M' ? 1 : 0,
-			GenderFemale: pgender == 'F' ? 1 : 0,
-			KeyPopulationTypeGP: 0,
-			KeyPopulationTypeSW: 0,
-			MaritalStatusMarried: 0,
-			MaritalStatusDivorced: 0,
-			MaritalStatusPolygamous: 0,
-			MaritalStatusWidowed: 0,
-			MaritalStatusSingle: 0,
-			MaritalStatusMinor: 0,
-			PatientDisabledNo: 0,
-			PatientDisabledDisabled: 0,
-			EverTestedForHIVYes: 0,
-			EverTestedForHivNo: 0,
-			ClientTestedAsIndividual: 0,
-			ClientTestedAsCouple: 0,
-			EntryPointVCT: 0,
-			EntryPointOPD: 0,
-			EntryPointMTC: 0,
-			EntryPointIPD: 0,
-			EntryPointMOBILE: 0,
-			EntryPointOther: 0,
-			EntryPointHB: 0,
-			EntryPointPEDS: 0,
-			EntryPointVMMC: 0,
-			EntryPointTB: 0,
-			EntryPointCCC: 0,
-			EntryPointPNS: 0,
-			TestingStrategyVCT: 0,
-			TestingStrategyHB: 0,
-			TestingStrategyMOBILE: 0,
-			TestingStrategyHP: 0,
-			TestingStrategyNP: 0,
-			TBScreeningNoPresumedTB: 0,
-			TBScreeningPresumedTB: 0,
-			ClientSelfTestedNo: 0,
-			ClientSelfTestedYes: 0
-		};
-
-        // convert marital status
-		if (latestMaritalStatus == 5555) { // married monogamous
-			predictionVariables.MaritalStatusMarried = 1;
-		} else if (latestMaritalStatus == 159715) { // married polygamous
-			predictionVariables.MaritalStatusPolygamous = 1;
-		} else if (latestMaritalStatus == 1058) { // divorced
-			predictionVariables.MaritalStatusDivorced = 1;
-		} else if (latestMaritalStatus == 1059) { // widowed
-			predictionVariables.MaritalStatusWidowed = 1;
-		} else if (latestMaritalStatus == 1057) {
-		    predictionVariables.MaritalStatusSingle = 1;
-		}
-
-		if (pAge &lt; 15) {
-			predictionVariables.MaritalStatusMinor = 1;
-		}
-
-		// convert population type
-		if (populationType == 164928) {
-			predictionVariables.KeyPopulationTypeGP = 1;
-		} else if (populationType == 164929) {
-			predictionVariables.KeyPopulationTypeSW = 1;
-		}
-
-
-		// convert disability status
-		if (isDisabled == 1066) {
-			predictionVariables.PatientDisabledNo = 1;
-		} else if (isDisabled == 1065) {
-		    predictionVariables.PatientDisabledDisabled = 1;
-		}
-
-		// convert ever tested for hiv status
-		if (everTested == 1065) {
-			predictionVariables.EverTestedForHIVYes = 1;
-		} else if (everTested == 1066) {
-		    predictionVariables.EverTestedForHivNo = 1;
-		}
-
-		// converter for tested as i.e. individual, couple:
-		if (testedAs == 164957) {
-			predictionVariables.ClientTestedAsIndividual = 1;
-		} else if (testedAs == 164958) {
-		    predictionVariables.ClientTestedAsCouple = 1;
-		}
-
-		// convert entry point
-
-		if (entryPoint == 159940) { // VCT
-			predictionVariables.EntryPointVCT = 1;
-		} else if (entryPoint == 160542) { // OPD
-			predictionVariables.EntryPointOPD = 1;
-		} else if (entryPoint == 160456) { // Maternity
-			predictionVariables.EntryPointMTC = 1;
-		} else if (entryPoint == 5485) { // IPD
-			predictionVariables.EntryPointIPD = 1;
-		} else if (entryPoint == 159939) { // mobile
-			predictionVariables.EntryPointMOBILE = 1;
-		} else if (entryPoint == 159938) { // HB
-			predictionVariables.EntryPointHB = 1;
-		} else if (entryPoint == 162181) { // Paed
-			predictionVariables.EntryPointPEDS = 1;
-		} else if (entryPoint == 5622) { // Other
-			predictionVariables.EntryPointOther = 1;
-		} else if (entryPoint == 162223) { // vmmc
-			predictionVariables.EntryPointVMMC = 1;
-		} else if (entryPoint == 160541) { // tb
-			predictionVariables.EntryPointTB = 1;
-		}
-
-		// convert strategy
-
-		if (testStrategy == 159938) { // HB
-			predictionVariables.TestingStrategyHB = 1;
-		} else if (testStrategy == 159939) { // Mobile
-			predictionVariables.TestingStrategyMOBILE = 1;
-		} else if (testStrategy == 164163) { // HP
-			predictionVariables.TestingStrategyHP = 1;
-		} else if (testStrategy == 164953) { // NP
-			predictionVariables.TestingStrategyNP = 1;
-		} else if (testStrategy == 164954 || testStrategy == 164955) { // VCT
-			predictionVariables.TestingStrategyVCT = 1;
-		}
-
-		// convert HIV self test
-		if (selfTested == 1066) {
-			predictionVariables.ClientSelfTestedNo = 1;
-		} else if (selfTested == 1065) {
-		    predictionVariables.ClientSelfTestedYes = 1;
-		}
-
-		// convert TB screening
-		if (tbScreening == 1660 || tbScreening == 160737) {
-			predictionVariables.TBScreeningNoPresumedTB = 1;
-		} else if (tbScreening == 142177 || tbScreening == 1111) {
-		    predictionVariables.TBScreeningPresumedTB = 1;
-		}
-
-        var mlFormattedDate = moment(new Date()).format('YYYY-MM-DD');
-        var modelConfigs = {
-            "modelId":"hts_xgb_0323_jul_2022",
-            "encounterDate":mlFormattedDate,
-		    "facilityId":""
-        }
-        var mlScoringRequestPayload = {
-            modelConfigs: modelConfigs,
-            variableValues: predictionVariables
-        }
-
-        var predResponse = '';
-        if (casefindingURL !='') {
-            jq.ajax({
-                url: '/' + ctxPath + casefindingURL,
-                type: "POST",
-                contentType: 'application/json',
-                data: JSON.stringify(mlScoringRequestPayload),
-                async: false,
-                success: function (response, textStatus, jqXHR) {
-                var probabilityForPositivity = response.result["probability(1)"];
-                var lowRiskThreshold = 0.002625179;
-                var mediumRiskThreshold = 0.010638781;
-                var highRiskThreshold = 0.028924102;
-
-                var highestRiskConcept = 167164;
-                var highRiskConcept = 1408;
-                var mediumRiskConcept = 1499;
-                var lowRiskConcept = 1407;
-
-                var className = jq('#ml-prediction-risk-category').attr("class");
-
-                setValue('algorithm_result_score.value', probabilityForPositivity);
-
-                if (probabilityForPositivity &gt; highRiskThreshold) {
-                    jq('#ml-prediction-risk-category').html('Highest Risk Client');
-                    jq('#ml-prediction-risk-category').removeClass(className);
-                    jq('#ml-prediction-risk-category').addClass('ke-ml-very-high-risk');
-                    jq('#ml-prediction-desc').html('This client has a very high probability of a HIV positive test result. Testing is strongly recommended');
-                    setValue('algorithm_result_category.value', highestRiskConcept);
-
-                }   else if (probabilityForPositivity &lt;= highRiskThreshold &amp;&amp; probabilityForPositivity &gt; mediumRiskThreshold) {
-                    jq('#ml-prediction-risk-category').html('High Risk Client');
-                    jq('#ml-prediction-risk-category').removeClass(className);
-                    jq('#ml-prediction-risk-category').addClass('ke-ml-very-high-risk');
-                    jq('#ml-prediction-desc').html('This client has a high probability of a HIV positive test result. Testing is strongly recommended');
-                    setValue('algorithm_result_category.value', highRiskConcept);
-
-                } else if (probabilityForPositivity &lt;= mediumRiskThreshold &amp;&amp; probabilityForPositivity &gt; lowRiskThreshold ) {
-                    jq('#ml-prediction-risk-category').html('Medium Risk Client');
-                    jq('#ml-prediction-risk-category').removeClass(className);
-                    jq('#ml-prediction-risk-category').addClass('ke-ml-medium-risk');
-                    jq('#ml-prediction-desc').html('This client has a medium probability of a HIV positive test result. Testing is recommended');
-                    setValue('algorithm_result_category.value', mediumRiskConcept);
-
-                } else if(probabilityForPositivity &lt;= lowRiskThreshold) {
-                    jq('#ml-prediction-risk-category').html('Low Risk Client');
-                    jq('#ml-prediction-risk-category').removeClass(className);
-                    jq('#ml-prediction-risk-category').addClass('ke-ml-low-risk');
-                    jq('#ml-prediction-desc').html('This client has a low probability of a HIV positive test result. Testing may not be recommended');
-                    setValue('algorithm_result_category.value', lowRiskConcept);
-
-                }
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    var msg = '';
-                    if (jqXHR.status == 500) {
-                        msg = 'There was an internal Server Error [500].';
-                    } else if (jqXHR.status == 404) {
-                        msg = 'The requested service not found. [404]';
-                    } else {
-                        msg = 'System error: ' + jqXHR.responseText;
-                    }
-                    jq('#ml-prediction-desc').html(msg);
-                }
-            });
-		}
-
-	});
-
-
-        // ----- end of ML feature
 
         });
 
@@ -1069,7 +810,7 @@
         function includePatientsRecencyIdIfExists() {
             var recencyId;
             jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/getPatientRecencyId.action', {patientId: patientId}, function (data) {
-                if (data != null || data != "") {
+                if (data != "") {
                     recencyId = data;
                     jq("#tbl-recency-testing").show();
                     jq("#tbl-recency-id").show();
@@ -1108,6 +849,8 @@
             var firstKit = getField("kit-name-1.value").val();
             var secondKit = getField("kit-name-2.value").val();
             var disabilityChecked = jq("#disability input:checkbox:checked");
+            var rcId = jq('#rt-id input[type=text]').val();
+            var hasRecencyId =getValue('recency-testing.value');
 
             if (disabilityChecked.length == 0 &amp;&amp; hasDisability == 1065) {
                 getField('has-disability.error').html('Please specify the disabilty type.').show();
@@ -1179,6 +922,15 @@
                 return false;
             }else{
                 getField('kit-name-2.error').html('Please use a different kit.').hide();
+            }
+            if(IS_Recency_SITE==true){
+                if(hasRecencyId == 1065) {
+                    var recStr = rcId.split("-")[1];
+                    if (/^[0-9]{5}$/.test(recStr) === false) {
+                        jq("#rtError").text("Invalid Recency ID Format! Should be REC" + mflCode + "- and 5 digits serial number").show();
+                        return false;
+                    }
+                }
             }
 
         });
@@ -1374,7 +1126,7 @@
             function includePatientsRecencyIdIfExists() {
                 var recencyId;
                 jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/getPatientRecencyId.action', {patientId: patientId}, function (data) {
-                    if (data != null || data != "") {
+                    if (data != "") {
                         recencyId = data;
                         jq("#tbl-recency-testing").show();
                         jq("#tbl-recency-id").show();
@@ -1689,33 +1441,7 @@
                 </tr>
             </table>
             <br />
-            <br/>
-            <div id="div-ml-prediction">
-                <table>
-                    <tr>
-                        <td>
-                            <button type="button" class="ke-getscore-button" id="btn-ml-prediction">Get
-                                risk category
-                            </button>
-                        </td>
-                        <td width="50px"></td>
-                        <td><div id="ml-prediction-risk-category"></div></td>
-                        <td><div id="ml-prediction-desc" style="font-style:italic"></div></td>
-                    </tr>
-                    <tr style="display: none">
-                        <td>
-                        <obs id="algorithm_result_category"
-                             conceptId="167163AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                             answerConceptIds="1407,1499,1408,167164"
-                             style="dropdown" />
-                        </td>
-                        <td>
-                            <obs id="algorithm_result_score" conceptId="167162" />
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <br/>
+
             <table id="tbl-hiv-test">
                 <obsgroup groupingConceptId="164410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                     <tr>

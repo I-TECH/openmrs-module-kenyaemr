@@ -47,13 +47,14 @@ import java.util.Set;
 /**
  * Calculates whether patients have missed their last scheduled return visit. Calculation returns true if the patient is
  * alive, has a scheduled return visit in the past, and hasn't had an encounter since that date
+ * Retired flag
  */
-public class MissedLastAppointmentCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
+public class MissedLastAppointmentCalculation extends AbstractPatientCalculation  {
 
-	@Override
-	public String getFlagMessage() {
-		return "Missed HIV Appointment";
-	}
+//	@Override
+//	public String getFlagMessage() {
+//		return "Missed HIV Appointment";
+//	}
 	protected static final Log log = LogFactory.getLog(MissedLastAppointmentCalculation.class);
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)

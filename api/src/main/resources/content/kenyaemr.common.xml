@@ -77,8 +77,6 @@
 				<ref bean="kenyaemr.hiv.report.cccDefaulterTracingRegister"/>
 				<ref bean="kenyaemr.common.report.patientRegimenHistory"/>
 				<ref bean="kenyaemr.cacx.report.cacxRegister"/>
-				<ref bean="kenyaemr.common.report.clients.diedofCovid19"/>
-				<ref bean="kenyaemr.common.report.missedAppointmentsDueToCovid19"/>
 				<ref bean="kenyaemr.etl.common.report.publicHealthAction"/>
 				<ref bean="kenyaemr.common.report.mortalityLineList"/>
 				<ref bean="kenyaemr.common.report.moh711"/>
