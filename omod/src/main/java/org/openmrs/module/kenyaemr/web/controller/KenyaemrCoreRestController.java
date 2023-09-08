@@ -411,6 +411,19 @@ public class KenyaemrCoreRestController extends BaseRestController {
 	}
 
     /**
+     * Gets the facility name given the facility code
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/facilityName")
+    @ResponseBody
+    public Object getFacilityName(@RequestParam("facilityCode") String facilityCode) {
+        SimpleObject locationResponseObj = new SimpleObject();
+        Location facility = Context.getService(KenyaEmrService.class).getLocationByMflCode(facilityCode);
+        locationResponseObj.put("name", facility.getName());
+        return locationResponseObj;
+    }
+
+    /**
      * Get a list of programs a patient is eligible for
      * @param request
      * @param patientUuid
