@@ -26,6 +26,7 @@ import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.util.EmrUtils;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -55,6 +56,8 @@ public class DiscontinuationVelocityCalculation extends BaseEmrCalculation {
             Long discDate = null;
             Long lastEncounterDate = null;
             Long lastHIVEncounterDate = null;
+            String lastTcaDate = "";
+            int tcaConcept = 5096;
 
             ProgramWorkflowService service = Context.getProgramWorkflowService();
             List<PatientProgram> programs = service.getPatientPrograms(Context.getPatientService().getPatient(ptId), hivProgram, null, null, null, null, true);
@@ -71,12 +74,22 @@ public class DiscontinuationVelocityCalculation extends BaseEmrCalculation {
             //last greencard followup encounter
             Encounter lastHivEncounter = EmrUtils.lastEncounter(patientService.getPatient(ptId), hivFollowup, Arrays.asList(pocHivFollowup, rdeHivFollowup));
             lastHIVEncounterDate = lastHivEncounter != null ? lastHivEncounter.getEncounterDatetime().getTime() : null;
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy");
+            if (lastHivEncounter != null) {
+                for (Obs obs : lastHivEncounter.getObs()) {
+                    if (obs.getConcept().getConceptId() == tcaConcept) {
+                        lastTcaDate = formatter.format(obs.getValueDatetime());
+                    }
+                }
+
+            }
 
             sb.append("artStartDate:").append(artStartDate).append(",");
             sb.append("enrollmentDate:").append(enrollmentDate).append(",");
             sb.append("discDate:").append(discDate).append(",");
             sb.append("lastEncounterDate:").append(lastEncounterDate).append(",");
-            sb.append("lastHIVEncounterDate:").append(lastHIVEncounterDate);
+            sb.append("lastHIVEncounterDate:").append(lastHIVEncounterDate).append(",");
+            sb.append("lastTcaDate:").append(lastTcaDate);
 
             ret.put(ptId, new SimpleResult(sb.toString(), this, context));
         }

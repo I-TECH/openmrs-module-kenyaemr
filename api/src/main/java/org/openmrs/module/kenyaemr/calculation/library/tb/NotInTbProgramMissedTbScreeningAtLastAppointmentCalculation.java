@@ -29,12 +29,16 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-public class NotInTbProgramMissedTbScreeningAtLastAppointmentCalculation extends AbstractPatientCalculation implements PatientFlagCalculation{
+/**
+ * Retired flag
+ */
 
-	@Override
-	public String getFlagMessage() {
-		return "Missed TB Screening";
-	}
+public class NotInTbProgramMissedTbScreeningAtLastAppointmentCalculation extends AbstractPatientCalculation {
+
+//	@Override
+//	public String getFlagMessage() {
+//		return "Missed TB Screening";
+//	}
 	
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,

@@ -31,9 +31,9 @@ import java.util.Set;
  * Eligibility criteria include:
  * Is currently active in IPT program
  * should not include those currently in the TB program
- *
+ * Retired flag
  */
-public class OnIptProgramCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
+public class OnIptProgramCalculation extends AbstractPatientCalculation  {
 
 	protected static final Log log = LogFactory.getLog(OnIptProgramCalculation.class);
 
@@ -59,9 +59,9 @@ public class OnIptProgramCalculation extends AbstractPatientCalculation implemen
 		return ret;
 	}
 
-	@Override
-	public String getFlagMessage() {
-		return "On TPT";
-	}
+//	@Override
+//	public String getFlagMessage() {
+//		return "On TPT";
+//	}
 
 }

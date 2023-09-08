@@ -31,6 +31,7 @@ import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.FragmentParam;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
+import org.openmrs.PatientProgram;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -85,9 +86,19 @@ public class Moh257FragmentController {
 		model.addAttribute("page2Encounters", moh257VisitSummaryEncounters);
 
 		List<SimpleObject> arvHistory = EncounterBasedRegimenUtils.getRegimenHistoryFromObservations(patient, "ARV");
+		List<PatientProgram> inHIVProgram = new ArrayList<PatientProgram>();
+
+		if (!patient.isVoided() && !patient.getDead()) {
+			List<PatientProgram> hivProgramEnrollments = Context.getProgramWorkflowService().getPatientPrograms(patient,  Context.getProgramWorkflowService().getProgramByUuid(HivMetadata._Program.HIV), null, null, null, null, false);
+
+			for (PatientProgram patientProgram : hivProgramEnrollments) {
+				if (patientProgram.getActive()) {
+					inHIVProgram.add(patientProgram);
+				}
+			}
+		}
 		model.put("arvHistory", arvHistory);
-		Program hivProgram = MetadataUtils.existing(Program.class, HivMetadata._Program.HIV);
-		model.addAttribute("inHivProgram", Context.getProgramWorkflowService().getPatientPrograms(patient, hivProgram, null, null, null, null, true));
+		model.addAttribute("inHivProgram",inHIVProgram);
 	}
 	public List<SimpleObject> getRegimenHistoryFromObservations (Patient patient, String category) {
 

@@ -21,16 +21,17 @@ import java.util.Map;
 
 /**
  * Calculates whether patients are on ART
+ * Retired flag
  */
-public class OnArtCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
+public class OnArtCalculation extends AbstractPatientCalculation  {
 
 	/**
 	 * @see org.openmrs.module.kenyacore.calculation.PatientFlagCalculation#getFlagMessage()
 	 */
-	@Override
-	public String getFlagMessage() {
-		return "On ART";
-	}
+//	@Override
+//	public String getFlagMessage() {
+//		return "On ART";
+//	}
 
 	/**
 	 * @see org.openmrs.calculation.patient.PatientCalculation#evaluate(java.util.Collection,

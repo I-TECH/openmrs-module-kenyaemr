@@ -528,6 +528,12 @@
                 <component drugCode="R60" units="tab" frequency="OD" />
                 <!--<component drugCode="H60" units="tab" frequency="OD" />-->
             </regimen>
+            <regimen name="RHZE" conceptRef="1675AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" orderSetRef="d647932b-5825-46e5-b0d7-8ddcff5f3303">
+                <component drugCode="R150" dose="1" units="tab" frequency="OD" />
+                <component drugCode="H75" dose="1" units="tab" frequency="OD" />
+                <component drugCode="Z400" dose="1" units="tab" frequency="OD" />
+                <component drugCode="E275" dose="1" units="tab" frequency="OD" />
+            </regimen>
             <regimen name="RHZ" conceptRef="768AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" orderSetRef="07add7bb-77b0-492a-820e-d0a6ebab6e36">
                 <component drugCode="R150" dose="1" units="tab" frequency="OD" />
                 <!--<component drugCode="H50" dose="1" units="tab" frequency="OD" />

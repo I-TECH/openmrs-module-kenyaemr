@@ -50,10 +50,10 @@ public class PatientDueForTbProgramEnrollmentCalculationTest extends BaseModuleC
     /**
      * @see PatientDueForTbProgramEnrollmentCalculation#getFlagMessage()
      */
-    @Test
-    public void getFlagMessage() {
-        Assert.assertThat(new PatientDueForTbProgramEnrollmentCalculation().getFlagMessage(), notNullValue());
-    }
+//    @Test
+//    public void getFlagMessage() {
+//        Assert.assertThat(new PatientDueForTbProgramEnrollmentCalculation().getFlagMessage(), notNullValue());
+//    }
 
     /**
      * @see PatientDueForTbProgramEnrollmentCalculation#evaluate(java.util.Collection, java.util.Map, org.openmrs.calculation.patient.PatientCalculationContext)

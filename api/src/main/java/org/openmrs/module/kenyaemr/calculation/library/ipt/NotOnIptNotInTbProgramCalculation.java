@@ -17,12 +17,16 @@ import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
 import java.util.Collection;
 import java.util.Map;
 
-public class NotOnIptNotInTbProgramCalculation extends AbstractPatientCalculation implements PatientFlagCalculation {
+/*
+* Retired flag
+*/
 
-	@Override
-	public String getFlagMessage() {
-		return "Due for TPT";
-	}
+public class NotOnIptNotInTbProgramCalculation extends AbstractPatientCalculation  {
+
+//	@Override
+//	public String getFlagMessage() {
+//		return "Due for TPT";
+//	}
 
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
