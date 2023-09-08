@@ -151,9 +151,9 @@
         }
 
      	if (age &gt; 19 &amp;&amp; heightM !="" ) {
-                getField('height.value').val(heightM);
-            }else{
-                getField('height.value').val("");
+            getField('height.value').val(heightM);
+        }else{
+            getField('height.value').val("");
         }
 
         if(HAART_START_DATE !="" || HAART_START_DATE != "false"){
@@ -301,18 +301,19 @@
 			if (!jq('#arv-medication').is(':visible')) {
 				clearArvMeds();
 			}
-			if (patientWeight == false) {
-                getField('weight.error').html('Please specify patient weight').show();
-                return false;
-            }else{
-                getField('weight.error').html('Please specify patient weight').hide();
-            }
-            if (patientHeight == false) {
-                getField('height.error').html('Please specify patient height').show();
-                return false;
-            }else{
-                getField('height.error').html('Please specify patient height').hide();
-            }
+			if(patientWeight == false){
+				getField('weight.error').html('Please specify patient weight').show();
+				return false;
+			}else{
+				getField('weight.error').html('Please specify patient weight').hide();
+			}
+			if(patientHeight == false){
+				getField('height.error').html('Please specify patient height').show();
+				return false;
+			}else{
+				getField('height.error').html('Please specify patient height').hide();
+			}
+
 			return true;
 		}
 		return false;
