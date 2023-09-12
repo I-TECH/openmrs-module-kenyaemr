@@ -445,7 +445,7 @@ public class KenyaemrCoreRestController extends BaseRestController {
 		for (Concept con: arvDrugs) {
             ObjectNode node = JsonNodeFactory.instance.objectNode();
             node.put("name", con.getName() != null ? con.getName().toString() : "");
-            node.put("name", con.getUuid() != null ? con.getUuid().toString() : "");
+            node.put("uuid", con.getUuid() != null ? con.getUuid().toString() : "");
 			drugs.add(node);
 		}
 
