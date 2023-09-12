@@ -250,17 +250,6 @@ public class KenyaemrCoreRestController extends BaseRestController {
                     }
                 }
             }
-
-            List<FormDescriptor> completedFormDescriptors = formManager.getCompletedFormsForVisit(patientVisit);
-
-            if (!completedFormDescriptors.isEmpty()) {
-
-                for (FormDescriptor descriptor : completedFormDescriptors) {
-                    ObjectNode formObj = generateFormDescriptorPayload(descriptor);
-                    formObj.put("formCategory", "completed");
-                    formList.add(formObj);
-                }
-            }
         }
 
         allFormsObj.put("results", formList);
