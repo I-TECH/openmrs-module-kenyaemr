@@ -26,6 +26,7 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.AdministrationService;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.PatientService;
 import org.openmrs.PersonAttribute;
 import org.openmrs.PersonAttributeType;
@@ -396,6 +397,49 @@ public class KenyaemrCoreRestController extends BaseRestController {
 		locationNode.put("display", location.getName());
 
 		return locationNode.toString();
+
+	}
+
+    /**
+	 * ARV drugs
+	 *
+	 * @return custom ARV drugs object for non standard regimen
+	 */
+	@RequestMapping(method = RequestMethod.GET, value = "/arvDrugs")
+	@ResponseBody
+	public Object getArvDrugs() {
+        ConceptService concService = Context.getConceptService();
+        ArrayNode drugs = JsonNodeFactory.instance.arrayNode();
+        ObjectNode drugsObj = JsonNodeFactory.instance.objectNode();
+
+		List<Concept> arvDrugs = Arrays.asList(
+				concService.getConcept(84309),
+				concService.getConcept(86663),
+				concService.getConcept(84795),
+				concService.getConcept(78643),
+				concService.getConcept(70057),
+				concService.getConcept(75628),
+				concService.getConcept(74807),
+				concService.getConcept(80586),
+				concService.getConcept(75523),
+				concService.getConcept(79040),
+				concService.getConcept(83412),
+				concService.getConcept(71648),
+				concService.getConcept(159810),
+				concService.getConcept(154378),
+				concService.getConcept(74258),
+				concService.getConcept(164967)
+		);
+
+		for (Concept con: arvDrugs) {
+            ObjectNode node = JsonNodeFactory.instance.objectNode();
+            node.put("name", con.getName() != null ? con.getName().toString() : "");
+            node.put("uuid", con.getUuid() != null ? con.getUuid().toString() : "");
+			drugs.add(node);
+		}
+
+        drugsObj.put("results", drugs);
+		return drugsObj.toString();
 
 	}
 
