@@ -114,7 +114,6 @@
         //Show number of clients already booked on tca date
         jq('#showNumberBooked').hide();
         jq("#returnVisitDate input[type=hidden]").change(getPatientsBookedOnDate);
-
 		//Validation for client if already hiv positive or enrolled
         if(PATIENT_IS_REPORTED_HIV.replace(/[^\d]/g, '') == 703 || PATIENT_IS_ENROLLED_HIV){
             jq('#tbl-known-positive').show();
@@ -152,9 +151,9 @@
         }
 
      	if (age &gt; 19 &amp;&amp; heightM !="" ) {
-                getField('height.value').val(heightM);
-            }else{
-                getField('height.value').val("");
+             getField('height.value').val(heightM);
+         }else{
+             getField('height.value').val("");
         }
 
         if(HAART_START_DATE !="" || HAART_START_DATE != "false"){
@@ -296,10 +295,25 @@
 //End on ready
 
 	beforeSubmit.push(function () {
+        var patientWeight =getValue('weight.value');
+        var patientHeight =getValue('height.value');
 		if (validateOtherFields()) {
 			if (!jq('#arv-medication').is(':visible')) {
 				clearArvMeds();
 			}
+			if(patientWeight == false){
+				getField('weight.error').html('Please specify patient weight').show();
+				return false;
+			}else{
+				getField('weight.error').html('Please specify patient weight').hide();
+			}
+			if(patientHeight == false){
+				getField('height.error').html('Please specify patient height').show();
+				return false;
+			}else{
+				getField('height.error').html('Please specify patient height').hide();
+			}
+
 			return true;
 		}
 		return false;
@@ -1670,7 +1684,7 @@
 				</td>
 			</tr>
 			<tr>
-        <!-- minimum package for negatives   -->
+				<!-- minimum package for negatives   -->
 			<tr id="package-group">
 				<td colspan="2">
 					<fieldset>
