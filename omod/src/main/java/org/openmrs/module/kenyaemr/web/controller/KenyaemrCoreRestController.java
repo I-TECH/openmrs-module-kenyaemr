@@ -71,6 +71,7 @@ import org.openmrs.module.kenyaemr.metadata.OTZMetadata;
 import org.openmrs.module.kenyaemr.metadata.OVCMetadata;
 import org.openmrs.module.kenyaemr.metadata.MchMetadata;
 import org.openmrs.module.kenyaemr.metadata.VMMCMetadata;
+import org.openmrs.module.kenyaemr.regimen.RegimenConfiguration;
 import org.openmrs.module.kenyaemr.calculation.library.ActiveInMCHProgramCalculation;
 import org.openmrs.module.kenyaemr.wrapper.EncounterWrapper;
 import org.openmrs.module.kenyaemr.Dictionary;
@@ -137,8 +138,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.xml.sax.SAXException;
 import org.springframework.beans.factory.annotation.Autowired;
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -152,6 +163,9 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Date;
 import java.util.Calendar;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -506,6 +520,112 @@ public class KenyaemrCoreRestController extends BaseRestController {
 
         return programList.toString();
     }
+
+
+      /**
+     * Get a list of standard regimen
+     * @param request
+     * @param 
+     * @return
+     * @throws IOException
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/standardRegimen")
+    @ResponseBody
+    public Object getStandardRegimen() throws SAXException, IOException, ParserConfigurationException {
+        ArrayNode standardRegimenCategories = JsonNodeFactory.instance.arrayNode();
+
+        ObjectNode resultsObj = JsonNodeFactory.instance.objectNode();
+        for (RegimenConfiguration configuration : Context.getRegisteredComponents(RegimenConfiguration.class)) {
+            InputStream stream = null;
+            try {
+                ClassLoader loader = configuration.getClassLoader();
+                stream = loader.getResourceAsStream(configuration.getDefinitionsPath());
+                if (stream == null || stream.available() == 0) {
+                    throw new RuntimeException("Empty or unavailable stream for " + configuration.getDefinitionsPath());
+                }
+                
+                // XML parsing logic
+                DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder builder = dbFactory.newDocumentBuilder();
+                Document document = builder.parse(stream);
+                Element root = document.getDocumentElement();
+                // Category section i.e ARV, TB etc
+                NodeList categoryNodes = root.getElementsByTagName("category");
+                for (int c = 0; c < categoryNodes.getLength(); c++) {
+                    ObjectNode categoryObj = JsonNodeFactory.instance.objectNode();
+                    Element categoryElement = (Element) categoryNodes.item(c);
+                    String categoryCode = categoryElement.getAttribute("code");
+                    categoryObj.put("categoryCode", categoryCode);
+
+                
+                    NodeList groupNodes = categoryElement.getElementsByTagName("group");
+                    ArrayNode standardRegimen = JsonNodeFactory.instance.arrayNode();
+
+                    for (int g = 0; g < groupNodes.getLength(); g++) {
+                    ObjectNode standardRegimenObj = JsonNodeFactory.instance.objectNode();
+                    Element groupElement = (Element) groupNodes.item(g);
+                    String groupName = groupElement.getAttribute("name");
+                    String regimenLineValue = "";
+
+                    if (groupName.equalsIgnoreCase("Adult (first line)")) {
+                        regimenLineValue = "AF";
+                    }else if (groupName.equalsIgnoreCase("Adult (second line)")) {
+                        regimenLineValue = "AS";
+                    }else if (groupName.equalsIgnoreCase("Adult (third line)")) {
+                        regimenLineValue = "AT";
+                    }else if (groupName.equalsIgnoreCase("Child (First Line)")) {
+                        regimenLineValue = "CF";
+                    }else if (groupName.equalsIgnoreCase("Child (Second Line)")) {
+                        regimenLineValue = "CS";
+                    }else if (groupName.equalsIgnoreCase("Child (Third Line)")) {
+                        regimenLineValue = "CT";
+                    }
+                    
+                    standardRegimenObj.put("regimenline", groupName);
+                    standardRegimenObj.put("regimenLineValue", regimenLineValue);
+                    
+                    ArrayNode regimen = JsonNodeFactory.instance.arrayNode();
+                    NodeList regimenNodes = groupElement.getElementsByTagName("regimen");
+                    for (int r = 0; r < regimenNodes.getLength(); r++) {
+                        ObjectNode regimenObj = JsonNodeFactory.instance.objectNode();
+                        Element regimenElement = (Element) regimenNodes.item(r);
+                        String name = regimenElement.getAttribute("name");
+                        String conceptRef = regimenElement.getAttribute("conceptRef");
+                        regimenObj.put("name", name);
+                        regimenObj.put("conceptRef", conceptRef);
+                        regimen.add(regimenObj);
+                    }
+                    standardRegimenObj.put("regimen", regimen);
+                    standardRegimen.add(standardRegimenObj);
+                }
+                categoryObj.put("category", standardRegimen);
+                standardRegimenCategories.add(categoryObj);
+                
+            }
+                
+            } catch (Exception e) { 
+                e.printStackTrace();
+                throw new RuntimeException("Unable to load " + configuration.getModuleId() + ":" + configuration.getDefinitionsPath(), e);
+            } finally {
+                try {
+                    if (stream != null) {
+                        stream.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        
+        
+        resultsObj.put("results", standardRegimenCategories);
+
+        return resultsObj.toString();
+    }
+
+
 
 
     /**
