@@ -628,6 +628,79 @@ public class KenyaemrCoreRestController extends BaseRestController {
     }
 
 
+    /**
+     * Returns regimen change/stop reasons
+     * @param request
+     * @param category // ARV or TB
+     * @param patientUuid
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/regimenReason") 
+    @ResponseBody
+    public Object getRegimenReason() {
+        ObjectNode regimenReasonObj = JsonNodeFactory.instance.objectNode();
+        
+        ArrayNode reasons = JsonNodeFactory.instance.arrayNode();
+        ObjectNode arvReasonsObj = JsonNodeFactory.instance.objectNode();
+        ObjectNode tbReasonsObj = JsonNodeFactory.instance.objectNode();
+        Map<String, String> arvReasonOptionsMap = new HashMap<String, String>(); 
+        Map<String, String> tbReasonOptionsMap = new HashMap<String, String>();
+        arvReasonOptionsMap.put("Toxicity / side effects", "102AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        arvReasonOptionsMap.put("Pregnancy", "1434AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        arvReasonOptionsMap.put("Risk of pregnancy", "160559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        arvReasonOptionsMap.put("New diagnosis of TB", "160567AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        arvReasonOptionsMap.put("New drug available", "160561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        arvReasonOptionsMap.put("Drugs out of stock", "1754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        arvReasonOptionsMap.put("Clinical treatment failure", "843AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        arvReasonOptionsMap.put("Immunological failure", "160566AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        arvReasonOptionsMap.put("Virological Failure", "160569AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        arvReasonOptionsMap.put("Poor Adherence", "159598AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        arvReasonOptionsMap.put("Inpatient care or hospitalization", "5485AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        arvReasonOptionsMap.put("Refusal / patient decision", "127750AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        arvReasonOptionsMap.put("Planned treatment interruption", "160016AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        arvReasonOptionsMap.put("Completed total PMTCT", "1253AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        arvReasonOptionsMap.put("Tuberculosis treatment started", "1270AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        arvReasonOptionsMap.put("Patient lacks finance", "819AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+
+        ArrayNode arvReasons = JsonNodeFactory.instance.arrayNode();
+        for (Map.Entry<String, String> entry : arvReasonOptionsMap.entrySet()) {
+            ObjectNode arvCategoryReasonObj = JsonNodeFactory.instance.objectNode();
+            arvCategoryReasonObj.put("label", entry.getKey());
+            arvCategoryReasonObj.put("value", entry.getValue());
+            arvReasons.add(arvCategoryReasonObj);
+        }
+        arvReasonsObj.put("category", "ARV");
+        arvReasonsObj.put("reason", arvReasons);
+        reasons.add(arvReasonsObj);
+
+        tbReasonOptionsMap.put("Toxicity / side effects", "102AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        tbReasonOptionsMap.put("Pregnancy", "1434AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        tbReasonOptionsMap.put("Clinical treatment failure", "843AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        tbReasonOptionsMap.put("Poor Adherence", "159598AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        tbReasonOptionsMap.put("Inpatient care or hospitalization", "5485AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        tbReasonOptionsMap.put("Drugs out of stock", "1754AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        tbReasonOptionsMap.put("Planned treatment interruption", "160016AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        tbReasonOptionsMap.put("Refusal / patient decision", "127750AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        tbReasonOptionsMap.put("Drug formulation changed", "1258AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        tbReasonOptionsMap.put("Patient lacks finance", "819AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+
+
+        ArrayNode tbReasons = JsonNodeFactory.instance.arrayNode();
+        for (Map.Entry<String, String> entry : tbReasonOptionsMap.entrySet()) {
+            ObjectNode tbCategoryReasonObj = JsonNodeFactory.instance.objectNode();
+            tbCategoryReasonObj.put("label", entry.getKey());
+            tbCategoryReasonObj.put("value", entry.getValue());
+            tbReasons.add(tbCategoryReasonObj);
+        }
+        tbReasonsObj.put("category", "TB");
+        tbReasonsObj.put("reason", tbReasons);
+        reasons.add(tbReasonsObj);
+        regimenReasonObj.put("results", reasons);
+		return regimenReasonObj.toString();
+        
+    }
+
+
 
 
     /**
