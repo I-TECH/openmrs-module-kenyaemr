@@ -17,8 +17,10 @@ import org.openmrs.Visit;
 import org.openmrs.CareSetting;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
+import org.openmrs.Person;
 import org.openmrs.Program;
 import org.openmrs.PatientProgram;
+import org.openmrs.Relationship;
 import org.openmrs.Order;
 import org.openmrs.OrderType;
 import org.openmrs.DrugOrder;
@@ -2067,6 +2069,33 @@ public class KenyaemrCoreRestController extends BaseRestController {
 
         return patientSummary;
 
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/relationship")
+    @ResponseBody
+    public String getRelationship(@RequestParam("patientUuid") String patientUuid, @RequestParam("relationshipType") String relationshipType) {
+        String personRelationshipName = "";
+        Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
+        List<Person> people = new ArrayList<Person>();
+        for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
+            if (relationship.getRelationshipType().getaIsToB().equals("Parent")) {
+                if (relationship.getPersonA().getGender().equals("F") && relationshipType.equalsIgnoreCase("Mother")) {
+                    people.add(relationship.getPersonA());
+                }
+                if (relationship.getPersonA().getGender().equals("M") && relationshipType.equalsIgnoreCase("Father")) {
+                    people.add(relationship.getPersonA());
+                }
+            } else {
+                if (relationship.getRelationshipType().getaIsToB().equalsIgnoreCase(relationshipType)) {
+                    people.add(relationship.getPersonA());
+                }
+            }
+        }
+
+        if(people.size() > 0) {
+            personRelationshipName = people.get(0).getPersonName().getFullName();
+        }
+        return  personRelationshipName;
     }
 
     String entryPointAbbriviations(Concept concept) {
