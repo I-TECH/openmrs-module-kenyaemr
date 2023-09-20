@@ -31,7 +31,7 @@ import java.util.List;
  * Report builder for Viral suppression report
  */
 @Component
-@Builds({"kenyaemr.hiv.report.tx_curr_linelist_quarterly"})
+@Builds({"kenyaemr.hiv.report.quarterly_tx_curr_gain_loss_analysis_linelist"})
 public class TXCurrQuarterlyLinelistReportBuilder extends AbstractReportBuilder {
 
     @Autowired

@@ -71,8 +71,8 @@
 				<ref bean="kenyaemr.hiv.report.htsPositiveCLientsNotLinkedToCare"/>
 				<ref bean="kenyaemr.common.report.currentInCareNotStartedOnART" />
 				<ref bean="kenyaemr.etl.common.report.viralSuppression" />
-				<ref bean="kenyaemr.hiv.report.tx_curr_linelist_monthly" />
-				<ref bean="kenyaemr.hiv.report.tx_curr_linelist_quarterly" />
+				<ref bean="kenyaemr.hiv.report.monthly_tx_curr_gain_loss_analysis_linelist" />
+				<ref bean="kenyaemr.hiv.report.quarterly_tx_curr_gain_loss_analysis_linelist" />
 				<ref bean="kenyaemr.hiv.report.pendingVLAndCD4Report"/>
 				<ref bean="kenyaemr.hiv.report.cccDefaulterTracingRegister"/>
 				<ref bean="kenyaemr.common.report.patientRegimenHistory"/>
@@ -688,17 +688,17 @@
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
-	<bean id="kenyaemr.hiv.report.tx_curr_linelist_monthly" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+	<bean id="kenyaemr.hiv.report.monthly_tx_curr_gain_loss_analysis_linelist" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="f0305a84-30ee-11e9-b210-d663bd873d93" />
-		<property name="name" value="TX CURR Line lists (Monthly)" />
-		<property name="description" value="TX CURR Linelists showing differences in TX CURR numbers at different reporting dates" />
+		<property name="name" value="Tx_Curr Net Gain and Loss Analysis Linelists (Monthly)" />
+		<property name="description" value="Linelists showing Gains and Losses in TX CURR numbers at different reporting dates" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
-	<bean id="kenyaemr.hiv.report.tx_curr_linelist_quarterly" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+	<bean id="kenyaemr.hiv.report.quarterly_tx_curr_gain_loss_analysis_linelist" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="cbd36f94-30f0-11e9-b210-d663bd873d93" />
-		<property name="name" value="TX CURR Line lists (Quarterly)" />
-		<property name="description" value="TX CURR Linelists showing differences in TX CURR numbers at different reporting dates" />
+		<property name="name" value="Tx_Curr Net Gain and Loss Analysis Linelists (Qarterly)" />
+		<property name="description" value="Linelists showing Gains and Losses in TX CURR numbers at different reporting dates" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
 
