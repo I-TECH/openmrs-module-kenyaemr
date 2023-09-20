@@ -86,6 +86,24 @@ public class PatientWrapper extends AbstractPatientWrapper {
 	}
 
 	/**
+	 * Gets the nhif number
+	 * @return the identifier value
+	 */
+	public String getNhifNumber() {
+		return getAsIdentifier("09ebf4f9-b673-4d97-b39b-04f94088ba64");
+	}
+
+
+	/**
+	 * Sets the nhif number
+	 * @param value the identifier value
+	 * @param location the identifier location
+	 */
+	public void setNhifNumber(String value, Location location) {
+		setAsIdentifier("09ebf4f9-b673-4d97-b39b-04f94088ba64", value, location);
+	}
+
+	/**
 	 * Gets the huduma number
 	 * @return the identifier value
 	 */

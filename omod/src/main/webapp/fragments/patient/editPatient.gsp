@@ -205,6 +205,11 @@
                     <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "nationalUniquePatientNumber"])}</td>
                     <td class="ke-field-instructions"> This will be populated from MOH Client Registry</td>
                 </tr>
+                <tr id="nhif-no">
+                    <td class="ke-field-label">NHIF Number</td>
+                    <td>${ui.includeFragment("kenyaui", "widget/field", [object: command, property: "nhifNumber"])}</td>
+                    <td class="ke-field-instructions"> (If registered with National Health Insurance Fund)</td>
+                </tr>
                 <tr></tr>
                 <tr>
                     <td> <input type="checkbox" name="other-identifiers" value="Y"
