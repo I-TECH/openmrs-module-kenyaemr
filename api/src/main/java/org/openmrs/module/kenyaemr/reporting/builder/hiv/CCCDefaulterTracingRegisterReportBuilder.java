@@ -23,16 +23,9 @@ import org.openmrs.module.kenyaemr.reporting.calculation.converter.EncounterProv
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQACalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.CCCDefaulterTracingRegisterCohortDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.MissedAppointmentReasonsConverter;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HIVTestOneDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLLastVisitDateDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLNextAppointmentDateDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.FinalOutcomeDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.ProviderCommentsDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.ReasonForMissedAppointmentDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.ReturnToCareDateDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.HonouredAppointmentDateDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.TracingNumberDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.TracingOutcomeDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.TracingTypeDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.*;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.module.reporting.common.SortCriteria;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -105,6 +98,21 @@ public class CCCDefaulterTracingRegisterReportBuilder extends AbstractReportBuil
         providerDataDefinition.setSingleProvider(true);
         PersonAttributeType phoneNumber = MetadataUtils.existing(PersonAttributeType.class, CommonMetadata._PersonAttributeType.TELEPHONE_CONTACT);
 
+        String dateParams = "startDate=${startDate},endDate=${endDate}";
+
+        DateMissedAppointmentBeforeTracingDataDefinition dateMissedAppointment = new DateMissedAppointmentBeforeTracingDataDefinition();
+        dateMissedAppointment.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        dateMissedAppointment.addParameter(new Parameter("endDate", "End Date", Date.class));
+
+        HonouredAppointmentDateDataDefinition dateHonouredAppointment = new HonouredAppointmentDateDataDefinition();
+        dateHonouredAppointment.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        dateHonouredAppointment.addParameter(new Parameter("endDate", "End Date", Date.class));
+
+        LastVisitDateBeforeMissedAppointmentDataDefinition lastVisitBeforeMissedApp = new LastVisitDateBeforeMissedAppointmentDataDefinition();
+        lastVisitBeforeMissedApp.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        lastVisitBeforeMissedApp.addParameter(new Parameter("endDate", "End Date", Date.class));
+
+
         dsd.addColumn("Name", nameDef, "");
         dsd.addColumn("id", new PatientIdDataDefinition(), "");
         dsd.addColumn("Date of Birth", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
@@ -118,14 +126,13 @@ public class CCCDefaulterTracingRegisterReportBuilder extends AbstractReportBuil
         dsd.addColumn("Outcome", new TracingOutcomeDataDefinition(),"");
         dsd.addColumn("Tracing attempt No", new TracingNumberDataDefinition(),"");
         dsd.addColumn("Final Outcome", new FinalOutcomeDataDefinition(),"");
-        dsd.addColumn("Last Visit Date", new ETLLastVisitDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
-        dsd.addColumn("Last Appointment Date", new ETLNextAppointmentDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
+        dsd.addColumn("Last Visit Date", lastVisitBeforeMissedApp,dateParams, new DateConverter(DATE_FORMAT));
+        dsd.addColumn("Last Appointment Date", dateMissedAppointment, dateParams, new DateConverter(DATE_FORMAT));
         dsd.addColumn("Reason for missed appointment", new ReasonForMissedAppointmentDataDefinition(),"", new MissedAppointmentReasonsConverter());
         dsd.addColumn("Date promised to come", new ReturnToCareDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
-        dsd.addColumn("Honoured appointment date", new HonouredAppointmentDateDataDefinition(),"", new DateConverter(DATE_FORMAT));
+        dsd.addColumn("Honoured appointment date", dateHonouredAppointment,dateParams, new DateConverter(DATE_FORMAT));
         dsd.addColumn("Comments", new ProviderCommentsDataDefinition(),"");
         dsd.addColumn("Provider", providerDataDefinition,"", new EncounterProviderConverter());
-
 
 
         CCCDefaulterTracingRegisterCohortDefinition cd = new CCCDefaulterTracingRegisterCohortDefinition();
