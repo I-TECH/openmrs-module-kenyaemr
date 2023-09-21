@@ -17,24 +17,24 @@ import org.openmrs.module.reporting.evaluation.caching.Caching;
 import java.util.Date;
 
 /**
- * Return To Care Date Column
+ * Date missed appointment Column
  */
 @Caching(strategy=ConfigurationPropertyCachingStrategy.class)
-public class HonouredAppointmentDateDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
+public class DateMissedAppointmentBeforeTracingDataDefinition extends BaseDataDefinition implements EncounterDataDefinition {
 
     public static final long serialVersionUID = 1L;
 
     /**
      * Default Constructor
      */
-    public HonouredAppointmentDateDataDefinition() {
+    public DateMissedAppointmentBeforeTracingDataDefinition() {
         super();
     }
 
     /**
      * Constructor to populate name only
      */
-    public HonouredAppointmentDateDataDefinition(String name) {
+    public DateMissedAppointmentBeforeTracingDataDefinition(String name) {
         super(name);
     }
 
