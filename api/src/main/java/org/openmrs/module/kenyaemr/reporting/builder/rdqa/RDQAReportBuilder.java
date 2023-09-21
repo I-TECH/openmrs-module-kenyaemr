@@ -48,6 +48,8 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.InfantPro
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.PCREIDAt8MonthsDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.PregnancyIntentionDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.TBScreeningAtLastVisitDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLLastWHOStageDateDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.WHOStageArtDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.hei.HEIInfantProphylaxisDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLMoh731IndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731.ETLPmtctIndicatorLibrary;
@@ -235,7 +237,8 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("BMI at last visit", new CalculationDataDefinition("BMI at last visit", new BMIAtLastVisitCalculation()), "", null);
         dsd.addColumn("TB screening at last visit", new TBScreeningAtLastVisitDataDefinition(), "", new TBScreeningConverter("screeningDone"));
         dsd.addColumn("TB screening outcome", new TBScreeningAtLastVisitDataDefinition(), "", new TBScreeningConverter("outcome"));
-
+        dsd.addColumn("Last WHO Stage", new WHOStageArtDataDefinition(), "");
+        dsd.addColumn("Last WHO Stage Date", new ETLLastWHOStageDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("IPT Start Date", new CalculationDataDefinition("IPT Start Date", new IPTStartDateCalculation()), "", new DateArtStartDateConverter());
         dsd.addColumn("IPT Status", new CalculationDataDefinition("IPT Status", new IPTOutcomeCalculation()), "", new IPTOutcomeDataConverter("rdqa"));
         dsd.addColumn("IPT Outcome Date", new CalculationDataDefinition("IPT Outcome Date", new IPTOutcomeDateCalculation()), "", new DateArtStartDateConverter());
@@ -292,7 +295,8 @@ public class RDQAReportBuilder extends AbstractHybridReportBuilder {
         dsd.addColumn("BMI at last visit", new CalculationDataDefinition("BMI at last visit", new BMIAtLastVisitCalculation()), "", null);
         dsd.addColumn("TB screening at last visit", new TBScreeningAtLastVisitDataDefinition(), "", new TBScreeningConverter("screeningDone"));
         dsd.addColumn("TB screening outcome", new TBScreeningAtLastVisitDataDefinition(), "", new TBScreeningConverter("outcome"));
-
+        dsd.addColumn("Last WHO Stage", new WHOStageArtDataDefinition(), "");
+        dsd.addColumn("Last WHO Stage Date", new ETLLastWHOStageDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("IPT Start Date", new CalculationDataDefinition("IPT Start Date", new IPTStartDateCalculation()), "", new DateArtStartDateConverter());
         dsd.addColumn("IPT Status", new CalculationDataDefinition("IPT Status", new IPTOutcomeCalculation()), "", new IPTOutcomeDataConverter("rdqa"));
         dsd.addColumn("IPT Outcome Date", new CalculationDataDefinition("IPT Outcome Date", new IPTOutcomeDateCalculation()), "", new DateArtStartDateConverter());
