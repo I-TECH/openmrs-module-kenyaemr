@@ -2119,15 +2119,17 @@ Green Card follow-up visit form
 
         function checkForExistingNhifIdentifiers() {
             var nhifNumber = jq('#nhif-number input[type=text]').val();
-            jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/identifierExists.action', { upn: nhifNumber }, function(data) {
-                jq('#nhifError').hide();
-                if (data.nhifNoExists === true) {
+            if(nhifNumber !="") {
+                jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/identifierExists.action', {upn: nhifNumber}, function (data) {
+                    jq('#nhifError').hide();
+                    if (data.nhifNoExists === true) {
 
-                    jq('#nhifError').text("A patient with similar NHIF Number already exists. Please correct before proceeding");
-                    jq('#nhifError').show();
-                    jq('#nhif-number input[type=text]').focus();
-                }
-            });
+                        jq('#nhifError').text("A patient with similar NHIF Number already exists. Please correct before proceeding");
+                        jq('#nhifError').show();
+                        jq('#nhif-number input[type=text]').focus();
+                    }
+                });
+            }
         }
 
 
@@ -4883,7 +4885,7 @@ Management<br />
                                       <td>
                                           <div id="has-nhif">
                                               &#160;&#160;&#160;&#160;&#160;&#160;NHIF Number:&#160;&#160;
-                                              <span id="nhif-number"><patient id="nhif" field="identifier" identifierTypeId="09ebf4f9-b673-4d97-b39b-04f94088ba64" /></span>
+                                              <span id="nhif-number"><patient id="nhif" field="identifier" identifierTypeId="09ebf4f9-b673-4d97-b39b-04f94088ba64" required="false"/></span>
                                               <span id="nhifError" class="error"></span>
                                           </div>
                                       </td>
