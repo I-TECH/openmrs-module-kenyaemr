@@ -58,6 +58,8 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLNe
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLRefillDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLStabilityDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.HeightAtArtDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.MedicalCoverDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.MedicalCoverStatusDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.NCDDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.NCDStatusDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.NCDsDataDefinition;
@@ -187,6 +189,12 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         BloodPressureDataDefinition bloodPressureDataDefinition = new BloodPressureDataDefinition();
         bloodPressureDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
         bloodPressureDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        MedicalCoverDataDefinition medicalCoverDataDefinition = new MedicalCoverDataDefinition();
+        medicalCoverDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+        medicalCoverDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        MedicalCoverStatusDataDefinition medicalCoverStatusDataDefinition = new MedicalCoverStatusDataDefinition();
+        medicalCoverStatusDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+        medicalCoverStatusDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
 
 
         DataConverter formatter = new ObjectFormatter("{familyName}, {givenName}");
@@ -238,6 +246,8 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("NCDs Onset Date", ncdDateDataDefinition, "endDate=${endDate}");
         dsd.addColumn("NCDs status", ncdStatusDataDefinition, "endDate=${endDate}");
         dsd.addColumn("AHD Client", new CalculationDataDefinition("AHD Client", new PatientsWithAdvancedHivDiseaseCalculation()), "", new BooleanResultsConverter());
+        dsd.addColumn("Medical cover", medicalCoverDataDefinition, "endDate=${endDate}");
+        dsd.addColumn("Medical cover status", medicalCoverStatusDataDefinition, "endDate=${endDate}");
 
 
         return dsd;
