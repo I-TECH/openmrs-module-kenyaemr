@@ -522,6 +522,22 @@ public class KenyaemrCoreRestController extends BaseRestController {
 
         return programList.toString();
     }
+    /**
+     * Gets the last regimen encounter uuid by category
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/lastRegimenEncounter")
+    @ResponseBody
+    public Object getLastRegimenEncounterUuid(@RequestParam("category") String category, @RequestParam("patientUuid") String patientUuid) {
+        ObjectNode encObj = JsonNodeFactory.instance.objectNode();
+        ObjectNode node = JsonNodeFactory.instance.objectNode();
+        Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
+        Encounter enc = EncounterBasedRegimenUtils.getLastEncounterForCategory(patient, category);
+        node.put("uuid", enc.getUuid());
+        encObj.put("results", node);
+
+		return encObj.toString();
+    }
 
 
       /**
