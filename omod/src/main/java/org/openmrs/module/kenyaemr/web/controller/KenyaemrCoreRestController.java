@@ -533,7 +533,7 @@ public class KenyaemrCoreRestController extends BaseRestController {
         ObjectNode node = JsonNodeFactory.instance.objectNode();
         Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
         Encounter enc = EncounterBasedRegimenUtils.getLastEncounterForCategory(patient, category);
-        node.put("uuid", enc.getUuid());
+        node.put("uuid", enc.getUuid() != null ?  enc.getUuid() : "");
         encObj.put("results", node);
 
 		return encObj.toString();
