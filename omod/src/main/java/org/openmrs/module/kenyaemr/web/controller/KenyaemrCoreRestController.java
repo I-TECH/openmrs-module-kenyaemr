@@ -599,7 +599,16 @@ public class KenyaemrCoreRestController extends BaseRestController {
                         regimenLineValue = "CS";
                     }else if (groupName.equalsIgnoreCase("Child (Third Line)")) {
                         regimenLineValue = "CT";
+                    }else if (groupName.equalsIgnoreCase("Intensive Phase (Adult)")) {
+                        regimenLineValue = "Intensive Phase (Adult)";
+                    }else if (groupName.equalsIgnoreCase("Intensive Phase (Child)")) {
+                        regimenLineValue = "Intensive Phase (Child)";
+                    }else if (groupName.equalsIgnoreCase("Continuation Phase (Adult)")) {
+                        regimenLineValue = "Continuation Phase (Adult)";
                     }
+                    
+                    
+                    
                     
                     standardRegimenObj.put("regimenline", groupName);
                     standardRegimenObj.put("regimenLineValue", regimenLineValue);
