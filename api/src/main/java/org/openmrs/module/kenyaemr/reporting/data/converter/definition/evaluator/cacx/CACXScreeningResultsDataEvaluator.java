@@ -35,7 +35,8 @@ public class CACXScreeningResultsDataEvaluator implements EncounterDataEvaluator
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select encounter_id, screening_result from kenyaemr_etl.etl_cervical_cancer_screening;";
+        String qry = "select encounter_id, coalesce(via_vili_screening_result,hpv_screening_result,pap_smear_screening_result,colposcopy_screening_result)" +
+                "    from kenyaemr_etl.etl_cervical_cancer_screening;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

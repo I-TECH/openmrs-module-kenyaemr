@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.kenyaemr.reporting.library.moh711;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.module.kenyacore.report.ReportUtils;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.MOH731Greencard.ETLMoh731GreenCardCohortLibrary;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -591,7 +592,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
     public CohortDefinition cacxScreenedCommon() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date(:startDate) and date(:endDate)\n" +
-                "and s.screening_method in ('Pap Smear','VIA','VILI','Colposcopy','HPV Test');";
+                "  and coalesce(s.via_vili_screening_method,s.hpv_screening_method,s.pap_smear_screening_method,s.colposcopy_screening_method) in ('Pap Smear','VIA','VILI','Colposcopy','HPV Test','HPV');";
         cd.setName("Screened for CACX through common form");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -632,10 +633,11 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
      * No.Screened for Cervical Cancer using specified method- screening form
      * @return
      */
-    public CohortDefinition cacxScreenedMethodSCForm(String conceptName) {
+    public CohortDefinition cacxScreenedPapMethodSCForm(String[] indicatorVal) {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date(:startDate) and date(:endDate)\n" +
-                "       and s.screening_method = '"+conceptName+"';";
+        String val = StringUtils.join(indicatorVal,"','");
+        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_cervical_cancer_screening i\n" +
+                "where i.pap_smear_screening_method IN ('"+val+"') and i.visit_date between date(:startDate) and date(:endDate)";
         cd.setName("No.Screened for Pap smear Cacx screening form");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -659,17 +661,45 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
         return cd;
     }
     /**
-     * ANC clients Screened for cervical Cancer using specified method through ANC form aor CACX screening form
+     * ANC clients Screened for cervical Cancer using PAP method through ANC form aor CACX screening form
      * @return
      */
-    public CohortDefinition cacxScreenedWithMethodAtANC(String conceptName, Integer conceptId) {
+    public CohortDefinition cacxScreenedWithPAPMethodAtANC(String[] indicatorVal, Integer conceptId) {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("cacxScreenedMethodSCForm", ReportUtils.map(cacxScreenedMethodSCForm(conceptName), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("cacxScreenedMethodANC", ReportUtils.map(cacxScreenedMethodANC(conceptId), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("cacxScreenedPapMethodSCForm", ReportUtils.map(cacxScreenedPapMethodSCForm(indicatorVal), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("cacxScreenedPapMethodANC", ReportUtils.map(cacxScreenedMethodANC(conceptId), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("latestMCHEnrollmentAtANC", ReportUtils.map(latestMCHEnrollmentAtANC(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("latestMCHEnrollmentAtANC AND (cacxScreenedMethodSCForm OR cacxScreenedMethodANC)");
+        cd.setCompositionString("latestMCHEnrollmentAtANC AND (cacxScreenedPapMethodSCForm OR cacxScreenedPapMethodANC)");
+        return cd;
+    }
+
+    /**
+     * ANC clients Screened for cervical Cancer using HPV method through ANC form aor CACX screening form
+     * @return
+     */
+
+    public CohortDefinition cacxScreenedHpvMethodSCForm(String[] indicatorVal) {
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String val = StringUtils.join(indicatorVal,"','");
+        String sqlQuery = "select i.patient_id from kenyaemr_etl.etl_cervical_cancer_screening i\n" +
+                "where i.hpv_screening_method IN ('"+val+"') and i.visit_date between date(:startDate) and date(:endDate)";
+        cd.setName("No.Screened for Hpv Cacx screening form");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("No.Screened for Pap smear");
+        return cd;
+    }
+    public CohortDefinition cacxScreenedWithHPVMethodAtANC(String[] indicatorVal, Integer conceptId) {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("cacxScreenedHpvMethodSCForm", ReportUtils.map(cacxScreenedHpvMethodSCForm(indicatorVal), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("cacxScreenedHpvMethodANC", ReportUtils.map(cacxScreenedMethodANC(conceptId), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("latestMCHEnrollmentAtANC", ReportUtils.map(latestMCHEnrollmentAtANC(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("latestMCHEnrollmentAtANC AND (cacxScreenedHpvMethodSCForm OR cacxScreenedHpvMethodANC)");
         return cd;
     }
 
@@ -680,8 +710,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
     public CohortDefinition viaViliPositiveCacxScreening(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery ="select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date(:startDate) and date(:endDate)\n" +
-                "        and s.screening_method  in ('VIA','VILI') and s.screening_result in ('Positive') ;";
-        cd.setName("No. of patients tested positive for VIA/VILI");
+                "  and s.via_vili_screening_method in ('VIA','VILI') and s.via_vili_screening_result = 'Positive';";
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -725,7 +754,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
     public CohortDefinition hpvPositiveCacxScreening(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery ="select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date(:startDate) and date(:endDate)\n" +
-                "        and s.screening_method='HPV Test' and s.screening_result='Positive';";
+                "  and s.hpv_screening_method in ('HPV Test','HPV') and s.hpv_screening_result='Positive';";
         cd.setName("Positive for CACX using HPV method");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -774,7 +803,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
     public CohortDefinition suspiciousCancerLessionsCACXScreening(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery ="select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date(:startDate) and date(:endDate)\n" +
-                "        and s.screening_method  in ('Pap Smear','VIA','VILI','Colposcopy','HPV Test') and s.screening_result ='Suspicious for cancer';";
+                "  and coalesce(s.via_vili_screening_result,s.hpv_screening_result,s.pap_smear_screening_result,s.colposcopy_screening_result) in ('Presumed','Suspicious for Cancer','Low grade lesion');";
         cd.setName("Suspicious Cervical cancer lessions through screening form");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -823,7 +852,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
     public CohortDefinition treatedUsingCyrotherapy(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery ="select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date(:startDate) and date(:endDate)\n" +
-                "        and s.screening_method  in ('Pap Smear','VIA','VILI','Colposcopy','HPV Test') and s.screening_result='Positive' and s.treatment_method in ('Cryotherapy performed (single Visit)','Cryotherapy performed','Cryotherapy postponed');";
+                "  and coalesce(s.colposcopy_treatment_method,s.hpv_treatment_method,s.pap_smear_treatment_method,s.via_vili_treatment_method) in ('Cryotherapy performed (single Visit)','Cryotherapy performed (SVA)','Cryotherapy performed','Cryotherapy performed (previously postponed)','Cryotherapy postponed');";
         cd.setName("Treated for CACX uisng Cyrotherapy");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -840,7 +869,7 @@ public CohortDefinition latestMCHEnrollmentAtANC() {
     public CohortDefinition treatedUsingLEEP(){
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery ="select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date(:startDate) and date(:endDate)\n" +
-                "        and s.screening_method  in ('Pap Smear','VIA','VILI','Colposcopy','HPV Test') and s.screening_result='Positive' and s.treatment_method = 'LEEP performed';";
+              " and coalesce(s.colposcopy_treatment_method,s.hpv_treatment_method,s.pap_smear_treatment_method,s.via_vili_treatment_method) in ('LEEP performed','LEEP');";
         cd.setName("Treated for CACX uisng LEEP");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
