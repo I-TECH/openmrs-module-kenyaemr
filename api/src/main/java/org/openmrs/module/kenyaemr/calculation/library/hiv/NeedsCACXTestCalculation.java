@@ -16,36 +16,31 @@ import org.joda.time.Months;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
-import org.openmrs.Program;
+import org.openmrs.Form;
 import org.openmrs.Patient;
+import org.openmrs.Program;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.EncounterService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
-import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 import org.openmrs.module.kenyacore.calculation.BooleanResult;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.Filters;
 import org.openmrs.module.kenyacore.calculation.PatientFlagCalculation;
-import org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils;
-import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.metadatadeploy.MetadataUtils;
-import org.openmrs.module.reporting.common.DateUtil;
-import org.openmrs.module.reporting.common.DurationUnit;
-import org.openmrs.ui.framework.SimpleObject;
-import org.openmrs.module.kenyaemr.util.EmrUtils;
-import org.openmrs.Form;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
-import org.openmrs.api.EncounterService;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.util.EmrUtils;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.List;
-import java.util.Date;
-import java.util.Set;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.openmrs.module.kenyaemr.calculation.EmrCalculationUtils.daysSince;
 
@@ -56,7 +51,10 @@ public class NeedsCACXTestCalculation extends AbstractPatientCalculation impleme
     protected static final Log log = LogFactory.getLog(NeedsCACXTestCalculation.class);
 
     public static final EncounterType cacxEncType = MetadataUtils.existing(EncounterType.class, CommonMetadata._EncounterType.CACX_SCREENING);
+    public static final EncounterType oncologyScreeningEncounterType = Context.getEncounterService().getEncounterTypeByUuid("e24209cc-0a1d-11eb-8f2a-bb245320c623");   //  Oncology screening encounter with Cacx screening section
+    public static final String ONCOLOGY_SCREENING_FORM = "be5c5602-0a1d-11eb-9e20-37d2e56925ee";
     public static final Form cacxScreeningForm = MetadataUtils.existing(Form.class, CommonMetadata._Form.CACX_SCREENING_FORM);
+    public static final Form oncologyScreeningForm = MetadataUtils.existing(Form.class, ONCOLOGY_SCREENING_FORM);
     public static final Integer CACX_TEST_RESULT_QUESTION_CONCEPT_ID = 164934;
     public static final Integer CACX_SCREEENING_METHOD_QUESTION_CONCEPT_ID = 163589;
 
@@ -91,7 +89,7 @@ public class NeedsCACXTestCalculation extends AbstractPatientCalculation impleme
         // check for last screening results
         ConceptService conceptService = Context.getConceptService();
         CalculationResultMap cacxLast = Calculations.lastObs(conceptService.getConcept(SCREENING_RESULT), cohort, context);
-        
+
         CalculationResultMap ret = new CalculationResultMap();
 
         for(Integer ptId:aliveAndFemale) {
@@ -110,7 +108,22 @@ public class NeedsCACXTestCalculation extends AbstractPatientCalculation impleme
                     false
             );
 
-            Encounter lastCacxScreeningEnc = EmrUtils.lastEncounter(patient, cacxEncType, cacxScreeningForm);
+            Encounter lastCacxScreening = EmrUtils.lastEncounter(patient, cacxEncType, cacxScreeningForm);
+            Encounter lastOncologyScreening = EmrUtils.lastEncounter(patient, oncologyScreeningEncounterType, oncologyScreeningForm);
+
+            Encounter lastCacxScreeningEnc = null;
+
+            if (lastCacxScreening != null && lastOncologyScreening == null) {
+                lastCacxScreeningEnc = lastCacxScreening;
+            } else if (lastCacxScreening == null && lastOncologyScreening != null) {
+                lastCacxScreeningEnc = lastOncologyScreening;
+            } else if (lastCacxScreening != null && lastOncologyScreening != null) {
+                if (lastCacxScreening.getEncounterDatetime().after(lastOncologyScreening.getEncounterDatetime())) {
+                    lastCacxScreeningEnc = lastCacxScreening;
+                } else {
+                    lastCacxScreeningEnc = lastOncologyScreening;
+                }
+            }
 
             ConceptService cs = Context.getConceptService();
             Concept cacxTestResultQuestion = cs.getConcept(CACX_TEST_RESULT_QUESTION_CONCEPT_ID);
@@ -144,12 +157,12 @@ public class NeedsCACXTestCalculation extends AbstractPatientCalculation impleme
 
                 // no cervical cancer screening done
                 if(lastCacxScreeningEnc == null) {
-                   needsCacxTest = true;
+                    needsCacxTest = true;
                 }
 
                 // cacx flag should be 24 months after last cacx screening using HPV method and result is negative
                 if(lastCacxScreeningEnc != null && patientScreenedUsingHPV && patientHasNegativeTestResult && (daysSince(lastCacxScreeningEnc.getEncounterDatetime(), context) >= 730)) {
-                   needsCacxTest = true;
+                    needsCacxTest = true;
                 }
                 // cacx flag should be 12 months after last cacx if negative or normal and cacx method is not HPV
                 if(lastCacxScreeningEnc != null && !patientScreenedUsingHPV && (patientHasNegativeTestResult || patientHasNormalTestResult)  && (daysSince(lastCacxScreeningEnc.getEncounterDatetime(), context) >= 365)) {
@@ -158,7 +171,7 @@ public class NeedsCACXTestCalculation extends AbstractPatientCalculation impleme
 
                 // cacx flag should be 6 months after last cacx if positive
                 if(lastCacxScreeningEnc != null && patientHasPositiveTestResult && (daysSince(lastCacxScreeningEnc.getEncounterDatetime(), context) >= 183)) {
-                   needsCacxTest = true;
+                    needsCacxTest = true;
                 }
 
                 // cacx flag should remain if there is any suspicion

@@ -402,23 +402,23 @@
 	</bean>
 
 	<!-- Cervical cancer screening form -->
-	<!--<bean id="kenyaemr.common.form.cervicalCancerScreening" class="org.openmrs.module.kenyacore.form.FormDescriptor">-->
-		<!--<property name="targetUuid" value="0c93b93c-bfef-4d2a-9fbe-16b59ee366e7" />-->
-		<!--<property name="apps">-->
-			<!--<set>-->
-				<!--<ref bean="kenyaemr.app.registration" />-->
-				<!--<ref bean="kenyaemr.app.clinician" />-->
-				<!--<ref bean="kenyaemr.app.chart" />-->
-				<!--<ref bean="kenyaemr.app.hts" />-->
-				<!--<ref bean="kenyaemr.app.prep" />-->
-				<!--<ref bean="kenyaemr.app.counselling" />-->
-			<!--</set>-->
-		<!--</property>-->
-		<!--<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.EligibleForCaCxScreeningCalculation" />-->
-		<!--<property name="icon" value="kenyaui:forms/generic.png" />-->
-		<!--<property name="htmlform" value="kenyaemr:cervicalCancerScreening.html" />-->
-		<!--<property name="order" value="201080" />-->
-	<!--</bean>-->
+	<bean id="kenyaemr.common.form.cervicalCancerScreening" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="0c93b93c-bfef-4d2a-9fbe-16b59ee366e7" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+				<ref bean="kenyaemr.app.hts" />
+				<ref bean="kenyaemr.app.prep" />
+				<ref bean="kenyaemr.app.counselling" />
+			</set>
+		</property>
+		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.EligibleForCaCxScreeningCalculation" />
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:cervicalCancerScreening.html" />
+		<property name="order" value="201080" />
+	</bean>
 
 	<!-- Oncology screening form -->
 	<bean id="kenyaemr.common.form.oncologyScreening" class="org.openmrs.module.kenyacore.form.FormDescriptor">
@@ -439,23 +439,23 @@
 	</bean>
 
 	<!-- Cervical cancer assessment form -->
-	<!--<bean id="kenyaemr.common.form.cervicalCancerAssessment" class="org.openmrs.module.kenyacore.form.FormDescriptor">-->
-		<!--<property name="targetUuid" value="48f2235ca-cc77-49cb-83e6-f526d5a5f174" />-->
-		<!--<property name="apps">-->
-			<!--<set>-->
-				<!--<ref bean="kenyaemr.app.registration" />-->
-				<!--<ref bean="kenyaemr.app.clinician" />-->
-				<!--<ref bean="kenyaemr.app.chart" />-->
-				<!--<ref bean="kenyaemr.app.hts" />-->
-				<!--<ref bean="kenyaemr.app.prep" />-->
-				<!--<ref bean="kenyaemr.app.counselling" />-->
-			<!--</set>-->
-		<!--</property>-->
-		<!--<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.EligibleForCaCxScreeningCalculation" />-->
-		<!--<property name="icon" value="kenyaui:forms/generic.png" />-->
-		<!--<property name="htmlform" value="kenyaemr:cervicalCancerAssessment.html" />-->
-		<!--<property name="order" value="201082" />-->
-	<!--</bean>-->
+	<bean id="kenyaemr.common.form.cervicalCancerAssessment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="48f2235ca-cc77-49cb-83e6-f526d5a5f174" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+				<ref bean="kenyaemr.app.hts" />
+				<ref bean="kenyaemr.app.prep" />
+				<ref bean="kenyaemr.app.counselling" />
+			</set>
+		</property>
+		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.EligibleForCaCxScreeningCalculation" />
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:cervicalCancerAssessment.html" />
+		<property name="order" value="201082" />
+	</bean>
 	<!-- Gender based violence screening  -->
 	<bean id="kenyaemr.hiv.form.genderBasedViolenceScreening" class="org.openmrs.module.kenyacore.form.FormDescriptor">
 		<property name="targetUuid" value="03767614-1384-4ce3-aea9-27e2f4e67d01"/>
