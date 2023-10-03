@@ -88,68 +88,73 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
     Date nextApptDate = null;
     Date refillApptDate = null;
     Integer appointmentReason = null;
-   
-
 
     @Override
     public void afterReturning(Object returnValue, Method method, Object[] args, Object target) throws Throwable {
         if (method.getName().equals("saveEncounter")) { // handles both create and edit
             Encounter enc = (Encounter) args[0];
-            Appointment editAppointment = appointmentsService.getAppointmentByUuid(enc.getUuid());
+            List<String> appointmentForms = Arrays.asList(HivMetadata._Form.MOH_257_VISIT_SUMMARY, HivMetadata._Form.HIV_GREEN_CARD, MchMetadata._Form.MCHMS_ANTENATAL_VISIT, MchMetadata._Form.MCHCS_FOLLOW_UP, MchMetadata._Form.MCHMS_POSTNATAL_VISIT,  PREP_FOLLOWUP_FORM, PREP_INITIAL_FORM, PREP_MONTHLY_REFILL_FORM, KP_CLINICAL_VISIT_FORM, TbMetadata._Form.TB_FOLLOW_UP );
 
-            if(enc.getVoided() == true && editAppointment != null && enc.getForm() != null){
-                // Get appointment obs
-                Appointment hivFollowUpAppointment = appointmentsService.getAppointmentByUuid(enc.getUuid());
-                Appointment drugRefillAppointment = hivFollowUpAppointment.getRelatedAppointment();
+            if (appointmentForms.contains(enc.getForm().getUuid())) {
+                Appointment editAppointment = appointmentsService.getAppointmentByUuid(enc.getUuid());
 
-                // delete HIV followup appointment
-                if(hivFollowUpAppointment != null ) {
-                    nxtAppointment = true;
-                    hivFollowUpAppointment.setVoided(true);
-                    hivFollowUpAppointment.setDateVoided(new Date());
-                    hivFollowUpAppointment.setVoidedBy(Context.getAuthenticatedUser());
+                if(enc.getVoided() == true && editAppointment != null && enc.getForm() != null){
+                    // Get appointment obs
+                    Appointment hivFollowUpAppointment = appointmentsService.getAppointmentByUuid(enc.getUuid());
+                    Appointment drugRefillAppointment = hivFollowUpAppointment.getRelatedAppointment();
+
+                    // delete HIV followup appointment
+                    if(hivFollowUpAppointment != null ) {
+                        nxtAppointment = true;
+                        hivFollowUpAppointment.setVoided(true);
+                        hivFollowUpAppointment.setDateVoided(new Date());
+                        hivFollowUpAppointment.setVoidedBy(Context.getAuthenticatedUser());
+                    }
+
+                    if(nxtAppointment && followUpAppointment) {
+                        Appointment app = appointmentsService.validateAndSave(hivFollowUpAppointment);
+                    }
+
+                    // delete existing appointment for drug refill
+                    if(drugRefillAppointment != null) {
+                        drugRefillAppointment.setVoided(true);
+                        drugRefillAppointment.setDateVoided(new Date());
+                        drugRefillAppointment.setVoidedBy(Context.getAuthenticatedUser());
+                        Appointment app = appointmentsService.validateAndSave(drugRefillAppointment);
+                    }
+
+                } else if (editAppointment != null && enc.getForm() != null &&
+                        (enc.getForm().getUuid().equals(HivMetadata._Form.HIV_GREEN_CARD) || enc.getForm().getUuid().equals(HivMetadata._Form.MOH_257_VISIT_SUMMARY))) {
+                    // pick HIV followup forms
+                    processEditHivFollowupEncounter(enc);
+
+                } else if (enc != null && enc.getForm() != null &&
+                        (enc.getForm().getUuid().equals(HivMetadata._Form.HIV_GREEN_CARD) || enc.getForm().getUuid().equals(HivMetadata._Form.MOH_257_VISIT_SUMMARY))) {
+                    // pick HIV followup forms
+                    processCreateHivFollowupEncounter(enc);
+
+                } else if(enc != null && enc.getForm() != null &&
+                        (enc.getForm().getUuid().equals(MchMetadata._Form.MCHMS_ANTENATAL_VISIT) ||
+                                enc.getForm().getUuid().equals(MchMetadata._Form.MCHCS_FOLLOW_UP) ||
+                                enc.getForm().getUuid().equals(PREP_FOLLOWUP_FORM) ||
+                                enc.getForm().getUuid().equals(PREP_INITIAL_FORM) ||
+                                enc.getForm().getUuid().equals(PREP_MONTHLY_REFILL_FORM) ||
+                                enc.getForm().getUuid().equals(KP_CLINICAL_VISIT_FORM) ||
+                                enc.getForm().getUuid().equals(TbMetadata._Form.TB_FOLLOW_UP) )) {
+
+                    processProgramAppointments(enc);
+                } else if(enc != null && (enc.getForm() != null && (enc.getForm().getUuid().equals(MchMetadata._Form.MCHMS_POSTNATAL_VISIT) || enc.getForm() != null && enc.getForm().getUuid().equals(MchMetadata._Form.MCHMS_DELIVERY)))) {
+
+                    processMCHEncounter(enc);
                 }
-
-                if(nxtAppointment && followUpAppointment) {
-                    Appointment app = appointmentsService.validateAndSave(hivFollowUpAppointment);
-                }
-
-                // delete existing appointment for drug refill
-                if(drugRefillAppointment != null) {
-                    drugRefillAppointment.setVoided(true);
-                    drugRefillAppointment.setDateVoided(new Date());
-                    drugRefillAppointment.setVoidedBy(Context.getAuthenticatedUser());
-                    Appointment app = appointmentsService.validateAndSave(drugRefillAppointment);
-                }
-
-            } else if (editAppointment != null && enc.getForm() != null &&
-                    (enc.getForm().getUuid().equals(HivMetadata._Form.HIV_GREEN_CARD) || enc.getForm().getUuid().equals(HivMetadata._Form.MOH_257_VISIT_SUMMARY))) {
-                // pick HIV followup forms
-                processEditHivFollowupEncounter(enc);
-
-            } else if (enc != null && enc.getForm() != null &&
-                    (enc.getForm().getUuid().equals(HivMetadata._Form.HIV_GREEN_CARD) || enc.getForm().getUuid().equals(HivMetadata._Form.MOH_257_VISIT_SUMMARY))) {
-                // pick HIV followup forms
-                processCreateHivFollowupEncounter(enc);
-
-            } else if(enc != null && enc.getForm() != null &&
-                    (enc.getForm().getUuid().equals(MchMetadata._Form.MCHMS_ANTENATAL_VISIT) ||
-                            enc.getForm().getUuid().equals(MchMetadata._Form.MCHCS_FOLLOW_UP) ||
-                            enc.getForm().getUuid().equals(PREP_FOLLOWUP_FORM) ||
-                            enc.getForm().getUuid().equals(PREP_INITIAL_FORM) ||
-                            enc.getForm().getUuid().equals(PREP_MONTHLY_REFILL_FORM) ||
-                            enc.getForm().getUuid().equals(KP_CLINICAL_VISIT_FORM) ||
-                            enc.getForm().getUuid().equals(TbMetadata._Form.TB_FOLLOW_UP) )) {
-
-                processProgramEncounter(enc);
-            } else if(enc != null && (enc.getForm() != null && (enc.getForm().getUuid().equals(MchMetadata._Form.MCHMS_POSTNATAL_VISIT) || enc.getForm() != null && enc.getForm().getUuid().equals(MchMetadata._Form.MCHMS_DELIVERY)))) {
-
-                processMCHEncounter(enc);
             }
         }
 
     }
 
+    /**
+     * Edit HIV appointments ie HIV consultation, Drug refill and lab
+     */
     private void processEditHivFollowupEncounter(Encounter enc) throws Throwable {
         // Get appointment obs
         Appointment hivFollowUpAppointment = appointmentsService.getAppointmentByUuid(enc.getUuid());
@@ -243,6 +248,9 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
         }
     }
 
+    /**
+     * Create HIV appointments ie HIV consultation, Drug refill and lab
+     */
     private void processCreateHivFollowupEncounter(Encounter enc) throws Throwable {
         Appointment nextAppointment = new Appointment();
 
@@ -346,7 +354,11 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
 
     }
 
-    private void processProgramEncounter(Encounter enc) throws Throwable {
+    /**
+     * Create and edit PREP or TB or KP appointments
+     * Create MCH appointments
+     */
+    private void processProgramAppointments(Encounter enc) throws Throwable {
         // MCH or PREP or TB or KP appointment
         List<Obs> obs = obsService.getObservations(
                 Arrays.asList(personService.getPerson(enc.getPatient().getPersonId())),
@@ -413,6 +425,9 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
         }
     }
 
+    /**
+     * Edit the mother and baby appointments which are related
+     */
     private void processMCHEncounter(Encounter enc) throws Throwable {
         //MCH appointments
         List<Obs> obs = obsService.getObservations(
