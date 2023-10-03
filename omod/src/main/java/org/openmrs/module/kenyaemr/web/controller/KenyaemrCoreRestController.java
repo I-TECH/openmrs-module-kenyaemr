@@ -92,6 +92,8 @@ import org.openmrs.module.kenyacore.program.ProgramManager;
 import org.openmrs.module.kenyacore.calculation.Calculations;
 import org.openmrs.module.kenyacore.calculation.CalculationUtils;
 import org.openmrs.module.kenyacore.CoreUtils;
+import org.openmrs.module.kenyacore.CoreConstants;
+import org.openmrs.ConceptName;
 import org.openmrs.module.kenyaemr.wrapper.EncounterWrapper;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.util.ZScoreUtil;
@@ -1262,8 +1264,11 @@ public class KenyaemrCoreRestController extends BaseRestController {
                     List<DrugOrder> tptDrugOrders = new ArrayList<DrugOrder>();
 
                     for (DrugOrder order : allDrugOrders) {
-                        if(order.getDrug().getConcept().getUuid().equals(ISONIAZID_DRUG_UUID) || order.getDrug().getConcept().getUuid().equals(RIFAMPIN_ISONIAZID_DRUG_UUID) ) {
-                            tptDrugOrders.add(order);
+                        if(order != null) {
+                            ConceptName cn = order.getConcept().getName(CoreConstants.LOCALE);
+                            if(cn.getUuid().equals(ISONIAZID_DRUG_UUID) || cn.getUuid().equals(RIFAMPIN_ISONIAZID_DRUG_UUID) ) {
+                                tptDrugOrders.add(order);
+                            }
                         }
                     }
                     if (!tptDrugOrders.isEmpty()) {
@@ -1490,7 +1495,6 @@ public class KenyaemrCoreRestController extends BaseRestController {
                 programDetails.put("active", patientProgram.getActive());
                 programDetails.put("dateEnrolled", formatDate(patientProgram.getDateEnrolled()));
                 programDetails.put("dateCompleted", formatDate(patientProgram.getDateCompleted()));
-                programDetails.put("outcome", patientProgram.getOutcome());
                 enrollmentDetails.add(programDetails);
             }
         }
@@ -1941,13 +1945,9 @@ public class KenyaemrCoreRestController extends BaseRestController {
         }
 
         //first regimen for the patient
-        CalculationResult firstRegimenResults = EmrCalculationUtils.evaluateForPatient(InitialArtRegimenCalculation.class, null, patient);
-        String firstRegimen;
-        if(firstRegimenResults == null || firstRegimenResults.isEmpty()){
-            patientSummary.put("firstRegimen", "");
-        }
-        else {
-            patientSummary.put("firstRegimen", firstRegimenResults.getValue().toString());
+        Encounter firstEnc = EncounterBasedRegimenUtils.getFirstEncounterForCategory(patient, "ARV");
+        if(firstEnc != null) {
+            patientSummary.put("firstRegimen", EncounterBasedRegimenUtils.buildRegimenChangeObject(firstEnc.getObs(), firstEnc));
         }
 
         //previous drugs/regimens and dates
@@ -2004,15 +2004,9 @@ public class KenyaemrCoreRestController extends BaseRestController {
         patientSummary.put("iosResults", iosResults);
 
         //current art regimen
-        CalculationResult currentRegimenResults = EmrCalculationUtils.evaluateForPatient(CurrentArtRegimenCalculation.class, null, patient);
-        if(currentRegimenResults != null) {
-            String roCurrent = currentRegimenResults.toString();
-            if (roCurrent != null) {
-                patientSummary.put("currentArtRegimen", currentRegimenResults.toString());
-            }
-        }
-        else {
-            patientSummary.put("currentArtRegimen", "");
+        Encounter lastEnc = EncounterBasedRegimenUtils.getLastEncounterForCategory(patient, "ARV");
+        if(lastEnc != null) {
+            patientSummary.put("currentArtRegimen", EncounterBasedRegimenUtils.buildRegimenChangeObject(lastEnc.getObs(), lastEnc));
         }
 
         //current who staging
