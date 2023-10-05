@@ -80,6 +80,7 @@ public class EditRelationshipFragmentController {
 		Date today = new Date();
 
 		boolean motherExists;
+		boolean fatherExists;
 
 		Relationship rel;
 
@@ -106,7 +107,8 @@ public class EditRelationshipFragmentController {
 					this.isToPatient = existing.getRelationshipType().getId() + ":" + personSide;
 				}
 			}
-			this.motherExists = isMotherExists();
+			this.motherExists = isMotherExists();System.out.println("+++++++this.motherExists+++"+this.motherExists);
+			this.fatherExists = isFatherExists();System.out.println("+++++++this.isFatherExists+++"+this.fatherExists);
 		}
 
 		/**
@@ -140,20 +142,39 @@ public class EditRelationshipFragmentController {
 			}
 
             if (motherExists) {
-                errors.rejectValue(null, "Child already linked to another mother");
+                errors.rejectValue(null, "Child already linked to a mother");
             }
+			if (fatherExists) {
+				errors.rejectValue(null, "Child already linked to a father");
+			}
 		}
-		public boolean motherExistsForChild(){
+		public boolean motherExistsForChild(Person person){
 			boolean exists = false;
 			List<Relationship> relationships;
-			relationships = Context.getPersonService().getRelationshipsByPerson(patient);
-			boolean isParent = false, isFemaleParent = false, isChildToExistingMother;
+			relationships = Context.getPersonService().getRelationshipsByPerson(person);
+			boolean isChildToExistingMother;
 			if (!relationships.isEmpty()) {
 				for (Relationship r : relationships) {
-					isParent = r.getRelationshipType().getaIsToB().equalsIgnoreCase("Parent") && !r.getVoided();
-					isChildToExistingMother = r.getRelationshipType().getbIsToA().equalsIgnoreCase("Child") && r.getPersonB().getGender().equalsIgnoreCase("F") && !r.getVoided();
-					isFemaleParent = r.getPersonA().getGender().equalsIgnoreCase("F") && !r.getVoided();
-					if (((isParent && isFemaleParent) || isChildToExistingMother) && (r.getEndDate() == null || r.getEndDate().after(today))) {
+					isChildToExistingMother = r.getRelationshipType().getaIsToB().equalsIgnoreCase("Parent") && r.getPersonA().getGender().equalsIgnoreCase("F") && !r.getVoided();
+
+					if (isChildToExistingMother && (r.getEndDate() == null || r.getEndDate().after(today))) {
+						exists = true;
+						break;
+					}
+				}
+			}
+			return exists;
+		}
+		public boolean fatherExistsForChild(Person person){
+			boolean exists = false;
+			List<Relationship> relationships;
+			relationships = Context.getPersonService().getRelationshipsByPerson(person);
+			boolean isChildToExistingFather;
+			if (!relationships.isEmpty()) {
+				for (Relationship r : relationships) {
+					isChildToExistingFather = r.getRelationshipType().getaIsToB().equalsIgnoreCase("Parent") && r.getPersonA().getGender().equalsIgnoreCase("M") && !r.getVoided();
+
+					if (isChildToExistingFather && (r.getEndDate() == null || r.getEndDate().after(today))) {
 						exists = true;
 						break;
 					}
@@ -194,9 +215,12 @@ public class EditRelationshipFragmentController {
 			rel.setStartDate(startDate);
 			rel.setEndDate(endDate);
 
-			if (motherExistsForChild() && ((rel.getRelationshipType().getaIsToB().equalsIgnoreCase("Parent") && rel.getPersonA().getGender().equalsIgnoreCase("F"))
-			|| (rel.getRelationshipType().getaIsToB().equalsIgnoreCase("Child") && rel.getPersonB().getGender().equalsIgnoreCase("F")))) {
+			if (motherExistsForChild(rel.getPersonB()) && (rel.getRelationshipType().getaIsToB().equalsIgnoreCase("Parent") && rel.getPersonA().getGender().equalsIgnoreCase("F"))) {
 				this.setMotherExists(true);
+			}
+
+			if (fatherExistsForChild(rel.getPersonB()) && rel.getRelationshipType().getaIsToB().equalsIgnoreCase("Parent") && rel.getPersonA().getGender().equalsIgnoreCase("M")) {
+				this.setFatherExists(true);
 			}
 			return rel;
 		}
@@ -255,6 +279,13 @@ public class EditRelationshipFragmentController {
 		}
 		public boolean isMotherExists() {
 			return motherExists;
+		}
+		public boolean isFatherExists() {
+			return fatherExists;
+		}
+
+		public void setFatherExists(boolean fatherExists) {
+			this.fatherExists = fatherExists;
 		}
 	}
 
