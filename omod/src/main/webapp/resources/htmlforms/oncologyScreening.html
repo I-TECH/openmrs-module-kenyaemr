@@ -219,9 +219,9 @@
             }
 // Referral facility
             jq('#selectedToFacility input[type=text]').attr('readonly','readonly');
-            jq("#btnTransferFacility").click(function(e){
+            jq("#btnReferFacility").click(function(e){
                 e.preventDefault();
-                jq("#transferFacility").val('');
+                jq("#referFacility").val('');
                 jq("#theSelect").find('option').remove().end();
                 jq("#dlgSelectToFacility").dialog({bgiframe: true,
                     title : "Facility To Reffer",
@@ -236,8 +236,8 @@
                     modal: true });
             });
 
-            jq('#transferFacility').keyup(function(){
-                var searchTerm = jq('#transferFacility').val();
+            jq('#referFacility').keyup(function(){
+                var searchTerm = jq('#referFacility').val();
                 if(searchTerm.length > 2) {
                     var facilitySelect = jq("#theSelect");
                     jq("#theSelect").find('option').remove().end();
@@ -276,11 +276,11 @@
                 val = jq(this).val();
                 if (jq(this).is(':checked')){
                     jq('#selectedToFacility input[type=text]').attr('readonly','readonly');
-                    jq("#btnTransferFacility").show();
+                    jq("#btnReferFacility").show();
                     jq('#selectedToFacility input[type=text]').val('');
                 } else {
                     jq('#selectedToFacility input[type=text]').attr('readonly',false);
-                    jq("#btnTransferFacility").hide();
+                    jq("#btnReferFacility").hide();
                     jq('#selectedToFacility input[type=text]').val('');
                 }
             });
@@ -2732,7 +2732,7 @@
                                             <td width="200px"><i>(If referred out)</i> <br/>Referral Facility:</td>
                                             <td><input type="checkbox" name="input_in_kenya" id="input_in_kenya" /><span id="in_kenya_check">In Kenya</span></td>
                                             <td><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="selectedToFacility" size="60"/></td>
-                                            <td><button type="button"  style="height:35px;width:200px;font-size:12px" id="btnTransferFacility" class="ke-program-outcome-button">Click to select referral facility</button></td>
+                                            <td><button type="button"  style="height:35px;width:200px;font-size:12px" id="btnReferFacility" class="ke-program-outcome-button">Click to select referral facility</button></td>
                                         </tr>
                                     </table>
                                 </div>
@@ -2746,7 +2746,7 @@
                                     <table>
                                         <tr>
                                             <td>Referral Facility : &#160;&#160;&#160;&#160;</td>
-                                            <td><input type="text" size="30" id="transferFacility" autocomplete="off"/></td>
+                                            <td><input type="text" size="30" id="referFacility" autocomplete="off"/></td>
                                         </tr>
                                         <tr></tr>
                                         <tr>
