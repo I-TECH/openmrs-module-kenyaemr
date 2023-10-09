@@ -41,6 +41,7 @@
     </style>
     <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
     <script type="text/javascript">
+        var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
         var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()"/>;
         var HIV_POSITIVE = 703;
         var HIV_NEGATIVE = 664;
@@ -66,6 +67,7 @@
             jq('#cervicalPapSmear').hide();
             jq('#cervicalColposcopy').hide();
             jq("#other-reasons-for-referral").hide();
+            jq("#preferred").hide();
             jq('#oncology').smartWizard({
                 selected: 0,  // Selected Step, 0 = first step
                 keyNavigation: true, // Enable/Disable key navigation(left and right keys are used if enabled)
@@ -215,6 +217,78 @@
             } else if (LATEST_HTS_RESULT == HIV_NEGATIVE) {
                 jq("#hiv-status input[value=664]").prop("checked", true);
             }
+// Referral facility
+            jq('#selectedToFacility input[type=text]').attr('readonly','readonly');
+            jq("#btnTransferFacility").click(function(e){
+                e.preventDefault();
+                jq("#transferFacility").val('');
+                jq("#theSelect").find('option').remove().end();
+                jq("#dlgSelectToFacility").dialog({bgiframe: true,
+                    title : "Facility To Reffer",
+                    buttons: {
+                        "Select Facility": updateMflCode,
+                        "Cancel": function () {
+                            jq("#dlgSelectToFacility").dialog("close");
+                        }
+                    },
+                    height: 350,
+                    width: 600,
+                    modal: true });
+            });
+
+            jq('#transferFacility').keyup(function(){
+                var searchTerm = jq('#transferFacility').val();
+                if(searchTerm.length > 2) {
+                    var facilitySelect = jq("#theSelect");
+                    jq("#theSelect").find('option').remove().end();
+                    jq.getJSON('/' + ctxPath + '/kenyaemr/search/simpleLocations.action', { q: searchTerm
+                    }, function (data) {
+                        if (data != null) {
+                            if (data.length > 0) {
+                                var optionBlank = jq("<option />");
+                                optionBlank.html('Select facility from list');
+                                optionBlank.val('');
+                                facilitySelect.append(optionBlank);
+
+                                jq(data).each(function() {
+                                    var option = jq("<option />");
+
+                                    option.html(this.name);
+                                    option.val(this.mflCode);
+                                    facilitySelect.append(option);
+                                });
+                            }
+                        }
+                    })
+                } else {
+                    jq("#theSelect").find('option').remove().end();
+                };
+            });
+
+
+            function updateMflCode() {
+                var selectedMflCode = jq("#theSelect").find(":selected").val();
+                setValue('selectedToFacility.value',selectedMflCode);
+                jq("#dlgSelectToFacility").dialog("close");
+            }
+
+            jq("#input_in_kenya").click(function(e){
+                val = jq(this).val();
+                if (jq(this).is(':checked')){
+                    jq('#selectedToFacility input[type=text]').attr('readonly','readonly');
+                    jq("#btnTransferFacility").show();
+                    jq('#selectedToFacility input[type=text]').val('');
+                } else {
+                    jq('#selectedToFacility input[type=text]').attr('readonly',false);
+                    jq("#btnTransferFacility").hide();
+                    jq('#selectedToFacility input[type=text]').val('');
+                }
+            });
+
+
+
+
+
 
             beforeSubmit.push(function () {
                 var encounterDate = getValue('encounter-date.value');
@@ -1085,10 +1159,12 @@
         function onReferredStatusChange() {
             if (getValue('referred.value') == 1065) {
                 jq('#referral-reason select').prop("disabled", false);
+                jq("#preferred").show();
 
             } if (getValue('referred.value') == 1066) {
                 getField('referral-reason.value').prop("selectedIndex", 0);
                 jq('#referral-reason select').prop("disabled", true);
+                jq("#preferred").hide();
             }
         }
         var referralReason = function () {
@@ -1427,6 +1503,15 @@
                             jq('#prostatePsa').hide();
                             jq('#prostateTrus').hide();
                         }
+
+                        if (getValue('referred.value') == 1065) {
+                            jq("#preferred").show();
+
+                        } if (getValue('referred.value') == 1066) {
+                            getField('referral-reason.value').prop("selectedIndex", 0);
+                            jq("#preferred").hide();
+                        }
+
                     });
                 </script>
         </ifMode>
@@ -2641,6 +2726,38 @@
                                 <obs conceptId="1788AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      answerLabels="Yes,No" style="radio" id="referred"/>
+                                <div id="preferred">
+                                    <table>
+                                        <tr>
+                                            <td width="200px"><i>(If referred out)</i> <br/>Referral Facility:</td>
+                                            <td><input type="checkbox" name="input_in_kenya" id="input_in_kenya" /><span id="in_kenya_check">In Kenya</span></td>
+                                            <td><obs conceptId="159495AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" " id="selectedToFacility" size="60"/></td>
+                                            <td><button type="button"  style="height:35px;width:200px;font-size:12px" id="btnTransferFacility" class="ke-program-outcome-button">Click to select referral facility</button></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <div id="dlgSelectToFacility" style="display: none">
+                                    <span class="ui-helper-hidden-accessible"><input type="text"/></span>
+                                    <table>
+                                        <tr>
+                                            <td>Referral Facility : &#160;&#160;&#160;&#160;</td>
+                                            <td><input type="text" size="30" id="transferFacility" autocomplete="off"/></td>
+                                        </tr>
+                                        <tr></tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>
+                                                <select id="theSelect">
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
                             </td>
                         </tr>
                         <tr>
