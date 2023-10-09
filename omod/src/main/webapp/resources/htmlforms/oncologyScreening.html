@@ -684,10 +684,10 @@
         function processCytologyResponsesAndTreatment() {
             jq('#cytologyFindings input:radio').click(function () {
                 var value = parseInt(jq(this).val());
-                if (value === 1115) {
+                if (value === 664) {
                     jq('#cytologyNormalTreatmentOptions *').prop('disabled', false);
                     jq('#cytologyExamAbnormalOption *').prop('disabled', true);
-                } else if (value === 1116) {
+                } else if (value === 703) {
                     jq('#cytologyNormalTreatmentOptions *').prop('disabled', true);
                     jq('#cytologyExamAbnormalOption *').prop('disabled', false);
                 }
@@ -787,15 +787,15 @@
                 } else if (value === 1000095 || 1000093) {
                     jq('#biradsm0 *').prop('disabled', true);
                     jq('#biradsm1 *').prop('disabled', false);
-                    jq('#biradsm3 *').prop('disabled', true);
-                    jq('#biradsm4 *').prop('disabled', true);
-                    jq('#biradsm6 *').prop('disabled', true);
-                } else if (value === 1000097 || 1000098) {
-                    jq('#biradsm0 *').prop('disabled', true);
-                    jq('#biradsm1 *').prop('disabled', true);
-                    jq('#biradsm3 *').prop('disabled', true);
+                    jq('#biradsm3 *').prop('disabled', false);
                     jq('#biradsm4 *').prop('disabled', false);
-                    jq('#biradsm6 *').prop('disabled', true);
+                    jq('#biradsm6 *').prop('disabled', false);
+                } else if (value === 1000097 || 1000098) {
+                    jq('#biradsm0 *').prop('disabled', false);
+                    jq('#biradsm1 *').prop('disabled', false);
+                    jq('#biradsm3 *').prop('disabled', false);
+                    jq('#biradsm4 *').prop('disabled', false);
+                    jq('#biradsm6 *').prop('disabled', false);
                 }
             });
         }
@@ -1833,7 +1833,7 @@
                                                     <obs id="via_screening_method"
                                                          conceptId="163589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                          answerConceptId="164977"
-                                                         answerLabel="VIA"/>
+                                                         answerLabel="VIA/VILLI"/>
                                                 </td>
                                                 <td>
                                                     <obs conceptId="164934"
@@ -1848,6 +1848,16 @@
                                                         <obs conceptId="165070"
                                                              answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerLabel="Counseled for negative result"
+                                                             style="checkbox"/>
+                                                        <br/>
+                                                        <obs conceptId="165617AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Re-screen after 5 years"
+                                                             style="checkbox"/>
+                                                        <br/>
+                                                        <obs conceptId="166662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                             answerLabel="Re-screening after 1 year"
                                                              style="checkbox"/>
                                                     </div>
                                                     <br/><br/>
@@ -2343,7 +2353,7 @@
                                                 <td>
                                                     <obs conceptId="1000149"
                                                          answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1116AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                                         answerLabels="Normal(+ve),Abnormal(-ve)" style="radio"
+                                                         answerLabels="Normal(-ve),Abnormal(+ve)" style="radio"
                                                          answerSeparator="&lt;br/&gt;"
                                                          id="euaFindings"/>
                                                 </td>
@@ -2530,8 +2540,8 @@
                                         <th>Cytology</th>
                                         <td>
                                             <obs conceptId="167139AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                            answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1116AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                            answerLabels="Normal,  Abnormal" style="radio"
+                                            answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                            answerLabels="Negative,Positive" style="radio"
                                             id="cytologyFindings"
                                             answerSeparator="&lt;br/&gt;"/>
                                         </td>
