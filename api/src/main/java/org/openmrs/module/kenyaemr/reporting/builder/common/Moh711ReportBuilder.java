@@ -42,6 +42,23 @@ public class Moh711ReportBuilder extends AbstractReportBuilder {
 
     protected static final Log log = LogFactory.getLog(Moh711ReportBuilder.class);
 
+    static final String[] VILI_VIA_SCREENING = {"VIA", "VILI"};
+    static final String[] COLPOSCOPY_SCREENING = {"Colposcopy"};
+    static final String[] HPV_TEST_SCREENING = {"HPV Test","HPV"};
+    static final String[] PAP_SMEAR_SCREENING = {"Pap Smear"};
+
+    static final String[] CRYOTHERAPY = {"Cryotherapy postponed", "Cryotherapy performed (single Visit)", "Cryotherapy performed", "Cryotherapy performed (SVA)", "Cryotherapy performed (previously postponed)"};
+    static final String[] THERMOCOAGULATION = {"Thermocoagulation","Thermal ablation performed (SVA)","Thermal ablation"};
+    static final String[] LEEP = {"LEEP","LEEP performed"};
+    static final String[] OTHER = {"Other"};
+
+    static final String POSITIVE = "Positive";
+    static final String[] PRESUMED = {"Presumed","Suspicious for Cancer"};
+
+    static final String INITIAL_VISIT = "Initial visit";
+    static final String ROUTINE_VISIT = "Routine visit";
+    static final String POST_TREATMENT_VISIT = "Post treatment visit";
+
     @Autowired
     private CommonDimensionLibrary commonDimensions;
 
@@ -165,8 +182,8 @@ public class Moh711ReportBuilder extends AbstractReportBuilder {
         dsd.addDimension("age", ReportUtils.map(commonDimensions.moh745AgeGroups(), "onDate=${endDate}"));
         dsd.addDimension("gender", ReportUtils.map(commonDimensions.gender()));
         EmrReportingUtils.addRow(dsd, "ANC_CACX", "No.of Client receiving VIA /VILI /HPV VILI / HPV", ReportUtils.map(moh711Indicators.cacxScreened(), indParams), cacxScreeningAgeDisaggregations, Arrays.asList("01", "02", "03"));
-        EmrReportingUtils.addRow(dsd, "CACX_Pap_Smear", "No.Screened for Pap smear", ReportUtils.map(moh711Indicators.cacxScreenedWithMethod("Pap Smear", 885), indParams), cacxScreeningAgeDisaggregations, Arrays.asList("01", "02", "03"));
-        EmrReportingUtils.addRow(dsd, "CACX_HPV", "No.Screened for HPV test", ReportUtils.map(moh711Indicators.cacxScreenedWithMethod("HPV Test", 159895), indParams), cacxScreeningAgeDisaggregations, Arrays.asList("01", "02", "03"));
+        EmrReportingUtils.addRow(dsd, "CACX_Pap_Smear", "No.Screened for Pap smear", ReportUtils.map(moh711Indicators.cacxScreenedWithPapMethod(PAP_SMEAR_SCREENING, 885), indParams), cacxScreeningAgeDisaggregations, Arrays.asList("01", "02", "03"));
+        EmrReportingUtils.addRow(dsd, "CACX_HPV", "No.Screened for HPV test", ReportUtils.map(moh711Indicators.cacxScreenedWithHpvMethod(HPV_TEST_SCREENING, 159895), indParams), cacxScreeningAgeDisaggregations, Arrays.asList("01", "02", "03"));
         EmrReportingUtils.addRow(dsd, "VIA_VILI", "Number of clients with Positive VIA/VILI result", ReportUtils.map(moh711Indicators.viaViliPositive(), indParams), cacxScreeningAgeDisaggregations, Arrays.asList("01", "02", "03"));
         EmrReportingUtils.addRow(dsd, "HPV", "Number of clients with Positive HPV result", ReportUtils.map(moh711Indicators.hpvPositive(), indParams), cacxScreeningAgeDisaggregations, Arrays.asList("01", "02", "03"));
         EmrReportingUtils.addRow(dsd, "Suspicious_CACX_Lessions", "Number of clients with suspicious cancer lesions", ReportUtils.map(moh711Indicators.suspiciousCancerLessions(), indParams), cacxScreeningAgeDisaggregations, Arrays.asList("01", "02", "03"));

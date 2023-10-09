@@ -285,8 +285,15 @@ public class Moh711IndicatorLibrary {
 	 * No.Screened for Pap smear
 	 * @return the indicator
 	 */
-	public CohortIndicator cacxScreenedWithMethod(String conceptName, Integer conceptId) {
-		return cohortIndicator("No.Screened for Pap smear", map(moh711Cohorts.cacxScreenedWithMethodAtANC(conceptName,conceptId), "startDate=${startDate},endDate=${endDate}"));
+	public CohortIndicator cacxScreenedWithPapMethod(String[] indicatorVal, Integer conceptId) {
+		return cohortIndicator("No.Screened for Pap smear", map(moh711Cohorts.cacxScreenedWithPAPMethodAtANC(indicatorVal,conceptId), "startDate=${startDate},endDate=${endDate}"));
+	}
+	/**
+	 * No.Screened for Hpv
+	 * @return the indicator
+	 */
+	public CohortIndicator cacxScreenedWithHpvMethod(String[] indicatorVal, Integer conceptId) {
+		return cohortIndicator("No.Screened for Hpv", map(moh711Cohorts.cacxScreenedWithHPVMethodAtANC(indicatorVal,conceptId), "startDate=${startDate},endDate=${endDate}"));
 	}
 	/**
 	 * Normal Deliveries

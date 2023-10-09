@@ -795,7 +795,8 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition firstTimeScreenedCXCASCRNNegativeSql() {
 
-        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) and  s.screening_result in ('Negative','Normal')\n" +
+        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) " +
+                "and coalesce(s.via_vili_screening_result,s.hpv_screening_result,s.pap_smear_screening_result,s.colposcopy_screening_result) in ('Negative','Normal')\n" +
                 "and s.screening_type = 'First time screening';";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -814,8 +815,9 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition firstTimeScreenedCXCASCRNPositiveSql() {
 
-        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) and  s.screening_result in ('Positive','Abnormal','Invasive Cancer')\n" +
-                "                         and s.screening_type = 'First time screening';";
+        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) " +
+                "and  coalesce(s.via_vili_screening_result,s.hpv_screening_result,s.pap_smear_screening_result,s.colposcopy_screening_result) in ('Positive','Abnormal','Invasive Cancer')\n" +
+                "and s.screening_type = 'First time screening';";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("firstTimescreenedCXCAPositive");
@@ -833,8 +835,9 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition firstTimeScreenedCXCASCRNPresumedSql() {
 
-        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) and  s.screening_result in ('Suspicious for cancer','Low grade lesion','High grade lesion','Presumed Cancer')\n" +
-                "                         and s.screening_type = 'First time screening';";
+        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) " +
+                "and  coalesce(s.via_vili_screening_result,s.hpv_screening_result,s.pap_smear_screening_result,s.colposcopy_screening_result) in ('Suspicious for cancer','Low grade lesion','High grade lesion','Presumed Cancer')\n" +
+                "and s.screening_type = 'First time screening';";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("firstTimeScreenedCXCAPresumedSql");
@@ -850,8 +853,9 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition rescreenedCXCASCRNNegativeSql() {
 
-        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) and  s.screening_result in ('Negative','Normal')\n" +
-                "                         and s.screening_type = 'Rescreening';";
+        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) " +
+                "and  coalesce(s.via_vili_screening_result,s.hpv_screening_result,s.pap_smear_screening_result,s.colposcopy_screening_result) in ('Negative','Normal')\n" +
+                "and s.screening_type = 'Rescreening';";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("rescreenedCXCANegativeSql");
@@ -868,8 +872,9 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition rescreenedCXCASCRNPositiveSql() {
 
-        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) and  s.screening_result in ('Positive','Abnormal','Invasive Cancer')\n" +
-                "                         and s.screening_type = 'Rescreening';";
+        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) " +
+                "and  coalesce(s.via_vili_screening_result,s.hpv_screening_result,s.pap_smear_screening_result,s.colposcopy_screening_result) in ('Positive','Abnormal','Invasive Cancer')\n" +
+                "and s.screening_type = 'Rescreening';";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("rescreenedCXCAPositiveSql");
@@ -886,8 +891,9 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition rescreenedCXCASCRNPresumedSql() {
 
-        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) and  s.screening_result in ('Suspicious for cancer','Low grade lesion','High grade lesion','Presumed Cancer')\n" +
-                "                          and s.screening_type = 'Rescreening';";
+        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) " +
+                "and  coalesce(s.via_vili_screening_result,s.hpv_screening_result,s.pap_smear_screening_result,s.colposcopy_screening_result) in ('Suspicious for cancer','Low grade lesion','High grade lesion','Presumed Cancer')\n" +
+                "and s.screening_type = 'Rescreening';";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("rescreenedCXCAPresumed");
@@ -905,7 +911,8 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition postTreatmentCXCASCRNNegativeSql() {
 
-        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) and  s.screening_result in ('Negative','Normal')\n" +
+        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) " +
+                "and  coalesce(s.via_vili_screening_result,s.hpv_screening_result,s.pap_smear_screening_result,s.colposcopy_screening_result) in ('Negative','Normal')\n" +
                 "and s.screening_type = 'Post treatment followup';";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -924,7 +931,8 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition postTreatmentCXCASCRNPositiveSql() {
 
-        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) and  s.screening_result in ('Positive','Abnormal','Invasive Cancer')\n" +
+        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) " +
+                "and  coalesce(s.via_vili_screening_result,s.hpv_screening_result,s.pap_smear_screening_result,s.colposcopy_screening_result) in ('Positive','Abnormal','Invasive Cancer')\n" +
                 "and s.screening_type = 'Post treatment followup';";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -942,7 +950,8 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition postTreatmentCXCASCRNPresumedSql() {
 
-        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) and  s.screening_result in ('Suspicious for cancer','Low grade lesion','High grade lesion','Presumed Cancer')\n" +
+        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) " +
+                "and  coalesce(s.via_vili_screening_result,s.hpv_screening_result,s.pap_smear_screening_result,s.colposcopy_screening_result) in ('Suspicious for cancer','Low grade lesion','High grade lesion','Presumed Cancer')\n" +
                 "and s.screening_type = 'Post treatment followup';";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -1095,7 +1104,8 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition firstScreeningCXCATXCryotherapySql() {
 
-        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) and  s.treatment_method in ('Cryotherapy performed','Cryotherapy performed (single Visit)')\n" +
+        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) " +
+                "and coalesce(s.via_vili_treatment_method,s.pap_smear_treatment_method,s.hpv_treatment_method,s.colposcopy_treatment_method) in ('Cryotherapy postponed', 'Cryotherapy performed (single Visit)', 'Cryotherapy performed', 'Cryotherapy performed (SVA)', 'Cryotherapy performed (previously postponed)')\n" +
                 "and s.screening_type = 'First time screening';";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -1114,7 +1124,8 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition firstScreeningCXCATXThermocoagulationSql() {
 
-        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) and  s.treatment_method ='Thermocoagulation'\n" +
+        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) " +
+                "and coalesce(s.via_vili_treatment_method,s.pap_smear_treatment_method,s.hpv_treatment_method,s.colposcopy_treatment_method) in ('Thermocoagulation','Thermal ablation performed (SVA)','Thermal ablation')\n" +
                 "and s.screening_type = 'First time screening';";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -1133,7 +1144,8 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition firstScreeningCXCATXLEEPSql() {
 
-        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) and  s.treatment_method ='LEEP'\n" +
+        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) " +
+                "and coalesce(s.via_vili_treatment_method,s.pap_smear_treatment_method,s.hpv_treatment_method,s.colposcopy_treatment_method) in ('LEEP','LEEP performed')\n" +
                 "and s.screening_type = 'First time screening';";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -1152,7 +1164,8 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition rescreenedCXCATXCryotherapySql() {
 
-        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) and  s.treatment_method in ('Cryotherapy performed','Cryotherapy performed (single Visit)')\n" +
+        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) " +
+                "and coalesce(s.via_vili_treatment_method,s.pap_smear_treatment_method,s.hpv_treatment_method,s.colposcopy_treatment_method) in ('Cryotherapy postponed', 'Cryotherapy performed (single Visit)', 'Cryotherapy performed', 'Cryotherapy performed (SVA)', 'Cryotherapy performed (previously postponed)')\n" +
                 "      and s.screening_type = 'Rescreening';";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -1171,7 +1184,8 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition rescreenedCXCATXThermoSql() {
 
-        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) and  s.treatment_method ='Thermocoagulation'\n" +
+        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate)" +
+                "and coalesce(s.via_vili_treatment_method,s.pap_smear_treatment_method,s.hpv_treatment_method,s.colposcopy_treatment_method) in ('Thermocoagulation','Thermal ablation performed (SVA)','Thermal ablation')\n" +
                 "and s.screening_type = 'Rescreening';";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -1190,7 +1204,8 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition rescreenedCXCATXLEEPSql() {
 
-        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) and  s.treatment_method = 'LEEP'\n" +
+        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) " +
+                "and coalesce(s.via_vili_treatment_method,s.pap_smear_treatment_method,s.hpv_treatment_method,s.colposcopy_treatment_method) in ('LEEP','LEEP performed')\n" +
                 "and s.screening_type = 'Rescreening';";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -1209,7 +1224,8 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition postTxFollowupCXCATxCryotherapySql() {
 
-        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) and  s.treatment_method in ('Cryotherapy performed','Cryotherapy performed (single Visit)')\n" +
+        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) " +
+                "and coalesce(s.via_vili_treatment_method,s.pap_smear_treatment_method,s.hpv_treatment_method,s.colposcopy_treatment_method) in ('Cryotherapy postponed', 'Cryotherapy performed (single Visit)', 'Cryotherapy performed', 'Cryotherapy performed (SVA)', 'Cryotherapy performed (previously postponed)')\n" +
                 "and s.screening_type = 'Post treatment followup';";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -1228,7 +1244,8 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition postTxFollowupCXCATXThermocoagulationSql() {
 
-        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) and  s.treatment_method ='Thermocoagulation'\n" +
+        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) " +
+                "and coalesce(s.via_vili_treatment_method,s.pap_smear_treatment_method,s.hpv_treatment_method,s.colposcopy_treatment_method) in ('Thermocoagulation','Thermal ablation performed (SVA)','Thermal ablation')\n" +
                 "and s.screening_type = 'Post treatment followup';";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -1247,7 +1264,8 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition postTxFollowupCXCATXLEEPSql() {
 
-        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) and  s.treatment_method ='LEEP'\n" +
+        String sqlQuery = "select s.patient_id from kenyaemr_etl.etl_cervical_cancer_screening s where s.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH) and date(:endDate) " +
+                "and coalesce(s.via_vili_treatment_method,s.pap_smear_treatment_method,s.hpv_treatment_method,s.colposcopy_treatment_method) in ('LEEP','LEEP performed')\n" +
                 "and s.screening_type = 'Post treatment followup';";
 
         SqlCohortDefinition cd = new SqlCohortDefinition();
