@@ -78,6 +78,7 @@
 				<ref bean="kenyaemr.hiv.report.cccDefaulterTracingRegister"/>
 				<ref bean="kenyaemr.common.report.patientRegimenHistory"/>
 				<ref bean="kenyaemr.cacx.report.cacxRegister"/>
+				<ref bean="kenyaemr.cancer.report.cancerRegister"/>
 				<ref bean="kenyaemr.etl.common.report.publicHealthAction"/>
 				<ref bean="kenyaemr.common.report.mortalityLineList"/>
 				<ref bean="kenyaemr.common.report.moh711"/>
@@ -784,7 +785,16 @@
 		<property name="template" value="kenyaemr:cacx_register_template.xls" />
 		<property name="repeatingSection" value="sheet:1,row:7,dataset:CACXInformation" />
 	</bean>
-
+	<!--	Cancer Register-->
+	<bean id="kenyaemr.cancer.report.cancerRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="a83afcac-b01b-42e3-af3e-70c17ea5535d" />
+		<property name="name" value="Cancer Register" />
+		<property name="description" value="Cancer Register" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+	</bean>
 	<bean id="kenyaemr.etl.common.report.publicHealthAction" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="e473f83f-b172-4e49-97ba-5817acf5e097" />
 		<property name="name" value="Clinical Action Report (CAR)" />

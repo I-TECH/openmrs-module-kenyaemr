@@ -299,15 +299,16 @@
                     getField('follow-up-date.error').html('Follow up date , should not be later than encounter date').show();
                     return false;
                 }
-
-                if (cervicalChecked.val() == 116023 &amp;&amp; cervicalChecked.length == 1 &amp;&amp;
-                    viaScreeningMethod.val() == 164977 &amp;&amp; viaScreeningMethod.length == 1 &amp;&amp;
-                    viaResponses == 703 &amp;&amp; treatment == "") {
-                    getField('treatment.error').html('Via/Vili treatment options is required').show();
-                    return false;
-                } else {
-                    getField('treatment.error').html('Via/Vili treatment options is required').hide();
-                }
+  //  TODO:this should validate on step 3
+//               if (cervicalChecked.val() == 116023) {
+//                if (cervicalChecked.length == 1 &amp;&amp; viaScreeningMethod.val() == 164977 &amp;&amp; viaScreeningMethod.length == 1 &amp;&amp;
+//                    viaResponses == 703 &amp;&amp; treatment == "") {
+//                    getField('treatment.error').html('Via/Vili treatment options is required').show();
+//                    return false;
+//                    }
+//                } else {
+//                    getField('treatment.error').html('Via/Vili treatment options is required').hide();
+//                }
 
             });
         });
