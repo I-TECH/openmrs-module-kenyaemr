@@ -10,8 +10,7 @@
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.cacx;
 
 import org.openmrs.annotation.Handler;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.cacx.CACXMethodDataDefinition;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.cacx.CancerTypeDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.cacx.FecalOccultScreeningTreatmentDataDefinition;
 import org.openmrs.module.reporting.data.encounter.EvaluatedEncounterData;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterDataDefinition;
 import org.openmrs.module.reporting.data.encounter.evaluator.EncounterDataEvaluator;
@@ -26,8 +25,8 @@ import java.util.Map;
 /**
  * Evaluates Cancer type
  */
-@Handler(supports=CancerTypeDataDefinition.class, order=50)
-public class CancerTypeDataEvaluator implements EncounterDataEvaluator {
+@Handler(supports= FecalOccultScreeningTreatmentDataDefinition.class, order=50)
+public class FecalOccultScreeningTreatmentDataEvaluator implements EncounterDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -35,7 +34,7 @@ public class CancerTypeDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select encounter_id, cancer_type from kenyaemr_etl.etl_cervical_cancer_screening;";
+        String qry = "select encounter_id, fecal_occult_screening_treatment from kenyaemr_etl.etl_cervical_cancer_screening;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
