@@ -144,6 +144,19 @@ public class CancerScreeningRegisterReportBuilder extends AbstractReportBuilder 
         dsd.addColumn("Clinical Breast Examination Treatment Method",new ClinicalBreastExaminationTreatmentMethodDataDefinition(),null);
         dsd.addColumn("Ultrasound Treatment Method",new UltrasoundTreatmentMethodDataDefinition(),null);
         dsd.addColumn("Mammography Treatment Method",new MammographyTreatmentMethodDataDefinition(),null);
+        dsd.addColumn("Oral Cancer",new OralCancerDataDefinition(),null);
+        dsd.addColumn("Oral Cancer Visual Exam Method",new OralCancerVisualExamMethodDataDefinition(),null);
+        dsd.addColumn("Oral Cancer Cytology Method",new OralCancerCytologyMethodDataDefinition(),null);
+        dsd.addColumn("Oral Cancer Imaging Method",new OralCancerImagingMethodDataDefinition(),null);
+        dsd.addColumn("Oral Cancer Biopsy Method",new OralCancerBiopsyMethodDataDefinition(),null);
+        dsd.addColumn("Oral Cancer Visual Exam Results",new OralCancerVisualExamResultsDataDefinition(),null);
+        dsd.addColumn("Oral Cancer Cytology Results",new OralCancerCytologyResultsDataDefinition(),null);
+        dsd.addColumn("Oral Cancer Imaging Results",new OralCancerImagingResultsDataDefinition(),null);
+        dsd.addColumn("Oral Cancer Biopsy Results",new OralCancerBiopsyResultsDataDefinition(),null);
+        dsd.addColumn("Oral Cancer Visual Exam Treatment",new OralCancerVisualExamTreatmentDataDefinition(),null);
+        dsd.addColumn("Oral Cancer Cytology Treatment",new OralCancerCytologyTreatmentDataDefinition(),null);
+        dsd.addColumn("Oral Cancer Imaging Treatment",new OralCancerImagingTreatmentDataDefinition(),null);
+        dsd.addColumn("Oral Cancer Biopsy Treatment",new OralCancerBiopsyTreatmentDataDefinition(),null);
         dsd.addColumn("Smoke Cigarattes",new SmokeCigarattesDataDefinition(),null);
         dsd.addColumn("Other Forms Tobacco",new OtherFormsTobaccoDataDefinition(),null);
         dsd.addColumn("Take Alcohol",new TakeAlcoholDataDefinition(),null);
@@ -159,6 +172,7 @@ public class CancerScreeningRegisterReportBuilder extends AbstractReportBuilder 
         dsd.addColumn("Referral Reason",new ReferralReasonDataDefinition(),null);
         dsd.addColumn("Follow Up Date", new CACXFollowUpDateDataDefinition(), null);
         dsd.addColumn("Clinical Notes", new ClinicalNotesDataDefinition(), null);
+
 
         CACXRegisterCohortDefinition cd = new CACXRegisterCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
