@@ -47,6 +47,7 @@
         var HIV_NEGATIVE = 664;
         var LATEST_HTS_RESULT = "<lookup expression="fn.latestObs(159427).getValueCoded().getConceptId()"/>";
         var pgender = "<lookup expression="patient.gender" />";
+        var pAge = parseInt('<lookup expression="patient.age"/>');
         jq(document).ready(function () {
             jq('#prostateDre').hide();
             jq('#prostatePsa').hide();
@@ -156,7 +157,6 @@
                 jq("#cancerType input[value=116023]").prop("disabled", true);
                 jq("#cancerType input[value=116026]").prop("disabled", true);
             }
-
 
             function displayTabs() {
                 var tabsObj = jq("#tabs").tabs();
@@ -299,6 +299,7 @@
                     getField('follow-up-date.error').html('Follow up date , should not be later than encounter date').show();
                     return false;
                 }
+
   //  TODO:this should validate on step 3
 //               if (cervicalChecked.val() == 116023) {
 //                if (cervicalChecked.length == 1 &amp;&amp; viaScreeningMethod.val() == 164977 &amp;&amp; viaScreeningMethod.length == 1 &amp;&amp;
@@ -1037,10 +1038,15 @@
                 jq('#breastCbe').show();
                 jq('#breastUltrasound').show();
                 jq('#breastMammograph').show();
+                if(pAge &lt; 40) {
+                    console.log("Age is ==>"+pAge);
+                    jq('#breastMammograph *').prop('disabled', true);
+                }
             } else {
                 jq('#breastCbe').hide();
                 jq('#breastUltrasound').hide();
                 jq('#breastMammograph').hide();
+
             }
         }
         var onCervicalCancerTypeSelected = function () {
