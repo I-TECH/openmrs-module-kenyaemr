@@ -2283,7 +2283,7 @@
                                         </tr>
                                     </includeIf>
 
-                                    <includeIf velocityTest="$patient.age > 35">
+                                    <includeIf velocityTest="$patient.age > 0">
                                         <tr id="breastMammograph">
                                             <obsgroup groupingConceptId="163591AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                                                 <td>
@@ -2346,7 +2346,7 @@
                                     </includeIf>
                                     <includeIf velocityTest="$patient.age > 0">
                                         <tr id="colorectalFobt">
-                                            <th rowspan="4">Colorectal</th>
+                                            <th rowspan="2">Colorectal</th>
                                             <obsgroup groupingConceptId="159362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
                                                 <td>
                                                     <obs id="colerectal-cancerType"
