@@ -63,6 +63,7 @@ import org.openmrs.module.kenyaemr.calculation.library.hiv.HIVEnrollment;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.ViralLoadAndLdlCalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.BMICalculation;
 import org.openmrs.module.kenyaemr.calculation.library.hiv.art.TransferInDateCalculation;
+import org.openmrs.module.kenyaemr.calculation.library.mchms.EligibleForMchmsDischargeCalculation;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.EmrConstants;
 import org.openmrs.module.kenyaemr.util.ZScoreUtil;
@@ -212,6 +213,10 @@ public class KenyaemrCoreRestController extends BaseRestController {
 
     public static final String PREP_DISCONTINUATION_FORM = "467c4cc3-25eb-4330-9cf6-e41b9b14cc10";
 
+    public static final String MCH_DELIVERY_FORM_UUID = "496c7cc3-0eea-4e84-a04c-2292949e2f7f";
+
+    public static final String MCH_DISCHARGE_FORM_UUID = "af273344-a5f9-11e8-98d0-529269fb1459";
+
     public static final Locale LOCALE = Locale.ENGLISH;
 
     public String name = null;
@@ -268,6 +273,29 @@ public class KenyaemrCoreRestController extends BaseRestController {
                         formObj.put("formCategory", "available");
                         formList.add(formObj);
                     }
+                }
+                PatientWrapper patientWrapper = new PatientWrapper(patient);
+                Encounter lastMchEnrollment = patientWrapper.lastEncounter(MetadataUtils.existing(EncounterType.class, MchMetadata._EncounterType.MCHMS_ENROLLMENT));
+                if(lastMchEnrollment != null) {
+                    ObjectNode delivery = JsonNodeFactory.instance.objectNode();
+                    delivery.put("uuid", MCH_DELIVERY_FORM_UUID);
+                    delivery.put("name", "Delivery");
+                    delivery.put("display", "MCH Delivery Form");
+                    delivery.put("version", "1.0");
+                    delivery.put("published", true);
+                    delivery.put("retired", false);
+                    formList.add(delivery);
+                }
+                CalculationResult eligibleForDischarge = EmrCalculationUtils.evaluateForPatient(EligibleForMchmsDischargeCalculation.class, null, patient);
+                if((Boolean) eligibleForDischarge.getValue() == true) {
+                    ObjectNode discharge = JsonNodeFactory.instance.objectNode();
+                    discharge.put("uuid", MCH_DISCHARGE_FORM_UUID);
+                    discharge.put("name", "Discharge");
+                    discharge.put("display", "MCH Discharge Form");
+                    discharge.put("version", "1.0");
+                    discharge.put("published", true);
+                    discharge.put("retired", false);
+                    formList.add(discharge);
                 }
             }
         }
