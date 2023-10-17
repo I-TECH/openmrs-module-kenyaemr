@@ -142,6 +142,7 @@
             jq('#retinoblastoma-cancerType :input[type=checkbox]').change(onRetinoblastomaCancerTypeSelected);
             jq('#colerectal-cancerType :input[type=checkbox]').change(onColorectalCancerTypeSelected);
             jq('#breast-cancerType :input[type=checkbox]').change(onBreastCancerTypeSelected);
+            jq('#tissue-diagnosis select').change(tissueDiagnosisChange);
             jq('#cervical-cancerType :input[type=checkbox]').change(onCervicalCancerTypeSelected);
             jq('#referral-reason select').change(referralReason);
             jq('#referred input').click(onReferredStatusChange);
@@ -650,7 +651,7 @@
                 } else if (value === 1116) {
                     jq('#colposcopyNegativeResultsTreatmentOptions *').prop('disabled', true);
                     jq('#colposcopyPositiveResultsTreatmentOptions *').prop('disabled', false);
-                    jq('#colposcopySuspectCancerTreatmentOption *').prop('disabled', false);
+                    jq('#colposcopySuspectCancerTreatmentOption *').prop('disabled', true);
                     clearHiddenSections([neg, suspect]);
                 } else if (value === 159008) {
                     jq('#colposcopyNegativeResultsTreatmentOptions *').prop('disabled', true);
@@ -1167,6 +1168,15 @@
                 getField('referral-reason.value').prop("selectedIndex", 0);
                 jq('#referral-reason select').prop("disabled", true);
                 jq("#preferred").hide();
+            }
+        }
+        function tissueDiagnosisChange() {
+            if (getValue('tissue-diagnosis.value') == 1267) {
+                jq("#screening-done-data input").prop("disabled", false);
+                jq("#other-symptom-text input").prop("disabled", true);
+            }else if (getValue('tissue-diagnosis.value') == 1118) {
+                jq("#other-symptom-text input").prop("disabled", false);
+                jq("#screening-done-data input").prop("disabled", true);
             }
         }
         var referralReason = function () {
@@ -2144,7 +2154,7 @@
                                                                      labelText="&lt;br/&gt;"
                                                                      answerSeparator="&lt;br/&gt;"
                                                                      answerConceptIds="1000103"
-                                                                     answerLabels="Refer for appropraite diagnosis and management"
+                                                                     answerLabels="Refer for appropriate diagnosis and management"
                                                                      style="radio" id="colposcopy-treatment-options"/>
                                                             </div>
 
@@ -2154,7 +2164,7 @@
                                                     <div id="colposcopySuspectCancerTreatmentOption">
                                                         <obs conceptId="160705AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerConceptId="1000103"
-                                                             answerLabel="Refer for appropraite diagnosis and management"
+                                                             answerLabel="Refer for appropriate diagnosis and management"
                                                              style="checkbox"/>
                                                     </div>
                                                 </td>
@@ -2256,7 +2266,7 @@
                                                         <obs conceptId="1000516"
                                                              answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                                              answerLabels="Done,Not-Done"
-                                                             style="checkbox"/>
+                                                             style="dropdown" id="tissue-diagnosis"/>
                                                         <br/>
 
                                                         <div id="done">
@@ -2266,7 +2276,7 @@
                                                                  style="checkbox"/>
                                                             <br/>
                                                             Date screening done<br/>
-                                                            <obs conceptId="1000088 "/>
+                                                            <obs conceptId="1000088" id="screening-done-data"/>
                                                         </div>
                                                         <br/>
                                                         <div id="notDone">
