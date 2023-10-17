@@ -95,7 +95,7 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
             Encounter enc = (Encounter) args[0];
             List<String> appointmentForms = Arrays.asList(HivMetadata._Form.MOH_257_VISIT_SUMMARY, HivMetadata._Form.HIV_GREEN_CARD, MchMetadata._Form.MCHMS_ANTENATAL_VISIT, MchMetadata._Form.MCHCS_FOLLOW_UP, MchMetadata._Form.MCHMS_POSTNATAL_VISIT,  PREP_FOLLOWUP_FORM, PREP_INITIAL_FORM, PREP_MONTHLY_REFILL_FORM, KP_CLINICAL_VISIT_FORM, TbMetadata._Form.TB_FOLLOW_UP );
 
-            if (enc != null && appointmentForms.contains(enc.getForm().getUuid())) {
+            if (enc != null && enc.getForm() != null && appointmentForms.contains(enc.getForm().getUuid())) {
                 Appointment editAppointment = appointmentsService.getAppointmentByUuid(enc.getUuid());
 
                 if(enc.getVoided() == true && editAppointment != null && enc.getForm() != null){
