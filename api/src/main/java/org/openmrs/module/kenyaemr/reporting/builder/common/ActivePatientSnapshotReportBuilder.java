@@ -47,6 +47,8 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLCu
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLDifferentiatedCareModelDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLFirstRegimenDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLHivSelfVisitDateDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLLastCD4DateDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLLastCD4ResultDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLLastVLDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLLastVLJustificationDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLLastVLResultDataDefinition;
@@ -195,6 +197,10 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         MedicalCoverStatusDataDefinition medicalCoverStatusDataDefinition = new MedicalCoverStatusDataDefinition();
         medicalCoverStatusDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
         medicalCoverStatusDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        ETLLastCD4ResultDataDefinition lastCD4ResultDataDefinition = new ETLLastCD4ResultDataDefinition();
+        lastCD4ResultDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+        ETLLastCD4DateDataDefinition etlLastCD4DateDataDefinition = new ETLLastCD4DateDataDefinition();
+        etlLastCD4DateDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 
 
         DataConverter formatter = new ObjectFormatter("{familyName}, {givenName}");
@@ -221,6 +227,8 @@ public class ActivePatientSnapshotReportBuilder extends AbstractHybridReportBuil
         dsd.addColumn("Current Regimen Line", new ETLCurrentRegLineDataDefinition(), "");
         dsd.addColumn("Baseline CD4", new BaselineCD4CountDataDefinition(), "");
         dsd.addColumn("Date of Baseline CD4 test", new BaselineCD4DateDataDefinition(), "");
+        dsd.addColumn("Latest CD4 Count",  lastCD4ResultDataDefinition, "endDate=${endDate}");
+        dsd.addColumn("Latest CD4 Count Date ",etlLastCD4DateDataDefinition,"endDate=${endDate}");
         dsd.addColumn("Last WHO Stage", new WHOStageArtDataDefinition(), "");
         dsd.addColumn("Last WHO Stage Date", new ETLLastWHOStageDateDataDefinition(), "", new DateConverter(DATE_FORMAT));
         dsd.addColumn("Last VL Result",  lastVlResultDataDefinition, "endDate=${endDate}");
