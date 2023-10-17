@@ -54,6 +54,8 @@ import org.openmrs.ui.framework.session.Session;
 import org.openmrs.util.PersonByNameComparator;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.servlet.http.HttpSession;
 
@@ -653,14 +655,14 @@ public SimpleObject currentMothersArvRegimen(@RequestParam("patientId") Patient 
 	 * @return
 	 */
 	public SimpleObject getFirstDNAPCR(@RequestParam("patientId") Patient patient, UiUtils ui) {
+		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 		SimpleObject object = null;
 		Concept PCR_6_WEEKS = Dictionary.getConcept(Dictionary.HIV_RAPID_TEST_1_QUALITATIVE);
 
 		OrderService orderService = Context.getOrderService();
 		PatientCalculationContext context = Context.getService(PatientCalculationService.class).createCalculationContext();
 		CalculationResultMap pcrTestQualitatives = Calculations.firstObs(Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE), Arrays.asList(patient.getPatientId()), context);
-		Obs firstPCRObs = EmrCalculationUtils.obsResultForPatient(pcrTestQualitatives, patient.getPatientId());
-
+		Obs pcrObs = EmrCalculationUtils.obsResultForPatient(pcrTestQualitatives, patient.getPatientId());
 		OrderType patientLabOrders = orderService.getOrderTypeByUuid(OrderType.TEST_ORDER_TYPE_UUID);
 		if (patientLabOrders != null) {
 			//Get all lab orders
@@ -669,24 +671,76 @@ public SimpleObject currentMothersArvRegimen(@RequestParam("patientId") Patient 
 			if (allOrders.size() > 0) {
 				for (Order o : allOrders) {
 
-					Date orderDate = null;
-					String pcrResults = null;
-					Date pcrResultsDate = null;
+					String firstPcrOrderDate = "";
+					String firstPcrResults = "";
+					String firstPcrResultsDate = "";
 
-					if (o.getOrderReason().equals(PCR_6_WEEKS)) {
-						orderDate = o.getDateActivated();
-						if (!o.isActive() && firstPCRObs != null) {
-							pcrResults = firstPCRObs.getValueCoded().getName().getName();
-							pcrResultsDate = firstPCRObs.getObsDatetime();
+					if (o.getOrderReason() != null && o.getOrderReason().equals(PCR_6_WEEKS)) {
+						firstPcrOrderDate = dateFormatter.format(o.getDateActivated());
+						if (!o.isActive() && pcrObs != null) {
+							firstPcrResults = pcrObs.getValueCoded().getName().getName();
+							firstPcrResultsDate = dateFormatter.format(pcrObs.getObsDatetime());
+						}
+						object = SimpleObject.create("firstPcrOrderDate", firstPcrOrderDate,
+								"firstPcrResults", firstPcrResults,
+								"firstPcrResultsDate", firstPcrResultsDate);
+						break;
+					}
+				}
+			}
+		}
+		return object;
+	}
+	/**
+	 * Gets month-6 PCR lab order: Lab date, results and results date if any.
+	 * @param patient
+	 * @param ui
+	 * @return
+	 */
+	public SimpleObject getSecondDNAPCR(@RequestParam("patientId") Patient patient, UiUtils ui) {
+		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleObject object = null;
+		Concept PCR_6_MONTHS = Dictionary.getConcept(Dictionary.HIV_RAPID_TEST_2_QUALITATIVE);
+
+		OrderService orderService = Context.getOrderService();
+		PatientCalculationContext context = Context.getService(PatientCalculationService.class).createCalculationContext();
+		CalculationResultMap pcrTestQualitatives = Calculations.firstObs(Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE), Arrays.asList(patient.getPatientId()), context);
+		Obs pcrObs = EmrCalculationUtils.obsResultForPatient(pcrTestQualitatives, patient.getPatientId());
+		OrderType patientLabOrders = orderService.getOrderTypeByUuid(OrderType.TEST_ORDER_TYPE_UUID);
+		if (patientLabOrders != null) {
+			System.out.println("patientLabOrders ==>");
+			//Get all lab orders
+			CareSetting careSetting = orderService.getCareSetting(1);
+			List<Order> allOrders = orderService.getOrders(patient, careSetting, patientLabOrders, true);
+			if (allOrders.size() > 0) {
+				System.out.println("patientLabOrders ==>");
+				for (Order o : allOrders) {
+
+					String secondPcrOrderDate = "";
+					String secondPcrResults = "";
+					String secondPcrResultsDate = "";
+
+					if (o.getOrderReason() != null) {
+
+						System.out.println("Order reason ==>" + o.getOrderReason());
+						System.out.println("Order Id ==>" + o.getOrderId());
+						if (o.getOrderReason().equals(PCR_6_MONTHS)) {
+							System.out.println("PCR 6 Months ==>");
+							secondPcrOrderDate = dateFormatter.format(o.getDateActivated());
+							if (!o.isActive() && pcrObs != null) {
+								System.out.println("PCR 6 Months Active ==>");
+								secondPcrResults = pcrObs.getValueCoded().getName().getName();
+								secondPcrResultsDate = dateFormatter.format(pcrObs.getObsDatetime());
+								System.out.println("secondPcrOrderDate ==>"+secondPcrOrderDate);
+								System.out.println("secondPcrResults ==>"+secondPcrResults);
+								System.out.println("secondPcrResultsDate ==>"+secondPcrResultsDate);
+							}
+							object = SimpleObject.create("secondPcrOrderDate", secondPcrOrderDate,
+									"secondPcrResults", secondPcrResults,
+									"secondPcrResultsDate", secondPcrResultsDate);
+							break;
 						}
 					}
-					System.out.println("Order date ==>"+orderDate);
-					System.out.println("Results ==>"+pcrResults);
-					System.out.println("Results date ==>"+pcrResultsDate);
-
-					object = SimpleObject.create("orderDate", orderDate,
-							"pcrResults", pcrResults,
-							"pcrResultsDate", pcrResultsDate);
 				}
 			}
 		}

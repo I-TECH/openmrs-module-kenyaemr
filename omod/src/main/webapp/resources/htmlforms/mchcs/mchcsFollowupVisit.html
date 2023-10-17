@@ -126,29 +126,6 @@
 			return Years +" Y(s)"+"<br />" + Months + " Mnth(s)" +"<br />"+ wks + " wk(s)" +"<br />"+ remDays +" Day(s)";
 		}
 
-		//Include Mothers Details
-		//CCC Number
-		function includeMothersCccNumber() {
-			var cccNumber;
-			jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/getMothersUniquePatientNumber.action', {patientId: patientId}, function (data) {
-				console.log("ccc number ", data);
-				if (data != null || data != "") {
-					cccNumber = data;
-					getField('mothers-ccc.value').val(cccNumber);
-					console.log("cccNumber", cccNumber);
-				} else {
-					getField('mothers-ccc.value').val("");
-				}
-				//Prepopulate hei exposure status
-				if (!cccNumber) {
-					heiInfants()
-				} else {
-					jq("#hiv-exposed-child input[value=822]").prop("checked", true);
-					heiInfants()
-				}
-			});
-		}
-
 		//Mother VL
 		function includeMotherCurrentVL() {
 			var encounterDate = getValue('encounter-date.value');
@@ -163,24 +140,44 @@
 						}
 					});
 		}
-
         function getFirstPCRLabData() {
-            var patientId = <lookup expression="patient.patientId"/>;
-            console.log("Get first pcr lab data ==>");
-            jq.getJSON('/' + ctxPath + '/kenyaemr/patient/patientUtils/getFirstDNAPCR.action', {patientId: patientId}, function (data) {
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/getFirstDNAPCR.action', {patientId: patientId })
+                     .done(function(data) {
+                     console.log("msg====>", data);
+                var firstPcrorderDate = "";
+                var firstPcrorderResults = "";
+                var firstPcrorderResultsDate = "";
                 if (data) {
-                    console.log("Data"+data.orderDate);
-                    console.log("Data"+data.pcrResults);
-                    console.log("Data"+data.pcrResultsDate);
-                    console.log("Data End")
-                    jq('first-pcr').text('First PCR');
-                    jq('first-pcr-order-date').text(data.orderDate);
-                    jq('first-pcr-results').text(data.pcrResults);
-                    jq('first-pcr-results-date').text(data.pcrResultsDate);
+                    firstPcrorderDate = data.firstPcrOrderDate;
+                    firstPcrorderResults = data.firstPcrResults;
+                    firstPcrorderResultsDate = data.firstPcrResultsDate;
+
+                    jq('#first-pcr:text').val("First PCR");
+                    jq('#first-pcr-order-date:text').val(firstPcrorderDate);
+                    jq('#first-pcr-results:text').val(firstPcrorderResults);
+                    jq('#first-pcr-results-date:text').val(firstPcrorderResultsDate);
                 }
-                //jq('first-pcr').val = "";
-                //getField('first-pcr.value').val("");
             });
+        }
+
+        function getSecondDNAPCRData() {
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/getSecondDNAPCR.action', {patientId: patientId })
+                .done(function(data) {
+                    console.log("msg====>", data);
+                    var secondPcrorderDate = "";
+                    var secondPcrorderResults = "";
+                    var secondPcrorderResultsDate = "";
+                    if (data) {
+                        secondPcrorderDate = data.secondPcrOrderDate;
+                        secondPcrorderResults = data.secondPcrResults;
+                        secondPcrorderResultsDate = data.secondPcrResultsDate;
+
+                        jq('#second-pcr:text').val("Second PCR");
+                        jq('#second-pcr-order-date:text').val(secondPcrorderDate);
+                        jq('#second-pcr-results:text').val(secondPcrorderResults);
+                        jq('#second-pcr-results-date:text').val(secondPcrorderResultsDate);
+                    }
+                });
         }
 		function getTetracycline() {
 			if (getValue('tetracycline-geven.value') == YES_CONCEPT_ID ) {
@@ -311,7 +308,7 @@
             jq("#referral-from-specify").hide();
             jq("#referral-to-specify").hide();
             jq("#otherFollowMilestoneOther").hide();
-			getField('ldl.value').change(ldlSpecify);
+			//getField('ldl.value').change(ldlSpecify);
 			jq('#age').html(displayDate(birthDate));
 			jq('#calculated-age-deworming').html(displayDate(birthDate));
 			//toggle options for tetracycline given
@@ -342,8 +339,8 @@
 			loadingImages();
 			loadPreviousVitals();
 			includeMotherCurrentVL();
-			includeMothersCccNumber();
             getFirstPCRLabData();
+            getSecondDNAPCRData();
 		});
 
 		beforeSubmit.push(function () {
