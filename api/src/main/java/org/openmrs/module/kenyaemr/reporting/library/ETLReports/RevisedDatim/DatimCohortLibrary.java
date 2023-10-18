@@ -6281,7 +6281,7 @@ public class DatimCohortLibrary {
     public CohortDefinition kpPrevNewlyTestedOrReferredSql() {
         String sqlQuery = "select a.client_id from (select v.client_id as client_id from (select v.client_id from kenyaemr_etl.etl_clinical_visit v where timestampdiff(MONTH,v.visit_date,date(:endDate)) <3 and v.hiv_tested in ('Yes','Referred for testing'))v\n" +
                 "left join\n" +
-                "    (select t.patient_id from kenyaemr_etl.etl_hts_test t where timestampdiff(MONTH,t.visit_date,date(:endDate)) <3)t on v.client_id = t.patient_id)a group by a.client_id;";
+                "    (select t.patient_id from kenyaemr_etl.etl_hts_test t where t.final_test_result in ('Positive','Negative') and timestampdiff(MONTH,t.visit_date,date(:endDate)) <3)t on v.client_id = t.patient_id)a group by a.client_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("kpPrevNewlyTestedOrReferred");
         cd.setQuery(sqlQuery);

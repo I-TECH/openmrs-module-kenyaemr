@@ -899,8 +899,9 @@ public class ETLMoh731GreenCardCohortLibrary {
     }
     // HIV testing cohort. includes all those who tested during the reporting period
     public CohortDefinition htsAllNumberTested() {
-        String sqlQuery = "select t.patient_id from kenyaemr_etl.etl_hts_test t inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = t.patient_id where test_type =1 and t.voided = 0 and t.visit_date between date(:startDate) and date(:endDate)\n" +
-                "group by t.patient_id;";
+        String sqlQuery = "select t.patient_id from kenyaemr_etl.etl_hts_test t inner join kenyaemr_etl.etl_patient_demographics d on d.patient_id = t.patient_id where test_type = 1 and\n" +
+                "    t.final_test_result in ('Positive','Negative') and t.voided = 0 and t.visit_date between date (:startDate) and date (:endDate)\n" +
+                "    group by t.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTested");
         cd.setQuery(sqlQuery);
@@ -934,7 +935,7 @@ public class ETLMoh731GreenCardCohortLibrary {
         String sqlQuery = "select patient_id\n" +
                 "from kenyaemr_etl.etl_hts_test\n" +
                 "WHERE test_type = 1\n" +
-                "  AND setting = 'Facility'\n" +
+                "  AND setting = 'Facility' AND final_test_result in ('Positive','Negative')\n" +
                 "  AND visit_date between date(:startDate) and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedAtFacility");
@@ -969,7 +970,7 @@ public class ETLMoh731GreenCardCohortLibrary {
         String sqlQuery = "select patient_id\n" +
                 "FROM kenyaemr_etl.etl_hts_test\n" +
                 "WHERE test_type = 1\n" +
-                "  AND setting = 'Community'\n" +
+                "  AND setting = 'Community' AND final_test_result in ('Positive','Negative')\n" +
                 "  AND visit_date between date(:startDate) and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedAtCommunity");
@@ -1000,7 +1001,7 @@ public class ETLMoh731GreenCardCohortLibrary {
      * @return
      */
     protected CohortDefinition htsAllNumberTestedAsCouple() {
-        String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test where test_type =1\n" +
+        String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test where test_type =1 AND final_test_result in ('Positive','Negative')\n" +
                 " and client_tested_as ='Couple' and date(visit_date) between date(:startDate) and date(:endDate)";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedAsCouple");
@@ -1030,7 +1031,7 @@ public class ETLMoh731GreenCardCohortLibrary {
      * @return
      */
     protected CohortDefinition htsAllNumberTestedKeyPopulation() {
-        String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test where test_type =1 \n" +
+        String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test where test_type =1 AND final_test_result in ('Positive','Negative')\n" +
                 " and population_type ='Key Population' and visit_date between date(:startDate) and date(:endDate)";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedKeyPopulation");
@@ -1133,7 +1134,7 @@ public class ETLMoh731GreenCardCohortLibrary {
      */
     public CohortDefinition htsAllNumberTestedDiscordant() {
         String sqlQuery = "select patient_id from kenyaemr_etl.etl_hts_test where test_type =1\n" +
-                " and couple_discordant ='Yes' and date(visit_date) between date(:startDate) and date(:endDate)";
+                " and couple_discordant ='Yes' and final_test_result in ('Positive','Negative') and date(visit_date) between date(:startDate) and date(:endDate)";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("htsNumberTestedDiscordant");
         cd.setQuery(sqlQuery);
@@ -1364,7 +1365,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "                  patient_id,\n" +
                 "                  visit_date      AS test_date\n" +
                 "                FROM kenyaemr_etl.etl_hts_test\n" +
-                "                WHERE test_type = 1\n" +
+                "                WHERE test_type = 1 and final_test_result in ('Positive','Negative')\n" +
                 "                and ever_tested_for_hiv = 'No'\n" +
                 "                GROUP BY patient_id\n" +
                 "                       having count(patient_id) = 1\n" +
@@ -1388,7 +1389,7 @@ public class ETLMoh731GreenCardCohortLibrary {
     public CohortDefinition htsClientsWithPreviousTestOver12MonthsAgo() {
         String sqlQuery = "SELECT patient_id\n" +
                 "FROM kenyaemr_etl.etl_hts_test\n" +
-                "WHERE test_type = 1\n" +
+                "WHERE test_type = 1 AND final_test_result in ('Positive','Negative')\n" +
                 "  and ever_tested_for_hiv = 'Yes'\n" +
                 "  and months_since_last_test > 12\n" +
                 "  and date(visit_date) between date(:startDate) and date(:endDate);";
@@ -1427,7 +1428,7 @@ public class ETLMoh731GreenCardCohortLibrary {
                 "                         max(visit_date)      AS latest_test_date,\n" +
                 "                         min(visit_date) AS first_test_date\n" +
                 "                       FROM kenyaemr_etl.etl_hts_test\n" +
-                "                       WHERE test_type = 1\n" +
+                "                       WHERE test_type = 1 AND final_test_result in ('Positive','Negative')\n" +
                 "                       GROUP BY patient_id\n" +
                 "                       having latest_test_date between date(:startDate) and date(:endDate)\n" +
                 "                          and (latest_test_date > first_test_date and timestampdiff(MONTH,first_test_date,latest_test_date) <= 12)\n" +
@@ -1449,7 +1450,7 @@ public class ETLMoh731GreenCardCohortLibrary {
     public CohortDefinition htsRepeatClientReported() {
         String sqlQuery = "SELECT patient_id\n" +
                 "FROM kenyaemr_etl.etl_hts_test\n" +
-                "WHERE test_type = 1\n" +
+                "WHERE test_type = 1 AND final_test_result in ('Positive','Negative')\n" +
                 "  and ever_tested_for_hiv = 'Yes'\n" +
                 "  and months_since_last_test <= 12\n" +
                 "  and date(visit_date) between date(:startDate) and date(:endDate);";
