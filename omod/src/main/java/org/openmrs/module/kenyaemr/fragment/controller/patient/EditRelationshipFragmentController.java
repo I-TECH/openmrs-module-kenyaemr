@@ -27,6 +27,7 @@ import org.openmrs.ui.framework.fragment.action.SuccessResult;
 import org.openmrs.ui.framework.page.PageModel;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestParam;
+import sun.awt.X11.XSystemTrayPeer;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,7 +51,7 @@ public class EditRelationshipFragmentController {
 
 	public Object saveRelationship(@MethodParam("getEditRelationshipForm") @BindParams EditRelationshipForm form,
 								   UiUtils ui) {
-
+		form.createRelationship();
 		ui.validate(form, form, null);
 		form.save();
 
@@ -76,6 +77,16 @@ public class EditRelationshipFragmentController {
 		private Date startDate;
 
 		private Date endDate;
+		Date today = new Date();
+
+		boolean motherExists;
+		boolean fatherExists;
+
+		Relationship rel;
+
+		public void setMotherExists(boolean motherExists) {
+			this.motherExists = motherExists;
+		}
 
 		public EditRelationshipForm(Relationship existing, Patient patient) {
 			this.existing = existing;
@@ -96,11 +107,14 @@ public class EditRelationshipFragmentController {
 					this.isToPatient = existing.getRelationshipType().getId() + ":" + personSide;
 				}
 			}
+			this.motherExists = isMotherExists();System.out.println("+++++++this.motherExists+++"+this.motherExists);
+			this.fatherExists = isFatherExists();System.out.println("+++++++this.isFatherExists+++"+this.fatherExists);
 		}
 
 		/**
 		 * @see ValidatingCommandObject#validate(Object, org.springframework.validation.Errors)
 		 */
+
 		@Override
 		public void validate(Object o, Errors errors) {
 			require(errors, "person");
@@ -109,7 +123,6 @@ public class EditRelationshipFragmentController {
 			if (patient.equals(person)) {
 				errors.rejectValue("person", "Can't be the patient");
 			}
-			Date today = new Date();
 			if(startDate != null && startDate.after(today)) {
 				errors.rejectValue("startDate", "Relationship start date can't be in the future");
 			}
@@ -127,13 +140,55 @@ public class EditRelationshipFragmentController {
 			if(endDate != null && endDate.after(today)) {
 				errors.rejectValue("endDate", "Relationship end date can't be in the future");
 			}
+
+            if (motherExists) {
+                errors.rejectValue(null, "Child already linked to a mother");
+            }
+			if (fatherExists) {
+				errors.rejectValue(null, "Child already linked to a father");
+			}
+		}
+		public boolean motherExistsForChild(Person person){
+			boolean exists = false;
+			List<Relationship> relationships;
+			relationships = Context.getPersonService().getRelationshipsByPerson(person);
+			boolean isChildToExistingMother;
+			if (!relationships.isEmpty()) {
+				for (Relationship r : relationships) {
+					isChildToExistingMother = r.getRelationshipType().getaIsToB().equalsIgnoreCase("Parent") && r.getPersonA().getGender().equalsIgnoreCase("F") && !r.getVoided();
+
+					if (isChildToExistingMother && (r.getEndDate() == null || r.getEndDate().after(today))) {
+						exists = true;
+						break;
+					}
+				}
+			}
+			return exists;
+		}
+		public boolean fatherExistsForChild(Person person){
+			boolean exists = false;
+			List<Relationship> relationships;
+			relationships = Context.getPersonService().getRelationshipsByPerson(person);
+			boolean isChildToExistingFather;
+			if (!relationships.isEmpty()) {
+				for (Relationship r : relationships) {
+					isChildToExistingFather = r.getRelationshipType().getaIsToB().equalsIgnoreCase("Parent") && r.getPersonA().getGender().equalsIgnoreCase("M") && !r.getVoided();
+
+					if (isChildToExistingFather && (r.getEndDate() == null || r.getEndDate().after(today))) {
+						exists = true;
+						break;
+					}
+				}
+			}
+			return exists;
 		}
 
 		/**
-		 * Saves the form
+		 * Creates a relationship
+		 * @return
 		 */
-		public void save() {
-			Relationship rel = (existing != null) ? existing : new Relationship();
+		public Relationship createRelationship() {
+			rel = (existing != null) ? existing : new Relationship();
 			RelationshipType type;
 			Person personA, personB;
 
@@ -149,19 +204,30 @@ public class EditRelationshipFragmentController {
 					personA = patient;
 					personB = person;
 				}
-			}
-			else { // Doesn't matter who is A or B, e.g. Sibling
+			} else { // Doesn't matter who is A or B, e.g. Sibling
 				type = Context.getPersonService().getRelationshipType(Integer.valueOf(isToPatient));
 				personA = patient;
 				personB = person;
 			}
-
 			rel.setRelationshipType(type);
 			rel.setPersonA(personA);
 			rel.setPersonB(personB);
 			rel.setStartDate(startDate);
 			rel.setEndDate(endDate);
 
+			if (motherExistsForChild(rel.getPersonB()) && (rel.getRelationshipType().getaIsToB().equalsIgnoreCase("Parent") && rel.getPersonA().getGender().equalsIgnoreCase("F"))) {
+				this.setMotherExists(true);
+			}
+
+			if (fatherExistsForChild(rel.getPersonB()) && rel.getRelationshipType().getaIsToB().equalsIgnoreCase("Parent") && rel.getPersonA().getGender().equalsIgnoreCase("M")) {
+				this.setFatherExists(true);
+			}
+			return rel;
+		}
+		/**
+		 * Saves the form
+		 */
+		public void save() {
 			Context.getPersonService().saveRelationship(rel);
 		}
 
@@ -203,6 +269,23 @@ public class EditRelationshipFragmentController {
 
 		public void setEndDate(Date endDate) {
 			this.endDate = endDate;
+		}
+		public Relationship getRel() {
+			return rel;
+		}
+
+		public void setRel(Relationship rel) {
+			this.rel = rel;
+		}
+		public boolean isMotherExists() {
+			return motherExists;
+		}
+		public boolean isFatherExists() {
+			return fatherExists;
+		}
+
+		public void setFatherExists(boolean fatherExists) {
+			this.fatherExists = fatherExists;
 		}
 	}
 
