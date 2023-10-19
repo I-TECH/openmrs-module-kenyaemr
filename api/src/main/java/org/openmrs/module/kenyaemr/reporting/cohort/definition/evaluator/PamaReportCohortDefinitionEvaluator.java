@@ -62,10 +62,8 @@ public class PamaReportCohortDefinitionEvaluator implements CohortDefinitionEval
 				"max(d.visit_date) as date_discontinued,\n" +
 				"de.patient_id as started_on_drugs\n" +
 				"from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
-				"join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id and timestampdiff(year,p.dob,date(:endDate)) <=14\n" +
+				"join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id and timestampdiff(year,p.dob,date(:endDate)) <=10\n" +
 				"join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
-				"join relationship r on r.person_a = p.patient_id\n" +
-				"join relationship_type t on r.relationship = t.relationship_type_id and t.uuid = '3667e52f-8653-40e1-b227-a7278d474020' and (r.end_date is null or r.end_date > date(:endDate))\n" +
 				"left outer join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:endDate)\n" +
 				"left outer JOIN\n" +
 				"(select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
