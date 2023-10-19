@@ -36,7 +36,26 @@ public class MissedAppointmentDateDataEvaluator implements EncounterDataEvaluato
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select encounter_id, next_appointment_date from kenyaemr_etl.etl_patient_hiv_followup where next_appointment_date between date(:startDate) and date(:endDate) ";
+        String qry = "select encounter_id,\n" +
+                "       ifnull(missed_refill_date, least(ifnull(missed_refill_date, missed_appointment_date),\n" +
+                "                                        missed_appointment_date)) as date_missed_appointment\n" +
+                "from (select fup.encounter_id,\n" +
+                "             fup.patient_id,\n" +
+                "             fup.next_appointment_date       missed_appointment_date,\n" +
+                "             fup.refill_date                 missed_refill_date,\n" +
+                "             min(firstVisit.visit_date)   as rtcDate,\n" +
+                "             min(refill_visit.visit_date) as rtc_refill\n" +
+                "      from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
+                "               left join kenyaemr_etl.etl_patient_hiv_followup firstVisit\n" +
+                "                         on firstVisit.patient_id = fup.patient_id and\n" +
+                "                            fup.next_appointment_date < firstVisit.visit_date\n" +
+                "               left join kenyaemr_etl.etl_art_fast_track refill_visit\n" +
+                "                         on refill_visit.patient_id = fup.patient_id and fup.refill_date < refill_visit.visit_date\n" +
+                "               join kenyaemr_etl.etl_patient_demographics p on p.patient_id = fup.patient_id\n" +
+                "               join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id = e.patient_id\n" +
+                "      where date(fup.next_appointment_date) between date(:startDate) and date(:endDate)\n" +
+                "         or date(fup.refill_date) between date(:startDate) and date(:endDate)\n" +
+                "      group by fup.encounter_id, fup.patient_id) t;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         Date startDate = (Date)context.getParameterValue("startDate");

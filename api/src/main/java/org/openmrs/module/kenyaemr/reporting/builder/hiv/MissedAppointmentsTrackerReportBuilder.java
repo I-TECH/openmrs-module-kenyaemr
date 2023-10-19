@@ -22,6 +22,7 @@ import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaemr.reporting.calculation.converter.RDQACalculationResultConverter;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.MissedAppointmentsDuringPeriodCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.AppointmentTypeNotHonouredDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLCaseManagerDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.defaulterTracing.MissedAppointmentDaysMissedDataDefinition;
@@ -117,6 +118,10 @@ public class MissedAppointmentsTrackerReportBuilder extends AbstractHybridReport
 		missedAppointmentDateDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		missedAppointmentDateDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
 
+		AppointmentTypeNotHonouredDataDefinition appointmentNotHonouredTypeDataDefinition = new AppointmentTypeNotHonouredDataDefinition();
+		appointmentNotHonouredTypeDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+		appointmentNotHonouredTypeDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+
 		MissedAppointmentTracingAttemptsDataDefinition tracingAttemptsDataDefinition = new MissedAppointmentTracingAttemptsDataDefinition();
 		tracingAttemptsDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		tracingAttemptsDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -175,6 +180,7 @@ public class MissedAppointmentsTrackerReportBuilder extends AbstractHybridReport
 		dsd.addColumn("Village_Estate_Landmark", new CalculationDataDefinition("Village/Estate/Landmark", new PersonAddressCalculation()), "", new RDQACalculationResultConverter());
 		dsd.addColumn("Date appointment given", new EncounterDatetimeDataDefinition(),"", new DateConverter(DATE_FORMAT));
 		dsd.addColumn("Date Appointment missed", missedAppointmentDateDataDefinition, paramMapping, new DateConverter(DATE_FORMAT));
+		dsd.addColumn("Type of Appointment missed", appointmentNotHonouredTypeDataDefinition, paramMapping, null);
 		dsd.addColumn("No of days missed", daysMissed, paramMapping, null);
 		dsd.addColumn("Tracing attempts", tracingAttemptsDataDefinition, paramMapping, null);
 		dsd.addColumn("Tracing methods", tracingMethods, paramMapping, null);

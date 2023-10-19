@@ -44,6 +44,7 @@ public class LastReturnVisitDateCalculation extends AbstractPatientCalculation {
     public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> map, PatientCalculationContext context) {
 
         Integer latestTCA = 5096;
+        Integer latestRefillDate = Dictionary.getConcept(Dictionary.PHARMACY_REFILL_DATE).getConceptId();
         String PREP_MONTHLY_REFILL_FORM = "291c03c8-a216-11e9-a2a3-2a2ae2dbcce4";
         String PREP_INITIAL_FORM = "1bfb09fc-56d7-4108-bd59-b2765fd312b8";
         String PREP_CONSULTATION_FORM = "ee3e2017-52c0-4a54-99ab-ebb542fb8984";
@@ -66,7 +67,7 @@ public class LastReturnVisitDateCalculation extends AbstractPatientCalculation {
         EncounterType etPrepMonthlyRefill = encounterService.getEncounterTypeByUuid(PREP_MONTHLY_REFILL_ENCOUNTERTYPE);
 
         for (Integer ptId : cohort) {
-            Date returnVisitDate = null;
+            Date returnVisitDate = null, refillDate = null, tcaDate = null;
             ArrayList<Date> prepReturnVisitDates = new ArrayList<Date>();
 
             Encounter lastFollowUpEncounter = EmrUtils.lastEncounter(Context.getPatientService().getPatient(ptId), hivFollowup,Arrays.asList(pocHivFollowup, rdeHivFollowup));   //last hiv followup form
@@ -74,13 +75,28 @@ public class LastReturnVisitDateCalculation extends AbstractPatientCalculation {
             Encounter lastPreMonthlyRefillEncounter = EmrUtils.lastEncounter(Context.getPatientService().getPatient(ptId), etPrepMonthlyRefill,preMonthlyRefill);
             Encounter lastPreInitialEncounter = EmrUtils.lastEncounter(Context.getPatientService().getPatient(ptId), etPrepInitial,prepInitial);
             if (lastFollowUpEncounter != null) {
+
                 for (Obs obs : lastFollowUpEncounter.getObs()) {
                     if (obs.getConcept().getConceptId().equals(latestTCA)) {
-
-                        returnVisitDate = obs.getValueDatetime();
-                        ret.put(ptId, new SimpleResult(returnVisitDate, this));
+                        tcaDate = obs.getValueDatetime();
                     }
+                    if (obs.getConcept().getConceptId().equals(latestRefillDate)) {
+                        refillDate = obs.getValueDatetime();
+                    }
+                    if (refillDate == null) {
+                        // refillDate is null, return tcaDate
+                        returnVisitDate = tcaDate;
+                    } else if (tcaDate == null) {
+                        // tcaDate is null, return refillDate
+                        returnVisitDate = refillDate;
+                    } else {
+                        // Both dates are not null, compare and return the earlier date
+                        returnVisitDate = refillDate.before(tcaDate) ? refillDate : tcaDate;
+                    }
+
+                    ret.put(ptId, new SimpleResult(returnVisitDate, this));
                 }
+
             }
 
             if (lastPrePFollowUpEncounter != null) {
