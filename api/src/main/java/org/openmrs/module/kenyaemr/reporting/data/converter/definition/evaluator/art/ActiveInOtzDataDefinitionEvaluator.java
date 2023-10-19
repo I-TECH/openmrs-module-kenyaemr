@@ -36,11 +36,21 @@ public class ActiveInOtzDataDefinitionEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "select pp.patient_id, if(p.name is not null,'Yes','No') from patient_program pp\n" +
-                "   inner join program p on p.program_id = pp.program_id\n" +
-                "   where date(pp.date_completed) is null and p.name ='OTZ'\n" +
-                "    group by pp.patient_id\n" +
-                "    having max(date(pp.date_enrolled)) <= date(:endDate);";
+        String qry = "select t.patient_id,\n" +
+                "       if(disc_patient is null or date(enrollment_date) >= date(date_discontinued), 'Yes', 'No') as in_otz\n" +
+                "from (select e.patient_id,\n" +
+                "             d.patient_id      as disc_patient,\n" +
+                "             max(d.visit_date) as date_discontinued,\n" +
+                "             max(e.visit_date) as enrollment_date\n" +
+                "      from kenyaemr_etl.etl_otz_enrollment e\n" +
+                "               join kenyaemr_etl.etl_patient_demographics p\n" +
+                "                    on p.patient_id = e.patient_id and p.voided = 0 and p.dead = 0\n" +
+                "               left outer JOIN\n" +
+                "           (select patient_id, visit_date\n" +
+                "            from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "            where program_name = 'OTZ'\n" +
+                "           ) d on d.patient_id = e.patient_id\n" +
+                "      group by patient_id) t;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
