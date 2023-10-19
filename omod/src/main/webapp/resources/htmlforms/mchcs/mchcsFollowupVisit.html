@@ -132,7 +132,6 @@
 			jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/currentMothersVL.action', { patientId: patientId, now: encounterDate })
 					.done(function(data) {
 						var msg = data;
-						console.log("msg", msg);
 						if(msg != ""){
 							jq("#motherVL").html(msg.lastVl);
 						}else{
@@ -143,7 +142,6 @@
         function getFirstPCRLabData() {
             jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/getFirstDNAPCR.action', {patientId: patientId })
                      .done(function(data) {
-                     console.log("msg====>", data);
                 var firstPcrorderDate = "";
                 var firstPcrorderResults = "";
                 var firstPcrorderResultsDate = "";
@@ -163,7 +161,6 @@
         function getSecondDNAPCRData() {
             jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/getSecondDNAPCR.action', {patientId: patientId })
                 .done(function(data) {
-                    console.log("msg====>", data);
                     var secondPcrorderDate = "";
                     var secondPcrorderResults = "";
                     var secondPcrorderResultsDate = "";
@@ -182,7 +179,6 @@
         function getThirdDNAPCRData() {
             jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/getThirdDNAPCR.action', {patientId: patientId })
                 .done(function(data) {
-                    console.log("msg====>", data);
                     var thirdPcrorderDate = "";
                     var thirdPcrorderResults = "";
                     var thirdPcrorderResultsDate = "";
@@ -201,7 +197,6 @@
         function getConfirmatoryDNAPCRData() {
             jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/getConfirmatoryDNAPCR.action', {patientId: patientId })
                 .done(function(data) {
-                    console.log("msg====>", data);
                     var confirmatoryPcrorderDate = "";
                     var confirmatoryPcrorderResults = "";
                     var confirmatoryPcrorderResultsDate = "";
@@ -220,7 +215,6 @@
         function getBaselineVLData() {
             jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/getBaselineVL.action', {patientId: patientId })
                 .done(function(data) {
-                    console.log("msg====>", data);
                     var baselineVlorderDate = "";
                     var baselineVlorderResults = "";
                     var baselineVlorderResultsDate = "";
@@ -239,7 +233,6 @@
         function getConfirmatoryABTestData() {
             jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/getConfirmatoryABTest.action', {patientId: patientId })
                 .done(function(data) {
-                    console.log("msg====>", data);
                     var confirmatoryABorderDate = "";
                     var confirmatoryABorderResults = "";
                     var confirmatoryABorderResultsDate = "";
