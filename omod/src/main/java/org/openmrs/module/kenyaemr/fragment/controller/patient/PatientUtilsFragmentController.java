@@ -9,6 +9,7 @@
  */
 package org.openmrs.module.kenyaemr.fragment.controller.patient;
 
+import ca.uhn.hl7v2.model.v23.datatype.ST;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.*;
@@ -675,16 +676,18 @@ public SimpleObject currentMothersArvRegimen(@RequestParam("patientId") Patient 
 					String firstPcrResults = "";
 					String firstPcrResultsDate = "";
 
-					if (o.getOrderReason() != null && o.getOrderReason().equals(PCR_6_WEEKS)) {
-						firstPcrOrderDate = dateFormatter.format(o.getDateActivated());
-						if (!o.isActive() && pcrObs != null) {
-							firstPcrResults = pcrObs.getValueCoded().getName().getName();
-							firstPcrResultsDate = dateFormatter.format(pcrObs.getObsDatetime());
+					if (o.getOrderReason() != null) {
+						if (o.getOrderReason().equals(PCR_6_WEEKS)) {
+							firstPcrOrderDate = dateFormatter.format(o.getDateActivated());
+							if (!o.isActive() && pcrObs != null) {
+								firstPcrResults = pcrObs.getValueCoded().getName().getName();
+								firstPcrResultsDate = dateFormatter.format(pcrObs.getObsDatetime());
+							}
+							object = SimpleObject.create("firstPcrOrderDate", firstPcrOrderDate,
+									"firstPcrResults", firstPcrResults,
+									"firstPcrResultsDate", firstPcrResultsDate);
+							break;
 						}
-						object = SimpleObject.create("firstPcrOrderDate", firstPcrOrderDate,
-								"firstPcrResults", firstPcrResults,
-								"firstPcrResultsDate", firstPcrResultsDate);
-						break;
 					}
 				}
 			}
@@ -708,12 +711,10 @@ public SimpleObject currentMothersArvRegimen(@RequestParam("patientId") Patient 
 		Obs pcrObs = EmrCalculationUtils.obsResultForPatient(pcrTestQualitatives, patient.getPatientId());
 		OrderType patientLabOrders = orderService.getOrderTypeByUuid(OrderType.TEST_ORDER_TYPE_UUID);
 		if (patientLabOrders != null) {
-			System.out.println("patientLabOrders ==>");
 			//Get all lab orders
 			CareSetting careSetting = orderService.getCareSetting(1);
 			List<Order> allOrders = orderService.getOrders(patient, careSetting, patientLabOrders, true);
 			if (allOrders.size() > 0) {
-				System.out.println("patientLabOrders ==>");
 				for (Order o : allOrders) {
 
 					String secondPcrOrderDate = "";
@@ -721,23 +722,205 @@ public SimpleObject currentMothersArvRegimen(@RequestParam("patientId") Patient 
 					String secondPcrResultsDate = "";
 
 					if (o.getOrderReason() != null) {
-
-						System.out.println("Order reason ==>" + o.getOrderReason());
-						System.out.println("Order Id ==>" + o.getOrderId());
 						if (o.getOrderReason().equals(PCR_6_MONTHS)) {
-							System.out.println("PCR 6 Months ==>");
 							secondPcrOrderDate = dateFormatter.format(o.getDateActivated());
 							if (!o.isActive() && pcrObs != null) {
-								System.out.println("PCR 6 Months Active ==>");
 								secondPcrResults = pcrObs.getValueCoded().getName().getName();
 								secondPcrResultsDate = dateFormatter.format(pcrObs.getObsDatetime());
-								System.out.println("secondPcrOrderDate ==>"+secondPcrOrderDate);
-								System.out.println("secondPcrResults ==>"+secondPcrResults);
-								System.out.println("secondPcrResultsDate ==>"+secondPcrResultsDate);
 							}
 							object = SimpleObject.create("secondPcrOrderDate", secondPcrOrderDate,
 									"secondPcrResults", secondPcrResults,
 									"secondPcrResultsDate", secondPcrResultsDate);
+							break;
+						}
+					}
+				}
+			}
+		}
+		return object;
+	}
+
+	/**
+	 * Gets month-12 PCR lab order: Lab date, results and results date if any.
+	 * @param patient
+	 * @param ui
+	 * @return
+	 */
+	public SimpleObject getThirdDNAPCR(@RequestParam("patientId") Patient patient, UiUtils ui) {
+		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleObject object = null;
+		Concept PCR_12_MONTHS = Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION);
+
+		OrderService orderService = Context.getOrderService();
+		PatientCalculationContext context = Context.getService(PatientCalculationService.class).createCalculationContext();
+		CalculationResultMap pcrTestQualitatives = Calculations.firstObs(Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE), Arrays.asList(patient.getPatientId()), context);
+		Obs pcrObs = EmrCalculationUtils.obsResultForPatient(pcrTestQualitatives, patient.getPatientId());
+		OrderType patientLabOrders = orderService.getOrderTypeByUuid(OrderType.TEST_ORDER_TYPE_UUID);
+		if (patientLabOrders != null) {
+			//Get all lab orders
+			CareSetting careSetting = orderService.getCareSetting(1);
+			List<Order> allOrders = orderService.getOrders(patient, careSetting, patientLabOrders, true);
+			if (allOrders.size() > 0) {
+				for (Order o : allOrders) {
+
+					String thirdPcrOrderDate = "";
+					String thirdPcrResults = "";
+					String thirdPcrResultsDate = "";
+
+					if (o.getOrderReason() != null) {
+						if (o.getOrderReason().equals(PCR_12_MONTHS)) {
+							thirdPcrOrderDate = dateFormatter.format(o.getDateActivated());
+							if (!o.isActive() && pcrObs != null) {
+								thirdPcrResults = pcrObs.getValueCoded().getName().getName();
+								thirdPcrResultsDate = dateFormatter.format(pcrObs.getObsDatetime());
+							}
+							object = SimpleObject.create("thirdPcrOrderDate", thirdPcrOrderDate,
+									"thirdPcrResults", thirdPcrResults,
+									"thirdPcrResultsDate", thirdPcrResultsDate);
+							break;
+						}
+					}
+				}
+			}
+		}
+		return object;
+	}
+
+	/**
+	 * Gets Confirmatory DNA PCR lab order: Lab date, results and results date if any.
+	 * @param patient
+	 * @param ui
+	 * @return
+	 */
+	public SimpleObject getConfirmatoryDNAPCR(@RequestParam("patientId") Patient patient, UiUtils ui) {
+		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleObject object = null;
+		Concept PCR_Confirmatory = Dictionary.getConcept(Dictionary.CONFIRMATION_STATUS);
+
+		OrderService orderService = Context.getOrderService();
+		PatientCalculationContext context = Context.getService(PatientCalculationService.class).createCalculationContext();
+		CalculationResultMap pcrTestQualitatives = Calculations.firstObs(Dictionary.getConcept(Dictionary.HIV_DNA_POLYMERASE_CHAIN_REACTION_QUALITATIVE), Arrays.asList(patient.getPatientId()), context);
+		Obs pcrObs = EmrCalculationUtils.obsResultForPatient(pcrTestQualitatives, patient.getPatientId());
+		OrderType patientLabOrders = orderService.getOrderTypeByUuid(OrderType.TEST_ORDER_TYPE_UUID);
+		if (patientLabOrders != null) {
+			//Get all lab orders
+			CareSetting careSetting = orderService.getCareSetting(1);
+			List<Order> allOrders = orderService.getOrders(patient, careSetting, patientLabOrders, true);
+			if (allOrders.size() > 0) {
+				for (Order o : allOrders) {
+
+					String confirmatoryPcrOrderDate = "";
+					String confirmatoryPcrResults = "";
+					String confirmatoryPcrResultsDate = "";
+
+					if (o.getOrderReason() != null) {
+						if (o.getOrderReason().equals(PCR_Confirmatory)) {
+							confirmatoryPcrOrderDate = dateFormatter.format(o.getDateActivated());
+							if (!o.isActive() && pcrObs != null) {
+								confirmatoryPcrResults = pcrObs.getValueCoded().getName().getName();
+								confirmatoryPcrResultsDate = dateFormatter.format(pcrObs.getObsDatetime());
+							}
+							object = SimpleObject.create("confirmatoryPcrOrderDate", confirmatoryPcrOrderDate,
+									"confirmatoryPcrResults", confirmatoryPcrResults,
+									"confirmatoryPcrResultsDate", confirmatoryPcrResultsDate);
+							break;
+						}
+					}
+				}
+			}
+		}
+		return object;
+	}
+
+	/**
+	 * Gets Baseline VL for positives lab order: Lab date, results and results date if any.
+	 * @param patient
+	 * @param ui
+	 * @return
+	 */
+	public SimpleObject getBaselineVL(@RequestParam("patientId") Patient patient, UiUtils ui) {
+		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleObject object = null;
+		Concept Baseline_VL = Dictionary.getConcept(Dictionary.TEST_STATUS_INITIAL);
+
+		OrderService orderService = Context.getOrderService();
+		PatientCalculationContext context = Context.getService(PatientCalculationService.class).createCalculationContext();
+		CalculationResultMap viralLoadQuantitativeTest = Calculations.firstObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD), Arrays.asList(patient.getPatientId()), context);
+		CalculationResultMap viralLoadQuanlitativeTest = Calculations.firstObs(Dictionary.getConcept(Dictionary.HIV_VIRAL_LOAD_QUALITATIVE), Arrays.asList(patient.getPatientId()), context);
+		Obs vlQuantitativeObs = EmrCalculationUtils.obsResultForPatient(viralLoadQuantitativeTest, patient.getPatientId());
+		Obs vlQuanlitativeObs = EmrCalculationUtils.obsResultForPatient(viralLoadQuanlitativeTest, patient.getPatientId());
+		OrderType patientLabOrders = orderService.getOrderTypeByUuid(OrderType.TEST_ORDER_TYPE_UUID);
+		if (patientLabOrders != null) {
+			//Get all lab orders
+			CareSetting careSetting = orderService.getCareSetting(1);
+			List<Order> allOrders = orderService.getOrders(patient, careSetting, patientLabOrders, true);
+			if (allOrders.size() > 0) {
+				for (Order o : allOrders) {
+
+					String baselineVlOrderDate = "";
+					String baselineVlResults = "";
+					String baselineVlResultsDate = "";
+
+					if (o.getOrderReason() != null) {
+						if (o.getOrderReason().equals(Baseline_VL)) {
+							baselineVlOrderDate = dateFormatter.format(o.getDateActivated());
+							if (!o.isActive() && vlQuantitativeObs != null) {
+								baselineVlResults = vlQuantitativeObs.getValueNumeric().toString();
+								baselineVlResultsDate = dateFormatter.format(vlQuantitativeObs.getObsDatetime());
+							}else if(!o.isActive() && vlQuanlitativeObs != null ) {
+								baselineVlResults = "LDL";
+								baselineVlResultsDate = dateFormatter.format(vlQuanlitativeObs.getObsDatetime());
+							}
+
+							object = SimpleObject.create("baselineVlOrderDate", baselineVlOrderDate,
+									"baselineVlResults", baselineVlResults,
+									"baselineVlResultsDate", baselineVlResultsDate);
+							break;
+						}
+					}
+				}
+			}
+		}
+		return object;
+	}
+
+	/**
+	 * Gets Confirmatory Antibody 18 months lab order: Lab date, results and results date if any.
+	 * @param patient
+	 * @param ui
+	 * @return
+	 */
+	public SimpleObject getConfirmatoryABTest(@RequestParam("patientId") Patient patient, UiUtils ui) {
+		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleObject object = null;
+		Concept Confirmatory_AB = Dictionary.getConcept(Dictionary.RAPID_HIV_ANTIBODY_TEST_AT_18_MONTHS);
+
+		OrderService orderService = Context.getOrderService();
+		PatientCalculationContext context = Context.getService(PatientCalculationService.class).createCalculationContext();
+		CalculationResultMap aBTestQualitatives = Calculations.firstObs(Dictionary.getConcept(Dictionary.RAPID_HIV_CONFIRMATORY_TEST), Arrays.asList(patient.getPatientId()), context);
+		Obs abObs = EmrCalculationUtils.obsResultForPatient(aBTestQualitatives, patient.getPatientId());
+		OrderType patientLabOrders = orderService.getOrderTypeByUuid(OrderType.TEST_ORDER_TYPE_UUID);
+		if (patientLabOrders != null) {
+			//Get all lab orders
+			CareSetting careSetting = orderService.getCareSetting(1);
+			List<Order> allOrders = orderService.getOrders(patient, careSetting, patientLabOrders, true);
+			if (allOrders.size() > 0) {
+				for (Order o : allOrders) {
+
+					String confirmatoryAbOrderDate = "";
+					String confirmatoryAbResults = "";
+					String confirmatoryAbResultsDate = "";
+
+					if (o.getOrderReason() != null) {
+						if (o.getOrderReason().equals(Confirmatory_AB)) {
+							confirmatoryAbOrderDate = dateFormatter.format(o.getDateActivated());
+							if (!o.isActive() && abObs != null) {
+								confirmatoryAbResults = abObs.getValueCoded().getName().getName();
+								confirmatoryAbResultsDate = dateFormatter.format(abObs.getObsDatetime());
+							}
+							object = SimpleObject.create("confirmatoryAbOrderDate", confirmatoryAbOrderDate,
+									"confirmatoryAbResults", confirmatoryAbResults,
+									"confirmatoryAbResultsDate", confirmatoryAbResultsDate);
 							break;
 						}
 					}

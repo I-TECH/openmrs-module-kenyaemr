@@ -152,7 +152,7 @@
                     firstPcrorderResults = data.firstPcrResults;
                     firstPcrorderResultsDate = data.firstPcrResultsDate;
 
-                    jq('#first-pcr:text').val("First PCR");
+                    jq('#first-pcr:text').val("First PCR - 6 Weeks");
                     jq('#first-pcr-order-date:text').val(firstPcrorderDate);
                     jq('#first-pcr-results:text').val(firstPcrorderResults);
                     jq('#first-pcr-results-date:text').val(firstPcrorderResultsDate);
@@ -172,10 +172,86 @@
                         secondPcrorderResults = data.secondPcrResults;
                         secondPcrorderResultsDate = data.secondPcrResultsDate;
 
-                        jq('#second-pcr:text').val("Second PCR");
+                        jq('#second-pcr:text').val("Second PCR - 6 Months");
                         jq('#second-pcr-order-date:text').val(secondPcrorderDate);
                         jq('#second-pcr-results:text').val(secondPcrorderResults);
                         jq('#second-pcr-results-date:text').val(secondPcrorderResultsDate);
+                    }
+                });
+        }
+        function getThirdDNAPCRData() {
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/getThirdDNAPCR.action', {patientId: patientId })
+                .done(function(data) {
+                    console.log("msg====>", data);
+                    var thirdPcrorderDate = "";
+                    var thirdPcrorderResults = "";
+                    var thirdPcrorderResultsDate = "";
+                    if (data) {
+                        thirdPcrorderDate = data.thirdPcrOrderDate;
+                        thirdPcrorderResults = data.thirdPcrResults;
+                        thirdPcrorderResultsDate = data.thirdPcrResultsDate;
+
+                        jq('#third-pcr:text').val("Third PCR - 12 Months");
+                        jq('#third-pcr-order-date:text').val(thirdPcrorderDate);
+                        jq('#third-pcr-results:text').val(thirdPcrorderResults);
+                        jq('#third-pcr-results-date:text').val(thirdPcrorderResultsDate);
+                    }
+                });
+        }
+        function getConfirmatoryDNAPCRData() {
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/getConfirmatoryDNAPCR.action', {patientId: patientId })
+                .done(function(data) {
+                    console.log("msg====>", data);
+                    var confirmatoryPcrorderDate = "";
+                    var confirmatoryPcrorderResults = "";
+                    var confirmatoryPcrorderResultsDate = "";
+                    if (data) {
+                        confirmatoryPcrorderDate = data.confirmatoryPcrOrderDate;
+                        confirmatoryPcrorderResults = data.confirmatoryPcrResults;
+                        confirmatoryPcrorderResultsDate = data.confirmatoryPcrResultsDate;
+
+                        jq('#confirmatory-pcr:text').val("Confirmatory PCR");
+                        jq('#confirmatory-pcr-order-date:text').val(confirmatoryPcrorderDate);
+                        jq('#confirmatory-pcr-results:text').val(confirmatoryPcrorderResults);
+                        jq('#confirmatory-pcr-results-date:text').val(confirmatoryPcrorderResultsDate);
+                    }
+                });
+        }
+        function getBaselineVLData() {
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/getBaselineVL.action', {patientId: patientId })
+                .done(function(data) {
+                    console.log("msg====>", data);
+                    var baselineVlorderDate = "";
+                    var baselineVlorderResults = "";
+                    var baselineVlorderResultsDate = "";
+                    if (data) {
+                        baselineVlorderDate = data.baselineVlOrderDate;
+                        baselineVlorderResults = data.baselineVlResults;
+                        baselineVlorderResultsDate = data.baselineVlResultsDate;
+
+                        jq('#baseline-vl:text').val("Baseline VL for positives");
+                        jq('#baseline-vl-order-date:text').val(baselineVlorderDate);
+                        jq('#baseline-vl-results:text').val(baselineVlorderResults);
+                        jq('#baseline-vl-results-date:text').val(baselineVlorderResultsDate);
+                    }
+                });
+        }
+        function getConfirmatoryABTestData() {
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/patient/patientUtils/getConfirmatoryABTest.action', {patientId: patientId })
+                .done(function(data) {
+                    console.log("msg====>", data);
+                    var confirmatoryABorderDate = "";
+                    var confirmatoryABorderResults = "";
+                    var confirmatoryABorderResultsDate = "";
+                    if (data) {
+                        confirmatoryABorderDate = data.confirmatoryAbOrderDate;
+                        confirmatoryABorderResults = data.confirmatoryAbResults;
+                        confirmatoryABorderResultsDate = data.confirmatoryAbResultsDate;
+
+                        jq('#confirmatory-ab:text').val("Final AB Test- 18 Months");
+                        jq('#confirmatory-ab-order-date:text').val(confirmatoryABorderDate);
+                        jq('#confirmatory-ab-results:text').val(confirmatoryABorderResults);
+                        jq('#confirmatory-ab-results-date:text').val(confirmatoryABorderResultsDate);
                     }
                 });
         }
@@ -341,6 +417,10 @@
 			includeMotherCurrentVL();
             getFirstPCRLabData();
             getSecondDNAPCRData();
+            getThirdDNAPCRData();
+            getConfirmatoryDNAPCRData();
+            getBaselineVLData();
+            getConfirmatoryABTestData();
 		});
 
 		beforeSubmit.push(function () {
@@ -589,6 +669,62 @@
 								<input type="text" name="second-pcr-results-date" id="second-pcr-results-date" readonly="True" />
 							</td>
 						</tr>
+                        <tr id="third-pcr-test-type">
+                            <td>
+                                <input type="text" name="third-pcr" id="third-pcr" readonly="True" />
+                            </td>
+                            <td>
+                                <input type="text" name="third-pcr-order-date" id="third-pcr-order-date" readonly="True" />
+                            </td>
+                            <td>
+                                <input type="text" name="third-pcr-results" id="third-pcr-results" readonly="True" />
+                            </td>
+                            <td>
+                                <input type="text" name="third-pcr-results-date" id="third-pcr-results-date" readonly="True" />
+                            </td>
+                        </tr>
+                        <tr id="confirmatory-pcr-test-type">
+                            <td>
+                                <input type="text" name="confirmatory-pcr" id="confirmatory-pcr" readonly="True" />
+                            </td>
+                            <td>
+                                <input type="text" name="confirmatory-pcr-order-date" id="confirmatory-pcr-order-date" readonly="True" />
+                            </td>
+                            <td>
+                                <input type="text" name="confirmatory-pcr-results" id="confirmatory-pcr-results" readonly="True" />
+                            </td>
+                            <td>
+                                <input type="text" name="confirmatory-pcr-results-date" id="confirmatory-pcr-results-date" readonly="True" />
+                            </td>
+                        </tr>
+                        <tr id="baseline-vl-test-type">
+                            <td>
+                                <input type="text" name="baseline-vl" id="baseline-vl" readonly="True" />
+                            </td>
+                            <td>
+                                <input type="text" name="baseline-vl-order-date" id="baseline-vl-order-date" readonly="True" />
+                            </td>
+                            <td>
+                                <input type="text" name="baseline-vl-results" id="baseline-vl-results" readonly="True" />
+                            </td>
+                            <td>
+                                <input type="text" name="baseline-vl-results-date" id="baseline-vl-results-date" readonly="True" />
+                            </td>
+                        </tr>
+                        <tr id="confirmatory-ab-test-type">
+                            <td>
+                                <input type="text" name="confirmatory-ab" id="confirmatory-ab" readonly="True" />
+                            </td>
+                            <td>
+                                <input type="text" name="confirmatory-ab-order-date" id="confirmatory-ab-order-date" readonly="True" />
+                            </td>
+                            <td>
+                                <input type="text" name="confirmatory-ab-results" id="confirmatory-ab-results" readonly="True" />
+                            </td>
+                            <td>
+                                <input type="text" name="confirmatory-ab-results-date" id="confirmatory-ab-results-date" readonly="True" />
+                            </td>
+                        </tr>
 					</table>
 				</td>
 			</tr>
