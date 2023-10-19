@@ -27,7 +27,7 @@ import org.openmrs.ui.framework.fragment.action.SuccessResult;
 import org.openmrs.ui.framework.page.PageModel;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestParam;
-import sun.awt.X11.XSystemTrayPeer;
+
 
 import java.util.ArrayList;
 import java.util.Date;
