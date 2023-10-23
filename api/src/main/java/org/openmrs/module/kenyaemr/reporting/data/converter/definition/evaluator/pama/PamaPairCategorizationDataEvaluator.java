@@ -42,7 +42,7 @@ public class PamaPairCategorizationDataEvaluator implements PersonDataEvaluator 
                 "        if(ht.final_test_result='Unknown','Unpaired',''))) as care_giver_status\n" +
                 "from kenyaemr_etl.etl_patient_demographics d\n" +
                 "  inner join relationship r on d.patient_id = r.person_b\n" +
-                "  inner join relationship_type t on r.relationship = t.relationship_type_id and t.uuid in ('3667e52f-8653-40e1-b227-a7278d474020','8d91a210-c2cc-11de-8d13-0010c6dffd0f','5f115f62-68b7-11e3-94ee-6bef9086de92')\n" +
+                "  inner join relationship_type t on r.relationship = t.relationship_type_id and t.uuid = '3667e52f-8653-40e1-b227-a7278d474020'\n" +
                 "  left  join (select mid(max(concat(t.visit_date, t.patient_id)),11) as patient_id,t.final_test_result from kenyaemr_etl.etl_hts_test t  group by t.patient_id) ht on ht.patient_id = d.patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();

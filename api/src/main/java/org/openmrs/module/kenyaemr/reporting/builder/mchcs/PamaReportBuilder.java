@@ -25,6 +25,8 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLLa
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLNextAppointmentDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLStabilityDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLSuppressionStatusDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pama.PamaBaselineVLDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pama.PamaCareGiverBaselineVLDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pama.PamaCareGiverCCCNumberDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pama.PamaCareGiverLastVLDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.pama.PamaCareGiverLastVLDateDataDefinition;
@@ -150,7 +152,7 @@ public class PamaReportBuilder extends AbstractHybridReportBuilder {
 		dsd.addColumn("Sex", new GenderDataDefinition(), "");
 		dsd.addColumn("DOB", new BirthdateDataDefinition(), "", new BirthdateConverter(DATE_FORMAT));
 		dsd.addColumn("Age at reporting", ageAtReportingDataDefinition, "endDate=${endDate}");
-
+		dsd.addColumn("Baseline VL Result", new PamaBaselineVLDataDefinition(), "");
 		dsd.addColumn("Last VL Result",  lastVlResultDataDefinition, "endDate=${endDate}");
 		dsd.addColumn("Last VL Date", lastVLDateDataDefinition, "endDate=${endDate}", new DateConverter(DATE_FORMAT));
 		dsd.addColumn("Suppression Status", suppressionStatusDataDefinition, "endDate=${endDate}");
@@ -163,6 +165,7 @@ public class PamaReportBuilder extends AbstractHybridReportBuilder {
 		dsd.addColumn("Care giver name", new PamaCareGiverNameDataDefinition(), "");
 		dsd.addColumn("Care giver CCC Number", new PamaCareGiverCCCNumberDataDefinition(), "");
 		dsd.addColumn("Care Giver HIV Status", new PamaCareGiverStatusDataDefinition(), "");
+		dsd.addColumn("Caregiver Baseline Viral Load Results", new PamaCareGiverBaselineVLDataDefinition(),"");
 		dsd.addColumn("Caregiver Last Viral Load Results", pamaCareGiverLastVLDataDefinition, "endDate=${endDate}");
 		dsd.addColumn("Caregiver Last Viral Load Date", pamaCareGiverLastVLDateDataDefinition, "endDate=${endDate}",new DateConverter(DATE_FORMAT));
 		dsd.addColumn("Caregiver Suppression Status", pamaCareGiverSuppressionStatusDataDefinition, "endDate=${endDate}");
