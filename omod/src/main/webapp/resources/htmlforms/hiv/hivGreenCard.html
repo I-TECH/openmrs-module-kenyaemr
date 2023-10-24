@@ -244,8 +244,10 @@ Green Card follow-up visit form
             jq("#tr-whoStagePead-2").hide();
             jq("#tr-whoStagePead-3").hide();
             jq("#tr-whoStagePead-4").hide();
-
+// Bmi and z-score
             displayRecentBmi();
+            displayRecentZscore();
+            jq('#z-score').attr("style", "pointer-events: none;");
 //Prophylaxis section
             jq("#ctx-part").hide();
             jq("#dapsone-part").hide();
@@ -995,6 +997,7 @@ Green Card follow-up visit form
             var display = '';
             var weightKg = parseFloat(getValue('weight.value'));
             var heightM = parseFloat(getValue('height.value')) / 100;
+            var gender = "<lookup expression="patient.gender" />";
             if (pAge &gt; 14) {
                 if (weightKg >0 &amp;&amp; heightM >0) {
                     bmi = weightKg / (heightM * heightM);
@@ -1016,6 +1019,47 @@ Green Card follow-up visit form
                 } else if (bmi &gt; 25) {
                     jq("#nutritional-status input[value=114413]").prop("checked", true);
                 }
+            }
+
+        //z-score
+            if (pAge &lt; 5) {
+                if (weightKg >0 &amp;&amp; heightM >0) {
+                    jq.getJSON('/' + ctxPath + '/kenyaemr/ZScoreUtils/calculateZScore.action', {
+                        height: heightM * 100,
+                        weight: weightKg,
+                        sex: gender
+                    }, function (data) {
+                        if (data != null) {
+                            jQuery('#calculated-zscore').html(data);
+                            setValue('z-score-value.value', data);
+                            if (data == -10) {
+                                jq("#z-score input").prop("checked", false);
+                                getField('z-score.error').html('Z-score not within acceptable range').show();
+                            } else {
+                                getField('z-score.error').html('Z-score not within acceptable range').hide();
+                            }
+                            if (data &gt; -1) {
+                                jq("#z-score input[value=1115]").prop("checked", true);
+                            } else if (data == -1) {
+                                jq("#z-score input[value=123814]").prop("checked", true);
+                            } else if (data == -2) {
+                                jq("#z-score input[value=123815]").prop("checked", true);
+                                164131
+                            } else if (data == -3) {
+                                jq("#z-score input[value=164131]").prop("checked", true);
+                            } else if (data == -4) {
+                                jq("#z-score input[value=164131]").prop("checked", true);
+                            } else if (data == -20) {
+                                jq("#z-score input").prop("checked", false);
+                                getField('z-score.error').html('Missing either weight or height').show();
+                            }
+                        } else {
+                            jq("#calculated-zscore").text("Error computing z-score").addClass("ke-error-label");
+                        }
+
+                    });
+                }
+
             }
         }
         function onEncounterDateChange() {
@@ -1062,6 +1106,28 @@ Green Card follow-up visit form
                     } else if (recent_bmi &gt; 25) {
                         jq("#nutritional-status input[value=114413]").prop("checked", true);
                     }
+                }
+            }
+        }
+
+        function displayRecentZscore() {
+            var latestZscore = "<lookup expression="fn.latestObs(163515).getValueCoded()"/>"
+            var latestZscoreDate = "<lookup expression="fn.latestObs(163515).getObsDatetime()"/>";
+            var pAge = parseInt('<lookup expression="patient.age"/>');
+            var lastZscore = latestZscore.replace(/[^\d]/g, '');
+            var formattedZscoreDate = moment(moment(latestZscoreDate, 'DD/MMM/YYYY').toDate()).format("DD-MMM-YYYY");
+
+            if (pAge &lt; 5 &amp;&amp; lastZscore !="" ) {
+                if (lastZscore == 1115) {
+                    jq('#recent-calculated-zscore').html('Normal ('+formattedZscoreDate+')');
+                }else if (lastZscore == 123814) {
+                    jq('#recent-calculated-zscore').html('Mild ('+formattedZscoreDate+')');
+                }else if (lastZscore == 123815) {
+                    jq('#recent-calculated-zscore').html('Moderate ('+formattedZscoreDate+')');
+                }else if (lastZscore == 164131) {
+                    jq('#recent-calculated-zscore').html('Severe (' + formattedZscoreDate + ')');
+                }else{
+                    jq('#recent-calculated-zscore').html("");
                 }
             }
         }
@@ -3043,6 +3109,7 @@ Management<br />
                                 <span style="color:red;"><strong>*</strong></span>
                             </td>
                             <td><span class="value"><recentObs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
+                            <includeIf velocityTest="$patient.age &gt; 4">
                             <td rowspan="4">
                                 <obs    id="nutritional-status"
                                         conceptId="163300AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -3052,6 +3119,19 @@ Management<br />
                                         answerSeparator="&lt;br /&gt;"
                                 />
                             </td>
+                            </includeIf>
+                            <includeIf velocityTest="$patient.age &lt; 5">
+                            <td>
+                                <obs conceptId="163515AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                   123814AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                   123815AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                   164131AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerLabels="Normal (Median),Mild (-1 SD),Moderate (-2 SD),Severe (-3 SD and -4 SD)"
+                                     style="radio" answerSeparator="&lt;br /&gt;"
+                                     id="z-score"/>
+                            </td>
+                            </includeIf>
                         </tr>
                         <tr class="patient-details">
                             <td>Height</td>
@@ -3076,6 +3156,21 @@ Management<br />
                             </td>
                             <td><span class="value"><recentObs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/></span></td>
                         </tr>
+                        <!-- z-score   -->
+                        <includeIf velocityTest="$patient.age &lt; 5">
+                        <tr class="patient-details">
+                            <td>Z-Score : </td>
+                            <td>
+                                <span id="calculated-zscore" class="value"></span>
+                            </td>
+                            <td><span id="recent-calculated-zscore"></span></td>
+                        </tr>
+                        <tr style="display: none">
+                            <td>
+                                <obs id="z-score-value" conceptId="162584AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                            </td>
+                        </tr>
+                        </includeIf>
                     </table>
                 </fieldset>
                 <!-- Population Type  -->
