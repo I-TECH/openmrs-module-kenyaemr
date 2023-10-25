@@ -2405,6 +2405,28 @@ Green Card follow-up visit form
             }else{
                 getField('adverse.error').html('Please specify the adverse drug reactions.').hide();
             }
+            if(pgender == 'M'  &amp;&amp; personPresent == SELF &amp;&amp; pAge &gt; 10) {
+                if (onfpMethodChecked == false) {
+                    jq('#fp-details').show();
+                    jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
+                    getField('fplanning.error').html('Please specify if patient is using family planning methods.').show();
+                    return false;
+                } else {
+                    getField('fplanning.error').html('Please specify if patient is using family planning methods.').hide();
+                }
+                //Validate fp options chooses atleast one option if on fp   or if wants fp
+                if (onfpMethodChecked == 965 &amp;&amp; fpMethodsChecked.length == 0) {
+                    jq('#fp-details').show();
+                    jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
+                    getField('fp-error.error').html('Please add at least one family planning method.').show();
+                    return false;
+                } else if (onfpMethodChecked == 1360 &amp;&amp; fpMethodsChecked.length == 0) {
+                    jq('#fp-details').show();
+                    jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
+                    getField('fp-error.error').html('Please add at least one family planning method.').show();
+                    return false;
+                }
+            }
             if(pgender == 'F'  &amp;&amp; personPresent == SELF &amp;&amp; pAge &gt; 10) {
                 if (patientHasLMP == false) {
                     jq('#greencard').smartWizard('setError', {stepnum: 2, iserror: true});
@@ -3901,6 +3923,7 @@ Management<br />
                                          answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1175AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                          style="radio" answerLabels="Yes,No,N/A"
                                     />
+                                    <span style="color:red;"><strong>*</strong></span>
                                 </td>
                             </tr>
                         </table>
@@ -4010,6 +4033,7 @@ Management<br />
                                      answerConceptIds="965AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1360AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                                      style="dropdown"
                                      answerLabels="On Family Planning,Not using Family Planning,Wants Family Planning"/>
+                                <span style="color:red;"><strong>*</strong></span>
                                 <hr/>
                                 <br/>
                             </td>
