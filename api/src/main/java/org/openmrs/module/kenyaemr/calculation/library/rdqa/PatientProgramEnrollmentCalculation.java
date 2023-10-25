@@ -19,6 +19,7 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +38,7 @@ public class PatientProgramEnrollmentCalculation extends AbstractPatientCalculat
 		CalculationResultMap ret = new CalculationResultMap();
 
 		for (Integer ptId : cohort) {
-			List<PatientProgram> programs = service.getPatientPrograms(patientService.getPatient(ptId), null, null, null, null,null, true);
+			List<PatientProgram> programs = service.getPatientPrograms(patientService.getPatient(ptId), null, null, null, new Date(),null, false);
 			ret.put(ptId, new SimpleResult(programs, this));
 		}
 
