@@ -20,6 +20,12 @@
         var IS_KDoD_SITE = <lookup expression="kenyaemr.getFacilityType()" />;
         var IS_Recency_SITE = <lookup expression="kenyaemr.getRecencySite()" />;
         var mflCode = <lookup expression="kenyaemr.currentFacilityMFLCode()" />;
+
+        // var htsMLPrediction1 = "<lookup expression="fn.latestObs(167163).getValueCoded().getConceptId()" />";
+        // console.log("Latest ML prediction 1: " + htsMLPrediction1);
+        // var htsMLPrediction2 = "<lookup expression="fn.latestObs(167163).valueCoded"/>";
+        // console.log("Latest ML prediction 2: " + htsMLPrediction2);
+
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
         var populationTypeSelected = function () {
             var val = jq(this).val();
@@ -500,6 +506,12 @@
 
             var pgender = "<lookup expression="patient.gender" />";
             var pAge = parseInt('<lookup expression="patient.age"/>');
+
+            // var htsMLPrediction3 = "<lookup expression="fn.latestObs(167163).getValueCoded().getConceptId()" />";
+            // console.log("Latest ML prediction 3: " + htsMLPrediction3);
+            // var htsMLPrediction4 = "<lookup expression="fn.latestObs(167163).valueCoded"/>";
+            // console.log("Latest ML prediction 4: " + htsMLPrediction4);
+
             jq("#key-population").hide();
             jq("#priority-population").hide();
             jq('input[type=radio].key-population').prop("checked", false);
@@ -1091,6 +1103,10 @@
         </table>
     </div>
 
+    <includeIf velocityTest="$fn.latestObs(167163).getValueCoded().getConceptId() == 1408 || $fn.latestObs(167163).getValueCoded().getConceptId() == 167164">
+        <div id="client-hiv-risk-status" class="ke-warning">High Risk Client</div>
+    </includeIf>
+
     <div class="ke-form-content">
         <!-- Population Type  -->
         <fieldset>
@@ -1371,6 +1387,8 @@
                         <obs class="consent" conceptId="1710AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="clientConsent" required="true"
                              style="yes_no" />
                     </td>
+                    <td width="50px"></td>
+                    <td><div id="ml-prediction-consent-warning" style="font-style:italic; font-weight: bold; color:Tomato;"></div></td>
                 </tr>
             </table>
             <table id="tbl-couple-testing">
@@ -1464,17 +1482,19 @@
                              answerLabels="Positive,Negative,Inconclusive"/>
                     </td>
                     <td>
-                    <table id="tbl-results-given">
-                            <tr>
-                            <td>&#160;&#160;&#160;&#160;Results given to client?&#160;&#160;&#160;&#160;
-                                <obs class="result-given" conceptId="164848AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     style="dropdown" answerLabels="YES,NO" id="results-given"/>
-                                <span style="color:red;"><strong>*</strong></span>
-                            </td>
-                        </tr>
-                    </table>
+                        <table id="tbl-results-given">
+                                <tr>
+                                <td>&#160;&#160;&#160;&#160;Results given to client?&#160;&#160;&#160;&#160;
+                                    <obs class="result-given" conceptId="164848AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                        answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                        style="dropdown" answerLabels="YES,NO" id="results-given"/>
+                                    <span style="color:red;"><strong>*</strong></span>
+                                </td>
+                            </tr>
+                        </table>
                     </td>
+                    <td width="50px"></td>
+                    <td><div id="ml-prediction-results-warning" style="font-style:italic; font-weight: bold; color:Tomato;"></div></td>
                 </tr>
             </table>
             <br />

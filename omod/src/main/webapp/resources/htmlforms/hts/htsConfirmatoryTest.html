@@ -1143,6 +1143,10 @@
         </table>
     </div>
 
+    <includeIf velocityTest="$fn.latestObs(167163).getValueCoded().getConceptId() == 1408 || $fn.latestObs(167163).getValueCoded().getConceptId() == 167164">
+        <div id="client-hiv-risk-status" class="ke-warning">High Risk Client</div>
+    </includeIf>
+
     <div class="ke-form-content">
         <!-- Population Type  -->
         <fieldset>
@@ -1422,6 +1426,8 @@
                         <obs class="consent" conceptId="1710AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="clientConsent" required="true"
                              style="yes_no" />
                     </td>
+                    <td width="50px"></td>
+                    <td><div id="ml-prediction-consent-warning" style="font-style:italic; font-weight: bold; color:Tomato;"></div></td>
                 </tr>
             </table>
 
@@ -1529,6 +1535,8 @@
                             </tr>
                         </table>
                     </td>
+                    <td width="50px"></td>
+                    <td><div id="ml-prediction-results-warning" style="font-style:italic; font-weight: bold; color:Tomato;"></div></td>
                 </tr>
             </table>
             <br />
