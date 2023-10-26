@@ -457,6 +457,70 @@ public class PatientWrapper extends AbstractPatientWrapper {
 	}
 
 	/**
+	 * Gets the NUPI Duplicate status
+	 * @return the NUPI Duplicate status
+	 */
+	public String getNUPIDuplicateStatus() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.DUPLICATE_NUPI_STATUS_WITH_NATIONAL_REGISTRY);
+	}
+
+	/**
+	 * Sets the NUPI Duplicate status
+	 * @param value the NUPI Duplicate status
+	 */
+	public void setNUPIDuplicateStatus(String value) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.DUPLICATE_NUPI_STATUS_WITH_NATIONAL_REGISTRY, value);
+	}
+
+	/**
+	 * Gets the NUPI Duplicate Facility
+	 * @return the NUPI Duplicate Facility
+	 */
+	public String getNUPIDuplicateFacility() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.DUPLICATE_NUPI_FACILITY_WITH_NATIONAL_REGISTRY);
+	}
+
+	/**
+	 * Sets the NUPI Duplicate Facility
+	 * @param value the NUPI Duplicate Facility
+	 */
+	public void setNUPIDuplicateFacility(String value) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.DUPLICATE_NUPI_FACILITY_WITH_NATIONAL_REGISTRY, value);
+	}
+
+	/**
+	 * Gets the NUPI Duplicate Sites
+	 * @return the NUPI Duplicate Sites
+	 */
+	public String getNUPIDuplicateSites() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.DUPLICATE_NUPI_SITES_WITH_NATIONAL_REGISTRY);
+	}
+
+	/**
+	 * Sets the NUPI Duplicate Sites
+	 * @param value the NUPI Duplicate Sites
+	 */
+	public void setNUPIDuplicateSites(String value) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.DUPLICATE_NUPI_SITES_WITH_NATIONAL_REGISTRY, value);
+	}
+
+	/**
+	 * Gets the Total Number Of NUPI Duplicate Sites
+	 * @return the Total Number Of NUPI Duplicate Sites
+	 */
+	public String getNUPITotalDuplicateSites() {
+		return getAsAttribute(CommonMetadata._PersonAttributeType.DUPLICATE_NUPI_TOTALSITES_WITH_NATIONAL_REGISTRY);
+	}
+
+	/**
+	 * Sets the Total Number Of NUPI Duplicate Sites
+	 * @param value the Total Number Of NUPI Duplicate Sites
+	 */
+	public void setNUPITotalDuplicateSites(String value) {
+		setAsAttribute(CommonMetadata._PersonAttributeType.DUPLICATE_NUPI_TOTALSITES_WITH_NATIONAL_REGISTRY, value);
+	}
+
+	/**
 	 * Gets the CR verification message
 	 * @return the verification message
 	 */

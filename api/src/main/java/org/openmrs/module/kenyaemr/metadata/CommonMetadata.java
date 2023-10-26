@@ -129,6 +129,10 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		public static final String CCC_SYNC_STATUS_WITH_NATIONAL_REGISTRY = "4dfa195f-8420-424d-8275-d60cf115303d";
 		public static final String CCC_SYNC_MESSAGE_WITH_NATIONAL_REGISTRY = "9bc43f7e-ff05-4afb-8dc4-710d245a927c";
 		public static final String VERIFICATION_DESCRIPTION_FOR_IPRS_ERROR = "a45d0a45-4e7a-4d3e-a550-2d482628d930";
+		public static final String DUPLICATE_NUPI_STATUS_WITH_NATIONAL_REGISTRY = "5897ac2d-de2f-4b58-aa92-c9adc9aedc66";
+		public static final String DUPLICATE_NUPI_FACILITY_WITH_NATIONAL_REGISTRY = "39673db2-c229-441c-bd84-f30edf1cc1a7";
+		public static final String DUPLICATE_NUPI_SITES_WITH_NATIONAL_REGISTRY = "876816a4-fa3e-4f93-b1f1-4443cebd9f30";
+		public static final String DUPLICATE_NUPI_TOTALSITES_WITH_NATIONAL_REGISTRY = "2816180c-46a2-49d7-b15f-e44fd81b5057";
 	}
 
 	public static final class _Provider {
@@ -312,6 +316,7 @@ public class CommonMetadata extends AbstractMetadataBundle {
 		install(personAttributeType("KDoD unit", "KDoD passout unit",
 				String.class, null, false, 4.5, _PersonAttributeType.KDOD_UNIT));
 
+		// Client Registry Properties
 		install(personAttributeType("cr verification status", "Verification status with national registry",
 				String.class, null, false, 4.5, _PersonAttributeType.VERIFICATION_STATUS_WITH_NATIONAL_REGISTRY));
 
@@ -326,6 +331,18 @@ public class CommonMetadata extends AbstractMetadataBundle {
 
 		install(personAttributeType("cr verification iprs error description ", "CR Verification error description from IPRS",
 				String.class, null, false, 4.5, _PersonAttributeType.VERIFICATION_DESCRIPTION_FOR_IPRS_ERROR));
+
+		install(personAttributeType("nupi duplication status", "NUPI Duplication status with national registry",
+				String.class, null, false, 4.5, _PersonAttributeType.DUPLICATE_NUPI_STATUS_WITH_NATIONAL_REGISTRY));
+
+		install(personAttributeType("nupi duplication facility", "NUPI Duplication facility with national registry",
+				String.class, null, false, 4.5, _PersonAttributeType.DUPLICATE_NUPI_FACILITY_WITH_NATIONAL_REGISTRY));
+		
+		install(personAttributeType("nupi duplication sites", "NUPI Duplication site names with national registry",
+				String.class, null, false, 4.5, _PersonAttributeType.DUPLICATE_NUPI_SITES_WITH_NATIONAL_REGISTRY));
+
+		install(personAttributeType("nupi duplication total sites", "NUPI Duplication total number of sites with national registry",
+				String.class, null, false, 4.5, _PersonAttributeType.DUPLICATE_NUPI_TOTALSITES_WITH_NATIONAL_REGISTRY));
 
 		// Provider attribute types.
 		install(providerAttributeType("Primary Facility", "Default facility for a provider", LocationDatatype.class, "", 0, 9999 , _ProviderAttributeType.PRIMARY_FACILITY ));

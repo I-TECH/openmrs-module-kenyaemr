@@ -745,7 +745,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
         // fetch the token asynchronously
         function fetchTokenAsync() {
             let dfrd = jq.Deferred();
-            ui.getFragmentActionAsJson("kenyaemr", "upi/upiDataExchange", "getAuthToken", {  }, function (result) {
+            ui.getFragmentActionAsJson("kenyaemr", "nupi/nupiDataExchange", "getAuthToken", {  }, function (result) {
                 authToken = result;
                 dfrd.resolve();
             });
@@ -1579,7 +1579,7 @@ ${ui.includeFragment("kenyaui", "widget/dialogForm", [
 
 
         //Using fragment action to post
-        jQuery.getJSON('${ ui.actionLink("kenyaemr", "upi/upiDataExchange", "postUpiClientRegistrationInfoToCR")}',
+        jQuery.getJSON('${ ui.actionLink("kenyaemr", "nupi/nupiDataExchange", "postUpiClientRegistrationInfoToCR")}',
             {
                 'postParams': JSON.stringify(params)
             })
