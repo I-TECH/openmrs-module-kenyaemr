@@ -7,29 +7,21 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.kenyaemr.page.controller.upi;
+package org.openmrs.module.kenyaemr.page.controller.nupi;
 
-//import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.openmrs.GlobalProperty;
-import org.openmrs.Location;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.Program;
-import org.openmrs.User;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
-import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
 import org.openmrs.module.kenyaemr.metadata.HivMetadata;
-import org.openmrs.module.kenyaemr.nupi.UpiUtilsDataExchange;
-import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
-import org.openmrs.module.kenyaui.annotation.AppAction;
 import org.openmrs.module.kenyaui.annotation.AppPage;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.ui.framework.SimpleObject;
@@ -37,17 +29,8 @@ import org.openmrs.ui.framework.UiUtils;
 import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.page.PageModel;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
-@AppPage(EmrConstants.APP_UPI_VERIFICATION)
-public class UpiVerificationHomePageController {
+@AppPage(EmrConstants.APP_NUPI_VERIFICATION)
+public class NupiVerificationHomePageController {
 
     public void get(@SpringBean KenyaUiUtils kenyaUi, UiUtils ui, PageModel model) {
 

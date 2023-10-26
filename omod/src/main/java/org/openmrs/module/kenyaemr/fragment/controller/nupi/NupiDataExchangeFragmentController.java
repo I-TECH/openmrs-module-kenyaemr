@@ -7,19 +7,24 @@
  * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
  * graphic logo is a trademark of OpenMRS Inc.
  */
-package org.openmrs.module.kenyaemr.fragment.controller.upi;
+package org.openmrs.module.kenyaemr.fragment.controller.nupi;
+
+import static org.openmrs.module.kenyaemrorderentry.util.Utils.getDefaultLocationMflCode;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,8 +35,6 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-//import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -41,25 +44,53 @@ import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonAttributeType;
+import org.openmrs.Program;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.kenyaemr.Metadata;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.module.kenyaemr.metadata.CommonMetadata;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
+import org.openmrs.module.kenyaemr.nupi.UpiUtilsDataExchange;
 import org.openmrs.module.kenyaemr.wrapper.PatientWrapper;
-import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.FragmentParam;
-import org.openmrs.ui.framework.annotation.SpringBean;
 import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.openmrs.module.kenyaemr.nupi.UpiUtilsDataExchange;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.util.Base64;
+import java.util.HashSet;
 
-import static org.openmrs.module.kenyaemrorderentry.util.Utils.getDefaultLocationMflCode;
-import static org.openmrs.util.LocationUtility.getDefaultLocation;
+import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ObjectNode;
 
-public class UpiDataExchangeFragmentController  {
+public class NupiDataExchangeFragmentController  {
+
+	//OAuth variables
+	private static final Pattern pat = Pattern.compile(".*\"access_token\"\\s*:\\s*\"([^\"]+)\".*");
+	
+	private String strClientId = ""; // clientId
+	
+	private String strClientSecret = ""; // client secret
+	
+	private String strScope = ""; // scope
+	
+	private String strTokenUrl = ""; // Token URL
+	
+	private String strDWHbackEndURL = ""; // DWH backend URL
+	
+	private String strAuthURL = ""; // DWH auth URL
+	
+	private String strFacilityCode = ""; // Facility Code
+	
+	private String strPagingThreshold = ""; // Paging of response (Number of items per page)
+	
+	private long recordsPerPull = 400; // Total number of records per request
+
+	PatientService patientService = Context.getPatientService();
 
 	// Trust all certs
 	static {
@@ -400,6 +431,374 @@ public class UpiDataExchangeFragmentController  {
 			e.printStackTrace();
 		}
   return success;
+	}
+
+		/**
+	 * Initialize the NDWH OAuth variables
+	 * 
+	 * @return true on success or false on failure
+	 */
+	public boolean initNDWHGlobalVars() {
+		String dWHbackEndURL = "kenyaemr.ndwh.nupi.backend.url";
+		GlobalProperty globalDWHbackEndURL = Context.getAdministrationService().getGlobalPropertyObject(dWHbackEndURL);
+		strDWHbackEndURL = globalDWHbackEndURL.getPropertyValue();
+		
+		String tokenUrl = "kenyaemr.ndwh.nupi.token.url";
+		GlobalProperty globalTokenUrl = Context.getAdministrationService().getGlobalPropertyObject(tokenUrl);
+		strTokenUrl = globalTokenUrl.getPropertyValue();
+		
+		String scope = "kenyaemr.ndwh.nupi.scope";
+		GlobalProperty globalScope = Context.getAdministrationService().getGlobalPropertyObject(scope);
+		strScope = globalScope.getPropertyValue();
+		
+		String clientSecret = "kenyaemr.ndwh.nupi.client.secret";
+		GlobalProperty globalClientSecret = Context.getAdministrationService().getGlobalPropertyObject(clientSecret);
+		strClientSecret = globalClientSecret.getPropertyValue();
+		
+		String clientId = "kenyaemr.ndwh.nupi.client.id";
+		GlobalProperty globalClientId = Context.getAdministrationService().getGlobalPropertyObject(clientId);
+		strClientId = globalClientId.getPropertyValue();
+		
+		String authURL = "kenyaemr.ndwh.nupi.authorization.url";
+		GlobalProperty globalAuthURL = Context.getAdministrationService().getGlobalPropertyObject(authURL);
+		strAuthURL = globalAuthURL.getPropertyValue();
+		
+		String gpResponsePaging = "kenyaemr.ndwh.nupi.paging";
+		GlobalProperty responsePagingString = Context.getAdministrationService().getGlobalPropertyObject(gpResponsePaging);
+		strPagingThreshold = responsePagingString.getPropertyValue();
+		
+		KenyaEmrService emrService = Context.getService(KenyaEmrService.class);
+		emrService.getDefaultLocationMflCode();
+		strFacilityCode = emrService.getDefaultLocationMflCode();
+		
+		if (strDWHbackEndURL == null || strTokenUrl == null || strScope == null || strClientSecret == null
+		        || strClientId == null || strAuthURL == null) {
+			System.err.println("Get NDWH NUPI data: Please set DWH OAuth credentials");
+			return (false);
+		}
+		return (true);
+	}
+
+	/**
+	 * Get the NDWH Token
+	 * 
+	 * @return the token as a string and null on failure
+	 */
+	private String getNDWHClientCredentials() {
+		
+		String auth = strClientId + ":" + strClientSecret;
+		String authentication = Base64.getEncoder().encodeToString(auth.getBytes());
+		BufferedReader reader = null;
+		HttpsURLConnection connection = null;
+		String returnValue = "";
+		try {
+			StringBuilder parameters = new StringBuilder();
+			parameters.append("grant_type=" + URLEncoder.encode("client_credentials", "UTF-8"));
+			parameters.append("&");
+			parameters.append("scope=" + URLEncoder.encode(strScope, "UTF-8"));
+			URL url = new URL(strTokenUrl);
+			connection = (HttpsURLConnection) url.openConnection();
+			connection.setRequestMethod("POST");
+			connection.setDoOutput(true);
+			connection.setRequestProperty("Authorization", "Basic " + authentication);
+			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			connection.setRequestProperty("Accept", "application/json");
+			PrintStream os = new PrintStream(connection.getOutputStream());
+			os.print(parameters);
+			os.close();
+			reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			String line = null;
+			StringWriter out = new StringWriter(connection.getContentLength() > 0 ? connection.getContentLength() : 2048);
+			while ((line = reader.readLine()) != null) {
+				out.append(line);
+			}
+			String response = out.toString();
+			Matcher matcher = pat.matcher(response);
+			if (matcher.matches() && matcher.groupCount() > 0) {
+				returnValue = matcher.group(1);
+			} else {
+				System.err.println("IIT ML - Error : Token pattern mismatch");
+			}
+			
+		}
+		catch (Exception e) {
+			System.err.println("IIT ML - Error : " + e.getMessage());
+		}
+		finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				}
+				catch (IOException e) {}
+			}
+			connection.disconnect();
+		}
+		return returnValue;
+	}
+
+	/**
+	 * Get the total NUPI duplicate records on remote side
+	 * 
+	 * @param bearerToken the OAuth2 token
+	 * @return long available number of records
+	 */
+	private long getAvailableRecordsOnRemoteSide(String bearerToken) {
+		BufferedReader reader = null;
+		HttpsURLConnection connection = null;
+		try {
+			URL url = new URL(strDWHbackEndURL + "?code=FND&name=DuplicateReport&pageNumber=1&pageSize=1&siteCode=" + strFacilityCode);
+			System.out.println("NDWH NUPI Duplicates - Getting available data count using URL: " + url);
+			connection = (HttpsURLConnection) url.openConnection();
+			connection.setRequestProperty("Authorization", "Bearer " + bearerToken);
+			connection.setDoOutput(true);
+			connection.setRequestMethod("GET");
+			reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			String line = null;
+			StringWriter out = new StringWriter(connection.getContentLength() > 0 ? connection.getContentLength() : 2048);
+			while ((line = reader.readLine()) != null) {
+				out.append(line);
+			}
+			String response = out.toString();
+			
+			ObjectMapper mapper = new ObjectMapper();
+			ObjectNode jsonNode = (ObjectNode) mapper.readTree(response);
+			if (jsonNode != null) {
+				long pageCount = jsonNode.get("pageCount").getLongValue();
+				System.out.println("NDWH NUPI Duplicates - Got available data count as: " + pageCount);
+				return (pageCount);
+			} else {
+				System.out.println("NDWH NUPI Duplicates - No available data");
+				return (0);
+			}
+		}
+		catch (Exception e) {
+			System.err.println("NDWH NUPI Duplicates - Error getting total remote records: " + e.getMessage());
+		}
+		finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				}
+				catch (IOException e) {}
+			}
+			connection.disconnect();
+		}
+		return (0);
+	}
+
+	/**
+	 * Get NUPI Duplicates from NDWH       *
+	 * @return
+	 */
+	public SimpleObject pullDuplicatesFromNDWH() {
+		boolean success = false;
+
+		// We have finished the data pull task. We now set the flag.
+		// setStatusOfPullDataTask(true);
+
+		// Init the auth vars
+		boolean varsOk = initNDWHGlobalVars();
+		if (varsOk) {
+			//Get the OAuth Token
+			String credentials = getNDWHClientCredentials();
+			//Get the data
+			if (credentials != null) {
+				//get total record count
+				long totalRemote = getAvailableRecordsOnRemoteSide(credentials);
+				System.out.println("NDWH NUPI Duplicates - Total Remote Records: " + totalRemote);
+				
+				if (totalRemote > 0) {
+					//We now pull and save
+					pullAndSaveNUPIDuplicates(credentials, totalRemote);
+				} else {
+					System.err.println("NDWH NUPI Duplicates - No records on remote side");
+					// setStatusOfPullDataTask(false);
+					success = false;
+				}
+			} else {
+				System.err.println("NDWH NUPI Duplicates - Failed to get the OAuth token");
+				// setStatusOfPullDataTask(false);
+				success = false;
+			}
+		} else {
+			System.err.println("NDWH NUPI Duplicates - Failed to get the OAuth Vars");
+			// setStatusOfPullDataTask(false);
+			success = false;
+		}
+
+		// We have finished the data pull task. We now set the flag.
+		// setStatusOfPullDataTask(false);
+
+		success = true;
+
+		return SimpleObject.create("success", success );
+	}
+
+	/**
+	 * Pulls records and updates patient status
+	 * 
+	 * @param bearerToken the OAuth2 token
+	 * @param totalRemote the available number of records in NDWH
+	 * @return true when successfull and false on failure
+	 */
+	private boolean pullAndSaveNUPIDuplicates(String bearerToken, long totalRemote) {
+
+		HashSet<Integer> remotePatients = new HashSet<Integer>();
+		Integer foundPatients = 0;
+
+		if (StringUtils.isNotBlank(strPagingThreshold)) {
+			long configuredValue = Long.valueOf(strPagingThreshold);
+			if (configuredValue > 0) {
+				recordsPerPull = configuredValue;
+			}
+		}
+		long totalPages = (long) (Math.ceil((totalRemote * 1.0) / (recordsPerPull * 1.0)));
+		
+		long currentPage = 1;
+		for (int i = 0; i < totalPages; i++) {
+			// if (!getContinuePullingData()) {
+			// 	return (false);
+			// }
+			BufferedReader reader = null;
+			HttpsURLConnection connection = null;
+			try {
+
+				String fullURL = strDWHbackEndURL + "?code=FND&name=DuplicateReport&pageNumber=" + currentPage + "&pageSize=" + recordsPerPull + "&siteCode=" + strFacilityCode;
+				System.out.println("NDWH NUPI Duplicates - Pulling data using: " + fullURL);
+				URL url = new URL(fullURL);
+				connection = (HttpsURLConnection) url.openConnection();
+				connection.setRequestProperty("Authorization", "Bearer " + bearerToken);
+				connection.setDoOutput(true);
+				connection.setRequestMethod("GET");
+				reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+				String line = null;
+				StringWriter out = new StringWriter(connection.getContentLength() > 0 ? connection.getContentLength() : 2048);
+				while ((line = reader.readLine()) != null) {
+					out.append(line);
+				}
+				String response = out.toString();
+				
+				ObjectMapper mapper = new ObjectMapper();
+				ObjectNode jsonNode = (ObjectNode) mapper.readTree(response);
+				if (jsonNode != null) {
+					
+					JsonNode extract = jsonNode.get("extract");
+					if (extract.isArray() && extract.size() > 0) {
+						for (JsonNode personObject : extract) {
+							foundPatients++;
+							// if (!getContinuePullingData()) {
+							// 	return (false);
+							// }
+
+							try {
+								// String nupi = personObject.get("nupi").asText();
+								// String cccNumber = personObject.get("cccNumber").asText();
+								String patientId = personObject.get("PatientPK").asText();
+								String facilityCode = personObject.get("FacilityCode").asText();
+								String otherFacilities = personObject.get("OtherSiteCodes").asText();
+								Integer totalFacilities = personObject.get("RecordCount").asInt();
+
+								Patient patient = patientService.getPatient(Integer.valueOf(patientId));
+
+								PatientWrapper wrapper = new PatientWrapper(patient);
+								wrapper.setNUPIDuplicateStatus(getAttributeSubstring("true"));
+								wrapper.setNUPIDuplicateFacility(facilityCode);
+								wrapper.setNUPIDuplicateSites(otherFacilities);
+								wrapper.setNUPITotalDuplicateSites(String.valueOf(totalFacilities));
+
+								patientService.savePatient(patient);
+
+								// Populate the remote patients list
+								remotePatients.add(patient.getId());
+							}
+							catch (Exception ex) {
+								//Failed to save record
+								System.err.println("NDWH NUPI Duplicates - Error saving attributes: " + ex.getMessage());
+								// ex.printStackTrace();
+							}
+						}
+					} else {
+						System.err.println("NDWH NUPI Duplicates - JSON Data extraction problem. Exiting");
+						if (reader != null) {
+							try {
+								reader.close();
+							}
+							catch (Exception ex) {}
+						}
+						if (reader != null) {
+							try {
+								connection.disconnect();
+							}
+							catch (Exception er) {}
+						}
+						return(false);
+					}
+				}
+			}
+			catch (Exception e) {
+				System.err.println("NDWH NUPI Duplicates - Error getting NUPI duplicates: " + e.getMessage());
+				// e.printStackTrace();
+			}
+			finally {
+				if (reader != null) {
+					try {
+						reader.close();
+					}
+					catch (IOException e) {}
+				}
+				if (reader != null) {
+					try {
+						connection.disconnect();
+					}
+					catch (Exception er) {}
+				}
+			}
+			
+			// setDataPullStatus((long)Math.floor(((currentPage * 1.00 / totalPages * 1.00) * totalRemote)), totalRemote);
+			currentPage++;
+
+			try {
+				//Delay for 5 seconds
+				Thread.sleep(5000);
+			}
+			catch (Exception ie) {
+				Thread.currentThread().interrupt();
+			}
+		}
+
+		// Sync local to remote status. i.e ensure that if a patient is cleared on the remote side, they are also cleared here
+		// Ensure that we got all remote records
+		if(foundPatients == totalRemote) {
+			System.out.println("NDWH NUPI Duplicates - Syncing NUPI Duplicates Status with remote");
+			PersonAttributeType duplicateStatusPA = Context.getPersonService().getPersonAttributeTypeByUuid(CommonMetadata._PersonAttributeType.DUPLICATE_NUPI_STATUS_WITH_NATIONAL_REGISTRY);
+			List<Patient> allPatients = Context.getPatientService().getAllPatients();
+
+			// Get list of local patients with duplicates
+			for (Patient patient : allPatients) {
+				if (patient.getAttribute(duplicateStatusPA) != null) {
+					// Has a duplicate?
+					if (patient.getAttribute(duplicateStatusPA).getValue().trim().equalsIgnoreCase("true")) {
+						//Check if exists in remote
+						Integer patientId = patient.getId();
+						if(!remotePatients.contains(patientId)) {
+							//Patient does not exist on the remote side. We can clear the patient.
+							PatientWrapper wrapper = new PatientWrapper(patient);
+							wrapper.setNUPIDuplicateStatus(getAttributeSubstring("false"));
+							wrapper.setNUPIDuplicateFacility("");
+							wrapper.setNUPIDuplicateSites("");
+							wrapper.setNUPITotalDuplicateSites("");
+
+							patientService.savePatient(patient);
+							System.out.println("NDWH NUPI Duplicates - Updating Sync Patient ID: " + patientId);
+						}
+					}
+				}
+			}
+		} else {
+			System.err.println("NDWH NUPI Duplicates - Error: We didnt manage to pull all remote records. We cannot sync local with remote");
+		}
+
+		return (true);
 	}
 
 	/**

@@ -1,7 +1,11 @@
 <%
     ui.decorateWith("kenyaemr", "standardPage", [layout: "sidebar"])
     def menuItems = [
-            [label: "Back", iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back to home", href: ui.pageLink("kenyaemr", "userHome")],
+            [label: "Back", iconProvider: "kenyaui", icon: "buttons/back.png", label: "Back to home", href: ui.pageLink("kenyaemr", "userHome")],           
+    ]
+
+    def dataManagementItems = [
+            [label: "NUPI Duplicates", iconProvider: "vdot", icon: "icons/Nimeconfirm_sync_38_3.png", label: "NUPI Duplicates", href: ui.pageLink("kenyaemr", "nupi/nupiDuplicates")]
     ]
 
     ui.includeJavascript("kenyaemrorderentry", "jquery.twbsPagination.min.js")
@@ -136,6 +140,10 @@ tr:nth-child(even) {background-color: #f2f2f2;}
 
 <div class="ke-page-sidebar">
     ${ui.includeFragment("kenyaui", "widget/panelMenu", [heading: "Back", items: menuItems])}
+
+    <div class="ke-panel-frame">
+        ${ui.includeFragment("kenyaui", "widget/panelMenu", [heading: "Data Management Actions", items: dataManagementItems])}
+    </div>
 </div>
 
 <div class="ke-page-content">
@@ -368,7 +376,7 @@ tr:nth-child(even) {background-color: #f2f2f2;}
             console.log('Starting the fetch task!');
            // show spinner
            display_loading_validate_identifier(true);
-           jQuery.getJSON('${ ui.actionLink("kenyaemr", "upi/upiDataExchange", "pullVerificationErrorsFromCR")}')
+           jQuery.getJSON('${ ui.actionLink("kenyaemr", "nupi/nupiDataExchange", "pullVerificationErrorsFromCR")}')
                .success(function (data) {
                     if(data.success === "true") {
                        // Hide spinner

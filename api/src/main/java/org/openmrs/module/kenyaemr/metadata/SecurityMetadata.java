@@ -89,7 +89,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				EmrConstants.APP_AIR,
 				EmrConstants.APP_LAB_MANIFEST,
 				EmrConstants.APP_ADHERENCE_COUNSELOR,
-				EmrConstants.APP_UPI_VERIFICATION,
+				EmrConstants.APP_NUPI_VERIFICATION,
 				EmrConstants.APP_O3_QUEUES_SHORTCUT,
 				EmrConstants.APP_O3_APPOINTMENTS_SHORTCUT,
 				EmrConstants.APP_O3_SHORTCUT
@@ -146,7 +146,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_FACILITY_DASHBOARD),
 						app(EmrConstants.APP_DEFAULTER_TRACING),
 						app(EmrConstants.APP_PREP),
-						app(EmrConstants.APP_UPI_VERIFICATION),
+						app(EmrConstants.APP_NUPI_VERIFICATION),
 						app(EmrConstants.APP_O3_APPOINTMENTS_SHORTCUT),
 						app(EmrConstants.APP_O3_QUEUES_SHORTCUT),
 						app(EmrConstants.APP_O3_SHORTCUT),
@@ -197,7 +197,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_DEFAULTER_TRACING),
 						app(EmrConstants.APP_PREP),
 						app(EmrConstants.APP_AIR),
-						app(EmrConstants.APP_UPI_VERIFICATION),
+						app(EmrConstants.APP_NUPI_VERIFICATION),
 						app(EmrConstants.APP_O3_APPOINTMENTS_SHORTCUT),
 						app(EmrConstants.APP_O3_QUEUES_SHORTCUT),
 						app(EmrConstants.APP_O3_SHORTCUT),
@@ -221,7 +221,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_DEFAULTER_TRACING),
 						app(EmrConstants.APP_PREP),
 						app(EmrConstants.APP_AIR),
-						app(EmrConstants.APP_UPI_VERIFICATION),
+						app(EmrConstants.APP_NUPI_VERIFICATION),
 						app(EmrConstants.APP_O3_APPOINTMENTS_SHORTCUT),
 						app(EmrConstants.APP_O3_QUEUES_SHORTCUT),
 						app(EmrConstants.APP_O3_SHORTCUT),
@@ -333,7 +333,7 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_FACILITIES),
 						app(EmrConstants.APP_FACILITY_DASHBOARD),
 						app(EmrConstants.APP_ADHERENCE_COUNSELOR),
-						app(EmrConstants.APP_UPI_VERIFICATION),
+						app(EmrConstants.APP_NUPI_VERIFICATION),
 						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
