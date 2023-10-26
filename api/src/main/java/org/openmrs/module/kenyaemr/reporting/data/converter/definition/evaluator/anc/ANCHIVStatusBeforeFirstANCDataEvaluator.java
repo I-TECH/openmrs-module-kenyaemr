@@ -35,15 +35,9 @@ public class ANCHIVStatusBeforeFirstANCDataEvaluator implements EncounterDataEva
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-//        String qry = "select\n" +
-//                "   e.encounter_id,\n" +
-//                "  (case e.hiv_status when 703 then \"Known positive\" when 1067 then \"Unknown\" else \"\" end) as hiv_status\n" +
-//                "from kenyaemr_etl.etl_mch_enrollment e\n" +
-//                "GROUP BY e.encounter_id;";
-
         String qry = "select\n" +
                 "   v.encounter_id,\n" +
-                "   (case e.hiv_status when 703 then 'Positive' when 664 then 'Negative'  else 'Unknown' end) as hiv_status\n" +
+                "   (case e.hiv_status when 703 then 'Known Positive' when 164142 then 'Revisit' when 1067 then 'Unknown' end) as hiv_status\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
                 "  inner join kenyaemr_etl.etl_mch_enrollment e on v.patient_id = e.patient_id\n" +
                 "where date(v.visit_date) between date(:startDate) and date(:endDate)\n" +

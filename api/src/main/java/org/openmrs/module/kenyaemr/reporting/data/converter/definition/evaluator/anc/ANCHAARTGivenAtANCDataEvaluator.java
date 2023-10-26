@@ -35,15 +35,14 @@ public class ANCHAARTGivenAtANCDataEvaluator implements EncounterDataEvaluator {
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select\n" +
-                "     v.encounter_id,\n" +
-                "   (case d.date_started when '' then 'No' else 'Yes' end) as on_arv_at_anc\n" +
+        String qry = "select v.encounter_id,if((d.date_started >= v.visit_date and v.anc_visit_number >= 1) or (d.date_started = e.visit_date and e.ti_date_started_art is null),'Yes','No') as started_ART_ANC\n" +
                 "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
-                "  inner join kenyaemr_etl.etl_drug_event d on d.patient_id= v.patient_id\n" +
-                "  inner join kenyaemr_etl.etl_mchs_delivery ld on ld.patient_id= v.patient_id\n" +
-                "  inner join kenyaemr_etl.etl_mch_enrollment e on e.patient_id = v.patient_id\n" +
-                "where d.date_started >= e.visit_date and d.date_started <=  ld.visit_date\n" +
-                "and date(v.visit_date) between date(:startDate) and date(:endDate);";
+                "         inner join kenyaemr_etl.etl_mch_enrollment e on e.patient_id = v.patient_id\n" +
+                "         inner join (select d.patient_id, min(d.date_started) as date_started, d.program as program\n" +
+                "                     from kenyaemr_etl.etl_drug_event d\n" +
+                "                     group by d.patient_id) d\n" +
+                "                    on v.patient_id = d.patient_id and d.program = 'HIV'\n" +
+                "where v.visit_date between date(:startDate) AND date(:endDate);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
