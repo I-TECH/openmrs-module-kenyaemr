@@ -14,7 +14,7 @@
 
     <groupId>org.openmrs.module</groupId>
     <artifactId>kenyaemr</artifactId>
-    <version>18.6.2</version>
+    <version>18.7.0</version>
     <packaging>pom</packaging>
     <name>KenyaEMR</name>
     <description>OpenMRS-based EMR for Kenya</description>
@@ -60,7 +60,7 @@
         <kenyacoreVersion>3.0.1</kenyacoreVersion>
         <kenyadqVersion>1.4.0</kenyadqVersion>
         <kenyauiVersion>3.0.0</kenyauiVersion>
-        <kenyaemrOrderentryVersion>1.6.1</kenyaemrOrderentryVersion>
+        <kenyaemrOrderentryVersion>1.6.2</kenyaemrOrderentryVersion>
         <logicVersion>0.5.2</logicVersion>
         <facilityReportingVersion>1.2.0</facilityReportingVersion>
         <apacheHttpClientVersion>4.5.10</apacheHttpClientVersion>
