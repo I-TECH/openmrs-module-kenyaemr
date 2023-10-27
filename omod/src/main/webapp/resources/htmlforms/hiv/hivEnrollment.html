@@ -199,18 +199,15 @@
             jq("#btnViewPatientSummary").click(function(e){
                 e.preventDefault();
                 jq("#theTable").find('tr').remove().end();
-                console.log("URL "+'/' + ctxPath + "/ws/rest/v1/kenyaemril/expected-ti-patient?patientUuid="+patientId)
                 jq.ajax({
                     url: '/' + ctxPath + "/ws/rest/v1/kenyaemril/expected-ti-patient?patientUuid="+patientId,
                     type: "GET",
                     async: false, // asynchronous
                     timeout: 5000, // 10 sec timeout
                     error: function(err) {
-                        console.log("ERROR")
                         // hide spinner
                     },
                     success: function(data) {
-                        console.log("DATA PPPP", data)
                         var theTbl = jq("#theTable");
                         theTbl.append('<tr><td>Transfer Out Facility</td><td>'+data.transfer_out_facility+'</td></tr>');
                         theTbl.append('<tr><td>Transfer Out Date</td><td>'+data.appointment_date+'</td></tr>');
@@ -263,7 +260,6 @@
                             title : "Patient Hiv Summary",
                             buttons: {
                                 "Use TI Data": function () {
-                                    console.log("DATA", data)
                                     jq('#who_ti_value').show();
                                     jq('#regimen_ti_value').show();
                                     setValue('selectedFromFacility.value',data.transfer_out_facility);
