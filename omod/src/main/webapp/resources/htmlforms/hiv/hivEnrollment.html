@@ -50,6 +50,7 @@
 
             ageGroup();
             jq('.muac').hide();
+            jq('#btnViewPatientSummary').hide();
             jq('#transfer-in-status input').change(onEntryPointChange);
             jq('#art-status input').change(onArtStatusChange);
             jq('#generate-hiv-id').click(onUpnGenerateClick);
@@ -195,6 +196,115 @@
                 };
             });
 
+            jq("#btnViewPatientSummary").click(function(e){
+                e.preventDefault();
+                jq("#theTable").find('tr').remove().end();
+                jq.ajax({
+                    url: '/' + ctxPath + "/ws/rest/v1/kenyaemril/expected-ti-patient?patientUuid="+patientId,
+                    type: "GET",
+                    async: false, // asynchronous
+                    timeout: 5000, // 10 sec timeout
+                    error: function(err) {
+                        // hide spinner
+                    },
+                    success: function(data) {
+                        var theTbl = jq("#theTable");
+                        theTbl.append('<tr><td>Transfer Out Facility</td><td>'+data.transfer_out_facility+'</td></tr>');
+                        theTbl.append('<tr><td>Transfer Out Date</td><td>'+data.appointment_date+'</td></tr>');
+                        theTbl.append('<tr><td>Appointment Date</td><td>'+data.appointment_date+'</td></tr>');
+                        theTbl.append('<tr><td>HIV Enrollment Date</td><td>'+data.hiv_enrollment_date+'</td></tr>');
+                        theTbl.append('<tr><td>ART Start Date</td><td>'+data.art_start_date+'</td></tr>');
+                        theTbl.append('<tr><td>Date Confirmed Positive</td><td>'+data.date_confirmed_positive+'</td></tr>');
+                        theTbl.append('<tr><td>HIV Confirmation Facility</td><td>'+data.hiv_confirmation_facility+'</td></tr>');
+                        theTbl.append('<tr><td>WHO Stage</td><td>'+data.who_stage.toUpperCase()+'</td></tr>');
+						if (data.current_regimen) {
+							theTbl.append('<tr><td>Current Regimen</td><td>'+data.current_regimen.replace("\/","/").toUpperCase()+'</td></tr>');
+						} else {
+							theTbl.append('<tr><td>Current Regimen</td><td>Not provided</td></tr>');
+						}
+                        theTbl.append('<tr><td>On ART</td><td>'+data.on_art+'</td></tr>');
+                        theTbl.append('<tr><td>ARV Adherence</td><td>'+data.arv_adherence_outcome+'</td></tr>');
+                        theTbl.append('<tr><td>CD4 Count</td><td>'+data.cd4_count+'</td></tr>');
+                        theTbl.append('<tr><td>Last CD4 Date</td><td>'+data.cd4_date+'</td></tr>');
+                        theTbl.append('<tr><td>Last VL Result</td><td>'+data.vl_result+'</td></tr>');
+                        theTbl.append('<tr><td>Last VL Date</td><td>'+data.last_vl_date+'</td></tr>');
+                        theTbl.append('<tr><td>TB Infected</td><td>'+data.tb_infected+'</td></tr>');
+						if (data.tb_start_date) {
+							theTbl.append('<tr><td>TB Medication startDate</td><td>'+data.tb_start_date+'</td></tr>');
+						}
+                        theTbl.append('<tr><td>On TPT</td><td>'+data.on_tpt+'</td></tr>');
+						if (data.tpt_start_date) {
+							theTbl.append('<tr><td>TPT StartDate</td><td>'+data.tpt_start_date+'</td></tr>');
+						}
+                        theTbl.append('<tr><td>Allergies</td><td>'+data.drug_allergies+'</td></tr>');
+                        theTbl.append('<tr><td>Previous RTC</td><td>'+data.appointment_date+'</td></tr>');
+						theTbl.append('<tr><td>Height</td><td>'+data.weight+'</td></tr>');
+                        theTbl.append('<tr><td>Weight</td><td>'+data.height+'</td></tr>');
+                        if(data.regimen_change.length > 0) {
+                            jq("#art-status input[value='true']").prop("checked", true);
+                            onArtStatusChange();
+                            theTbl.append('<tr><td>Patient Regimen Change History</td></tr>');
+                            theTbl.append('<tr><td style="background-color: #696969; color: #ffffff;">Regimen</td><td style="background-color: #696969; color: #ffffff;">Start Date</td><td style="background-color: #696969; color: #ffffff;">End Date</td><td style="background-color: #696969; color: #ffffff;">Change Reason</td></tr>');
+							for(let i = 0; i &lt; data.regimen_change.length; i++){
+								theTbl.append('<tr><td>'+data.regimen_change[i].regimenshortdisplay.toUpperCase().replace("\/","/")+'</td><td>'+data.regimen_change[i].startdate+'</td><td>'+data.regimen_change[i].enddate+'</td><td>'+data.regimen_change[i].changereasons+'</td></tr>');
+							}
+                        }
+						if (data.patient_ncds.length > 0) {
+							theTbl.append('<tr><td>Patient NCDS</td></tr>');
+							theTbl.append('<tr><td style="background-color: #696969; color: #ffffff;">Condition</td><td style="background-color: #696969; color: #ffffff;">Onset Date</td></tr>');
+							for(let i = 0; i &lt; data.patient_ncds.length; i++){
+								theTbl.append('<tr><td>'+data.patient_ncds[i].illness+'</td><td>'+data.patient_ncds[i].onset_date+'</td></tr>');
+							}
+						}
+                        jq("#dlgViewPatientSummary").dialog({bgiframe: true,
+                            title : "Patient Hiv Summary",
+                            buttons: {
+                                "Use TI Data": function () {
+                                    jq('#who_ti_value').show();
+                                    jq('#regimen_ti_value').show();
+                                    setValue('selectedFromFacility.value',data.transfer_out_facility);
+                                    setValue('cd4-count.value',data.cd4_count);
+                                    setValue('vl.value',data.vl_result);
+                                    jq('#hiv-id input[type=text]').val(data.upi_number);
+                                    jq("#who_ti_value").html(data.who_stage.toUpperCase());
+									if (data.current_regimen) {
+										jq("#regimen_ti_value").html(data.current_regimen.replace("\/","/").toUpperCase());
+									}
+                                    setValue('first-enrolled-date.value',data.hiv_enrollment_date);
+                                    setValue('art-start-date.value',data.art_start_date);
+                                    setValue('confirmed-positive-date.value',data.date_confirmed_positive);
+                                    setValue('facility-confirmed.value',data.hiv_confirmation_facility);
+                                    setValue('cd4-date.value',data.cd4_date);
+                                    setValue('vl-date.value',data.last_vl_date);
+                                    setValue('height.value',data.height);
+                                    setValue('weight.value',data.weight);
+                                    onWeightOrHeightChange();
+									if(data.regimen_change.length > 0) {
+										var theTblT = jq("#regimen_change_history");
+										theTblT.find('tr').remove().end();
+										theTblT.append('<tr><td style="background-color: #696969; color: #ffffff;">Regimen</td><td style="background-color: #696969; color: #ffffff;">Start Date</td><td style="background-color: #696969; color: #ffffff;">End Date</td><td style="background-color: #696969; color: #ffffff;">Change Reason</td></tr>');
+										jq('#regimen_change_history').show();
+										jq("#art-status input[value='true']").prop("checked", true);
+										onArtStatusChange();
+										for(let i = 0; i &lt; data.regimen_change.length; i++){
+											theTblT.append('<tr><td>'+data.regimen_change[i].regimenshortdisplay.toUpperCase().replace("\/","/")+'</td><td>'+data.regimen_change[i].startdate+'</td><td>'+data.regimen_change[i].enddate+'</td><td>'+data.regimen_change[i].changereasons+'</td></tr>');
+											theTblT.append('<tr></tr>');
+											theTblT.append('<tr></tr>');
+                                            theTblT.append('<tr></tr>');
+										}
+									}
+                                    jq("#dlgViewPatientSummary").dialog("close");
+                                },
+                                "Cancel": function () {
+                                    jq("#dlgViewPatientSummary").dialog("close");
+                                }
+                            },
+                            height: 350,
+                            width: 600,
+                            modal: true });
+                    }
+                });
+            });
             function updateMflCode() {
                 var selectedMflCode = jq("#theSelect").find(":selected").val();
                 setValue('selectedFromFacility.value',selectedMflCode);
@@ -475,6 +585,10 @@
                 jq('#baseline-assessment2').show();
                 jq('#baseline-assessment3').show();
                 jq('#treatment-supporter-fieldset').show();
+                jq('#btnViewPatientSummary').hide();
+                jq('#regimen_change_history').hide();
+                jq('#who_ti_value').hide();
+                jq('#regimen_ti_value').hide();
 
                 jq('#cd4-count :input').prop('disabled', true);
                 jq('#cd4-date :input').prop('disabled', true);
@@ -514,6 +628,22 @@
                 jq('#hiv-id :input').prop('disabled', false);
                 jq('#generate-hiv-id').hide();
                 jq('#transfer-details').show();
+
+				jq.ajax({
+					url: '/' + ctxPath + "/ws/rest/v1/kenyaemril/expected-ti-patient?patientUuid=" + patientId,
+					type: "GET",
+					async: false, // asynchronous
+					timeout: 5000, // 10 sec timeout
+					success: function (data) {
+						if (data) {
+							jq('#btnViewPatientSummary').show();
+						}
+					}
+				});
+                jq('#regimen_change_history').hide();
+                jq('#who_ti_value').hide();
+                jq('#regimen_ti_value').hide();
+                jq('#regimen_change_history').hide();
                 jq('#patient-history').show();
                 jq('#art-history').show();
                 jq('#baseline-fieldset').show();
@@ -553,6 +683,11 @@
                 jq('#generate-hiv-id').hide();
                 jq('#transit-patient').show();
                 jq('#transfer-details').hide();
+                jq('#btnViewPatientSummary').hide();
+                jq('#regimen_change_history').hide();
+                jq('#who_ti_value').hide();
+                jq('#regimen_ti_value').hide();
+                jq('#regimen_change_history').hide();
                 jq('#patient-history').hide();
                 jq('#art-history').hide();
                 jq('#baseline-fieldset').hide();
@@ -566,6 +701,11 @@
                 jq('#generate-hiv-id').hide();
                 jq('#transit-patient').hide();
                 jq('#transfer-details').hide();
+                jq('#btnViewPatientSummary').hide();
+                jq('#regimen_change_history').hide();
+                jq('#who_ti_value').hide();
+                jq('#regimen_ti_value').hide();
+                jq('#regimen_change_history').hide();
                 jq('#patient-history').hide();
                 jq('#art-history').hide();
                 jq('#baseline-fieldset').hide();
@@ -580,6 +720,10 @@
                 jq('#generate-hiv-id').hide();
                 jq('#transit-patient').hide();
                 jq('#transfer-details').hide();
+                jq('#btnViewPatientSummary').hide();
+                jq('#regimen_change_history').hide();
+                jq('#who_ti_value').hide();
+                jq('#regimen_ti_value').hide();
                 jq('#patient-history').hide();
                 jq('#art-history').hide();
                 jq('#baseline-fieldset').hide();
@@ -707,6 +851,11 @@
             jq(function(){   
                 jq("#btnTransferFromFacility").hide()
                 jq("#btnTransitFacility").hide()
+                jq("#btnViewPatientSummary").hide()
+                jq('#regimen_change_history').hide();
+                jq('#who_ti_value').hide();
+                jq('#regimen_ti_value').hide();
+                jq('#regimen_change_history').hide();
             });
         </script>
     </ifMode>
@@ -783,6 +932,7 @@
 								required="true"
 						/>
 					</td>
+                    <td><button type="button" style="height:35px;width:200px;font-size:12px" id="btnViewPatientSummary" class="ke-program-outcome-button">View Hiv Summary</button></td>
 				</tr>
 				<tr>
 					<td>Entry point</td>
@@ -878,6 +1028,15 @@
                             </div>
                         </td>
                     </tr>
+                    <tr>
+                        <td>
+                            <div id="dlgViewPatientSummary" style="display: none">
+                                <span class="ui-helper-hidden-accessible"><input type="text"/></span>
+                                <table id="theTable">
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
 				</table>
 			</div>
 		</fieldset>
@@ -937,6 +1096,7 @@
 							</table>
 						</div>
 					</td>
+                    <td><strong><span id="who_ti_value"></span></strong></td>
 				</tr>
 				<tr>
 					<td>Patient has been on ARVs (inc. PEP &amp; PMTCT)</td>
@@ -948,146 +1108,162 @@
 			</table>
 
 			<br />
-
-			<table id="art-history" border="0" style="background-color: #EEE">
-				<tr>
-					<td style="background-color: #696969; color: #ffffff;">Purpose</td>
-					<td style="background-color: #696969; color: #ffffff;">List Drug Names and Dates Last Used</td>
-				</tr>
-				<obsgroup groupingConceptId="160741AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-					<tr>
-						<td><obs conceptId="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PMTCT" id="pmtctChecked"/></td>
-						<td><obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerConceptIds="164968,164969,164970,164505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-							                       162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                     162563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabels="AZT/3TC/DTG,
-								               TDF/3TC/DTG,
-								               ABC/3TC/DTG,
-								               TDF-3TC-EFV,
-								               D4T/3TC/NVP,
-											   AZT/3TC/EFV,
-											   D4T/3TC/EFV,
-											   3TC/NVP/AZT,
-											   EDF/3TC/EFV,
-											   EFV/FTC/TDF,
-											   3TC/LPV/TDF/r,
-											   ABC/3TC/AZT,
-										       ABC/NVP/3TC,
-											   3TC/ABC/LPV/r,
-							                   3TC/NVP/TDF,
-                                               3TC/NVP/AZT,
-                                               3TC/AZT/LPV/r,
-                                               AZT-3TC-ATV/r,
-                                               TDF-3TC-ATV/r,
-                                               3TC/D4T/LPV/r,
-                                               3TC/ABC/EFV,
-                                               ABC/LPV/R/TDF,
-                                               ABC/DDI/LPV/r"
-								 dateLabel="" defaultDatetime="" id="pmtctRegimen" /></td>
-					</tr>
-				</obsgroup>
-				<obsgroup groupingConceptId="160741AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-					<tr>
-						<td><obs conceptId="1691AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"  labelText="PEP" id="pepChecked"/></td>
-						<td><obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerConceptIds="164968,164969,164970,164505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-							                       162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                     162563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabels="AZT/3TC/DTG,
-								               TDF/3TC/DTG,
-								               ABC/3TC/DTG,
-								               TDF-3TC-EFV,
-								               D4T/3TC/NVP,
-											   AZT/3TC/EFV,
-											   D4T/3TC/EFV,
-											   3TC/NVP/AZT,
-											   EDF/3TC/EFV,
-											   EFV/FTC/TDF,
-											   3TC/LPV/TDF/r,
-											   ABC/3TC/AZT,
-										       ABC/NVP/3TC,
-											   3TC/ABC/LPV/r,
-							                   3TC/NVP/TDF,
-                                               3TC/NVP/AZT,
-                                               3TC/AZT/LPV/r,
-                                               AZT-3TC-ATV/r,
-                                               TDF-3TC-ATV/r,
-                                               3TC/D4T/LPV/r,
-                                               3TC/ABC/EFV,
-                                               ABC/LPV/R/TDF,
-                                               ABC/DDI/LPV/r"
-								 dateLabel=""  id="pepRegimen"/></td>
-					</tr>
-				</obsgroup>
-				<obsgroup groupingConceptId="160741AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-					<tr>
-						<td><obs conceptId="165269" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerLabel="PREP" id="prepChecked" /></td>
-						<td><obs conceptId="1087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerConceptIds="164968,164969,164970,164505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-							                       162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                     162563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabels="AZT/3TC/DTG,
-								               TDF/3TC/DTG,
-								               ABC/3TC/DTG,
-								               TDF-3TC-EFV,
-								               D4T/3TC/NVP,
-											   AZT/3TC/EFV,
-											   D4T/3TC/EFV,
-											   3TC/NVP/AZT,
-											   EDF/3TC/EFV,
-											   EFV/FTC/TDF,
-											   3TC/LPV/TDF/r,
-											   ABC/3TC/AZT,
-										       ABC/NVP/3TC,
-											   3TC/ABC/LPV/r,
-							                   3TC/NVP/TDF,
-                                               3TC/NVP/AZT,
-                                               3TC/AZT/LPV/r,
-                                               AZT-3TC-ATV/r,
-                                               TDF-3TC-ATV/r,
-                                               3TC/D4T/LPV/r,
-                                               3TC/ABC/EFV,
-                                               ABC/LPV/R/TDF,
-                                               ABC/DDI/LPV/r"
-								 dateLabel="" /></td>
-					</tr>
-				</obsgroup>
-
-				<obsgroup groupingConceptId="1085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
-					<tr>
-						<td><obs conceptId="1181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"    answerConceptId="1185AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="HAART" id="haartChecked"/></td>
-						<td><obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerConceptIds="164968,164969,164970,164505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-							                       162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
-                                                     162563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-								 answerLabels="AZT/3TC/DTG,
-								               TDF/3TC/DTG,
-								               ABC/3TC/DTG,
-								               TDF-3TC-EFV,
-								               D4T/3TC/NVP,
-											   AZT/3TC/EFV,
-											   D4T/3TC/EFV,
-											   3TC/NVP/AZT,
-											   EDF/3TC/EFV,
-											   EFV/FTC/TDF,
-											   3TC/LPV/TDF/r,
-											   ABC/3TC/AZT,
-										       ABC/NVP/3TC,
-											   3TC/ABC/LPV/r,
-							                   3TC/NVP/TDF,
-                                               3TC/NVP/AZT,
-                                               3TC/AZT/LPV/r,
-                                               AZT-3TC-ATV/r,
-                                               TDF-3TC-ATV/r,
-                                               3TC/D4T/LPV/r,
-                                               3TC/ABC/EFV,
-                                               ABC/LPV/R/TDF,
-                                               ABC/DDI/LPV/r"
-								 dateLabel="" /></td>
-					</tr>
-				</obsgroup>
-			</table>
+            <table>
+                <tr>
+                    <td>
+                        <table id="art-history" border="0" style="background-color: #EEE">
+                            <tr>
+                                <td style="background-color: #696969; color: #ffffff;">Purpose</td>
+                                <td style="background-color: #696969; color: #ffffff;">List Drug Names and Dates Last Used</td>
+                            </tr>
+                            <obsgroup groupingConceptId="160741AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                <tr>
+                                    <td><obs conceptId="1148AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="PMTCT" id="pmtctChecked"/></td>
+                                    <td><obs conceptId="966AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerConceptIds="164968,164969,164970,164505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                               162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                 162563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabels="AZT/3TC/DTG,
+                                                           TDF/3TC/DTG,
+                                                           ABC/3TC/DTG,
+                                                           TDF-3TC-EFV,
+                                                           D4T/3TC/NVP,
+                                                           AZT/3TC/EFV,
+                                                           D4T/3TC/EFV,
+                                                           3TC/NVP/AZT,
+                                                           EDF/3TC/EFV,
+                                                           EFV/FTC/TDF,
+                                                           3TC/LPV/TDF/r,
+                                                           ABC/3TC/AZT,
+                                                           ABC/NVP/3TC,
+                                                           3TC/ABC/LPV/r,
+                                                           3TC/NVP/TDF,
+                                                           3TC/NVP/AZT,
+                                                           3TC/AZT/LPV/r,
+                                                           AZT-3TC-ATV/r,
+                                                           TDF-3TC-ATV/r,
+                                                           3TC/D4T/LPV/r,
+                                                           3TC/ABC/EFV,
+                                                           ABC/LPV/R/TDF,
+                                                           ABC/DDI/LPV/r"
+                                             dateLabel="" defaultDatetime="" id="pmtctRegimen" /></td>
+                                </tr>
+                            </obsgroup>
+                            <obsgroup groupingConceptId="160741AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                <tr>
+                                    <td><obs conceptId="1691AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"  labelText="PEP" id="pepChecked"/></td>
+                                    <td><obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerConceptIds="164968,164969,164970,164505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                               162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                 162563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabels="AZT/3TC/DTG,
+                                                           TDF/3TC/DTG,
+                                                           ABC/3TC/DTG,
+                                                           TDF-3TC-EFV,
+                                                           D4T/3TC/NVP,
+                                                           AZT/3TC/EFV,
+                                                           D4T/3TC/EFV,
+                                                           3TC/NVP/AZT,
+                                                           EDF/3TC/EFV,
+                                                           EFV/FTC/TDF,
+                                                           3TC/LPV/TDF/r,
+                                                           ABC/3TC/AZT,
+                                                           ABC/NVP/3TC,
+                                                           3TC/ABC/LPV/r,
+                                                           3TC/NVP/TDF,
+                                                           3TC/NVP/AZT,
+                                                           3TC/AZT/LPV/r,
+                                                           AZT-3TC-ATV/r,
+                                                           TDF-3TC-ATV/r,
+                                                           3TC/D4T/LPV/r,
+                                                           3TC/ABC/EFV,
+                                                           ABC/LPV/R/TDF,
+                                                           ABC/DDI/LPV/r"
+                                             dateLabel=""  id="pepRegimen"/></td>
+                                </tr>
+                            </obsgroup>
+                            <obsgroup groupingConceptId="160741AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                <tr>
+                                    <td><obs conceptId="165269" answerConceptId="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  answerLabel="PREP" id="prepChecked" /></td>
+                                    <td><obs conceptId="1087AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerConceptIds="164968,164969,164970,164505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                               162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                 162563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabels="AZT/3TC/DTG,
+                                                           TDF/3TC/DTG,
+                                                           ABC/3TC/DTG,
+                                                           TDF-3TC-EFV,
+                                                           D4T/3TC/NVP,
+                                                           AZT/3TC/EFV,
+                                                           D4T/3TC/EFV,
+                                                           3TC/NVP/AZT,
+                                                           EDF/3TC/EFV,
+                                                           EFV/FTC/TDF,
+                                                           3TC/LPV/TDF/r,
+                                                           ABC/3TC/AZT,
+                                                           ABC/NVP/3TC,
+                                                           3TC/ABC/LPV/r,
+                                                           3TC/NVP/TDF,
+                                                           3TC/NVP/AZT,
+                                                           3TC/AZT/LPV/r,
+                                                           AZT-3TC-ATV/r,
+                                                           TDF-3TC-ATV/r,
+                                                           3TC/D4T/LPV/r,
+                                                           3TC/ABC/EFV,
+                                                           ABC/LPV/R/TDF,
+                                                           ABC/DDI/LPV/r"
+                                             dateLabel="" /></td>
+                                </tr>
+                            </obsgroup>
+            
+                            <obsgroup groupingConceptId="1085AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                <tr>
+                                    <td><obs conceptId="1181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"    answerConceptId="1185AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="HAART" id="haartChecked"/></td>
+                                    <td><obs conceptId="1088AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerConceptIds="164968,164969,164970,164505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                               162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                 162563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabels="AZT/3TC/DTG,
+                                                           TDF/3TC/DTG,
+                                                           ABC/3TC/DTG,
+                                                           TDF-3TC-EFV,
+                                                           D4T/3TC/NVP,
+                                                           AZT/3TC/EFV,
+                                                           D4T/3TC/EFV,
+                                                           3TC/NVP/AZT,
+                                                           EDF/3TC/EFV,
+                                                           EFV/FTC/TDF,
+                                                           3TC/LPV/TDF/r,
+                                                           ABC/3TC/AZT,
+                                                           ABC/NVP/3TC,
+                                                           3TC/ABC/LPV/r,
+                                                           3TC/NVP/TDF,
+                                                           3TC/NVP/AZT,
+                                                           3TC/AZT/LPV/r,
+                                                           AZT-3TC-ATV/r,
+                                                           TDF-3TC-ATV/r,
+                                                           3TC/D4T/LPV/r,
+                                                           3TC/ABC/EFV,
+                                                           ABC/LPV/R/TDF,
+                                                           ABC/DDI/LPV/r"
+                                             dateLabel="" /></td>
+                                </tr>
+                            </obsgroup>
+                        </table>
+                    </td>
+                    <td></td>
+                    <td>
+                        <table id="regimen_change_history" border="0" style="background-color: #EEE">
+                            <tr>
+                                <td style="background-color: #696969; color: #ffffff;">Regimen</td>
+                                <td style="background-color: #696969; color: #ffffff;">Start Date</td>
+                                <td style="background-color: #696969; color: #ffffff;">End Date</td>
+                                <td style="background-color: #696969; color: #ffffff;">Change Reason</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>    
 		</fieldset>
 		<!-- Baseline assessments  -->
 		<fieldset id="baseline-fieldset">
@@ -1159,6 +1335,7 @@
                                                ABC/DDI/LPV/r"
 						/>
 					</td>
+                    <td><strong><span id="regimen_ti_value"></span></strong></td>
 				</tr>
 			</table>
 			<table id="baseline-assessment1" cellspacing="10" style="display: inline-block">
