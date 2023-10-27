@@ -260,7 +260,7 @@ public class LastestVLTakenWithinIntervalCalculation extends AbstractPatientCalc
                     vlDoneWithinInterval = true;
                 }
                 //3. Pregnant with a suppressed Previous VL
-                else if (lastPregStartObs != null && lastPregStartObs.getValueCoded().equals(yes) && lastVLDate != null && lastVLDate.after(lastPregStartDate) && (previousVLOrderDate != null && daysBtwLastAndPrevVlDates <= 180 && (previousVLResultLDL != null || (previousVLResultValue != null && previousVLResultValue < 200)))) {
+                else if (lastPregStartObs != null && lastPregStartObs.getValueCoded().equals(yes) && lastVLDate != null && lastPregStartDate != null && lastVLDate.after(lastPregStartDate) && (previousVLOrderDate != null && daysBtwLastAndPrevVlDates <= 180 && (previousVLResultLDL != null || (previousVLResultValue != null && previousVLResultValue < 200)))) {
                     vlDoneWithinInterval = true;
                 }
                 //4. 0-24 years old with a suppressed or LDL previous VL

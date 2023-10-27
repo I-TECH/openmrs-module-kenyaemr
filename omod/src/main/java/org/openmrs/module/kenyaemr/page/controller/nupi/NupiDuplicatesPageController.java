@@ -55,9 +55,13 @@ public class NupiDuplicatesPageController {
                 // Has a duplicate?
                 if (patient.getAttribute(duplicateStatusPA).getValue().trim().equalsIgnoreCase("true")) {
                     PatientIdentifier nupi = patient.getPatientIdentifier(nupiIdentifierType);
-				    String nupiNum = nupi.getIdentifier();
                     PatientIdentifier ccc = patient.getPatientIdentifier(upiIdentifierType);
-				    String cccNum = ccc.getIdentifier();
+                    String cccNum = "";
+                    String nupiNum = "";
+                    try {
+                        nupiNum = nupi.getIdentifier();
+                        cccNum = ccc.getIdentifier();
+                    }catch (Exception e){}
 
                     SimpleObject patientDuplicateObject = SimpleObject.create(
                         "id", patient.getId(),
