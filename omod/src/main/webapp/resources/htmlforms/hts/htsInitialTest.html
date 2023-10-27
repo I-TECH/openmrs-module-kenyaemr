@@ -20,6 +20,12 @@
         var IS_KDoD_SITE = <lookup expression="kenyaemr.getFacilityType()" />;
         var IS_Recency_SITE = <lookup expression="kenyaemr.getRecencySite()" />;
         var mflCode = <lookup expression="kenyaemr.currentFacilityMFLCode()" />;
+
+        // var htsMLPrediction1 = "<lookup expression="fn.latestObs(167163).getValueCoded().getConceptId()" />";
+        // console.log("Latest ML prediction 1: " + htsMLPrediction1);
+        // var htsMLPrediction2 = "<lookup expression="fn.latestObs(167163).valueCoded"/>";
+        // console.log("Latest ML prediction 2: " + htsMLPrediction2);
+
         var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
         var populationTypeSelected = function () {
             var val = jq(this).val();
@@ -64,6 +70,26 @@
                 clearHiddenSections(jq('#share-results'));
                 clearHiddenSections(jq('#results'));
 
+            }
+        };
+
+        var changeTheFinalResult = function (changedValue) {
+            if(changedValue != null) {
+                if(changedValue == 664) {
+                    var htsMLPrediction = "<lookup expression="fn.latestObs(167163).getValueCoded().getConceptId()" />";
+
+                    if(htsMLPrediction == '1408') {
+                        jq('#ml-prediction-results-warning').html('Client has a high HIV risk score, Kindly refer for preventive services');
+                        jq('#ml-prediction-results-warning').show();
+                    }
+                } else {
+                    jq('#ml-prediction-results-warning').hide();
+                    clearHiddenSections(jq('#ml-prediction-results-warning'));
+                }
+                getField('hiv-final-result.value').val(changedValue);
+            } else {
+                jq('#ml-prediction-results-warning').hide();
+                clearHiddenSections(jq('#ml-prediction-results-warning'));
             }
         };
 
@@ -130,6 +156,18 @@
             }
         };
 
+        var clientConsentChanged = function() {
+            var val = getValue('clientConsent.value');
+            var htsMLPrediction = "<lookup expression="fn.latestObs(167163).getValueCoded().getConceptId()" />";
+
+            if(val == 'false' &amp;&amp; htsMLPrediction == '1408') {
+                jq('#ml-prediction-consent-warning').html('Client has a high HIV risk score, testing is highly recommended');
+                jq('#ml-prediction-consent-warning').show();
+            } else {
+                jq('#ml-prediction-consent-warning').hide();
+                clearHiddenSections(jq('#ml-prediction-consent-warning'));
+            }
+        }
 
         var hasDisabilitySelected = function () {
             var val = jq(this).val();
@@ -328,6 +366,7 @@
                 clearHiddenSections(jq('.lot-number2'));
                 clearHiddenSections(jq('#expiry-date2'));
                 clearHiddenSections(jq('#hiv-final-result'));
+                changeTheFinalResult(null);
                 clearHiddenSections(jq('.result-given'));
                 clearHiddenSections(jq('#couple-discordant'));
                 clearHiddenSections(jq('#tb-screening'));
@@ -360,18 +399,19 @@
         var firstTestSelected  = function () {
             var firstTest = getField("hiv-test1-result.value").val();
             //Negative
-            if(firstTest ==664) {
+            if(firstTest == 664) {
                 jq("#hiv-test2").hide();
                 jq('#ccc-no input').prop("disabled", true);
                 jq('#negative-referral').show();
                 jq('#fs-referral').hide();
                 clearHiddenSections(jq('#ccc-no'));
                 clearHiddenSections(jq('#hiv-final-result'));
+                changeTheFinalResult(null);
                 clearHiddenSections(jq('#hiv-test2-result'));
                 clearHiddenSections(jq('.kit-name2'));
                 clearHiddenSections(jq('.lot-number2'));
-                getField('hiv-final-result.value').val(664);
-
+                //getField('hiv-final-result.value').val(664);
+                changeTheFinalResult(664);
             }
             //Positive
             if(firstTest ==703){
@@ -383,6 +423,7 @@
                 jq(".lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
                 clearHiddenSections(jq('#hiv-final-result'));
+                changeTheFinalResult(null);
                 clearHiddenSections(jq('#hiv-test2-result'));
 
             }
@@ -395,19 +436,22 @@
                 jq("#expiry-date2 input").prop("disabled", false);
                 clearHiddenSections(jq('#ccc-no'));
                 clearHiddenSections(jq('#hiv-final-result'));
+                changeTheFinalResult(null);
                 clearHiddenSections(jq('#hiv-test2-result'));
             }
         }
         var secondTestSelected  = function () {
             var secondTest = getField("hiv-test2-result.value").val();
             //Negative
-            if(secondTest ==664) {
+            if(secondTest == 664) {
                 jq(".kit-name2 select").prop("disabled", false);
                 jq(".lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
                 clearHiddenSections(jq('#ccc-no'));
                 clearHiddenSections(jq('#hiv-final-result'));
-                getField('hiv-final-result.value').val(1138);
+                changeTheFinalResult(null);
+                // getField('hiv-final-result.value').val(1138);
+                changeTheFinalResult(664);
                 jq('#ccc-no input').prop("disabled", true);
                 jq('#tbl-discordant').hide();
                 clearHiddenSections(jq('.result-given'));
@@ -417,13 +461,15 @@
                 jq('#hts-recency-testing').hide();
             }
             //Positive
-            if(secondTest ==703){
+            if(secondTest == 703){
                 clearHiddenSections(jq('#ccc-no'));
                 clearHiddenSections(jq('#hiv-final-result'));
+                changeTheFinalResult(null);
                 jq(".kit-name2 select").prop("disabled", false);
                 jq(".lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
-                getField('hiv-final-result.value').val(703);
+                // getField('hiv-final-result.value').val(703);
+                changeTheFinalResult(703);
                 jq('#ccc-no input').prop("disabled", false);
                 jq('#fs-referral').show();
                 jq('#negative-referral').hide();
@@ -437,24 +483,28 @@
 
             }
             //Invalid
-            if(secondTest ==163611){
+            if(secondTest == 163611){
                 clearHiddenSections(jq('#ccc-no'));
                 clearHiddenSections(jq('#hiv-final-result'));
+                changeTheFinalResult(null);
                 jq(".kit-name2 select").prop("disabled", false);
                 jq(".lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
-                getField('hiv-final-result.value').val(1138);
+                // getField('hiv-final-result.value').val(1138);
+                changeTheFinalResult(1138);
                 jq('#tbl-discordant').hide();
                 jq('#hts-recency-testing').hide();
             }
             //Invalid
-            if(secondTest ==1175){
+            if(secondTest == 1175){
                 clearHiddenSections(jq('#ccc-no'));
                 clearHiddenSections(jq('#hiv-final-result'));
+                changeTheFinalResult(null);
                 jq(".kit-name2 select").prop("disabled", false);
                 jq(".lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
-                getField('hiv-final-result.value').val(1138);
+                //getField('hiv-final-result.value').val(1138);
+                changeTheFinalResult(1138);
                 jq('#tbl-discordant').hide();
                 jq('#hts-recency-testing').hide();
             }
@@ -500,6 +550,12 @@
 
             var pgender = "<lookup expression="patient.gender" />";
             var pAge = parseInt('<lookup expression="patient.age"/>');
+
+            // var htsMLPrediction3 = "<lookup expression="fn.latestObs(167163).getValueCoded().getConceptId()" />";
+            // console.log("Latest ML prediction 3: " + htsMLPrediction3);
+            // var htsMLPrediction4 = "<lookup expression="fn.latestObs(167163).valueCoded"/>";
+            // console.log("Latest ML prediction 4: " + htsMLPrediction4);
+
             jq("#key-population").hide();
             jq("#priority-population").hide();
             jq('input[type=radio].key-population').prop("checked", false);
@@ -511,6 +567,12 @@
             //disability
             jq('#has-disability input').change(hasDisabilitySelected);
             jq('#has-other-disability :input[type=checkbox]').change(hasOtherDisabilitySelected);
+
+            //ML
+            jq('#clientConsent').change(clientConsentChanged);
+            jq('#ml-prediction-consent-warning').hide();
+            jq('#ml-prediction-results-warning').hide();
+
             jq('#disability').hide();
             jq('#tbl-other-disability').hide();
             jq('#fs-referral').hide();
@@ -641,7 +703,7 @@
             jq('#hiv-final-result select').attr("style", "pointer-events:none;");
             jq("#hiv-test1-result select").change(firstTestSelected);
             jq("#hiv-test2-result select").change(secondTestSelected);
-            //jq("#hiv-final-result select").change(finalTestSelected);
+            // jq("#hiv-final-result select").change(finalTestResultSelected); -- this event is never fired for a disabled field
             //test kit expiry
             jq("#expiry-date input").change(kit1ExpiryDateSelected);
             jq("#expiry-date2 input").change(kit2ExpiryDateSelected);
@@ -668,19 +730,19 @@
             //First test
             var firstTest = getField("hiv-test1-result.value").val();
             //Negative
-            if(firstTest ==664) {
-
+            if(firstTest == 664) {
                 jq("#hiv-test2-result select").prop("disabled", true);
                 jq(".kit-name2 select").prop("disabled", true);
                 jq(".lot-number2 input").prop("disabled", true);
                 jq("#expiry-date2 input").prop("disabled", true);
-                getField('hiv-final-result.value').val(664);
+                // getField('hiv-final-result.value').val(664);
+                changeTheFinalResult(664);
                 jq('#ccc-no input').prop("disabled", true);
                 jq('#negative-referral').show();
                 jq('#fs-referral').hide();
             }
             //Positive
-            if(firstTest ==703){
+            if(firstTest == 703){
 
                 jq("#hiv-test2-result select").prop("disabled", false);
                 jq(".kit-name2 select").prop("disabled", false);
@@ -700,22 +762,24 @@
             //Final test
             var secondTest = getField("hiv-test2-result.value").val();
             //Negative
-            if(secondTest ==664) {
+            if(secondTest == 664) {
                 jq(".kit-name2 select").prop("disabled", true);
                 jq(".lot-number2 input").prop("disabled", true);
                 jq("#expiry-date2 input").prop("disabled", true);
-                getField('hiv-final-result.value').val(664);
+                // getField('hiv-final-result.value').val(664);
+                changeTheFinalResult(664);
                 jq('#ccc-no input').prop("disabled", true);
                 jq('#negative-referral').hide();
                 jq('#fs-referral').hide();
                 jq('#hts-recency-testing').hide();
              }
             //Positive
-            if(secondTest ==703){
+            if(secondTest == 703){
                 jq(".kit-name2 select").prop("disabled", false);
                 jq(".lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
-                getField('hiv-final-result.value').val(703);
+                // getField('hiv-final-result.value').val(703);
+                changeTheFinalResult(703);
                 jq('#ccc-no input').prop("disabled", false);
                 jq('#fs-referral').show();
                 jq('#negative-referral').hide();
@@ -726,19 +790,21 @@
                 }
             }
             //Invalid
-            if(secondTest ==163611){
+            if(secondTest == 163611){
                 jq(".kit-name2 select").prop("disabled", false);
                 jq(".lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
-                getField('hiv-final-result.value').val(1138);
+                // getField('hiv-final-result.value').val(1138);
+                changeTheFinalResult(1138);
                 jq('#hts-recency-testing').hide();
             }
             //Invalid
-            if(secondTest ==1175){
+            if(secondTest == 1175){
                 jq(".kit-name2 select").prop("disabled", false);
                 jq(".lot-number2 input").prop("disabled", false);
                 jq("#expiry-date2 input").prop("disabled", false);
-                getField('hiv-final-result.value').val(1138);
+                // getField('hiv-final-result.value').val(1138);
+                changeTheFinalResult(1138);
                 jq('#hts-recency-testing').hide();
             }
 
@@ -759,7 +825,7 @@
             }
         }
 
-        var negativeReferralServicesSelected = function(){
+        var negativeReferralServicesSelected = function() {
             var val = jq(this).val();
             if(val == 5622 ){
                 jq('#tbl-specify-referral').show();
@@ -767,9 +833,22 @@
                 jq('#tbl-specify-referral').hide();
                 getField('specify-referral.value').val("");
             }
-
         }
 
+        // var finalTestResultSelected = function() {
+        //     console.log("Test result selected");
+        //     var val = jq(this).val();
+        //     var htsMLPrediction = "<lookup expression="fn.latestObs(167163).getValueCoded().getConceptId()" />";
+
+        //     if(val == 664 &amp;&amp; htsMLPrediction == '1408') {
+        //         console.log("Negative and at high risk hit");
+        //         jq('#ml-prediction-results-warning').html('Client has a high HIV risk score, Kindly refer for preventive services');
+        //         jq('#ml-prediction-results-warning').show();
+        //     } else {
+        //         jq('#ml-prediction-results-warning').hide();
+        //         clearHiddenSections(jq('#ml-prediction-results-warning'));
+        //     }
+        // }
 
         var hasNegativeReferralSelected = function () {
             var val = jq(this).val();
@@ -928,13 +1007,14 @@
                 //First test
                 var firstTest = getField("hiv-test1-result.value").val();
                 //Negative
-                if(firstTest ==664) {
+                if(firstTest == 664) {
 
                     jq("#hiv-test2-result select").prop("disabled", true);
                     jq(".kit-name2 select").prop("disabled", true);
                     jq(".lot-number2 input").prop("disabled", true);
                     jq("#expiry-date2 input").prop("disabled", true);
-                    getField('hiv-final-result.value').val(664);
+                    // getField('hiv-final-result.value').val(664);
+                    changeTheFinalResult(664);
                     jq('#ccc-no input').prop("disabled", true);
                     jq('#negative-referral').show();
                     jq('#fs-referral').hide();
@@ -960,22 +1040,24 @@
                 //Final test
                 var secondTest = getField("hiv-test2-result.value").val();
                 //Negative
-                if(secondTest ==664) {
+                if(secondTest == 664) {
                     jq(".kit-name2 select").prop("disabled", true);
                     jq(".lot-number2 input").prop("disabled", true);
                     jq("#expiry-date2 input").prop("disabled", true);
-                    getField('hiv-final-result.value').val(664);
+                    // getField('hiv-final-result.value').val(664);
+                    changeTheFinalResult(664);
                     jq('#ccc-no input').prop("disabled", true);
                     jq('#negative-referral').hide();
                     jq('#fs-referral').hide();
                     jq('#hts-recency-testing').hide();
                 }
                 //Positive
-                if(secondTest ==703){
+                if(secondTest == 703){
                     jq(".kit-name2 select").prop("disabled", false);
                     jq(".lot-number2 input").prop("disabled", false);
                     jq("#expiry-date2 input").prop("disabled", false);
-                    getField('hiv-final-result.value').val(703);
+                    // getField('hiv-final-result.value').val(703);
+                    changeTheFinalResult(703);
                     jq('#ccc-no input').prop("disabled", false);
                     jq('#fs-referral').show();
                     jq('#negative-referral').hide();
@@ -987,19 +1069,21 @@
                         }
                  }
                 //Invalid
-                if(secondTest ==163611){
+                if(secondTest == 163611){
                     jq(".kit-name2 select").prop("disabled", false);
                     jq(".lot-number2 input").prop("disabled", false);
                     jq("#expiry-date2 input").prop("disabled", false);
-                    getField('hiv-final-result.value').val(1138);
+                    // getField('hiv-final-result.value').val(1138);
+                    changeTheFinalResult(1138);
                     jq('#hts-recency-testing').hide();
                 }
                 //Invalid
-                if(secondTest ==1175){
+                if(secondTest == 1175){
                     jq(".kit-name2 select").prop("disabled", false);
                     jq(".lot-number2 input").prop("disabled", false);
                     jq("#expiry-date2 input").prop("disabled", false);
-                    getField('hiv-final-result.value').val(1138);
+                    // getField('hiv-final-result.value').val(1138);
+                    changeTheFinalResult(1138);
                     jq('#hts-recency-testing').hide();
                 }
 //if key pop show which type
@@ -1090,6 +1174,10 @@
             </tr>
         </table>
     </div>
+
+    <includeIf velocityTest="$fn.latestObs(167163).getValueCoded().getConceptId() == 1408 || $fn.latestObs(167163).getValueCoded().getConceptId() == 167164">
+        <div id="client-hiv-risk-status" class="ke-warning">High Risk Client</div>
+    </includeIf>
 
     <div class="ke-form-content">
         <!-- Population Type  -->
@@ -1371,6 +1459,8 @@
                         <obs class="consent" conceptId="1710AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="clientConsent" required="true"
                              style="yes_no" />
                     </td>
+                    <td width="50px"></td>
+                    <td><div id="ml-prediction-consent-warning" style="font-style:italic; font-weight: bold; color:Tomato;"></div></td>
                 </tr>
             </table>
             <table id="tbl-couple-testing">
@@ -1397,7 +1487,7 @@
                         <td>&#160;&#160;&#160;&#160;Lot Number
                             <obs  class="lot-number" id="lot-number-1" conceptId="164964" />
                         </td>
-                        <td>
+                        <td width="200px">
                             <div id="latest-lot-number">
                                 <input type="checkbox" name="last-batch-number" id="latestLotNumber" /> Use last lot number
                                 <span id="upnError" class="error"></span>
@@ -1441,7 +1531,7 @@
                                  conceptId="164964"
                             />
                         </td>
-                        <td>
+                        <td width="200px">
                             <div id="latest-lot-number2">
                                 <input type="checkbox" name="last-batch-number" id="latestLotNumber2" value="1" /> Use last lot number
                                 <span id="upnError2" class="error"></span>
@@ -1464,17 +1554,19 @@
                              answerLabels="Positive,Negative,Inconclusive"/>
                     </td>
                     <td>
-                    <table id="tbl-results-given">
-                            <tr>
-                            <td>&#160;&#160;&#160;&#160;Results given to client?&#160;&#160;&#160;&#160;
-                                <obs class="result-given" conceptId="164848AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-                                     style="dropdown" answerLabels="YES,NO" id="results-given"/>
-                                <span style="color:red;"><strong>*</strong></span>
-                            </td>
-                        </tr>
-                    </table>
+                        <table id="tbl-results-given">
+                                <tr>
+                                <td>&#160;&#160;&#160;&#160;Results given to client?&#160;&#160;&#160;&#160;
+                                    <obs class="result-given" conceptId="164848AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                        answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                        style="dropdown" answerLabels="YES,NO" id="results-given"/>
+                                    <span style="color:red;"><strong>*</strong></span>
+                                </td>
+                            </tr>
+                        </table>
                     </td>
+                    <td width="50px"></td>
+                    <td><div id="ml-prediction-results-warning" style="font-style:italic; font-weight: bold; color:Tomato;"></div></td>
                 </tr>
             </table>
             <br />

@@ -321,13 +321,12 @@ tr:nth-child(even) {background-color: #f2f2f2;}
             display_loading_validate_identifier(true);
             jQuery.getJSON('${ ui.actionLink("kenyaemr", "nupi/nupiDataExchange", "pullDuplicatesFromNDWH")}')
                .success(function (data) {
-                    console.log("Status: " + data.success);
-                    if(data.success === "true") {
+                    if(data.success == true) {
                        // Hide spinner
                        display_loading_validate_identifier(false);
                        jQuery("#pull-msgBox").text("Successfully pulled NUPI duplicates");
                        jQuery("#pull-msgBox").show();
-                   }else{
+                   } else {
                        display_loading_validate_identifier(false);
                        jQuery("#pull-msgBox").text("Error pulling NUPI duplicates: Check your network");
                        jQuery("#pull-msgBox").show();
