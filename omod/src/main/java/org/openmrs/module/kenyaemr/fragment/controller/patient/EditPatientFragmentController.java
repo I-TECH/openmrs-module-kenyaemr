@@ -348,6 +348,7 @@ public class EditPatientFragmentController {
 		private String kDoDUnit;
 		private String passPortNumber;
 		private String hudumaNumber;
+		private String nhifNumber;
 		private String birthCertificateNumber;
 		private String alienIdNumber;
 		private String drivingLicenseNumber;
@@ -420,6 +421,7 @@ public class EditPatientFragmentController {
 			patientClinicNumber = wrapper.getPatientClinicNumber();
 			passPortNumber = wrapper.getPassPortNumber();
 			hudumaNumber = wrapper.getHudumaNumber();
+			nhifNumber = wrapper.getNhifNumber();
 			alienIdNumber = wrapper.getAlienIdNumber();
 			drivingLicenseNumber = wrapper.getDrivingLicenseNumber();
 			birthCertificateNumber = wrapper.getBirthCertificateNumber();
@@ -551,9 +553,6 @@ public class EditPatientFragmentController {
 			validateIdentifierField(errors, "drivingLicenseNumber", CommonMetadata._PatientIdentifierType.DRIVING_LICENSE);
 			validateIdentifierField(errors, "nationalUniquePatientNumber", CommonMetadata._PatientIdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER);
 
-
-
-
 			// check birth date against future dates and really old dates
 			if (birthdate != null) {
 				if (birthdate.after(new Date()))
@@ -646,6 +645,7 @@ public class EditPatientFragmentController {
 			wrapper.setAlienIdNumber(alienIdNumber, location);
 			wrapper.setDrivingLicenseNumber(drivingLicenseNumber, location);
 			wrapper.setNationalUniquePatientNumber(nationalUniquePatientNumber, location);
+			wrapper.setNhifNumber(nhifNumber, location);
 
 
 			wrapper.setNextOfKinName(nameOfNextOfKin);
@@ -868,6 +868,19 @@ public class EditPatientFragmentController {
 		 */
 		public void setHudumaNumber(String hudumaNumber) {
 			this.hudumaNumber = hudumaNumber;
+		}
+
+		/**
+		 * @return the nhif Number
+		 */
+		public String getNhifNumber() {
+			return nhifNumber;
+		}
+		/**
+		 * @param nhifNumber the nhifNumber to set
+		 */
+		public void setNhifNumber(String nhifNumber) {
+			this.nhifNumber = nhifNumber;
 		}
 
 		/**

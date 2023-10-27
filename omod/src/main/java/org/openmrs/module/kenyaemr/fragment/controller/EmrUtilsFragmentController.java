@@ -129,12 +129,14 @@ public class EmrUtilsFragmentController {
 										 @RequestParam(value = "upn", required = false) String upn,
 										 @RequestParam(value = "cwcNumber", required = false) String cwcNumber,
 										 @RequestParam(value = "clinicNumber", required = false) String clinicNumber,
-										 @RequestParam(value = "recencyNumber", required = false) String recencyNumber) {
+										 @RequestParam(value = "recencyNumber", required = false) String recencyNumber,
+										 @RequestParam(value = "nhifNumber", required = false) String nhifNumber) {
 		boolean heiNoExists = false;
 		boolean upnExists = false;
 		boolean clinicNoExists = false;
 		boolean cwcNoExists = false;
 		boolean recencyIdExists = false;
+		boolean nhifNoExists = false;
 		PatientService patientService = Context.getPatientService();
 
 		if (heiNumber != null && heiNumber != "") {
@@ -165,12 +167,18 @@ public class EmrUtilsFragmentController {
 			if (patientsFound.size() > 0)
 				recencyIdExists = true;
 		}
+		if (nhifNumber != null && nhifNumber != "") {
+			List<Patient> patientsFound = patientService.getPatients(null, nhifNumber.trim(), Arrays.asList(MetadataUtils.existing(PatientIdentifierType.class, "09ebf4f9-b673-4d97-b39b-04f94088ba64")), true );
+			if (patientsFound.size() > 0)
+				nhifNoExists = true;
+		}
 		return SimpleObject.create(
 				"heiNumberExists", heiNoExists,
 				"upnExists",upnExists,
 				"clinicNumberExists", clinicNoExists,
 				"cwcNoExists", cwcNoExists,
-				"recencyIdExists", recencyIdExists
+				"recencyIdExists", recencyIdExists,
+				"nhifNoExists", nhifNoExists
 				);
 	}
 

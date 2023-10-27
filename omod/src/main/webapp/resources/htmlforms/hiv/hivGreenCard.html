@@ -87,6 +87,7 @@ Green Card follow-up visit form
         var TS = 161642;
         var PREVIOUSLY_BREASTFEEDING = "<lookup expression="fn.latestObs(5632).getValueCoded()"/>"; // this is breastfeeding last obs
         var PREVIOUS_CHRONIC_ADDED = "<lookup expression="fn.latestObs(162747).getValueCoded()"/>"; // this is chronic illness added last obs
+        var HAS_NHIF_NUMBER = "<lookup expression="patient.getPatientIdentifier('NHIF Number')"/>"; //
 
         var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
         var PATIENT_ON_IPT = GREENCARD_VELOCITY.split(",")[0].split(":")[1];
@@ -288,6 +289,11 @@ Green Card follow-up visit form
             jq("#refill-date").hide();
             jq('#standard select').prop('disabled', true);
             jq('#fast-track select').prop('disabled', true);
+//medical insurance
+            jq('#insuranceType select').change(insuranceTypeSelected);
+            jq("#nhif-number input[type=text]").blur(checkForExistingNhifIdentifiers);
+
+
             var tca_reason = getValue('returnVisitReason.value');
 //On ART hide adherence assessment
             if(PATIENT_ON_ART =="true" &amp;&amp; PATIENT_HAS_BEEN_ON_ART =="true") {
@@ -808,6 +814,19 @@ Green Card follow-up visit form
                     jq('#second-recorded-control-status:text').val(SECOND_CHRONIC_CONTROLLED);
                 }
             }
+
+            //Medical insurance
+            if(HAS_NHIF_NUMBER !=""){
+                jq('#has-nhif').show();
+                jq('#insurance-status').show();
+                getField('insuranceType.value').prop("selectedIndex", 1);
+                jq('#other-insurance').hide();
+            }else{
+                jq('#has-nhif').hide();
+                jq('#other-insurance').hide();
+                jq('#insurance-status').hide();
+            }
+
 
         });   //End of JQuery onReady function
 
@@ -2145,6 +2164,40 @@ Green Card follow-up visit form
                 jq('#refill-date input').prop('disabled', true);
             }
         }
+
+        // medical insurance
+        var insuranceTypeSelected = function () {
+            var val = jq(this).val();
+            if (val == 1917) {
+                jq('#has-nhif').show();
+                jq('#insurance-status').show();
+                jq('#other-insurance').hide();
+            }if(val == 5622){
+                jq('#has-nhif').hide();
+                jq('#insurance-status').show();
+                jq('#other-insurance').show();
+            }if(val == 1107){
+                jq('#has-nhif').hide();
+                jq('#other-insurance').hide();
+                jq('#insurance-status').hide();
+            }
+        }
+
+        function checkForExistingNhifIdentifiers() {
+            var nhifNumber = jq('#nhif-number input[type=text]').val();
+            if(nhifNumber !="") {
+                jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/identifierExists.action', {upn: nhifNumber}, function (data) {
+                    jq('#nhifError').hide();
+                    if (data.nhifNoExists === true) {
+
+                        jq('#nhifError').text("A patient with similar NHIF Number already exists. Please correct before proceeding");
+                        jq('#nhifError').show();
+                        jq('#nhif-number input[type=text]').focus();
+                    }
+                });
+            }
+        }
+
 
         clearHiddenSections = function(parentObj) {
             for(var i=0; i &lt; parentObj.length; i++){
@@ -4907,27 +4960,75 @@ Management<br />
                             <td><span id="showBookedResult"></span></td></tr>
                     </table>
                     <table>
-                        <tr id="tbl-fast-track">
-                            <td>Differentiated Care</td>
-                            <td>
-                                <obs conceptId="164947" id="fast-track"
-                                     answerConceptIds="164942,164943,164944,164945,164946"
-                                     style="dropdown"
-                                     answerLabels="Standard Care,Fast Track,Community ART Distribution - HCW Led,Community ART Distribution - Peer Led,Facility ART Distribution Group"
-                                />
-                                <span style="color:red;"><strong>*</strong></span>
-                            </td>
-                        </tr>
-                        <tr id="tbl-standard">
-                            <td>Differentiated Care</td>
-                            <td>
-                                <obs conceptId="164947" id="standard"
-                                     answerConceptIds="164942"
-                                     style="dropdown"
-                                     answerLabels="Standard Care"
-                                />
-                                <span style="color:red;"><strong>*</strong></span>
-                            </td>
+                        <tr>
+                           <td>
+                              <table>
+                                <tr id="tbl-fast-track">
+                                    <td>Differentiated Care</td>
+                                    <td>
+                                        <obs conceptId="164947" id="fast-track"
+                                             answerConceptIds="164942,164943,164944,164945,164946"
+                                             style="dropdown"
+                                             answerLabels="Standard Care,Fast Track,Community ART Distribution - HCW Led,Community ART Distribution - Peer Led,Facility ART Distribution Group"
+                                        />
+                                        <span style="color:red;"><strong>*</strong></span>
+                                    </td>
+                                </tr>
+                                    <tr id="tbl-standard">
+                                        <td>Differentiated Care</td>
+                                        <td>
+                                            <obs conceptId="164947" id="standard"
+                                                 answerConceptIds="164942"
+                                                 style="dropdown"
+                                                 answerLabels="Standard Care"
+                                            />
+                                            <span style="color:red;"><strong>*</strong></span>
+                                        </td>
+                                    </tr>
+                              </table>
+                           </td>
+                          <td>
+                              <table>
+                                  <tr>
+                                      <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                          Medical insurance cover:
+                                          <obs conceptId="159356AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                               id="insuranceType"
+                                               answerConceptIds="1917AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                 1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                 5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                               style="dropdown"
+                                               answerLabels="NHIF,None,Other"
+                                          />
+                                      </td>
+                                      <td>
+                                          <div id="has-nhif">
+                                              &#160;&#160;&#160;&#160;&#160;&#160;NHIF Number:&#160;&#160;
+                                              <span id="nhif-number"><patient id="nhif" field="identifier" identifierTypeId="09ebf4f9-b673-4d97-b39b-04f94088ba64" required="false"/></span>
+                                              <span id="nhifError" class="error"></span>
+                                          </div>
+                                      </td>
+                                      <td>
+                                          <div id="other-insurance">
+                                              &#160;&#160;&#160;&#160; Other insurance cover:&#160;&#160;
+                                          <obs conceptId="161011AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  />
+                                          </div>
+                                      </td>
+                                      <td>
+                                          <div id="insurance-status">
+                                              Insurance status:&#160;&#160;
+                                              <obs conceptId="165911AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                   id="insuranceStatus"
+                                                   answerConceptIds="161636AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                                 1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                   style="dropdown"
+                                                   answerLabels="Active,Inactive"
+                                              />
+                                          </div>
+                                      </td>
+                                  </tr>
+                              </table>
+                          </td>
                         </tr>
                     </table>
                 </fieldset>
