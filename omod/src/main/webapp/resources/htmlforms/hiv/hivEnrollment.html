@@ -632,7 +632,18 @@
                 jq('#hiv-id :input').prop('disabled', false);
                 jq('#generate-hiv-id').hide();
                 jq('#transfer-details').show();
-                jq('#btnViewPatientSummary').show();
+
+				jq.ajax({
+					url: '/' + ctxPath + "/ws/rest/v1/kenyaemril/expected-ti-patient?patientUuid=" + patientId,
+					type: "GET",
+					async: false, // asynchronous
+					timeout: 5000, // 10 sec timeout
+					success: function (data) {
+						if (data) {
+							jq('#btnViewPatientSummary').show();
+						}
+					}
+				});
                 jq('#regimen_change_history').hide();
                 jq('#who_ti_value').hide();
                 jq('#regimen_ti_value').hide();
