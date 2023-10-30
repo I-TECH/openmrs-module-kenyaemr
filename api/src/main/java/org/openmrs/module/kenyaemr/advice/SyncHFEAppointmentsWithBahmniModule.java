@@ -93,7 +93,7 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
     public void afterReturning(Object returnValue, Method method, Object[] args, Object target) throws Throwable {
         if (method.getName().equals("saveEncounter")) { // handles both create and edit
             Encounter enc = (Encounter) args[0];
-            List<String> appointmentForms = Arrays.asList(HivMetadata._Form.MOH_257_VISIT_SUMMARY, HivMetadata._Form.HIV_GREEN_CARD, MchMetadata._Form.MCHMS_ANTENATAL_VISIT, MchMetadata._Form.MCHCS_FOLLOW_UP, MchMetadata._Form.MCHMS_POSTNATAL_VISIT,  PREP_FOLLOWUP_FORM, PREP_INITIAL_FORM, PREP_MONTHLY_REFILL_FORM, KP_CLINICAL_VISIT_FORM, TbMetadata._Form.TB_FOLLOW_UP );
+            List<String> appointmentForms = Arrays.asList(HivMetadata._Form.MOH_257_VISIT_SUMMARY, HivMetadata._Form.HIV_GREEN_CARD, MchMetadata._Form.MCHMS_ANTENATAL_VISIT, MchMetadata._Form.MCHCS_FOLLOW_UP, MchMetadata._Form.MCHMS_POSTNATAL_VISIT,  PREP_FOLLOWUP_FORM, PREP_INITIAL_FORM, PREP_MONTHLY_REFILL_FORM, KP_CLINICAL_VISIT_FORM, TbMetadata._Form.TB_FOLLOW_UP, HivMetadata._Form.FAST_TRACK );
 
             if (enc != null && enc.getForm() != null && appointmentForms.contains(enc.getForm().getUuid())) {
                 Appointment editAppointment = appointmentsService.getAppointmentByUuid(enc.getUuid());
@@ -140,7 +140,8 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
                                 enc.getForm().getUuid().equals(PREP_INITIAL_FORM) ||
                                 enc.getForm().getUuid().equals(PREP_MONTHLY_REFILL_FORM) ||
                                 enc.getForm().getUuid().equals(KP_CLINICAL_VISIT_FORM) ||
-                                enc.getForm().getUuid().equals(TbMetadata._Form.TB_FOLLOW_UP) )) {
+                                enc.getForm().getUuid().equals(TbMetadata._Form.TB_FOLLOW_UP) ||
+                                enc.getForm().getUuid().equals(HivMetadata._Form.FAST_TRACK) )) {
 
                     processProgramAppointments(enc);
                 } else if(enc != null && (enc.getForm() != null && (enc.getForm().getUuid().equals(MchMetadata._Form.MCHMS_POSTNATAL_VISIT) || enc.getForm() != null && enc.getForm().getUuid().equals(MchMetadata._Form.MCHMS_DELIVERY)))) {
@@ -404,7 +405,9 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
                 } else if (enc.getForm() != null && enc.getForm().getUuid().equals(TbMetadata._Form.TB_FOLLOW_UP) && appointmentServiceDefinitionService.getAppointmentServiceByUuid(TB_SERVICE) != null) {
                     appointmentServiceDefinition.setAppointmentServiceId(appointmentServiceDefinitionService.getAppointmentServiceByUuid(TB_SERVICE).getId());
                 } else if (enc.getForm() != null && enc.getForm().getUuid().equals(KP_CLINICAL_VISIT_FORM) && appointmentServiceDefinitionService.getAppointmentServiceByUuid(KP_CLINICAL_SERVICE) != null) {
-                    appointmentServiceDefinition.setAppointmentServiceId(appointmentServiceDefinitionService.getAppointmentServiceByUuid(KP_CLINICAL_SERVICE).getId());
+                     appointmentServiceDefinition.setAppointmentServiceId(appointmentServiceDefinitionService.getAppointmentServiceByUuid(KP_CLINICAL_SERVICE).getId());
+                 } else if (enc.getForm() != null && enc.getForm().getUuid().equals(HivMetadata._Form.FAST_TRACK) && appointmentServiceDefinitionService.getAppointmentServiceByUuid(DRUG_REFILL_SERVICE) != null) {
+                    appointmentServiceDefinition.setAppointmentServiceId(appointmentServiceDefinitionService.getAppointmentServiceByUuid(DRUG_REFILL_SERVICE).getId());
                 } else {
                     return;
                 }
