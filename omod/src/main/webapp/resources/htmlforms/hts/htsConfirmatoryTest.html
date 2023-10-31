@@ -177,7 +177,7 @@
             var val = getValue('clientConsent.value');
             var htsMLPrediction = "<lookup expression="fn.latestObs(167163).getValueCoded().getConceptId()" />";
 
-            if(val == 'false' &amp;&amp; htsMLPrediction == '1408') {
+            if(val == 'false' &amp;&amp; (htsMLPrediction == '1408' || htsMLPrediction == '167164')) {
                 jq('#ml-prediction-consent-warning').html('Client has a high HIV risk score, testing is highly recommended');
                 jq('#ml-prediction-consent-warning').show();
             } else {
@@ -191,7 +191,7 @@
                 if(changedValue == 664) {
                     var htsMLPrediction = "<lookup expression="fn.latestObs(167163).getValueCoded().getConceptId()" />";
 
-                    if(htsMLPrediction == '1408') {
+                    if(htsMLPrediction == '1408' || htsMLPrediction == '167164') {
                         jq('#ml-prediction-results-warning').html('Client has a high HIV risk score, Kindly refer for preventive services');
                         jq('#ml-prediction-results-warning').show();
                     }
