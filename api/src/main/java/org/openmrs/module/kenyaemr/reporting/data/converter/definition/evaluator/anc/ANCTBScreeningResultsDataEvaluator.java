@@ -35,10 +35,16 @@ public class ANCTBScreeningResultsDataEvaluator implements EncounterDataEvaluato
     public EvaluatedEncounterData evaluate(EncounterDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
-        String qry = "select\n" +
-                "   v.encounter_id,\n" +
-                "  (case tb_screening when 1660 then 'NS' when 164128 then 'NS' when 142177 then 'Pr TB' when 1662 then 'TB Rx' when 160737 then 'ND' when 1111 then 'TB Rx'  else '' end) as tb_screening\n" +
-                "from kenyaemr_etl.etl_mch_antenatal_visit v where date(v.visit_date) between date(:startDate) and date(:endDate);";
+        String qry = "select v.encounter_id,\n" +
+                "       (case tb_screening\n" +
+                "            when 1660 then 'NS'\n" +
+                "            when 164128 then 'NS'\n" +
+                "            when 142177 then 'Pr TB'\n" +
+                "            when 1662 then 'TB Rx'\n" +
+                "            when 160737 then 'ND'\n" +
+                "            else '' end) as tb_screening\n" +
+                "from kenyaemr_etl.etl_mch_antenatal_visit v\n" +
+                "where date(v.visit_date) between date(:startDate) and date(:endDate);";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);

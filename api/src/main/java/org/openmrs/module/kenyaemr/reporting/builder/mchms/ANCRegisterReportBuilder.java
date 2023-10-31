@@ -141,6 +141,9 @@ public class ANCRegisterReportBuilder extends AbstractReportBuilder {
         ANCVDRLResultsDataDefinition ancVDRLResultsDataDefinition = new ANCVDRLResultsDataDefinition();
         ancVDRLResultsDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
         ancVDRLResultsDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        ANCVDRLTreatedDataDefinition ancVDRLTreatedDataDefinition = new ANCVDRLTreatedDataDefinition();
+        ancVDRLTreatedDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+        ancVDRLTreatedDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
         ANCHIVStatusBeforeFirstANCDataDefinition ancHIVStatusBeforeFirstANCDataDefinition = new ANCHIVStatusBeforeFirstANCDataDefinition();
         ancHIVStatusBeforeFirstANCDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
         ancHIVStatusBeforeFirstANCDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -265,7 +268,7 @@ public class ANCRegisterReportBuilder extends AbstractReportBuilder {
         dsd.addColumn("VDRL Done", ancVDRLDoneDataDefinition, paramMapping);
         dsd.addColumn("VDRL ", ancVDRLResultsDataDefinition, paramMapping);
         dsd.addColumn("VDRL Results", ancVDRLResultsDataDefinition, paramMapping);
-        //dsd.addColumn("VDRL Treated", new ANCVDRLTreatedDataDefinition(),"");
+        dsd.addColumn("VDRL Treated", ancVDRLTreatedDataDefinition,paramMapping);
         dsd.addColumn("HIV Status preANC", ancHIVStatusBeforeFirstANCDataDefinition, paramMapping);
         dsd.addColumn("HIV Test Type", ancHIVTestTypeDataDefinition, paramMapping);
         dsd.addColumn("HIV Test One", ancHIVTestOneDataDefinition, paramMapping);
