@@ -17,9 +17,12 @@
         if(isEmpty(patientUUID) == false) {
             // Sample: http://localhost:8080/openmrs/spa/patient/49ceb938-bac0-4514-b712-7452121a8c24/chart/Patient%20Summary
             baseUrl = baseUrl + "/patient/" + patientUUID + "/chart/Patient%20Summary"
+            var spaChartUrl = new URL(baseUrl);
+            window.location.replace(spaChartUrl);
+        } else {
+            var spaUrl = new URL(homeBaseUrl);
+            window.location.replace(spaUrl);
         }
-        var spaUrl = new URL(homeBaseUrl);
-        window.location.replace(spaUrl);
 
         function isEmpty(value) {
             return (value === null || value === undefined || value.length === 0);
