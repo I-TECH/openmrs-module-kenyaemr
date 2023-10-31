@@ -78,7 +78,7 @@
                 if(changedValue == 664) {
                     var htsMLPrediction = "<lookup expression="fn.latestObs(167163).getValueCoded().getConceptId()" />";
 
-                    if(htsMLPrediction == '1408') {
+                    if(htsMLPrediction == '1408' || htsMLPrediction == '167164') {
                         jq('#ml-prediction-results-warning').html('Client has a high HIV risk score, Kindly refer for preventive services');
                         jq('#ml-prediction-results-warning').show();
                     }
@@ -160,7 +160,7 @@
             var val = getValue('clientConsent.value');
             var htsMLPrediction = "<lookup expression="fn.latestObs(167163).getValueCoded().getConceptId()" />";
 
-            if(val == 'false' &amp;&amp; htsMLPrediction == '1408') {
+            if(val == 'false' &amp;&amp; (htsMLPrediction == '1408' || htsMLPrediction == '167164')) {
                 jq('#ml-prediction-consent-warning').html('Client has a high HIV risk score, testing is highly recommended');
                 jq('#ml-prediction-consent-warning').show();
             } else {
@@ -834,21 +834,6 @@
                 getField('specify-referral.value').val("");
             }
         }
-
-        // var finalTestResultSelected = function() {
-        //     console.log("Test result selected");
-        //     var val = jq(this).val();
-        //     var htsMLPrediction = "<lookup expression="fn.latestObs(167163).getValueCoded().getConceptId()" />";
-
-        //     if(val == 664 &amp;&amp; htsMLPrediction == '1408') {
-        //         console.log("Negative and at high risk hit");
-        //         jq('#ml-prediction-results-warning').html('Client has a high HIV risk score, Kindly refer for preventive services');
-        //         jq('#ml-prediction-results-warning').show();
-        //     } else {
-        //         jq('#ml-prediction-results-warning').hide();
-        //         clearHiddenSections(jq('#ml-prediction-results-warning'));
-        //     }
-        // }
 
         var hasNegativeReferralSelected = function () {
             var val = jq(this).val();
