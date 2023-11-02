@@ -717,7 +717,7 @@
 
 	<bean id="kenyaemr.hiv.report.quarterly_tx_curr_gain_loss_analysis_linelist" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
 		<property name="targetUuid" value="cbd36f94-30f0-11e9-b210-d663bd873d93" />
-		<property name="name" value="Tx_Curr Net Gain and Loss Analysis Linelists (Qarterly)" />
+		<property name="name" value="Tx_Curr Net Gain and Loss Analysis Linelists (Quarterly)" />
 		<property name="description" value="Linelists showing Gains and Losses in TX CURR numbers at different reporting dates" />
 		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
 	</bean>
