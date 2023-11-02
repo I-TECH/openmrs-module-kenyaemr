@@ -216,6 +216,7 @@ public class KenyaemrCoreRestController extends BaseRestController {
     public static final String MCH_DELIVERY_FORM_UUID = "496c7cc3-0eea-4e84-a04c-2292949e2f7f";
 
     public static final String MCH_DISCHARGE_FORM_UUID = "af273344-a5f9-11e8-98d0-529269fb1459";
+    public static final String LAB_ORDERS_FORM_UUID = "2cdeded1-3f69-3bda-beff-1ed2ead94eaf";
 
     public static final Locale LOCALE = Locale.ENGLISH;
 
@@ -297,6 +298,14 @@ public class KenyaemrCoreRestController extends BaseRestController {
                     discharge.put("retired", false);
                     formList.add(discharge);
                 }
+                ObjectNode labOrder = JsonNodeFactory.instance.objectNode();
+                labOrder.put("uuid", LAB_ORDERS_FORM_UUID);
+                labOrder.put("name", "Laboratory Test Orders");
+                labOrder.put("display", "Laboratory Test Orders");
+                labOrder.put("version", "1.0");
+                labOrder.put("published", true);
+                labOrder.put("retired", false);
+                formList.add(labOrder);
             }
         }
 
