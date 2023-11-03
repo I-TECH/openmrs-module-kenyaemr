@@ -11,6 +11,7 @@
 package org.openmrs.module.kenyaemr.reporting.library.ETLReports.publicHealthActionReport;
 
 import org.openmrs.module.kenyacore.report.ReportUtils;
+import org.openmrs.module.kenyaemr.reporting.library.ETLReports.viralSuppression.ViralSuppressionCohortLibrary;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,9 @@ import static org.openmrs.module.kenyaemr.reporting.EmrReportingUtils.cohortIndi
 public class PublicHealthActionIndicatorLibrary {
     @Autowired
     private PublicHealthActionCohortLibrary cohortLibrary;
+
+    @Autowired
+    private ViralSuppressionCohortLibrary vlSuppressionCohorts;
 
     /**
      * Number of HIV+ patients not linked to care
@@ -56,7 +60,7 @@ public class PublicHealthActionIndicatorLibrary {
      * @return the indicator
      */
     public CohortIndicator unsuppressedWithValidVL() {
-        return cohortIndicator("Unsuppressed VL result", ReportUtils.map(cohortLibrary.unsuppressedWithValidVL(), "startDate=${startDate},endDate=${endDate}"));
+        return cohortIndicator("Unsuppressed VL result", ReportUtils.map(vlSuppressionCohorts.unsuppressed(), "endDate=${endDate}"));
     }
 
     /**

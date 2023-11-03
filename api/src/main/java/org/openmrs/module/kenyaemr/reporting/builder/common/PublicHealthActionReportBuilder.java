@@ -58,7 +58,7 @@ public class PublicHealthActionReportBuilder extends AbstractReportBuilder {
         cohortDsd.setName("Clinical-Action");
         cohortDsd.setDescription("Clinical Action Report");
         cohortDsd.addColumn("Current on ART without valid VL", "", ReportUtils.map(publicHealthActionIndicatorLibrary.invalidVL(), "startDate=${startDate},endDate=${endDate}"), "");
-        cohortDsd.addColumn("Current on ART with Unsuppressed Valid VL", "", ReportUtils.map(publicHealthActionIndicatorLibrary.unsuppressedWithValidVL(), "startDate=${startDate},endDate=${endDate}"), "");
+        cohortDsd.addColumn("Current on ART with Unsuppressed Valid VL", "", ReportUtils.map(publicHealthActionIndicatorLibrary.unsuppressedWithValidVL(), "endDate=${endDate}"), "");
         cohortDsd.addColumn("Current on ART with Unsuppressed invalid VL", "", ReportUtils.map(publicHealthActionIndicatorLibrary.unsuppressedWithoutValidVL(), "startDate=${startDate},endDate=${endDate}"), "");
         cohortDsd.addColumn("Current on ART Clients without NUPI", "", ReportUtils.map(publicHealthActionIndicatorLibrary.txCurrclientsWithoutNUPI(), "startDate=${startDate},endDate=${endDate}"), "");
         cohortDsd.addColumn("Recent defaulters", " (Missed appointment within 30 days)", ReportUtils.map(publicHealthActionIndicatorLibrary.recentDefaulters(), "startDate=${startDate},endDate=${endDate}"), "");
