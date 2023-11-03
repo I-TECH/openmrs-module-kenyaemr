@@ -56,28 +56,78 @@
 
 	<div class="ke-form-content">
 		<!-- add content here   -->
-		<fieldset>
-			<legend>Cervical cancer screening assessment form</legend>
-			<table class="simple-table">
+		<fieldset class="patient-details">
+			<legend>ART Regimens</legend>
+			<table style="width: 70%;" border="0">
 				<tr>
-					<td>Have you been screened for cervical cancer within the past one year:</td>
-					<td>
-						<obs conceptId="164934" id="screened_before" answerConceptIds="1065,1066" required="true"
-							style="radio" />
-					</td>
+					<th align="left">Drug</th>
+					<th align="left">Duration (Days)</th>
 				</tr>
+				<repeat>
+					<template>
+						<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+							<tr>
+								<td>
+									<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" id="diagnosis-type" style="autocomplete"/>
+								</td>
+								<td>
+									<obs conceptId="163104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="10" id="treatment-plan"/>
+								</td>
+							</tr>
+						</obsgroup>
+					</template>
+					<render n="11" concept="Diagnosis"/>
+				</repeat>
+			</table>
+		</fieldset>
+
+		<fieldset class="patient-details">
+			<legend>Prophylaxis</legend>
+			<table style="width: 70%;" border="0">
 				<tr>
-					<td>Refer for screening? </td>
-					<td>
-						<obs conceptId="165391" id="refer_for_screening" answerConceptIds="1065,1066" required="true" style="radio" />
-					</td>
+					<th align="left">Drug</th>
+					<th align="left">Duration (Days)</th>
 				</tr>
+				<repeat>
+					<template>
+						<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+							<tr>
+								<td>
+									<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" id="diagnosis-type" style="autocomplete"/>
+								</td>
+								<td>
+									<obs conceptId="163104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="10" id="treatment-plan"/>
+								</td>
+							</tr>
+						</obsgroup>
+					</template>
+					<render n="11" concept="Diagnosis"/>
+				</repeat>
+			</table>
+		</fieldset>
+
+		<fieldset class="patient-details">
+			<legend>Other Drugs</legend>
+			<table style="width: 70%;" border="0">
 				<tr>
-					<td>Name of Reviewing Officer</td>
-					<td>
-						<encounterProvider role="Provider" type="autocomplete" />
-					</td>
+					<th align="left">Drug</th>
+					<th align="left">Duration (Days)</th>
 				</tr>
+				<repeat>
+					<template>
+						<obsgroup groupingConceptId="159947AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+							<tr>
+								<td>
+									<obs conceptId="6042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerClasses="Diagnosis" id="diagnosis-type" style="autocomplete"/>
+								</td>
+								<td>
+									<obs conceptId="163104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="1" cols="10" id="treatment-plan"/>
+								</td>
+							</tr>
+						</obsgroup>
+					</template>
+					<render n="11" concept="Diagnosis"/>
+				</repeat>
 			</table>
 		</fieldset>
 	</div>

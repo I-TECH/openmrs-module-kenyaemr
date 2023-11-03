@@ -36,6 +36,7 @@
 <!--				<ref bean="kenyaemr.common.form.tbScreening" />-->
 				<ref bean="kenyaemr.hiv.form.artFastTrackForm"/>
 				<ref bean="kenyaemr.hiv.form.cccDefaulterTracing"/>
+				<ref bean="kenyaemr.hiv.form.drugPrescription"/>
 			</set>
 		</property>
 		<property name="reports">
@@ -113,6 +114,20 @@
 		<property name="icon" value="kenyaui:forms/generic.png" />
 		<property name="htmlform" value="kenyaemr:hiv/hivGreenCard.html" />
 		<property name="order" value="200011" />
+	</bean>
+
+	<!-- Drug Pfrescription -->
+	<bean id="kenyaemr.hiv.form.drugPrescription" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="bd206284-889f-4291-94b9-6389e5acd7d6" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:hiv/drugprescribtion.html" />
+		<property name="order" value="200020" />
 	</bean>
 
 	<!-- HIV treatment preparation  -->
