@@ -98,11 +98,14 @@ public class ViralSuppressionCohortLibrary {
     }
 
     public  CohortDefinition oldVLResults() {
-        String sqlQuery="select patient_id\n" +
-                "from kenyaemr_etl.etl_laboratory_extract\n" +
-                "group by patient_id\n" +
-                "having mid(max(concat(visit_date, lab_test)), 11) in (1305, 856)\n" +
-                "   and max(visit_date) < date_sub(:endDate, interval 12 MONTH);";
+        String sqlQuery="select a.patient_id\n" +
+                "from (select patient_id,\n" +
+                "             coalesce(mid(max(concat(date(visit_date), date(date_test_requested))), 11),\n" +
+                "                      max(visit_date)) as lab_test_date\n" +
+                "      from kenyaemr_etl.etl_laboratory_extract\n" +
+                "      where lab_test in (1305, 856)\n" +
+                "      group by patient_id\n" +
+                "      having lab_test_date < date_sub(:endDate, interval 12 MONTH)) a;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("OldVLResults");
         cd.setQuery(sqlQuery);
