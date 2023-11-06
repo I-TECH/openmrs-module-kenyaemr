@@ -69,6 +69,7 @@ public class HivMetadata extends AbstractMetadataBundle {
 		public static final String ALCOHOL_AND_DRUGS_SCREENING = "7b1ec2d5-a4ad-4ffc-a0d3-ff1ea68e293c";
 		public static final String ENHANCED_ADHERENCE_SCREENING = "c483f10f-d9ee-4b0d-9b8c-c24c1ec24701";
 		public static final String CCC_DEFAULTER_TRACING = "a1a62d1e-2def-11e9-b210-d663bd873d93";
+		public static final String LAB_ORDERS_FORM_UUID = "2cdeded1-3f69-3bda-beff-1ed2ead94eaf";
 
 	}
 
@@ -120,6 +121,8 @@ public class HivMetadata extends AbstractMetadataBundle {
 		install(form("Alcohol and Drug Abuse Screening(CAGE-AID/CRAFFT)", "Alcohol and Drug Abuse Screening", _EncounterType.ALCOHOL_AND_DRUGS_ABUSE, "1", _Form.ALCOHOL_AND_DRUGS_SCREENING));
 		install(form("Enhanced Adherence Screening", "Enhanced Adherence Screening", _EncounterType.ENHANCED_ADHERENCE, "1", _Form.ENHANCED_ADHERENCE_SCREENING));
 		install(form("CCC Defaulter Tracing", "Defaulter Tracing Form", _EncounterType.CCC_DEFAULTER_TRACING, "1", _Form.CCC_DEFAULTER_TRACING));
+		install(form("Laboratory Test Orders", "Laboratory Test Orders", _EncounterType.LAB_ORDER, "1", _Form.LAB_ORDERS_FORM_UUID));
+
 		install(patientIdentifierType("KDoD number", "Unique Id for KDoD patient", "(?i)^(KDOD)+[0-9]{4,5}$", "Must start with KDoD followed by 4-5 digit number. Example: KDoD12345 or kdod1233",
 				null, LocationBehavior.NOT_USED, false, _PatientIdentifierType.KDoD_NUMBER));
 		if(isKDoD.equals("true")){
