@@ -36,7 +36,9 @@ import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Synchronizes appointments documented in HTML forms with Bahmni appointments module
@@ -55,6 +57,7 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
     public static final String HIV_FOLLOWUP_SERVICE = "885b4ad3-fd4c-4a16-8ed3-08813e6b01fa";
     public static final String DRUG_REFILL_SERVICE = "a96921a1-b89e-4dd2-b6b4-7310f13bbabe";
     public static final String HIV_LAB_TEST_SERVICE = "61488cf6-fad4-11ed-be56-0242ac120002";
+    public static final String COUNSELLING_SERVICE = "c6ce2119-c084-49c7-aa3f-be9fa1f3863e";
 
     // MCH appointments
     public static final String MCH_POSTNATAL_VISIT_SERVICE = "dcde8ca4-32a5-4c67-9982-33346e39813f";
@@ -160,6 +163,7 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
         // Get appointment obs
         Appointment hivFollowUpAppointment = appointmentsService.getAppointmentByUuid(enc.getUuid());
         Appointment drugRefillAppointment = hivFollowUpAppointment.getRelatedAppointment();
+        Integer appointmentReasonToEdit = null;
 
         List<Obs> obs = obsService.getObservations(
                 Arrays.asList(personService.getPerson(enc.getPatient().getPersonId())),
@@ -182,13 +186,23 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
 
         for (Obs o : obs) { // Loop through the obs and compose Appointment object for Bahmni
             if((o.getConcept().getUuid().equals(APPOINTMENT_REASON_CONCEPT_UUID)) && hivFollowUpAppointment != null ) {
+                appointmentReasonToEdit = o.getValueCoded().getConceptId();
+                 AppointmentServiceDefinition appointmentServiceDefinition = new AppointmentServiceDefinition();
+                if(appointmentReasonToEdit != null) {
+                    // Allow for editing of appointment service based on updated appointment reasons from green card
+                    String serviceUuid = getAppointmentServiceUuidFromConcept(appointmentReasonToEdit);
+                    if(serviceUuid != null) {
+                        appointmentServiceDefinition.setAppointmentServiceId(appointmentServiceDefinitionService.getAppointmentServiceByUuid(serviceUuid).getId());
+                        hivFollowUpAppointment.setService(appointmentServiceDefinition);
+                    }  
+                }
                 if(o.getValueCoded().getConceptId() == 160523 || o.getValueCoded().getConceptId() == 160521 ) {
                     followUpAppointment = true;
                 }
             }
 
             // edit HIV followup appointment
-            if((o.getConcept().getUuid().equals(NEXT_CLINICAL_APPOINTMENT_DATE_CONCEPT_UUID)) && hivFollowUpAppointment != null ) {
+            if((o.getConcept().getUuid().equals(NEXT_CLINICAL_APPOINTMENT_DATE_CONCEPT_UUID)) && hivFollowUpAppointment != null  ) {
                 nxtAppointment = true;
                 Date nextApptStartDateTime = DateUtil.convertToDate(dateFormat.format(o.getValueDatetime()).concat("T07:00:00.0Z"), DateUtil.DateFormatType.UTC);
                 Date nextApptEndDateTime = DateUtil.convertToDate(dateFormat.format(o.getValueDatetime()).concat("T20:00:00.0Z"), DateUtil.DateFormatType.UTC);
@@ -551,5 +565,14 @@ public class SyncHFEAppointmentsWithBahmniModule implements AfterReturningAdvice
             }
 
         }
+    }
+    
+    private String getAppointmentServiceUuidFromConcept( int conceptId) {
+        Map<Integer, String> idToUuidMap = new HashMap<Integer, String>();
+        idToUuidMap.put(1283, "61488cf6-fad4-11ed-be56-0242ac120002"); // lab tests
+        idToUuidMap.put(160523, "885b4ad3-fd4c-4a16-8ed3-08813e6b01fa"); // HIV consultation
+        idToUuidMap.put(159382, "c6ce2119-c084-49c7-aa3f-be9fa1f3863e"); // Counselling
+        return idToUuidMap.get(conceptId);
+       
     }
 }
