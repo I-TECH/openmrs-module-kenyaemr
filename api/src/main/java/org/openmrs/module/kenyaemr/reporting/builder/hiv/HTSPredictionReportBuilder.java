@@ -25,6 +25,7 @@ import org.openmrs.module.kenyaemr.reporting.data.converter.IdentifierConverter;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.MFLCodeDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLFirstHIVTestDateDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLFirstHIVTestResultDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLHTSEntryPointDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLPredictionCategoryDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLPredictionScoreDataDefinition;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
@@ -107,6 +108,9 @@ public class HTSPredictionReportBuilder extends AbstractHybridReportBuilder {
                 DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
                 DataDefinition nupiDef = new ConvertedPatientDataDefinition("identifier", new PatientIdentifierDataDefinition(nupi.getName(), nupi), identifierFormatter);
 
+                ETLHTSEntryPointDataDefinition entryPointDataDefinition = new ETLHTSEntryPointDataDefinition();
+                entryPointDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+                entryPointDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
                 ETLPredictionScoreDataDefinition predictionScoreDataDefinition = new ETLPredictionScoreDataDefinition();
                 predictionScoreDataDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
                 predictionScoreDataDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -129,6 +133,7 @@ public class HTSPredictionReportBuilder extends AbstractHybridReportBuilder {
                 dsd.addColumn("NUPI", nupiDef, "");
                 dsd.addColumn("Sex", new GenderDataDefinition(), "", null);
                 dsd.addColumn("UPN", identifierDef, "");
+                dsd.addColumn("Entry Point", entryPointDataDefinition, "startDate=${startDate},endDate=${endDate}");
                 dsd.addColumn("ML Prediction Score", predictionScoreDataDefinition, "startDate=${startDate},endDate=${endDate}");
                 dsd.addColumn("ML Prediction Category", predictionCategoryDataDefinition, "startDate=${startDate},endDate=${endDate}");
                 dsd.addColumn("Date Of Test", firstHIVTestDateDataDefinition, "startDate=${startDate},endDate=${endDate}", new DateConverter(DATE_FORMAT));

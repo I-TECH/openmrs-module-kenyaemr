@@ -9,10 +9,9 @@
  */
 package org.openmrs.module.kenyaemr.reporting.data.converter.definition.evaluator.art;
 
-import java.util.Date;
-import java.util.Map;
-
 import org.openmrs.annotation.Handler;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.HTSTestEntryPointDataDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLHTSEntryPointDataDefinition;
 import org.openmrs.module.kenyaemr.reporting.data.converter.definition.art.ETLPredictionScoreDataDefinition;
 import org.openmrs.module.reporting.data.person.EvaluatedPersonData;
 import org.openmrs.module.reporting.data.person.definition.PersonDataDefinition;
@@ -23,11 +22,14 @@ import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
+import java.util.Map;
+
 /**
- * Evaluates Last VL result Data Definition
+ * Evaluates  HTS Entry point Data Definition
  */
-@Handler(supports= ETLPredictionScoreDataDefinition.class, order=50)
-public class ETLPredictionScoreDataEvaluator implements PersonDataEvaluator {
+@Handler(supports= ETLHTSEntryPointDataDefinition.class, order=50)
+public class ETLHTSEntryPointDataEvaluator implements PersonDataEvaluator {
 
     @Autowired
     private EvaluationService evaluationService;
@@ -35,8 +37,28 @@ public class ETLPredictionScoreDataEvaluator implements PersonDataEvaluator {
     public EvaluatedPersonData evaluate(PersonDataDefinition definition, EvaluationContext context) throws EvaluationException {
         EvaluatedPersonData c = new EvaluatedPersonData(definition, context);
 
-        String qry = "SELECT patient_id, hts_risk_score FROM kenyaemr_etl.etl_hts_eligibility_screening\n" +
-                "where date(visit_date) >= date(:startDate) and date(visit_date) <= date(:endDate) GROUP BY patient_id;";
+        String qry = "SELECT patient_id, (case  hts_entry_point\n" +
+                "                    when 5485 then 'In Patient Department(IPD)'\n" +
+                "                    when 160542 then 'Out Patient Department(OPD)'\n" +
+                "                    when 162181 then 'Peadiatric Clinic'\n" +
+                "                    when 160552 then 'Nutrition Clinic'\n" +
+                "                    when 160538 then 'PMTCT ANC'\n" +
+                "                    when 160456 then 'PMTCT MAT'\n" +
+                "                    when 1623 then 'PMTCT PNC'\n" +
+                "                    when 160541 then 'TB'\n" +
+                "                    when 162050 then 'CCC'\n" +
+                "                    when 159940 then 'VCT'\n" +
+                "                    when 159938 then 'Home Based Testing'\n" +
+                "                    when 159939 then 'Mobile Outreach'\n" +
+                "                    when 162223 then 'VMMC'\n" +
+                "                    when 160546 then 'STI Clinic'\n" +
+                "                    when 160522 then 'Emergency'\n" +
+                "                    when 163096 then 'Community Testing'\n" +
+                "                    when 5622 then 'Other'\n" +
+                "                    else ''  end ) as hts_entry_point\n" +
+                "FROM kenyaemr_etl.etl_hts_eligibility_screening\n" +
+                "where date(visit_date) >= date(:startDate) and date(visit_date) <= date(:endDate)\n" +
+                "GROUP BY patient_id;";
 
         SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
         queryBuilder.append(qry);
