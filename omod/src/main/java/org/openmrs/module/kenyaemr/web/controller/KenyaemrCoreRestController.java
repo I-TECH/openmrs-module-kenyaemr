@@ -2283,9 +2283,9 @@ else {
             } else if (concept.equals(Dictionary.getConcept(Dictionary.PMTCT_PROGRAM))) {
                 value = "PMTCT";
             } else if (concept.equals(Dictionary.getConcept(Dictionary.PEDIATRIC_INPATIENT_SERVICE))) {
-                value = "IPD-P";
+                value = "IPD-CHILD";
             } else if (concept.equals(Dictionary.getConcept(Dictionary.ADULT_INPATIENT_SERVICE))) {
-                value = "IPD-A";
+                value = "IPD-ADULT";
             } else if (concept.equals(Dictionary.getConcept("160542AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
                 value = "OPD";
             } else if (concept.equals(Dictionary.getConcept(Dictionary.TUBERCULOSIS_TREATMENT_PROGRAM))) {
@@ -2307,7 +2307,13 @@ else {
             } else if (concept.equals(Dictionary.getConcept("162223AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
                 value = "VMMC";
             } else if (concept.equals(Dictionary.getConcept(Dictionary.TRANSFER_IN))) {
-                value = "TI";
+                value = "TRANSFER IN";
+            } else if (concept.equals(Dictionary.getConcept("159938AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+                value = "HBTC"
+            } else if (concept.equals(Dictionary.getConcept("162050AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+                value = "CCC"
+            } else if (concept.equals(Dictionary.getConcept("162050AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
+                value = "SELF TEST"
             }
         }
 
