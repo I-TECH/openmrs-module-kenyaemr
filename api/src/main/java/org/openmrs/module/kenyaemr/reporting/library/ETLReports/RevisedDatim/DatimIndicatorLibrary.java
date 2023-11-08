@@ -211,12 +211,48 @@ public class DatimIndicatorLibrary {
     public CohortIndicator firstInfantVirologicTestsAt12Months() {
         return cohortIndicator("Infants with atleast 2nd sample taken for Virologic test between 3 and 12 months", ReportUtils.<CohortDefinition>map(datimCohorts.firstInfantVirologicTestsAt12Months(), "startDate=${startDate},endDate=${endDate}"));
     }
+
     /**
-     * Number of Infants turned HIV Positive 12 months after birth
+     * Number of Infants tested by 12 months of age and results returned
      * @return the indicator
      */
-    public CohortIndicator infantsTurnedHIVPositive() {
-        return cohortIndicator("Infants identified HIV Positive within 12 months after birth", ReportUtils.<CohortDefinition>map(datimCohorts.infantsTurnedHIVPositive(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator infantsTestedAndResultsReturned() {
+        return cohortIndicator("HIV-exposed infants with a virologic HIV test result returned in the reporting period, whose diagnostic sample was collected by 12 months of age", ReportUtils.<CohortDefinition>map(datimCohorts.infantsTestedAndResultsReturned(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     *HIV-exposed infants with a virologic Negative HIV test result returned in the reporting period, whose diagnostic sample was collected by 2 months of age
+     * @return
+     */
+    public CohortIndicator infantsTestedNegativeby2MonthsOfAge() {
+        return cohortIndicator("HIV-exposed infants with a virologic Negative HIV test result returned in the reporting period, whose diagnostic sample was collected by 2 months of age", ReportUtils.<CohortDefinition>map(datimCohorts.infantsTestedNegativeby2MonthsOfAge(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     *HIV-exposed infants with a virologic Negative HIV test result returned in the reporting period, whose diagnostic sample was collected at 3-12 months of age
+     * @return
+     */
+    public CohortIndicator infantsTestedNegativeby3To12MonthsOfAge() {
+        return cohortIndicator("HIV-exposed infants with a virologic Negative HIV test result returned in the reporting period, whose diagnostic sample was collected by 3- 12 months of age", ReportUtils.<CohortDefinition>map(datimCohorts.infantsTestedNegativeby3To12MonthsOfAge(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     *HIV-exposed infants with a virologic Positive HIV test result returned in the reporting period, whose diagnostic sample was collected by 2 months of age
+     * @return
+     */
+    public CohortIndicator infantsTestedPositiveby2MonthsOfAge() {
+        return cohortIndicator("HIV-exposed infants with a virologic Positive HIV test result returned in the reporting period, whose diagnostic sample was collected by 2 months of age", ReportUtils.<CohortDefinition>map(datimCohorts.infantsTestedPositiveby2MonthsOfAge(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     *HIV-exposed infants with a virologic Positive HIV test result returned in the reporting period, whose diagnostic sample was collected at 3-12 months of age
+     * @return
+     */
+    public CohortIndicator infantsTestedPositiveby3To12MonthsOfAge() {
+        return cohortIndicator("HIV-exposed infants with a virologic Positive HIV test result returned in the reporting period, whose diagnostic sample was collected by 3- 12 months of age", ReportUtils.<CohortDefinition>map(datimCohorts.infantsTestedPositiveby3To12MonthsOfAge(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator infantsInitiatedARTTestedPositiveby2MonthsOfAge() {
+        return cohortIndicator("HIV-exposed infants with a virologic Positive HIV test result returned in the reporting period, whose diagnostic sample was collected by 2 months of age", ReportUtils.<CohortDefinition>map(datimCohorts.infantsInitiatedARTTestedPositiveby2MonthsOfAge(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    public CohortIndicator infantsInitiatedARTTestedPositiveby3To12MonthsOfAge() {
+        return cohortIndicator("HIV-exposed infants with a virologic Positive HIV test result returned in the reporting period, whose diagnostic sample was collected by 3- 12 months of age", ReportUtils.<CohortDefinition>map(datimCohorts.infantsInitiatedARTTestedPositiveby3To12MonthsOfAge(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
@@ -369,13 +405,6 @@ public class DatimIndicatorLibrary {
         return cohortIndicator("Number of OVC Not on ART reported to implementing partner", ReportUtils.<CohortDefinition>map(datimCohorts.ovcNotOnART(), "startDate=${startDate},endDate=${endDate}"));
     }
 
-    /**
-     * Number of Infants turned HIV Positive 12 months after birth and started on ART
-     * @return the indicator
-     */
-    public CohortIndicator infantsTurnedHIVPositiveOnART() {
-        return cohortIndicator("Infants identified HIV Positive within 12 months after birth and Started ART", ReportUtils.<CohortDefinition>map(datimCohorts.infantsTurnedHIVPositiveOnART(), "startDate=${startDate},endDate=${endDate}"));
-    }
     /**
      * Number of Mothers Already on ART at the start of current Pregnancy
      * @return the indicator

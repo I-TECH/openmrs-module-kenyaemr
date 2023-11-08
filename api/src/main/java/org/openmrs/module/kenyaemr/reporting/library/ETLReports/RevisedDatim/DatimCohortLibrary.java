@@ -622,7 +622,7 @@ public class DatimCohortLibrary {
 
     }
 
-    public CohortDefinition infantsTurnedHIVPositive() {
+  /*  public CohortDefinition infantsTurnedHIVPositive() {
 
         String sqlQuery = "select t.patient_id from (select e.patient_id,timestampdiff(MONTH,d.dob,max(f.dna_pcr_sample_date)) months,f.dna_pcr_results_date results_date,e.exit_date exit_date,f.dna_pcr_contextual_status test_type from kenyaemr_etl.etl_hei_enrollment e inner join\n" +
                 "                                                           kenyaemr_etl.etl_patient_demographics d on e.patient_id = d.patient_id\n" +
@@ -640,7 +640,7 @@ public class DatimCohortLibrary {
         cd.setDescription("Infants Turned HIV Positive within 12 months of birth");
         return cd;
 
-    }
+    }*/
 
     public CohortDefinition ovcOnART() {
 
@@ -918,6 +918,173 @@ public class DatimCohortLibrary {
 
     }
 
+    /**
+     *  Number of Infants tested by 12 months of age and results returned
+     * @return
+     */
+    public CohortDefinition infantsTestedAndResultsReturned() {
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "         inner join kenyaemr_etl.etl_patient_demographics d on e.patient_id = d.patient_id\n" +
+                "         inner join (select x.patient_id,\n" +
+                "                            mid(max(concat(date(x.visit_date), date(x.date_test_requested))), 11)       as sample_date,\n" +
+                "                            mid(max(concat(date(x.visit_date), date(x.date_test_result_received))), 11) as results_Date,\n" +
+                "                            mid(max(concat(date(x.visit_date), x.test_result)), 11)                     as test_results\n" +
+                "                     from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "                     where x.lab_test = 1030\n" +
+                "                       and x.order_reason in (1040, 1326, 844)\n" +
+                "                       and x.date_test_result_received between date(:startDate) and date(:endDate)\n" +
+                "                       and x.test_result in (703, 664)\n" +
+                "                     group by x.patient_id) x on e.patient_id = x.patient_id\n" +
+                "where timestampdiff(DAY, d.DOB, x.sample_date) <= 365;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("infantsTestedAndResultsReturned");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("HIV-exposed infants with a virologic HIV test result returned in the reporting period, whose diagnostic sample was collected by 12 months of age");
+        return cd;
+    }
+
+    /**
+     * HIV-exposed infants with a virologic Negative HIV test result returned in the reporting period, whose diagnostic sample was collected by 2 months of age
+     * @return
+     */
+    public CohortDefinition infantsTestedNegativeby2MonthsOfAge() {
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "         inner join kenyaemr_etl.etl_patient_demographics d on e.patient_id = d.patient_id\n" +
+                "         inner join (select x.patient_id,\n" +
+                "                            mid(max(concat(date(x.visit_date), date(x.date_test_requested))), 11)       as sample_date,\n" +
+                "                            mid(max(concat(date(x.visit_date), date(x.date_test_result_received))), 11) as results_Date,\n" +
+                "                            mid(max(concat(date(x.visit_date), x.test_result)), 11)                     as test_results\n" +
+                "                     from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "                     where x.lab_test = 1030\n" +
+                "                       and x.order_reason in (1040, 1326, 844)\n" +
+                "                       and x.date_test_result_received between date(:startDate) and date(:endDate)\n" +
+                "                       and x.test_result = 664\n" +
+                "                     group by x.patient_id) x on e.patient_id = x.patient_id\n" +
+                "where timestampdiff(DAY, d.DOB, x.sample_date) <= 60;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("infantsTestedNegativeby2MonthsOfAge");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("HIV-exposed infants with a virologic Negative HIV test result returned in the reporting period, whose diagnostic sample was collected by 2 months of age");
+        return cd;
+    }
+
+    /**
+     *HIV-exposed infants with a virologic Negative HIV test result returned in the reporting period, whose diagnostic sample was collected at 3-12 months of age
+     * @return
+     */
+    public CohortDefinition infantsTestedNegativeby3To12MonthsOfAge() {
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "         inner join kenyaemr_etl.etl_patient_demographics d on e.patient_id = d.patient_id\n" +
+                "         inner join (select x.patient_id,\n" +
+                "                            mid(max(concat(date(x.visit_date), date(x.date_test_requested))), 11)       as sample_date,\n" +
+                "                            mid(max(concat(date(x.visit_date), date(x.date_test_result_received))), 11) as results_Date,\n" +
+                "                            mid(max(concat(date(x.visit_date), x.test_result)), 11)                     as test_results\n" +
+                "                     from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "                     where x.lab_test = 1030\n" +
+                "                       and x.order_reason in (1040, 1326, 844)\n" +
+                "                       and x.date_test_result_received between date(:startDate) and date(:endDate)\n" +
+                "                       and x.test_result = 664\n" +
+                "                     group by x.patient_id) x on e.patient_id = x.patient_id\n" +
+                "where timestampdiff(DAY, d.DOB, x.sample_date) between 61 and 365;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("infantsTestedNegativeby3To12MonthsOfAge");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("HIV-exposed infants with a virologic Negative HIV test result returned in the reporting period, whose diagnostic sample was collected by 3- 12 months of age");
+        return cd;
+    }
+
+    /**
+     * HIV-exposed infants with a virologic Positive HIV test result returned in the reporting period, whose diagnostic sample was collected by 2 months of age
+     * @return
+     */
+    public CohortDefinition infantsTestedPositiveby2MonthsOfAge() {
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "         inner join kenyaemr_etl.etl_patient_demographics d on e.patient_id = d.patient_id\n" +
+                "         inner join (select x.patient_id,\n" +
+                "                            mid(max(concat(date(x.visit_date), date(x.date_test_requested))), 11)       as sample_date,\n" +
+                "                            mid(max(concat(date(x.visit_date), date(x.date_test_result_received))), 11) as results_Date,\n" +
+                "                            mid(max(concat(date(x.visit_date), x.test_result)), 11)                     as test_results\n" +
+                "                     from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "                     where x.lab_test = 1030\n" +
+                "                       and x.order_reason in (1040, 1326, 844)\n" +
+                "                       and x.date_test_result_received between date(:startDate) and date(:endDate)\n" +
+                "                       and x.test_result = 703\n" +
+                "                     group by x.patient_id) x on e.patient_id = x.patient_id\n" +
+                "where timestampdiff(DAY, d.DOB, x.sample_date) <= 60;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("infantsTestedPositiveby2MonthsOfAge");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("HIV-exposed infants with a virologic Positive HIV test result returned in the reporting period, whose diagnostic sample was collected by 2 months of age");
+        return cd;
+    }
+
+    /**
+     * HIV-exposed infants with a virologic Positive HIV test result returned in the reporting period, whose diagnostic sample was collected at 3-12 months of age
+     * @return
+     */
+    public CohortDefinition infantsTestedPositiveby3To12MonthsOfAge() {
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "         inner join kenyaemr_etl.etl_patient_demographics d on e.patient_id = d.patient_id\n" +
+                "         inner join (select x.patient_id,\n" +
+                "                            mid(max(concat(date(x.visit_date), date(x.date_test_requested))), 11)       as sample_date,\n" +
+                "                            mid(max(concat(date(x.visit_date), date(x.date_test_result_received))), 11) as results_Date,\n" +
+                "                            mid(max(concat(date(x.visit_date), x.test_result)), 11)                     as test_results\n" +
+                "                     from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "                     where x.lab_test = 1030\n" +
+                "                       and x.order_reason in (1040, 1326, 844)\n" +
+                "                       and x.date_test_result_received between date(:startDate) and date(:endDate)\n" +
+                "                       and x.test_result = 703\n" +
+                "                     group by x.patient_id) x on e.patient_id = x.patient_id\n" +
+                "where timestampdiff(DAY, d.DOB, x.sample_date) between 61 and 365;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("infantsTestedPositiveby3To12MonthsOfAge");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("HIV-exposed infants with a virologic Positive HIV test result returned in the reporting period, whose diagnostic sample was collected at 3-12 months of age");
+        return cd;
+    }
+
+    /**
+     * HIV Positive started ART in the reporting period, whose diagnostic sample was collected by 2 months of age.
+     * @return
+     */
+    public CohortDefinition infantsInitiatedARTTestedPositiveby2MonthsOfAge() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("startedOnART", ReportUtils.map(startedOnART(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("infantsTestedPositiveby2MonthsOfAge", ReportUtils.map(infantsTestedPositiveby2MonthsOfAge(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("startedOnART AND infantsTestedPositiveby2MonthsOfAge");
+        return cd;
+    }
+
+    /**
+     * HIV Positive started ART in the reporting period, whose diagnostic sample was collected at 3-12 months of age.
+     * @return
+     */
+    public CohortDefinition infantsInitiatedARTTestedPositiveby3To12MonthsOfAge() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("startedOnART", ReportUtils.map(startedOnART(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("infantsTestedPositiveby3To12MonthsOfAge", ReportUtils.map(infantsTestedPositiveby3To12MonthsOfAge(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("startedOnART AND infantsTestedPositiveby3To12MonthsOfAge");
+        return cd;
+    }
     /**
      *Screened negative for CXCA for the first time
      * @return
@@ -1368,57 +1535,6 @@ public class DatimCohortLibrary {
         cd.setCompositionString("txcurr AND womenEnrolledInHIVProgram AND postTxFollowupCXCATXLEEPSql");
         return cd;
     }
-
-    /**
-     * @return
-     */
-    public CohortDefinition infantsTurnedHIVPositiveOnART() {
-
-        String sqlQuery = "select t.patient_id from (select e.patient_id,timestampdiff(MONTH,d.dob,max(f.dna_pcr_sample_date)) months,f.dna_pcr_results_date results_date,e.exit_date exit_date,f.dna_pcr_contextual_status test_type from kenyaemr_etl.etl_hei_enrollment e inner join\n" +
-                "                                       kenyaemr_etl.etl_patient_demographics d on e.patient_id = d.patient_id\n" +
-                "       inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
-                "                                       inner join (select net.patient_id\n" +
-                "                                                   from (\n" +
-                "                                                        select e.patient_id,e.date_started,\n" +
-                " e.gender,\n" +
-                " e.dob,\n" +
-                " d.visit_date as dis_date,\n" +
-                " if(d.visit_date is not null, 1, 0) as TOut,\n" +
-                " e.regimen, e.regimen_line, e.alternative_regimen,\n" +
-                " mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
-                " max(if(enr.date_started_art_at_transferring_facility is not null and enr.facility_transferred_from is not null, 1, 0)) as TI_on_art,\n" +
-                " max(if(enr.transfer_in_date is not null, 1, 0)) as TIn,\n" +
-                " max(fup.visit_date) as latest_vis_date\n" +
-                "                                                        from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started,\n" +
-                "       mid(min(concat(e.date_started,e.regimen_name)),11) as regimen,\n" +
-                "       mid(min(concat(e.date_started,e.regimen_line)),11) as regimen_line,\n" +
-                "       max(if(discontinued,1,0))as alternative_regimen\n" +
-                "from kenyaemr_etl.etl_drug_event e\n" +
-                "       join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id\n" +
-                "where e.program = 'HIV'\n" +
-                "group by e.patient_id) e\n" +
-                " left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id and d.program_name='HIV'\n" +
-                " left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id\n" +
-                " left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id\n" +
-                "group by e.patient_id\n" +
-                "                                            having TI_on_art=0\n" +
-                "                                            )net) onart on e.patient_id = onart.patient_id\n" +
-                "                           where (e.hiv_status_at_exit = 'Positive' or f.dna_pcr_result= 703)\n" +
-                "                           group by e.patient_id)t\n" +
-                " where t.test_type in (162081,162083,162080) and\n" +
-                "       t.months <=12 and ((t.results_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate)) or (t.exit_date between date_sub(date(:endDate), interval 3 MONTH) and date(:endDate)))\n" +
-                " group by t.patient_id;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("infantsTurnedHIVPositiveOnART");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Infants Turned HIV Positive within 12 months of birth and on ART");
-        return cd;
-
-    }
-
     public CohortDefinition infantVirologySampleTaken() {
 
         String sqlQuery = "select dm.patient_id from kenyaemr_etl.etl_patient_demographics  dm\n" +

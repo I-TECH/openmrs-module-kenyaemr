@@ -555,17 +555,20 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_Denominator", "Newly enrolled to ANC", ReportUtils.map(datimIndicators.clientsNewlyEnrolledToANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
 
         //PMTCT_EID
+        cohortDsd.addColumn("PMTCT_EID_NUMERATOR", "Infants who had a virologic HIV test (sample collected) by 12 months of age during the reporting period", ReportUtils.map(datimIndicators.firstInfantVirologicTestsAt12Months(), indParams), "");
         cohortDsd.addColumn("PMTCT_EID_FIRST_TEST_WITHIN_2_MONTHS", "First sample collected for a virologic HIV test between birth and <= 2 months of age", ReportUtils.map(datimIndicators.infantFirstVirologicTestWithin2Months(), indParams), "");
         cohortDsd.addColumn("PMTCT_EID_FIRST_TEST_3_TO_12_MONTHS", "First sample collected for a virologic HIV test between 3-12 months of age", ReportUtils.map(datimIndicators.infantFirstVirologicTest3To12Months(), indParams), "");
         cohortDsd.addColumn("PMTCT_EID_ATLEAST_2_TESTS_WITHIN_2_MONTHS", "At least second sample collected for a virologic HIV test between birth and <= 2 months of age", ReportUtils.map(datimIndicators.atleast2InfantVirologicTestWithin2Months(), indParams), "");
         cohortDsd.addColumn("PMTCT_EID_ATLEAST_2_TESTS_3_12_MONTHS", "At least second sample collected for a virologic HIV test between birth and 3-12 months of age", ReportUtils.map(datimIndicators.atleast2InfantVirologicTestsAt3To12Months(), indParams), "");
-        cohortDsd.addColumn("PMTCT_EID_NUMERATOR", "Infants who had a virologic HIV test (sample collected) by 12 months of age during the reporting period", ReportUtils.map(datimIndicators.firstInfantVirologicTestsAt12Months(), indParams), "");
 
-        //PMTCT_HEI_POS
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_HEI_POS", "Infants identified HIV Positive within 12 months after birth", ReportUtils.map(datimIndicators.infantsTurnedHIVPositive(), indParams), datimAgeDisaggregationMonths, Arrays.asList("01", "02", "03"));
-
-        //PMTCT_HEI_POS_ART
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_HEI_POS_ART", "Infants identified HIV Positive within 12 months after birth and Started ART", ReportUtils.map(datimIndicators.infantsTurnedHIVPositiveOnART(), indParams), datimAgeDisaggregationMonths, Arrays.asList("01", "02", "03"));
+        //PMTCT_HEI
+        cohortDsd.addColumn("PMTCT_HEI_NUMERATOR", "HIV-exposed infants with a virologic HIV test result returned in the reporting period, whose diagnostic sample was collected by 12 months of age.", ReportUtils.map(datimIndicators.infantsTestedAndResultsReturned(), indParams), "");
+        cohortDsd.addColumn("PMTCT_HEI_NEG_0_TO_2_MONTHS", "HIV-exposed infants with a virologic HIV Negative test result returned in the reporting period, whose diagnostic sample was collected by 2 months of age.", ReportUtils.map(datimIndicators.infantsTestedNegativeby2MonthsOfAge(), indParams), "");
+        cohortDsd.addColumn("PMTCT_HEI_NEG_3_TO_12_MONTHS", "HIV-exposed infants with a virologic HIV Negative test result returned in the reporting period, whose diagnostic sample was collected at 3-12 months of age.", ReportUtils.map(datimIndicators.infantsTestedNegativeby3To12MonthsOfAge(), indParams), "");
+        cohortDsd.addColumn("PMTCT_HEI_POS_0_TO_2_MONTHS", "HIV-exposed infants with a virologic HIV Positive test result returned in the reporting period, whose diagnostic sample was collected by 2 months of age.", ReportUtils.map(datimIndicators.infantsTestedPositiveby2MonthsOfAge(), indParams), "");
+        cohortDsd.addColumn("PMTCT_HEI_POS_3_TO_12_MONTHS", "HIV-exposed infants with a virologic HIV Positive test result returned in the reporting period, whose diagnostic sample was collected at 3-12 months of age.", ReportUtils.map(datimIndicators.infantsTestedPositiveby3To12MonthsOfAge(), indParams), "");
+        cohortDsd.addColumn("PMTCT_HEI_INITIATED_ART_0_TO_2_MONTHS", "HIV Positive started ART in the reporting period, whose diagnostic sample was collected by 2 months of age.", ReportUtils.map(datimIndicators.infantsInitiatedARTTestedPositiveby2MonthsOfAge(), indParams), "");
+        cohortDsd.addColumn("PMTCT_HEI_INITIATED_ART_3_TO_12_MONTHS", "HIV Positive started ART in the reporting period, whose diagnostic sample was collected at 3-12 months of age.", ReportUtils.map(datimIndicators.infantsInitiatedARTTestedPositiveby3To12MonthsOfAge(), indParams), "");
 
         //CXCA_SCRN_FIRST_TIME_NEGATIVE
         EmrReportingUtils.addRow(cohortDsd, "CXCA_SCRN_FIRST_TIME_NEGATIVE", "HIV Positive women on ART screened Negative for CACX for the 1st time", ReportUtils.map(datimIndicators.firstTimeCXCASCRNNegative(), indParams), datimPMTCTCXCAExpandedAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"));
