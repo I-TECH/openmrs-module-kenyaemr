@@ -176,35 +176,41 @@ public class DatimIndicatorLibrary {
     }
 
     /**
-     * Number of Infants with a Negative virology test result
-     * @return the indicator
+     *Infants sample taken for Virologic test within 2 months
+     * @return
      */
-    public CohortIndicator infantsSampleTakenForVirology() {
-        return cohortIndicator("Infants sample taken for Virology", ReportUtils.<CohortDefinition>map(datimCohorts.infantVirologySampleTaken(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator infantFirstVirologicTestWithin2Months() {
+        return cohortIndicator("Infants sample taken for Virologic test within 2 months", ReportUtils.<CohortDefinition>map(datimCohorts.infantFirstVirologicTestWithin2Months(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
-     * Number of Infants with a Negative virology test result
-     * @return the indicator
+     *Infants sample taken for Virologic test between 3-12 months
+     * @return
      */
-    public CohortIndicator infantsTestedNegativeForVirology() {
-        return cohortIndicator("Infants tested negative for Virology", ReportUtils.<CohortDefinition>map(datimCohorts.infantVirologyNegativeResults(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator infantFirstVirologicTest3To12Months() {
+        return cohortIndicator("Infants sample taken for Virologic test between 3-12 months", ReportUtils.<CohortDefinition>map(datimCohorts.infantFirstVirologicTest3To12Months(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
-     * Number of Infants with a positive virology test result
-     * @return the indicator
+     *Infants with atleast 2 sample taken for Virologic test within 2 months
+     * @return
      */
-    public CohortIndicator infantsTestedPositiveForVirology() {
-        return cohortIndicator("Infants tested positive for Virology", ReportUtils.<CohortDefinition>map(datimCohorts.infantVirologyPositiveResults(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator atleast2InfantVirologicTestWithin2Months() {
+        return cohortIndicator("Infants with atleast 2 sample taken for Virologic test within 2 months", ReportUtils.<CohortDefinition>map(datimCohorts.atleast2InfantVirologicTestWithin2Months(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     *Infants with atleast 2nd sample taken for Virologic test between 3 and 12 months
+     * @return
+     */
+    public CohortIndicator atleast2InfantVirologicTestsAt3To12Months() {
+        return cohortIndicator("Infants with atleast 2nd sample taken for Virologic test between 3 and 12 months", ReportUtils.<CohortDefinition>map(datimCohorts.atleast2InfantVirologicTestsAt3To12Months(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
-     * Number of Infants with a virology test but no result
-     * @return the indicator
+     *Infants with first sample taken for Virologic test in 12 months
+     * @return
      */
-    public CohortIndicator infantsTestedForVirologyNoResult() {
-        return cohortIndicator("Infants tested positive for Virology", ReportUtils.<CohortDefinition>map(datimCohorts.infantVirologyNoResults(), "startDate=${startDate},endDate=${endDate}"));
+    public CohortIndicator firstInfantVirologicTestsAt12Months() {
+        return cohortIndicator("Infants with atleast 2nd sample taken for Virologic test between 3 and 12 months", ReportUtils.<CohortDefinition>map(datimCohorts.firstInfantVirologicTestsAt12Months(), "startDate=${startDate},endDate=${endDate}"));
     }
-
     /**
      * Number of Infants turned HIV Positive 12 months after birth
      * @return the indicator

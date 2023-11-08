@@ -622,62 +622,6 @@ public class DatimCohortLibrary {
 
     }
 
-    //TODO use the orders table to pick sample_date () or discontinued=null)
-    //TODO for +or- results  (if there are  result(orders.order_id with corresponding obs.order_id)
-    public CohortDefinition infantVirologyNegativeResults() {
-
-        String sqlQuery = "select hv.patient_id from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
-                "inner join kenyaemr_etl.etl_patient_demographics de on de.patient_id = hv.patient_id\n" +
-                "where hv.dna_pcr_result=664\n" +
-                "  and timestampdiff(month, de.DOB,hv.dna_pcr_sample_date) <=12\n" +
-                "and hv.visit_date between date(:startDate) and date(:endDate) group by hv.patient_id;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("infantVirologyNegativeResults12m");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Infants with negative Virology test result");
-        return cd;
-
-    }
-
-    public CohortDefinition infantVirologyPositiveResults() {
-
-        String sqlQuery = "select hv.patient_id from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
-                "inner join kenyaemr_etl.etl_patient_demographics de on de.patient_id = hv.patient_id\n" +
-                "where hv.dna_pcr_result=703\n" +
-                "  and timestampdiff(month, de.DOB,hv.dna_pcr_sample_date) <=12\n" +
-                "and hv.visit_date between date(:startDate) and date(:endDate) group by hv.patient_id;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("infantVirologyPositiveResults12m");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Infants with Positive Virology test result");
-        return cd;
-
-    }
-
-    public CohortDefinition infantVirologyNoResults() {
-
-        String sqlQuery = "select hv.patient_id from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
-                "inner join kenyaemr_etl.etl_patient_demographics de on de.patient_id = hv.patient_id\n" +
-                "where hv.dna_pcr_result in (1138,1304)\n" +
-                "  and timestampdiff(month, de.DOB,hv.dna_pcr_sample_date) <=12\n" +
-                "and hv.visit_date between date(:startDate) and date(:endDate) group by hv.patient_id;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("infantVirologyWithNoResults");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Infants with Positive Virology test result");
-        return cd;
-
-    }
-
     public CohortDefinition infantsTurnedHIVPositive() {
 
         String sqlQuery = "select t.patient_id from (select e.patient_id,timestampdiff(MONTH,d.dob,max(f.dna_pcr_sample_date)) months,f.dna_pcr_results_date results_date,e.exit_date exit_date,f.dna_pcr_contextual_status test_type from kenyaemr_etl.etl_hei_enrollment e inner join\n" +
@@ -1494,6 +1438,191 @@ public class DatimCohortLibrary {
 
     }
 
+    public CohortDefinition infantFirstVirologicTestWithin2Months() {
+        String sqlQuery = "select od.patient_id as patient\n" +
+                "from orders od\n" +
+                "         inner join kenyaemr_etl.etl_patient_demographics dm on od.patient_id = dm.patient_id\n" +
+                "where od.concept_id = 1030\n" +
+                "  and od.order_reason in (1040,1326,844)\n" +
+                "  and timestampdiff(DAY, dm.DOB, date(od.date_activated)) <= 60\n" +
+                "  and substr(date(od.date_activated), 1, 10) between (:startDate) and (:endDate)\n" +
+                "  and od.voided = 0\n" +
+                "group by dm.patient_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("FirstVirologicSampleTakenWithin2Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Infants with 1st Virologic sample taken within 2 months");
+        return cd;
+
+    }
+    public CohortDefinition infantVirologicTest3To12Months() {
+        String sqlQuery = "select od.patient_id as patient\n" +
+                "from orders od\n" +
+                "         inner join kenyaemr_etl.etl_patient_demographics dm on od.patient_id = dm.patient_id\n" +
+                "where od.concept_id = 1030\n" +
+                "  and od.order_reason in (1040,1326,844)\n" +
+                "  and timestampdiff(DAY, dm.DOB, date(od.date_activated)) between 61 and 365\n" +
+                "  and substr(date(od.date_activated), 1, 10) between (:startDate) and (:endDate)\n" +
+                "  and od.voided = 0\n" +
+                "group by dm.patient_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("infantFirstVirologicTest3To12Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Infants with Virologic sample taken at 3-12 months");
+        return cd;
+
+    }
+    public CohortDefinition infantFirstVirologicTest3To12Months() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("infantVirologicTest3To12Months", ReportUtils.map(infantVirologicTest3To12Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("infantFirstVirologicTestWithin2Months", ReportUtils.map(infantFirstVirologicTestWithin2Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("infantVirologicTest3To12Months AND NOT infantFirstVirologicTestWithin2Months");
+        return cd;
+
+    }
+    public CohortDefinition atleast2InfantVirologicTestWithin2Months() {
+        String sqlQuery = "select dm.patient_id\n" +
+                "from kenyaemr_etl.etl_patient_demographics dm\n" +
+                "         left join (select od.patient_id, od.concept_id, od.order_reason\n" +
+                "                    from orders od\n" +
+                "                             inner join kenyaemr_etl.etl_patient_demographics dm on dm.patient_id = od.patient_id\n" +
+                "                    where od.concept_id = 1030\n" +
+                "                      and od.order_reason = 1040\n" +
+                "                      and timestampdiff(DAY, dm.DOB, date(od.date_activated)) <= 60\n" +
+                "                      and substr(date(od.date_activated), 1, 10) between (:startDate) and (:endDate)\n" +
+                "                      and od.voided = 0\n" +
+                "                    group by dm.patient_id, od.order_reason) od on od.patient_id = dm.patient_id\n" +
+                "         left join (select od1.patient_id, od1.concept_id, od1.order_reason\n" +
+                "                    from orders od1\n" +
+                "                             inner join kenyaemr_etl.etl_patient_demographics dm on dm.patient_id = od1.patient_id\n" +
+                "                    where od1.concept_id = 1030\n" +
+                "                      and od1.order_reason = 1326\n" +
+                "                      and timestampdiff(DAY, dm.DOB, date(od1.date_activated)) <= 60\n" +
+                "                      and substr(date(od1.date_activated), 1, 10) between (:startDate) and (:endDate)\n" +
+                "                      and od1.voided = 0\n" +
+                "                    group by dm.patient_id, od1.order_reason) od1 on od1.patient_id = dm.patient_id\n" +
+                "         left join (select od2.patient_id, od2.concept_id, od2.order_reason\n" +
+                "                    from orders od2\n" +
+                "                             inner join kenyaemr_etl.etl_patient_demographics dm on dm.patient_id = od2.patient_id\n" +
+                "                    where od2.concept_id = 1030\n" +
+                "                      and od2.order_reason = 844\n" +
+                "                      and timestampdiff(DAY, dm.DOB, date(od2.date_activated)) <= 60\n" +
+                "                      and substr(date(od2.date_activated), 1, 10) between (:startDate) and (:endDate)\n" +
+                "                      and od2.voided = 0\n" +
+                "                    group by dm.patient_id, od2.order_reason) od2 on od2.patient_id = dm.patient_id\n" +
+                "where (od.patient_id is not null\n" +
+                "    and (od1.patient_id is not null or od2.patient_id is not null))\n" +
+                "   or (od1.patient_id is not null and (od.patient_id is not null or od2.patient_id is not null))\n" +
+                "   or (od2.patient_id is not null and (od.patient_id is not null or od1.patient_id is not null))\n" +
+                " group by dm.patient_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("atleast2InfantVirologicTestWithin2Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Infants with atleast 2 Virologic samples taken within 2 months");
+        return cd;
+    }
+    public CohortDefinition infantVirologicTestWithin2MonthsAnd3To12Months() {
+        String sqlQuery = "select dm.patient_id\n" +
+                "from kenyaemr_etl.etl_patient_demographics dm\n" +
+                "         left join (select od.patient_id, od.concept_id, od.order_reason\n" +
+                "                    from orders od\n" +
+                "                             inner join kenyaemr_etl.etl_patient_demographics dm on dm.patient_id = od.patient_id\n" +
+                "                    where od.concept_id = 1030\n" +
+                "                      and od.order_reason in (1040,1326,844)\n" +
+                "                      and timestampdiff(DAY, dm.DOB, date(od.date_activated)) <= 60\n" +
+                "                      and od.voided = 0\n" +
+                "                    group by dm.patient_id, od.order_reason) od on od.patient_id = dm.patient_id\n" +
+                "         left join (select od1.patient_id, od1.concept_id, od1.order_reason\n" +
+                "                    from orders od1\n" +
+                "                             inner join kenyaemr_etl.etl_patient_demographics dm on dm.patient_id = od1.patient_id\n" +
+                "                    where od1.concept_id = 1030\n" +
+                "                      and od1.order_reason in (1040,1326,844)\n" +
+                "                      and timestampdiff(DAY, dm.DOB, date(od1.date_activated)) between 61 and 365\n" +
+                "                      and substr(date(od1.date_activated), 1, 10) between (:startDate) and (:endDate)\n" +
+                "                      and od1.voided = 0\n" +
+                "                    group by dm.patient_id, od1.order_reason) od1 on od1.patient_id = dm.patient_id and od.order_reason != od1.order_reason\n" +
+                "where (od.patient_id is not null\n" +
+                "    and od1.patient_id is not null)\n" +
+                "group by dm.patient_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("atleast2InfantVirologicTestAt3To12Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Infants with atleast 2 Virologic samples taken at 3-12 months");
+        return cd;
+    }
+    public CohortDefinition atleast2InfantVirologicTestAt3To12Months() {
+        String sqlQuery = "select dm.patient_id\n" +
+                "from kenyaemr_etl.etl_patient_demographics dm\n" +
+                "         left join (select od.patient_id, od.concept_id, od.order_reason\n" +
+                "                    from orders od\n" +
+                "                             inner join kenyaemr_etl.etl_patient_demographics dm on dm.patient_id = od.patient_id\n" +
+                "                    where od.concept_id = 1030\n" +
+                "                      and od.order_reason = 1040\n" +
+                "                      and timestampdiff(DAY, dm.DOB, date(od.date_activated)) between 61 and 365\n" +
+                "                      and substr(date(od.date_activated), 1, 10) between (:startDate) and (:endDate)\n" +
+                "                      and od.voided = 0\n" +
+                "                    group by dm.patient_id, od.order_reason) od on od.patient_id = dm.patient_id\n" +
+                "         left join (select od1.patient_id, od1.concept_id, od1.order_reason\n" +
+                "                    from orders od1\n" +
+                "                             inner join kenyaemr_etl.etl_patient_demographics dm on dm.patient_id = od1.patient_id\n" +
+                "                    where od1.concept_id = 1030\n" +
+                "                      and od1.order_reason = 1326\n" +
+                "                      and timestampdiff(DAY, dm.DOB, date(od1.date_activated)) between 61 and 365\n" +
+                "                      and substr(date(od1.date_activated), 1, 10) between (:startDate) and (:endDate)\n" +
+                "                      and od1.voided = 0\n" +
+                "                    group by dm.patient_id, od1.order_reason) od1 on od1.patient_id = dm.patient_id\n" +
+                "         left join (select od2.patient_id, od2.concept_id, od2.order_reason\n" +
+                "                    from orders od2\n" +
+                "                             inner join kenyaemr_etl.etl_patient_demographics dm on dm.patient_id = od2.patient_id\n" +
+                "                    where od2.concept_id = 1030\n" +
+                "                      and od2.order_reason = 844\n" +
+                "                      and timestampdiff(DAY, dm.DOB, date(od2.date_activated)) between 61 and 365\n" +
+                "                      and substr(date(od2.date_activated), 1, 10) between (:startDate) and (:endDate)\n" +
+                "                      and od2.voided = 0\n" +
+                "                    group by dm.patient_id, od2.order_reason) od2 on od2.patient_id = dm.patient_id\n" +
+                "where (od.patient_id is not null\n" +
+                "    and (od1.patient_id is not null or od2.patient_id is not null))\n" +
+                "   or (od1.patient_id is not null and (od.patient_id is not null or od2.patient_id is not null))\n" +
+                "   or (od2.patient_id is not null and (od.patient_id is not null or od1.patient_id is not null))\n" +
+                "group by dm.patient_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("atleast2InfantVirologicTestAt3To12Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Infants with atleast 2 Virologic samples taken at 3-12 months");
+        return cd;
+    }
+
+    public CohortDefinition atleast2InfantVirologicTestsAt3To12Months() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("infantFirstVirologicTestWithin2Months", ReportUtils.map(infantFirstVirologicTestWithin2Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("atleast2InfantVirologicTestWithin2Months", ReportUtils.map(atleast2InfantVirologicTestWithin2Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("infantFirstVirologicTestWithin2Months OR ");
+        return cd;
+    }
+
+    public CohortDefinition firstInfantVirologicTestsAt12Months() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("infantFirstVirologicTestWithin2Months", ReportUtils.map(infantFirstVirologicTestWithin2Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("infantFirstVirologicTest3To12Months", ReportUtils.map(infantFirstVirologicTest3To12Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(infantFirstVirologicTestWithin2Months OR infantFirstVirologicTest3To12Months");
+        return cd;
+    }
     public CohortDefinition alreadyOnARTAtBeginningOfPregnacy() {
 
         String sqlQuery = "select t.patient_id from(\n" +

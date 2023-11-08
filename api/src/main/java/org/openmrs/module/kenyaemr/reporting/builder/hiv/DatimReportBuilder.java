@@ -555,17 +555,11 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_Denominator", "Newly enrolled to ANC", ReportUtils.map(datimIndicators.clientsNewlyEnrolledToANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
 
         //PMTCT_EID
-        //Infants tested Negative for Virology
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_EID_SampleTaken", "Infants sample taken for Virology test", ReportUtils.map(datimIndicators.infantsSampleTakenForVirology(), indParams), datimAgeDisaggregationMonths, Arrays.asList("01", "02", "03"));
-
-        //Infants tested Negative for Virology
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_EID_Negative", "Infants tested Negative for Virology", ReportUtils.map(datimIndicators.infantsTestedNegativeForVirology(), indParams), datimAgeDisaggregationMonths, Arrays.asList("01", "02", "03"));
-
-        //Infants tested Positive for Virology
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_EID_Positive", "Infants tested Positive for Virology", ReportUtils.map(datimIndicators.infantsTestedPositiveForVirology(), indParams), datimAgeDisaggregationMonths, Arrays.asList("01", "02", "03"));
-
-        //Infant Virology with no results
-        EmrReportingUtils.addRow(cohortDsd, "PMTCT_EID_No_Results", "Infants tested for Virology with no results", ReportUtils.map(datimIndicators.infantsTestedForVirologyNoResult(), indParams), datimAgeDisaggregationMonths, Arrays.asList("01", "02", "03"));
+        cohortDsd.addColumn("PMTCT_EID_FIRST_TEST_WITHIN_2_MONTHS", "First sample collected for a virologic HIV test between birth and <= 2 months of age", ReportUtils.map(datimIndicators.infantFirstVirologicTestWithin2Months(), indParams), "");
+        cohortDsd.addColumn("PMTCT_EID_FIRST_TEST_3_TO_12_MONTHS", "First sample collected for a virologic HIV test between 3-12 months of age", ReportUtils.map(datimIndicators.infantFirstVirologicTest3To12Months(), indParams), "");
+        cohortDsd.addColumn("PMTCT_EID_ATLEAST_2_TESTS_WITHIN_2_MONTHS", "At least second sample collected for a virologic HIV test between birth and <= 2 months of age", ReportUtils.map(datimIndicators.atleast2InfantVirologicTestWithin2Months(), indParams), "");
+        cohortDsd.addColumn("PMTCT_EID_ATLEAST_2_TESTS_3_12_MONTHS", "At least second sample collected for a virologic HIV test between birth and 3-12 months of age", ReportUtils.map(datimIndicators.atleast2InfantVirologicTestsAt3To12Months(), indParams), "");
+        cohortDsd.addColumn("PMTCT_EID_NUMERATOR", "Infants who had a virologic HIV test (sample collected) by 12 months of age during the reporting period", ReportUtils.map(datimIndicators.firstInfantVirologicTestsAt12Months(), indParams), "");
 
         //PMTCT_HEI_POS
         EmrReportingUtils.addRow(cohortDsd, "PMTCT_HEI_POS", "Infants identified HIV Positive within 12 months after birth", ReportUtils.map(datimIndicators.infantsTurnedHIVPositive(), indParams), datimAgeDisaggregationMonths, Arrays.asList("01", "02", "03"));
