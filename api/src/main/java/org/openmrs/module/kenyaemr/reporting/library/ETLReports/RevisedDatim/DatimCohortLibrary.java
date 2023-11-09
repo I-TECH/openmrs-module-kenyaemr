@@ -4311,54 +4311,28 @@ public class DatimCohortLibrary {
     }
 
     /**
-     * Women on ART and pregnant during their current suppressed routine VL test
+     * Women on ART and pregnant during their current suppressed VL test
      * */
-    public CohortDefinition pregnantOnARTWithSuppressedRoutineVLLast12Months() {
+    public CohortDefinition pregnantOnARTWithSuppressedVLLast12Months() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("txpvlsDenominatorRoutinePregnant", ReportUtils.map(txpvlsDenominatorRoutinePregnant(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("txpvlsDenominatorPregnant", ReportUtils.map(txpvlsDenominatorPregnant(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("currentSuppressedVL", ReportUtils.map(currentSuppressedVL(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txpvlsDenominatorRoutinePregnant AND currentSuppressedVL");
+        cd.setCompositionString("txpvlsDenominatorPregnant AND currentSuppressedVL");
         return cd;
     }
 
-    /**
-     * Women on ART and pregnant during their current suppressed targeted VL test
+     /**
+     * Women on ART and breastfeeding during their current suppressed VL test
      * */
-    public CohortDefinition pregnantOnARTSuppressedTargetedVLLast12Months() {
+    public CohortDefinition breastfeedingOnARTSuppressedVLLast12Months() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("txpvlsDenominatorTargetedPregnant", ReportUtils.map(txpvlsDenominatorTargetedPregnant(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("txpvlsDenominatorBreastfeeding", ReportUtils.map(txpvlsDenominatorBreastfeeding(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("currentSuppressedVL", ReportUtils.map(currentSuppressedVL(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txpvlsDenominatorTargetedPregnant AND currentSuppressedVL");
-        return cd;
-    }
-
-    /**
-     * Women on ART and breastfeeding during their current routine suppressed VL test
-     * */
-    public CohortDefinition breastfeedingOnARTRoutineSuppressedVLLast12Months() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("txpvlsDenominatorRoutineBreastfeeding", ReportUtils.map(txpvlsDenominatorRoutineBreastfeeding(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("currentSuppressedVL", ReportUtils.map(currentSuppressedVL(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txpvlsDenominatorRoutineBreastfeeding AND currentSuppressedVL");
-        return cd;
-    }
-
-    /**
-     * Women on ART and breastfeeding during their current targeted suppressed VL test
-     * */
-    public CohortDefinition breastfeedingOnARTTargetedSuppressedVLLast12Months() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("txpvlsDenominatorTargetedBreastfeeding", ReportUtils.map(txpvlsDenominatorTargetedBreastfeeding(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("currentSuppressedVL", ReportUtils.map(currentSuppressedVL(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txpvlsDenominatorTargetedBreastfeeding AND currentSuppressedVL");
+        cd.setCompositionString("txpvlsDenominatorBreastfeeding AND currentSuppressedVL");
         return cd;
     }
 
@@ -4409,11 +4383,11 @@ public class DatimCohortLibrary {
     }
 
     /**
-     * TX_PVLS (suppressed / numerator): Routine VL
+     * TX_PVLS (suppressed / numerator)
      * @param
      * @return
      */
-    public CohortDefinition currentSuppRoutineVLResult() {
+    public CohortDefinition currentSuppVLResult() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery = "select a.patient_id\n" +
                 "from (select b.patient_id,\n" +
@@ -4435,60 +4409,21 @@ public class DatimCohortLibrary {
                 "      group by b.patient_id\n" +
                 "      having b.latest_visit_date between\n" +
                 "          date_sub(:endDate, interval 12 MONTH) and date(:endDate)\n" +
-                "         and (b.order_reason = 161236 or b.order_reason is null or b.order_reason = '')\n" +
                 "         and (b.vl_result < 1000 or b.vl_result = 'LDL')) a;";
-        cd.setName("txpvlsNumByTestType");
+        cd.setName("currentSuppVLResult");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("txpvlsNumByTestType");
+        cd.setDescription("currentSuppVLResult");
 
         return cd;
     }
-
     /**
-     * TX_PVLS (suppressed / numerator): Targeted VL
-     * @return
-     */
-    public CohortDefinition currentSuppTargetedVLResult() {
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select a.patient_id\n" +
-                "from (select b.patient_id,\n" +
-                "             b.latest_visit_date,\n" +
-                "             b.vl_result,\n" +
-                "             b.order_reason as order_reason\n" +
-                "      from (select x.patient_id                                                                             as patient_id,\n" +
-                "                   max(x.visit_date)                                                                        as latest_visit_date,\n" +
-                "                   mid(max(concat(x.visit_date, x.lab_test)), 11)                                           as lab_test,\n" +
-                "                   mid(max(concat(x.visit_date, x.order_reason)), 11)                                       as order_reason,\n" +
-                "                   if(mid(max(concat(x.visit_date, x.lab_test)), 11) = 856,\n" +
-                "                      mid(max(concat(x.visit_date, x.test_result)), 11), if(\n" +
-                "                                      mid(max(concat(x.visit_date, x.lab_test)), 11) = 1305 and\n" +
-                "                                      mid(max(concat(x.visit_date, x.test_result)), 11) = 1302, 'LDL', '')) as vl_result\n" +
-                "            from kenyaemr_etl.etl_laboratory_extract x\n" +
-                "            where x.lab_test in (1305, 856)\n" +
-                "              and x.visit_date <= date(:endDate)\n" +
-                "            group by x.patient_id) b\n" +
-                "      group by b.patient_id\n" +
-                "      having b.latest_visit_date between\n" +
-                "          date_sub(:endDate, interval 12 MONTH) and date(:endDate)\n" +
-                "         and b.order_reason in (843,1434,162080,1259,159882,163523,160032)\n" +
-                "         and (b.vl_result < 1000 or b.vl_result = 'LDL')) a;";
-        cd.setName("txpvlsNumByTestType");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("txpvlsNumByTestType");
-
-        return cd;
-    }
-
-    /**
-     * Pregnant with routine VL order
+     * Pregnant with VL order
      * @param
      * @return
      */
-    public CohortDefinition pregnantRoutineVLOrder() {
+    public CohortDefinition pregnantVLOrder() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery = "select a.patient_id\n" +
                 "from (select b.patient_id, b.latest_visit_date, b.pregnant_status\n" +
@@ -4502,7 +4437,7 @@ public class DatimCohortLibrary {
                 "                        where lab_test in (1305, 856)\n" +
                 "                          and visit_date between\n" +
                 "                            date_sub(:endDate, interval 12 MONTH) and date(:endDate)\n" +
-                "                          and (order_reason = 161236 or order_reason is null or order_reason = ''))l on f.patient_id = l.patient_id\n" +
+                "                          )l on f.patient_id = l.patient_id\n" +
                 "            where f.visit_date <= date(order_date)\n" +
                 "            group by f.patient_id) b\n" +
                 "      group by b.patient_id\n" +
@@ -4518,42 +4453,7 @@ public class DatimCohortLibrary {
         return cd;
     }
 
-    /**
-     * Pregnant with targeted VL order
-     * @param
-     * @return
-     */
-    public CohortDefinition pregnantTargetedVLOrder() {
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select a.patient_id\n" +
-                "from (select b.patient_id, b.latest_visit_date, b.pregnant_status\n" +
-                "      from (select f.patient_id                                           as patient_id,\n" +
-                "                   max(f.visit_date)                                      as latest_visit_date,\n" +
-                "                   mid(max(concat(f.visit_date, f.pregnancy_status)), 11) as pregnant_status,\n" +
-                "                   l.order_date\n" +
-                "            from kenyaemr_etl.etl_patient_hiv_followup f\n" +
-                "            inner join (select patient_id,date_test_requested as order_date,order_reason\n" +
-                "                        from kenyaemr_etl.etl_laboratory_extract\n" +
-                "                        where lab_test in (1305, 856)\n" +
-                "                          and visit_date between\n" +
-                "                            date_sub(:endDate, interval 12 MONTH) and date(:endDate)\n" +
-                "                          and order_reason in (843,1434,162080,1259,159882,163523,160032))l on f.patient_id = l.patient_id\n" +
-                "            where f.visit_date <= date(order_date)\n" +
-                "            group by f.patient_id) b\n" +
-                "      group by b.patient_id\n" +
-                "      having b.latest_visit_date between\n" +
-                "          date_sub(:endDate, interval 12 MONTH) and date(:endDate)\n" +
-                "         and pregnant_status = 1065) a;";
-        cd.setName("Pregnant");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Pregnant during last VL test");
-
-        return cd;
-    }
-
-    public CohortDefinition breastfeedingTargetedVLOrder() {
+    public CohortDefinition breastfeedingVLOrder() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery = "select a.patient_id\n" +
                 "from (select b.patient_id, b.latest_visit_date, b.breastfeeding_status\n" +
@@ -4567,18 +4467,18 @@ public class DatimCohortLibrary {
                 "                                 where lab_test in (1305, 856)\n" +
                 "                                   and visit_date between\n" +
                 "                                     date_sub(:endDate, interval 12 MONTH) and date(:endDate)\n" +
-                "                                   and order_reason in (843,1434,162080,1259,159882,163523,160032))l on f.patient_id = l.patient_id\n" +
+                "                                   )l on f.patient_id = l.patient_id\n" +
                 "            where f.visit_date <= date(order_date)\n" +
                 "            group by f.patient_id) b\n" +
                 "      group by b.patient_id\n" +
                 "      having b.latest_visit_date between\n" +
                 "          date_sub(:endDate, interval 12 MONTH) and date(:endDate)\n" +
                 "         and breastfeeding_status = 1065) a;";
-        cd.setName("Targeted BF");
+        cd.setName("BF");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Targeted BF");
+        cd.setDescription("BF");
 
         return cd;
     }
@@ -4736,32 +4636,17 @@ public class DatimCohortLibrary {
     }
 
     /**
-     * TX_PVLS NUMERATOR ROUTINE
+     * TX_PVLS NUMERATOR
      * @return
      */
-    public CohortDefinition onARTSuppRoutineVLAgeSex() {
+    public CohortDefinition onARTSuppVLAgeSex() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("txcurr", ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("currentSuppRoutineVLResult", ReportUtils.map(currentSuppRoutineVLResult(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("currentSuppVLResult", ReportUtils.map(currentSuppVLResult(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("patientInTXAtleast3Months", ReportUtils.map(patientInTXAtleast3Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND currentSuppRoutineVLResult AND patientInTXAtleast3Months");
-        return cd;
-    }
-
-    /**
-     * TX_PVLS NUMERATOR TARGETED
-     * @return
-     */
-    public CohortDefinition onARTSuppTargetedVLAgeSex() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("txcurr", ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("currentSuppTargetedVLResult", ReportUtils.map(currentSuppTargetedVLResult(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("patientInTXAtleast3Months", ReportUtils.map(patientInTXAtleast3Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND currentSuppTargetedVLResult AND patientInTXAtleast3Months");
+        cd.setCompositionString("txcurr AND currentSuppVLResult AND patientInTXAtleast3Months");
         return cd;
     }
 
@@ -4973,76 +4858,38 @@ public class DatimCohortLibrary {
     }
 
     /**
-     * Patients with Routine VL results within the last 12 months by test type/indication
+     * Patients with VL results within the last 12 months
      * @return
      */
-    public CohortDefinition currentRoutineVLLast12Months() {
+    public CohortDefinition currentVLLast12Months() {
 
         String sqlQuery = "select patient_id\n" +
                 "from kenyaemr_etl.etl_laboratory_extract\n" +
                 "where lab_test in (1305, 856)\n" +
                 "  and visit_date between\n" +
-                "    date_sub(:endDate, interval 12 MONTH) and date(:endDate)\n" +
-                "  and (order_reason = 161236 or order_reason is null or order_reason = '');";
+                "    date_add(date_sub(:endDate, interval 12 MONTH), interval 1 day) and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("currentVLResultLast12MonthsByTestType");
+        cd.setName("currentVLLast12Months");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("On ART with VL result within last 12 Months by Test type");
+        cd.setDescription("On ART with VL result within last 12 Months");
         return cd;
     }
 
-    /**
-     * Patients with targeted VL within the last 12 months
-     * @return
-     */
-    public CohortDefinition currentTargetedVLLast12Months() {
-
-        String sqlQuery = "select patient_id\n" +
-                "from kenyaemr_etl.etl_laboratory_extract\n" +
-                "where lab_test in (1305, 856)\n" +
-                "  and visit_date between\n" +
-                "    date_sub(:endDate, interval 12 MONTH) and date(:endDate)\n" +
-                "  and order_reason in (843,1434,162080,1259,159882,163523,160032);";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("currentVLResultLast12MonthsByTestType");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("On ART with VL result within last 12 Months by Test type");
-        return cd;
-    }
-
-    /**Number of ART patients with a Targeted VL result documented in the medical or laboratory records/LIS within the past 12 months.
+    /**Number of ART patients with a VL result documented in the medical or laboratory records/LIS within the past 12 months.
      * TX_PVLS DENOMINATOR
      * @return
      */
-    public CohortDefinition txpvlsDenominatorTargeted() {
+    public CohortDefinition txpvlsDenominator() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("txcurr",
                 ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("patientInTXAtleast3Months", ReportUtils.map(patientInTXAtleast3Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("currentTargetedVLLast12Months", ReportUtils.map(currentTargetedVLLast12Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND patientInTXAtleast3Months AND currentTargetedVLLast12Months");
-        return cd;
-    }
-
-    /**Number of ART patients with a Routine VL result documented in the medical or laboratory records/LIS within the past 12 months.
-     * TX_PVLS DENOMINATOR
-     * @return
-     */
-    public CohortDefinition txpvlsDenominatorRoutine() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("txcurr",
-                ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("patientInTXAtleast3Months", ReportUtils.map(patientInTXAtleast3Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("currentRoutineVLLast12Months", ReportUtils.map(currentRoutineVLLast12Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND patientInTXAtleast3Months AND currentRoutineVLLast12Months");
+        cd.addSearch("currentVLLast12Months", ReportUtils.map(currentVLLast12Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txcurr AND patientInTXAtleast3Months AND currentVLLast12Months");
         return cd;
     }
 
@@ -5050,123 +4897,51 @@ public class DatimCohortLibrary {
      * TX_PVLS DENOMINATOR
      * @return
      */
-    public CohortDefinition txpvlsDenominatorRoutinePregnant() {
+    public CohortDefinition txpvlsDenominatorPregnant() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("txcurr",
                 ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("patientInTXAtleast3Months", ReportUtils.map(patientInTXAtleast3Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("pregnantRoutineVLOrder", ReportUtils.map(pregnantRoutineVLOrder(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND patientInTXAtleast3Months AND pregnantRoutineVLOrder");
+        cd.addSearch("pregnantVLOrder", ReportUtils.map(pregnantVLOrder(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txcurr AND patientInTXAtleast3Months AND pregnantVLOrder");
         return cd;
     }
-
-    public CohortDefinition txpvlsDenominatorRoutineBreastFeeding() {
+    public CohortDefinition txpvlsDenominatorBreastfeeding() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("txcurr",
                 ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("patientInTXAtleast3Months", ReportUtils.map(patientInTXAtleast3Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("breastfeedingRoutineVLOrder", ReportUtils.map(breastfeedingRoutineVLOrder(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND patientInTXAtleast3Months AND breastfeedingRoutineVLOrder");
-        return cd;
-    }
-
-    public CohortDefinition txpvlsDenominatorTargetedPregnant() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("txcurr",
-                ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("patientInTXAtleast3Months", ReportUtils.map(patientInTXAtleast3Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("pregnantTargetedVLOrder", ReportUtils.map(pregnantTargetedVLOrder(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND patientInTXAtleast3Months AND pregnantTargetedVLOrder");
-        return cd;
-    }
-
-    public CohortDefinition txpvlsDenominatorTargetedBreastfeeding() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("txcurr",
-                ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("patientInTXAtleast3Months", ReportUtils.map(patientInTXAtleast3Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("breastfeedingTargetedVLOrder", ReportUtils.map(breastfeedingTargetedVLOrder(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND patientInTXAtleast3Months AND breastfeedingTargetedVLOrder");
-        return cd;
-    }
-
-    /**Number of Breastfeeding ART patients with a VL result documented in the medical or laboratory records/LIS within the past 12 months.
-     * TX_PVLS DENOMINATOR
-     * @return
-     */
-    public CohortDefinition txpvlsDenominatorRoutineBreastfeeding() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("txcurr",
-                ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("patientInTXAtleast3Months", ReportUtils.map(patientInTXAtleast3Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("breastfeedingRoutineVLOrder", ReportUtils.map(breastfeedingRoutineVLOrder(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND patientInTXAtleast3Months AND breastfeedingRoutineVLOrder");
+        cd.addSearch("breastfeedingVLOrder", ReportUtils.map(breastfeedingVLOrder(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txcurr AND patientInTXAtleast3Months AND breastfeedingVLOrder");
         return cd;
     }
 
     /**
-     * TX_PVLS NUMERATOR Routine Indication by Key Population
+     * TX_PVLS NUMERATOR Indication by Key Population
      * @param kpType
      * @return
      */
-    public CohortDefinition onARTKpWithSuppRoutineVLLast12Months(Integer kpType) {
+    public CohortDefinition onARTKpWithSuppVLLast12Months(Integer kpType) {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("onARTSuppRoutineVLAgeSex", ReportUtils.map(onARTSuppRoutineVLAgeSex(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("onARTSuppVLAgeSex", ReportUtils.map(onARTSuppVLAgeSex(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("keyPop", ReportUtils.map(kpByKPType(kpType), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("onARTSuppRoutineVLAgeSex AND keyPop");
+        cd.setCompositionString("onARTSuppVLAgeSex AND keyPop");
         return cd;
     }
 
-    /**
-     * TX_PVLS NUMERATOR Targeted Indication by Key Population
-     * @param kpType
-     * @return
-     */
-    public CohortDefinition onARTKpWithSuppTargetedVLLast12Months(Integer kpType) {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("onARTSuppTargetedVLAgeSex", ReportUtils.map(onARTSuppTargetedVLAgeSex(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("keyPop", ReportUtils.map(kpByKPType(kpType), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("onARTSuppTargetedVLAgeSex AND keyPop");
-        return cd;
-    }
-
-    /**
-     * TX_PVLS NUMERATOR Indication by Key Population and test Type
-     * @param kpType
-     * @return
-     */
-
-    public CohortDefinition kpOnARTRoutineVLLast12Months(Integer kpType) {
+    public CohortDefinition kpOnARTWithVLLast12Months(Integer kpType) {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("keyPop", ReportUtils.map(kpByKPType(kpType), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("txpvlsDenominatorRoutine", ReportUtils.map(txpvlsDenominatorRoutine(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("keyPop AND txpvlsDenominatorRoutine");
-        return cd;
-    }
-
-    public CohortDefinition kpOnARTTargetedVLLast12Months(Integer kpType) {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("keyPop", ReportUtils.map(kpByKPType(kpType), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("txpvlsDenominatorTargeted", ReportUtils.map(txpvlsDenominatorTargeted(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("keyPop AND txpvlsDenominatorTargeted");
+        cd.addSearch("txpvlsDenominator", ReportUtils.map(txpvlsDenominator(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("keyPop AND txpvlsDenominator");
         return cd;
     }
 
