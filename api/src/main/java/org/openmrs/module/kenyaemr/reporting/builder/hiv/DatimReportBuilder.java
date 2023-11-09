@@ -447,7 +447,7 @@ public class DatimReportBuilder extends AbstractReportBuilder {
 
         //Tested Positive Malnutrition Clinic
         EmrReportingUtils.addRow(cohortDsd,"HTS_TST_Malnutrition_Positive", "Tested Positive Malnutrition Clinic", ReportUtils.map(datimIndicators.testedPositiveMalnutritionClinic(), indParams), pediatricAgeDisaggregation,Arrays.asList("01","02","03","04","05"));
-        //5. TB Clinics
+        //5.TB Clinics
 
         //Tested Negative TB Clinic
        cohortDsd.addColumn("HTS_TST_TB_Negative", "Tested Negative TB Clinic", ReportUtils.map(datimIndicators.testedNegativeTBClinic(), indParams), "");
@@ -462,12 +462,15 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         //Tested Positive PMTCT services ANC-1 only
         cohortDsd.addColumn( "HTS_TST_PMTCT_ANC1_Positive", "Tested Positive PMTCT at 1st ANC", ReportUtils.map(datimIndicators.testedPositivePMTCTANC1(), indParams),"");
 
-        //7.PMTCT [Post ANC1, Preg/L&D/BF]
-        //Tested Negative PMTCT services Post ANC-1 (including labour and delivery and BF)
-        EmrReportingUtils.addRow(cohortDsd, "HTS_TST_PMTCT_POSTANC1_Negative", "Tested Negative PMTCT Post ANC-1 (Incl L&D,BF)", ReportUtils.map(datimIndicators.testedNegativePMTCTPostANC1(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
-
-        //Tested Positive PMTCT services Post ANC-1 (including labour and delivery and BF)
-        EmrReportingUtils.addRow(cohortDsd, "HTS_TST_PMTCT_POSTANC1_Positive", "Tested Positive PMTCT Post ANC-1 (Incl L&D,BF)", ReportUtils.map(datimIndicators.testedPositivePMTCTPostANC1(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
+        //7.PMTCT [Post ANC1, Preg/L&D]
+        //Tested Negative PMTCT services Post ANC-1 (including labour and delivery)
+        EmrReportingUtils.addRow(cohortDsd, "HTS_TST_PMTCT_POSTANC1_PREG_LD_Negative", "Tested Negative PMTCT Post ANC-1 (Incl Preg & Labour/Delivery)", ReportUtils.map(datimIndicators.negativePMTCTPostANC1PregnantAndLabourAndDelivery(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
+        //Tested Positive PMTCT services Post ANC-1 (including labour and delivery)
+        EmrReportingUtils.addRow(cohortDsd, "HTS_TST_PMTCT_POSTANC1_PREG_LD_Positive", "Tested Positive PMTCT Post ANC-1 (Incl Preg & Labour/Delivery)", ReportUtils.map(datimIndicators.positivePMTCTPostANC1PregnantAndLabourAndDelivery(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
+        //Tested Negative PMTCT services Post ANC-1 (Breastfeeding)
+        EmrReportingUtils.addRow(cohortDsd, "HTS_TST_PMTCT_POSTANC1_BF_Negative", "Tested Negative PMTCT Post ANC-1 Breastfeeding", ReportUtils.map(datimIndicators.negativePMTCTPostANC1Breastfeeding(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
+        //Tested Positive PMTCT services Post ANC-1 (Breastfeeding)
+        EmrReportingUtils.addRow(cohortDsd, "HTS_TST_PMTCT_POSTANC1_BF_Positive", "Tested Positive PMTCT Post ANC-1 Breastfeeding", ReportUtils.map(datimIndicators.positivePMTCTPostANC1Breastfeeding(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
 
         //8.STI
         //9. Inpatient

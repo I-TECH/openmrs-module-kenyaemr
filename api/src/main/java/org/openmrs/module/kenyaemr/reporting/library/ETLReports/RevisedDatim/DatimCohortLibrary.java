@@ -2456,26 +2456,53 @@ public class DatimCohortLibrary {
         cd.setDescription("HTS Negative at PMTCT ANC-1");
         return cd;
     }
+    /**
+     * Tested Positive at PMTCT post ANC-1 Pregnant & Labour/delivery
+     * @return
+     */
+    public CohortDefinition testedPositivePmtctPostANC1PregLabourAndDelivery() {
+        String sqlQuery = "select e.patient_id\n" +
+                "       from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "                left join (select av.patient_id\n" +
+                "                           from kenyaemr_etl.etl_mch_antenatal_visit av\n" +
+                "                           where av.anc_visit_number > 1\n" +
+                "                             and av.visit_date between date(:startDate) and date(:endDate)\n" +
+                "                           group by av.patient_id\n" +
+                "                           having mid(max(concat(av.visit_date, av.final_test_result)), 11) = 'Positive') av\n" +
+                "                          on av.patient_id = e.patient_id\n" +
+                "                left join (select d.patient_id\n" +
+                "                           from kenyaemr_etl.etl_mchs_delivery d\n" +
+                "                           where d.visit_date between date(:startDate) and date(:endDate)\n" +
+                "                           group by d.patient_id\n" +
+                "                           having mid(max(concat(d.visit_date, d.final_test_result)), 11) = 'Positive') d\n" +
+                "                          on d.patient_id = e.patient_id\n" +
+                "                left join (select t.patient_id, t.visit_date\n" +
+                "                           from kenyaemr_etl.etl_hts_test t\n" +
+                "                           where t.visit_date between date(:startDate) and date(:endDate)\n" +
+                "                             and t.hts_entry_point in (160538, 160456, 1623)\n" +
+                "                           group by t.patient_id\n" +
+                "                           having mid(max(concat(t.visit_date, t.final_test_result)), 11) = 'Positive') t\n" +
+                "                          on t.patient_id = e.patient_id\n" +
+                "       where av.patient_id is not null\n" +
+                "          or d.patient_id is not null\n" +
+                "          or (t.visit_date > date(e.first_anc_visit_date) and t.patient_id is not null)\n" +
+                "       group by e.patient_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested Positive at PMTCT post ANC-1 Pregnant & Labour/delivery");
+        return cd;
+    }
 
     /**
-     * Tested Positive PMTCT post ANC-1
+     * Tested positive at PMTCT post ANC-1 Breastfeeding
+     * @return
      */
-    public CohortDefinition testedPositivePmtctPostANC1() {
+    public CohortDefinition testedPositivePmtctPostANC1BreastFeeding() {
         String sqlQuery = "select e.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_enrollment e\n" +
-                "         left join (select av.patient_id\n" +
-                "                    from kenyaemr_etl.etl_mch_antenatal_visit av\n" +
-                "                    where av.anc_visit_number > 1\n" +
-                "                      and av.visit_date between date(:startDate) and date(:endDate)\n" +
-                "                    group by av.patient_id\n" +
-                "                    having mid(max(concat(av.visit_date, av.final_test_result)), 11) = 'Positive') av\n" +
-                "                   on av.patient_id = e.patient_id\n" +
-                "         left join (select d.patient_id\n" +
-                "                    from kenyaemr_etl.etl_mchs_delivery d\n" +
-                "                    where d.visit_date between date(:startDate) and date(:endDate)\n" +
-                "                    group by d.patient_id\n" +
-                "                    having mid(max(concat(d.visit_date, d.final_test_result)), 11) = 'Positive') d\n" +
-                "                   on d.patient_id = e.patient_id\n" +
                 "         left join (select pv.patient_id\n" +
                 "                    from kenyaemr_etl.etl_mch_postnatal_visit pv\n" +
                 "                    where pv.visit_date between date(:startDate) and date(:endDate)\n" +
@@ -2489,9 +2516,7 @@ public class DatimCohortLibrary {
                 "                    group by t.patient_id\n" +
                 "                    having mid(max(concat(t.visit_date, t.final_test_result)), 11) = 'Positive') t\n" +
                 "                   on t.patient_id = e.patient_id\n" +
-                "where av.patient_id is not null\n" +
-                "   or d.patient_id is not null\n" +
-                "   or pv.patient_id is not null\n" +
+                "where pv.patient_id is not null\n" +
                 "   or (t.visit_date > date(e.first_anc_visit_date) and t.patient_id is not null)\n" +
                 "group by e.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -2499,29 +2524,69 @@ public class DatimCohortLibrary {
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested positive at PMTCT post ANC-1");
+        cd.setDescription("Tested positive at PMTCT post ANC-1 Breastfeeding");
+        return cd;
+    }
+    /**
+     * Tested Positive PMTCT post ANC-1
+     */
+    public CohortDefinition testedPositivePmtctPostANC1() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedPositivePmtctPostANC1PregLabourAndDelivery", ReportUtils.map(testedPositivePmtctPostANC1PregLabourAndDelivery(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedPositivePmtctPostANC1BreastFeeding", ReportUtils.map(testedPositivePmtctPostANC1BreastFeeding(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("testedPositivePmtctPostANC1PregLabourAndDelivery OR testedPositivePmtctPostANC1BreastFeeding");
         return cd;
     }
 
     /**
-     * Tested Negative PMTCT post ANC-1
+     * Tested negative at PMTCT post ANC-1 Pregnant & Labour/delivery
+     * @return
      */
-    public CohortDefinition testedNegativePmtctPostANC1() {
+    public CohortDefinition testedNegativePmtctPostANC1PregLabourAndDelivery() {
+        String sqlQuery = "select e.patient_id\n" +
+                "       from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "                left join (select av.patient_id\n" +
+                "                           from kenyaemr_etl.etl_mch_antenatal_visit av\n" +
+                "                           where av.anc_visit_number > 1\n" +
+                "                             and av.visit_date between date(:startDate) and date(:endDate)\n" +
+                "                           group by av.patient_id\n" +
+                "                           having mid(max(concat(av.visit_date, av.final_test_result)), 11) = 'Negative') av\n" +
+                "                          on av.patient_id = e.patient_id\n" +
+                "                left join (select d.patient_id\n" +
+                "                           from kenyaemr_etl.etl_mchs_delivery d\n" +
+                "                           where d.visit_date between date(:startDate) and date(:endDate)\n" +
+                "                           group by d.patient_id\n" +
+                "                           having mid(max(concat(d.visit_date, d.final_test_result)), 11) = 'Negative') d\n" +
+                "                          on d.patient_id = e.patient_id\n" +
+                "                left join (select t.patient_id, t.visit_date\n" +
+                "                           from kenyaemr_etl.etl_hts_test t\n" +
+                "                           where t.visit_date between date(:startDate) and date(:endDate)\n" +
+                "                             and t.hts_entry_point in (160538, 160456, 1623)\n" +
+                "                           group by t.patient_id\n" +
+                "                           having mid(max(concat(t.visit_date, t.final_test_result)), 11) = 'Negative') t\n" +
+                "                          on t.patient_id = e.patient_id\n" +
+                "       where av.patient_id is not null\n" +
+                "          or d.patient_id is not null\n" +
+                "          or (t.visit_date > date(e.first_anc_visit_date) and t.patient_id is not null)\n" +
+                "       group by e.patient_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested negative at PMTCT post ANC-1 Pregnant & Labour/delivery");
+        return cd;
+    }
+
+    /**
+     * Tested negative at PMTCT post ANC-1 Breastfeeding
+     * @return
+     */
+    public CohortDefinition testedNegativePmtctPostANC1BreastFeeding() {
         String sqlQuery = "select e.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_enrollment e\n" +
-                "         left join (select av.patient_id\n" +
-                "                    from kenyaemr_etl.etl_mch_antenatal_visit av\n" +
-                "                    where av.anc_visit_number > 1\n" +
-                "                      and av.visit_date between date(:startDate) and date(:endDate)\n" +
-                "                    group by av.patient_id\n" +
-                "                    having mid(max(concat(av.visit_date, av.final_test_result)), 11) = 'Negative') av\n" +
-                "                   on av.patient_id = e.patient_id\n" +
-                "         left join (select d.patient_id\n" +
-                "                    from kenyaemr_etl.etl_mchs_delivery d\n" +
-                "                    where d.visit_date between date(:startDate) and date(:endDate)\n" +
-                "                    group by d.patient_id\n" +
-                "                    having mid(max(concat(d.visit_date, d.final_test_result)), 11) = 'Negative') d\n" +
-                "                   on d.patient_id = e.patient_id\n" +
                 "         left join (select pv.patient_id\n" +
                 "                    from kenyaemr_etl.etl_mch_postnatal_visit pv\n" +
                 "                    where pv.visit_date between date(:startDate) and date(:endDate)\n" +
@@ -2535,9 +2600,7 @@ public class DatimCohortLibrary {
                 "                    group by t.patient_id\n" +
                 "                    having mid(max(concat(t.visit_date, t.final_test_result)), 11) = 'Negative') t\n" +
                 "                   on t.patient_id = e.patient_id\n" +
-                "where av.patient_id is not null\n" +
-                "   or d.patient_id is not null\n" +
-                "   or pv.patient_id is not null\n" +
+                "where pv.patient_id is not null\n" +
                 "   or (t.visit_date > date(e.first_anc_visit_date) and t.patient_id is not null)\n" +
                 "group by e.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -2545,7 +2608,20 @@ public class DatimCohortLibrary {
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested negative at PMTCT post ANC-1");
+        cd.setDescription("Tested negative at PMTCT post ANC-1 Breastfeeding");
+        return cd;
+    }
+    /**
+     * testedNegativePmtctPostANC1
+     * Tested Negative PMTCT post ANC-1
+     */
+    public CohortDefinition testedNegativePmtctPostANC1() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedNegativePmtctPostANC1PregLabourAndDelivery", ReportUtils.map(testedNegativePmtctPostANC1PregLabourAndDelivery(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedNegativePmtctPostANC1BreastFeeding", ReportUtils.map(testedNegativePmtctPostANC1BreastFeeding(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("testedNegativePmtctPostANC1PregLabourAndDelivery OR testedNegativePmtctPostANC1BreastFeeding");
         return cd;
     }
 
@@ -5748,20 +5824,86 @@ public class DatimCohortLibrary {
 
     }
 
-    /*Number Tested Negative PMTCT services Post ANC-1 (including labour and delivery and BF)*/
+    /**
+     * Number Tested Negative PMTCT services Post ANC-1 (including labour and delivery)
+     * @return
+     */
     public CohortDefinition negativePMTCTPostANC1() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("testedNegativePmtctPostANC1", ReportUtils.map(testedNegativePmtctPostANC1(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedNegativePmtctPostANC1PregLabourAndDelivery", ReportUtils.map(testedNegativePmtctPostANC1PregLabourAndDelivery(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("testedIndexTesting", ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("testedSocialNetworks", ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("testedSTIClinic", ReportUtils.map(testedSTIClinic(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("testedNegativePmtctPostANC1 AND NOT (testedIndexTesting OR testedSocialNetworks OR testedSTIClinic)");
+        cd.addSearch("testedNegativePmtctPostANC1BreastFeeding", ReportUtils.map(testedNegativePmtctPostANC1BreastFeeding(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(testedNegativePmtctPostANC1PregLabourAndDelivery OR testedNegativePmtctPostANC1BreastFeeding) AND NOT (testedIndexTesting OR testedSocialNetworks OR testedSTIClinic)");
         return cd;
-
     }
-
+    /**
+     * Number Tested Negative PMTCT services Post ANC-1 (Breastfeeding)
+     * @return
+     */
+    public CohortDefinition negativePMTCTPostANC1PregnantAndLabourAndDelivery() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedNegativePmtctPostANC1BreastFeeding", ReportUtils.map(testedNegativePmtctPostANC1BreastFeeding(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting", ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSocialNetworks", ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSTIClinic", ReportUtils.map(testedSTIClinic(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedNegativePmtctPostANC1PregLabourAndDelivery", ReportUtils.map(testedNegativePmtctPostANC1PregLabourAndDelivery(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("testedNegativePmtctPostANC1PregLabourAndDelivery AND NOT (testedIndexTesting OR testedSocialNetworks OR testedSTIClinic OR testedNegativePmtctPostANC1BreastFeeding)");
+        return cd;
+    }
+    /**
+     * Number Tested Negative PMTCT services Post ANC-1 (Breastfeeding)
+     * @return
+     */
+    public CohortDefinition negativePMTCTPostANC1Breastfeeding() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedNegativePmtctPostANC1BreastFeeding", ReportUtils.map(testedNegativePmtctPostANC1BreastFeeding(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting", ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSocialNetworks", ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSTIClinic", ReportUtils.map(testedSTIClinic(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedNegativePmtctPostANC1PregLabourAndDelivery", ReportUtils.map(testedNegativePmtctPostANC1PregLabourAndDelivery(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("testedNegativePmtctPostANC1BreastFeeding AND NOT (testedIndexTesting OR testedSocialNetworks OR testedSTIClinic or testedNegativePmtctPostANC1PregLabourAndDelivery)");
+        return cd;
+    }
+    /**
+     * Number Tested Positive PMTCT services Post ANC-1 (Breastfeeding)
+     * @return
+     */
+    public CohortDefinition positivePMTCTPostANC1PregnantAndLabourAndDelivery() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedPositivePmtctPostANC1BreastFeeding", ReportUtils.map(testedPositivePmtctPostANC1BreastFeeding(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting", ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSocialNetworks", ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSTIClinic", ReportUtils.map(testedSTIClinic(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedPositivePmtctPostANC1PregLabourAndDelivery", ReportUtils.map(testedPositivePmtctPostANC1PregLabourAndDelivery(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("testedPositivePmtctPostANC1PregLabourAndDelivery AND NOT (testedIndexTesting OR testedSocialNetworks OR testedSTIClinic OR testedPositivePmtctPostANC1BreastFeeding)");
+        return cd;
+    }
+    /**
+     * Number Tested Positive PMTCT services Post ANC-1 (Breastfeeding)
+     * @return
+     */
+    public CohortDefinition positivePMTCTPostANC1Breastfeeding() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedPositivePmtctPostANC1BreastFeeding", ReportUtils.map(testedPositivePmtctPostANC1BreastFeeding(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting", ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSocialNetworks", ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSTIClinic", ReportUtils.map(testedSTIClinic(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedPositivePmtctPostANC1PregLabourAndDelivery", ReportUtils.map(testedPositivePmtctPostANC1PregLabourAndDelivery(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("testedPositivePmtctPostANC1BreastFeeding AND NOT (testedIndexTesting OR testedSocialNetworks OR testedSTIClinic or testedPositivePmtctPostANC1PregLabourAndDelivery)");
+        return cd;
+    }
     /*Number Tested Positive PMTCT services Post ANC-1 (including labour and delivery and BF)*/
     public CohortDefinition positivePMTCTPostANC1() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();

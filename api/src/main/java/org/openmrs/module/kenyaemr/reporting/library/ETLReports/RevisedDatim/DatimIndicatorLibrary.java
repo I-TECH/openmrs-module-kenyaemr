@@ -600,13 +600,41 @@ public class DatimIndicatorLibrary {
     public CohortIndicator testedNegativePMTCTANC1() {
         return cohortIndicator("Tested NegativePMTCT services ANC-1", ReportUtils.<CohortDefinition>map(datimCohorts.negativePMTCTANC1(), "startDate=${startDate},endDate=${endDate}"));
     }
-
     /**
-     * Number Tested PositivePMTCT services ANC-1 only
+     * Number Tested Positive PMTCT services ANC-1 only
      * @return the indicator
      */
     public CohortIndicator testedPositivePMTCTANC1() {
         return cohortIndicator("Tested PositivePMTCT services ANC-1", ReportUtils.<CohortDefinition>map(datimCohorts.positivePMTCTANC1(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Number Tested Positive at PMTCT services post ANC-1 pregnant, Labour/Delivery
+     * @return the indicator
+     */
+    public CohortIndicator positivePMTCTPostANC1PregnantAndLabourAndDelivery() {
+        return cohortIndicator("Tested Positive PMTCT services post ANC-1 pregnant & labour/delivery", ReportUtils.<CohortDefinition>map(datimCohorts.positivePMTCTPostANC1PregnantAndLabourAndDelivery(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number Tested Negative at PMTCT services post ANC-1 pregnant, Labour/Delivery
+     * @return the indicator
+     */
+    public CohortIndicator negativePMTCTPostANC1PregnantAndLabourAndDelivery() {
+        return cohortIndicator("Tested Negative PMTCT services ANC-1 pregnant, Labour/Delivery", ReportUtils.<CohortDefinition>map(datimCohorts.negativePMTCTPostANC1PregnantAndLabourAndDelivery(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number Tested Positive at PMTCT services post ANC-1 Breastfeeding
+     * @return the indicator
+     */
+    public CohortIndicator positivePMTCTPostANC1Breastfeeding() {
+        return cohortIndicator("Tested Positive PMTCT services post ANC-1 Breastfeeding", ReportUtils.<CohortDefinition>map(datimCohorts.positivePMTCTPostANC1Breastfeeding(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Number Tested Negative at PMTCT services post ANC-1 Breastfeeding
+     * @return the indicator
+     */
+    public CohortIndicator negativePMTCTPostANC1Breastfeeding() {
+        return cohortIndicator("Tested Negative PMTCT services ANC-1 Breastfeeding", ReportUtils.<CohortDefinition>map(datimCohorts.negativePMTCTPostANC1Breastfeeding(), "startDate=${startDate},endDate=${endDate}"));
     }
 
     /**
