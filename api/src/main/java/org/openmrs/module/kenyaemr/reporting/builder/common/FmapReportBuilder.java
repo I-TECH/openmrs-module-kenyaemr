@@ -63,12 +63,12 @@ public class FmapReportBuilder extends AbstractReportBuilder {
     @Override
     protected List<Mapped<DataSetDefinition>> buildDataSets(ReportDescriptor descriptor, ReportDefinition report) {
         return Arrays.asList(
-                ReportUtils.map(fmapAdultFirstLineRegimens(), "startDate=${startDate},endDate=${endDate}"),
-                ReportUtils.map(fmapAdultSecondLineRegimens(), "startDate=${startDate},endDate=${endDate}"),
-                ReportUtils.map(fmapAdultThirdLineRegimens(), "startDate=${startDate},endDate=${endDate}"),
-                ReportUtils.map(fmapChildFirstLineRegimens(), "startDate=${startDate},endDate=${endDate}"),
-                ReportUtils.map(fmapChildSecondLineRegimens(), "startDate=${startDate},endDate=${endDate}"),
-                ReportUtils.map(fmapChildThirdLineRegimens(), "startDate=${startDate},endDate=${endDate}")
+                ReportUtils.map(fmapPatientRegimens(), "startDate=${startDate},endDate=${endDate}")
+//                ReportUtils.map(fmapAdultSecondLineRegimens(), "startDate=${startDate},endDate=${endDate}"),
+//                ReportUtils.map(fmapAdultThirdLineRegimens(), "startDate=${startDate},endDate=${endDate}"),
+//                ReportUtils.map(fmapChildFirstLineRegimens(), "startDate=${startDate},endDate=${endDate}"),
+//                ReportUtils.map(fmapChildSecondLineRegimens(), "startDate=${startDate},endDate=${endDate}"),
+//                ReportUtils.map(fmapChildThirdLineRegimens(), "startDate=${startDate},endDate=${endDate}")
         );
     }
 
@@ -78,28 +78,60 @@ public class FmapReportBuilder extends AbstractReportBuilder {
      *
      * @return the dataset
      */
-    protected DataSetDefinition fmapAdultFirstLineRegimens() {
+    protected DataSetDefinition fmapPatientRegimens() {
         CohortIndicatorDataSetDefinition cohortDsd = new CohortIndicatorDataSetDefinition();
-        cohortDsd.setName("ADULT ART");
-        cohortDsd.setDescription("1st Line regimens");
+        cohortDsd.setName("ACTIVE CLIENTS");
+        cohortDsd.setDescription("ARV Treatment Regimen");
         cohortDsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
         String indParams = "startDate=${startDate},endDate=${endDate}";
-        cohortDsd.addColumn("AF1A", "AZT+3TC+NVP", ReportUtils.map(fmapIndicators.patientsOnAdultFirstLine("AZT/3TC/NVP","First line","adult"), indParams),"");
-        cohortDsd.addColumn("AF1B", "AZT+3TC+EFV", ReportUtils.map(fmapIndicators.patientsOnAdultFirstLine("AZT/3TC/EFV","First line","adult"), indParams),"");
-        cohortDsd.addColumn("AF1D", "AZT+3TC+DTG", ReportUtils.map(fmapIndicators.patientsOnAdultFirstLine("AZT/3TC/DTG","First line","adult"), indParams),"");
-        cohortDsd.addColumn("AF1E", "AZT+3TC+LPVr", ReportUtils.map(fmapIndicators.patientsOnAdultFirstLine("AZT/3TC/LPV/r","First line","adult"), indParams),"");
-        cohortDsd.addColumn("AF1F", "AZT+3TC+ATVr", ReportUtils.map(fmapIndicators.patientsOnAdultFirstLine("AZT/3TC/ATV/r","First line","adult"), indParams),"");
-        cohortDsd.addColumn("AF2A", "TDF+3TC+NVP", ReportUtils.map(fmapIndicators.patientsOnAdultFirstLine("TDF/3TC/NVP","First line","adult"), indParams),"");
-        cohortDsd.addColumn("AF2B", "TDF+3TC+EFV", ReportUtils.map(fmapIndicators.patientsOnAdultFirstLine("TDF/3TC/EFV","First line","adult"), indParams),"");
-        cohortDsd.addColumn("AF2D", "TDF+3TC+ATVr", ReportUtils.map(fmapIndicators.patientsOnAdultFirstLine("AZT/3TC/ATV/r","First line","adult"), indParams),"");
-        cohortDsd.addColumn("AF2E", "TDF+3TC+DTG", ReportUtils.map(fmapIndicators.patientsOnAdultFirstLine("TDF/3TC/DTG","First line","adult"), indParams),"");
-        cohortDsd.addColumn("AF2F", "TDF+3TC+LPVr(1L Adults < 40kg)", ReportUtils.map(fmapIndicators.patientsOnAdultFirstLine("TDF/3TC/LPV/r","First line","adult"), indParams),"");
-        cohortDsd.addColumn("AF4A", "ABC+3TC+NVP", ReportUtils.map(fmapIndicators.patientsOnAdultFirstLine("ABC/3TC/NVP","First line","adult"), indParams),"");
-        cohortDsd.addColumn("AF4B", "ABC+3TC+EFV", ReportUtils.map(fmapIndicators.patientsOnAdultFirstLine("ABC/3TC/EFV","First line","adult"), indParams),"");
-        cohortDsd.addColumn("AF4C", "ABC+3TC+DTG", ReportUtils.map(fmapIndicators.patientsOnAdultFirstLine("ABC/3TC/DTG","First line","adult"), indParams),"");
+        cohortDsd.addColumn("AF1A", "AZT+3TC+NVP", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("AZT/3TC/NVP","First line","adult"), indParams),"");
+        cohortDsd.addColumn("AF1B", "AZT+3TC+EFV", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("AZT/3TC/EFV","First line","adult"), indParams),"");
+        cohortDsd.addColumn("AF1D", "AZT+3TC+DTG", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("AZT/3TC/DTG","First line","adult"), indParams),"");
+        cohortDsd.addColumn("AF1E", "AZT+3TC+LPVr", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("AZT/3TC/LPV/r","First line","adult"), indParams),"");
+        cohortDsd.addColumn("AF1F", "AZT+3TC+ATVr", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("AZT/3TC/ATV/r","First line","adult"), indParams),"");
+        cohortDsd.addColumn("AF2A", "TDF+3TC+NVP", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("TDF/3TC/NVP","First line","adult"), indParams),"");
+        cohortDsd.addColumn("AF2B", "TDF+3TC+EFV", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("TDF/3TC/EFV","First line","adult"), indParams),"");
+        cohortDsd.addColumn("AF2D", "TDF+3TC+ATVr", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("AZT/3TC/ATV/r","First line","adult"), indParams),"");
+        cohortDsd.addColumn("AF2E", "TDF+3TC+DTG", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("TDF/3TC/DTG","First line","adult"), indParams),"");
+        cohortDsd.addColumn("AF2F", "TDF+3TC+LPVr(1L Adults < 40kg)", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("TDF/3TC/LPV/r","First line","adult"), indParams),"");
+        cohortDsd.addColumn("AF4A", "ABC+3TC+NVP", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("ABC/3TC/NVP","First line","adult"), indParams),"");
+        cohortDsd.addColumn("AF4B", "ABC+3TC+EFV", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("ABC/3TC/EFV","First line","adult"), indParams),"");
+        cohortDsd.addColumn("AF4C", "ABC+3TC+DTG", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("ABC/3TC/DTG","First line","adult"), indParams),"");
         cohortDsd.addColumn("AF5X", "Any other first line adult regimens", ReportUtils.map(fmapIndicators.patientsOnOtherRegimen("Other","First line","adult"), indParams),"");
+        cohortDsd.addColumn("AS1A", "AZT+3TC+LPVr", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("AZT/3TC/LPV/r","Second line","adult"), indParams),"");
+        cohortDsd.addColumn("AS1B", "AZT+3TC+ATVr", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("AZT/3TC/ATV/r","Second line","adult"), indParams),"");
+        cohortDsd.addColumn("AS1C", "AZT+3TC+DTG", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("AZT/3TC/DTG","Second line","adult"), indParams),"");
+        cohortDsd.addColumn("AS2A", "TDF+3TC+LPVr", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("TDF/3TC/LPV/r","Second line","adult"), indParams),"");
+        cohortDsd.addColumn("AS2B", "TDF+3TC+DTG", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("TDF/3TC/DTG","Second line","adult"), indParams),"");
+        cohortDsd.addColumn("AS2C", "TDF+3TC+ATVr", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("TDF/3TC/ATV/r","Second line","adult"), indParams),"");
+        cohortDsd.addColumn("AS5A", "ABC+3TC+LPVr", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("ABC/3TC/LPV/r","Second line","adult"), indParams),"");
+        cohortDsd.addColumn("AS5B", "ABC+3TC+ATVr", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("ABC/3TC/ATV/r","Second line","adult"), indParams),"");
+        cohortDsd.addColumn("AS5C", "ABC+3TC+DTG", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("ABC/3TC/DTG","Second line","adult"), indParams),"");
+        cohortDsd.addColumn("AF5X", "Any other second line adult regimens", ReportUtils.map(fmapIndicators.patientsOnOtherRegimen("Other","Second line","adult"), indParams),"");
+        cohortDsd.addColumn("AT2D", "TDF+3TC+DTG+DRV+RTV", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("TDF/3TC/DTG/DRV/RTV","Third line","adult"), indParams),"");
+        cohortDsd.addColumn("AT2E", "TDF+3TC+RAL+DRV+RTV", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("TDF/3TC/RAL/DRV/RTV","Third line","adult"), indParams),"");
+        cohortDsd.addColumn("AT2F", "TDF+3TC+DTG+ETV+DRV+RTV", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("TDF/3TC/DTG/ETV/DRV/RTV","Third line","adult"), indParams),"");
+        cohortDsd.addColumn("AT2X", "Any other thirdline adult regimens", ReportUtils.map(fmapIndicators.patientsOnOtherRegimen("Other","Third line","adult"), indParams),"");
+        cohortDsd.addColumn("CF1A", "AZT+3TC+NVP", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("AZT/3TC/NVP","First line","child"), indParams),"");
+        cohortDsd.addColumn("CF1B", "AZT+3TC+EFV", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("AZT/3TC/EFV","First line","child"), indParams),"");
+        cohortDsd.addColumn("CF1C", "AZT+3TC+LPVr", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("AZT/3TC/LPV/r","First line","child"), indParams),"");
+        cohortDsd.addColumn("CF2A", "ABC+3TC+NVP", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("ABC/3TC/NVP","First line","child"), indParams),"");
+        cohortDsd.addColumn("CF2B", "ABC+3TC+EFV", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("ABC/3TC/EFV","First line","child"), indParams),"");
+        cohortDsd.addColumn("CF2D", "AZT+3TC+LPVr", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("AZT/3TC/LPV/r","First line","child"), indParams),"");
+        cohortDsd.addColumn("CF2G", "ABC+3TC+DTG", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("ABC/3TC/DTG","First line","child"), indParams),"");
+        cohortDsd.addColumn("CF4E", "TDF+3TC+DTG", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("TDF/3TC/DTG","First line","child"), indParams),"");
+        cohortDsd.addColumn("CF5X", "Any other first line adult regimens", ReportUtils.map(fmapIndicators.patientsOnOtherRegimen("Other","First line","child"), indParams),"");
+        cohortDsd.addColumn("CS1A", "AZT+3TC+LPVr", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("AZT/3TC/LPV/r","Second line","child"), indParams),"");
+        cohortDsd.addColumn("CS1C", "AZT+3TC+DRV+RTV+RAL", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("AZT/3TC/DRV/RTV/RAL","Second line","child"), indParams),"");
+        cohortDsd.addColumn("CS2A", "ABC+3TC+LPVr", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("ABC/3TC/LPV/r","Second line","child"), indParams),"");
+        cohortDsd.addColumn("CS2B", "ABC+3TC+DTG", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("ABC/3TC/DTG","Second line","child"), indParams),"");
+        cohortDsd.addColumn("CS2D", "ABC+3TC+DRV+RTV+RAL", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("ABC/3TC/DRV/RTV/RAL","Second line","child"), indParams),"");
+        cohortDsd.addColumn("AF5X", "Any other second line adult regimens", ReportUtils.map(fmapIndicators.patientsOnOtherRegimen("Other","Second line","child"), indParams),"");
+        cohortDsd.addColumn("CT1H", "AZT+3TC+DRV+RTV+RAL", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("AZT/3TC/DRV/RTV/RAL","Third line","child"), indParams),"");
+        cohortDsd.addColumn("CT2D", "ABC+3TC+DRV+RTV+RAL", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("ABC/3TC/DRV/RTV/RAL","Third line","child"), indParams),"");
+        cohortDsd.addColumn("CT3X", "Any other thirdline adult regimens", ReportUtils.map(fmapIndicators.patientsOnOtherRegimen("Other","Third line","child"), indParams),"");
 
         return cohortDsd;
     }
@@ -112,15 +144,15 @@ public class FmapReportBuilder extends AbstractReportBuilder {
         cohortDsd.addParameter(new Parameter("endDate", "End Date", Date.class));
 
         String indParams = "startDate=${startDate},endDate=${endDate}";
-        cohortDsd.addColumn("AS1A", "AZT+3TC+LPVr", ReportUtils.map(fmapIndicators.patientsOnAdultSecondLine("AZT/3TC/LPV/r","Second line","adult"), indParams),"");
-        cohortDsd.addColumn("AS1B", "AZT+3TC+ATVr", ReportUtils.map(fmapIndicators.patientsOnAdultSecondLine("AZT/3TC/ATV/r","Second line","adult"), indParams),"");
-        cohortDsd.addColumn("AS1C", "AZT+3TC+DTG", ReportUtils.map(fmapIndicators.patientsOnAdultSecondLine("AZT/3TC/DTG","Second line","adult"), indParams),"");
-        cohortDsd.addColumn("AS2A", "TDF+3TC+LPVr", ReportUtils.map(fmapIndicators.patientsOnAdultSecondLine("TDF/3TC/LPV/r","Second line","adult"), indParams),"");
-        cohortDsd.addColumn("AS2B", "TDF+3TC+DTG", ReportUtils.map(fmapIndicators.patientsOnAdultSecondLine("TDF/3TC/DTG","Second line","adult"), indParams),"");
-        cohortDsd.addColumn("AS2C", "TDF+3TC+ATVr", ReportUtils.map(fmapIndicators.patientsOnAdultSecondLine("TDF/3TC/ATV/r","Second line","adult"), indParams),"");
-        cohortDsd.addColumn("AS5A", "ABC+3TC+LPVr", ReportUtils.map(fmapIndicators.patientsOnAdultSecondLine("ABC/3TC/LPV/r","Second line","adult"), indParams),"");
-        cohortDsd.addColumn("AS5B", "ABC+3TC+ATVr", ReportUtils.map(fmapIndicators.patientsOnAdultSecondLine("ABC/3TC/ATV/r","Second line","adult"), indParams),"");
-        cohortDsd.addColumn("AS5C", "ABC+3TC+DTG", ReportUtils.map(fmapIndicators.patientsOnAdultSecondLine("ABC/3TC/DTG","Second line","adult"), indParams),"");
+        cohortDsd.addColumn("AS1A", "AZT+3TC+LPVr", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("AZT/3TC/LPV/r","Second line","adult"), indParams),"");
+        cohortDsd.addColumn("AS1B", "AZT+3TC+ATVr", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("AZT/3TC/ATV/r","Second line","adult"), indParams),"");
+        cohortDsd.addColumn("AS1C", "AZT+3TC+DTG", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("AZT/3TC/DTG","Second line","adult"), indParams),"");
+        cohortDsd.addColumn("AS2A", "TDF+3TC+LPVr", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("TDF/3TC/LPV/r","Second line","adult"), indParams),"");
+        cohortDsd.addColumn("AS2B", "TDF+3TC+DTG", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("TDF/3TC/DTG","Second line","adult"), indParams),"");
+        cohortDsd.addColumn("AS2C", "TDF+3TC+ATVr", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("TDF/3TC/ATV/r","Second line","adult"), indParams),"");
+        cohortDsd.addColumn("AS5A", "ABC+3TC+LPVr", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("ABC/3TC/LPV/r","Second line","adult"), indParams),"");
+        cohortDsd.addColumn("AS5B", "ABC+3TC+ATVr", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("ABC/3TC/ATV/r","Second line","adult"), indParams),"");
+        cohortDsd.addColumn("AS5C", "ABC+3TC+DTG", ReportUtils.map(fmapIndicators.patientsOnSpecificRegimen("ABC/3TC/DTG","Second line","adult"), indParams),"");
         cohortDsd.addColumn("AF5X", "Any other second line adult regimens", ReportUtils.map(fmapIndicators.patientsOnOtherRegimen("Other","Second line","adult"), indParams),"");
 
         return cohortDsd;
