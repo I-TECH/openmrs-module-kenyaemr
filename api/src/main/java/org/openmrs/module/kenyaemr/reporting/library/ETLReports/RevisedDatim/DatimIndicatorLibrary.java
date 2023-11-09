@@ -11,8 +11,6 @@ package org.openmrs.module.kenyaemr.reporting.library.ETLReports.RevisedDatim;
 
 import org.openmrs.module.kenyacore.report.ReportUtils;
 
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.KPTypeDataDefinition;
-
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -487,6 +485,9 @@ public class DatimIndicatorLibrary {
         return cohortIndicator("Smear microscopy only", ReportUtils.<CohortDefinition>map(datimCohorts.smearMicroscopy(), "startDate=${startDate},endDate=${endDate}"));
     }
 
+    public CohortIndicator onARTChestXrayDone() {
+        return cohortIndicator("Chest xRay", ReportUtils.<CohortDefinition>map(datimCohorts.onARTChestXrayDone(), "startDate=${startDate},endDate=${endDate}"));
+    }
     /**
      * Additional test other than GeneXpert
      * @return the indicator

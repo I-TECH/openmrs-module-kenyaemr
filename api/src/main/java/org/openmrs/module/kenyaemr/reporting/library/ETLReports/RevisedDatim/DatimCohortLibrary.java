@@ -1914,6 +1914,25 @@ public class DatimCohortLibrary {
     }
 
     /**
+     * Patients screened for TB using chest X-Ray
+     * @return
+     */
+    public CohortDefinition chestXray() {
+        String sqlQuery = "\n" +
+                "select patient_id\n" +
+                "from kenyaemr_etl.etl_tb_screening s\n" +
+                "where s.genexpert_ordered = 12\n" +
+                "  and s.visit_date between date_sub(date(:endDate), INTERVAL 6 MONTH) and date(:endDate)\n" +
+                "group by s.patient_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("chestXray");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patients screened for TB and chest X-Ray diagnosis done");
+        return cd;
+    }
+    /**
      * Patients screened TB and additional tests for TB done other than GeneXpert
      * @return
      */
@@ -2098,6 +2117,19 @@ public class DatimCohortLibrary {
         return cd;
     }
 
+    /**
+     * Chest xRay for TX_CURR patients
+     * @return
+     */
+    public CohortDefinition onARTChestXrayDone() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("chestXray", ReportUtils.map(chestXray(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("currentlyOnArt", ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("chestXray AND currentlyOnArt");
+        return cd;
+    }
     /**
      *  Additional test other than GeneXpert for TX_CURR patients
      */
