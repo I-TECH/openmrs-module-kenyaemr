@@ -41,15 +41,6 @@ public class ETLMoh731IndicatorLibrary {
         return cohortIndicator("New Enrollment in care (excludes transfers)", ReportUtils.map(moh731Cohorts.hivEnrollment(), "startDate=${startDate},endDate=${endDate}"));
     }
 
-
-    /**
-     * Number of patients who are currently on ART
-     * @return the indicator
-     */
-    public CohortIndicator currentlyOnArt() {
-        return cohortIndicator("Currently on ART", ReportUtils.map(moh731Cohorts.currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
-    }
-
     /**
      * Number of patients who are ART revisits
      * @return the indicator
