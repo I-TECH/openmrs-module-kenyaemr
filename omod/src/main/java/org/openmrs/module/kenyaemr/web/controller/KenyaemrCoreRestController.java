@@ -2309,11 +2309,11 @@ else {
             } else if (concept.equals(Dictionary.getConcept(Dictionary.TRANSFER_IN))) {
                 value = "TRANSFER IN";
             } else if (concept.equals(Dictionary.getConcept("159938AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
-                value = "HBTC"
+                value = "HBTC";
             } else if (concept.equals(Dictionary.getConcept("162050AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
-                value = "CCC"
+                value = "CCC";
             } else if (concept.equals(Dictionary.getConcept("162050AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))) {
-                value = "SELF TEST"
+                value = "SELF TEST";
             }
         }
 

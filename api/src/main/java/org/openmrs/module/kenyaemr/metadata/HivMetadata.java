@@ -61,7 +61,6 @@ public class HivMetadata extends AbstractMetadataBundle {
 		public static final String MOH_257_ARV_THERAPY = "8f5b3ba5-1677-450f-8445-33b9a38107ae";
 		public static final String MOH_257_VISIT_SUMMARY = "23b4ebbd-29ad-455e-be0e-04aa6bc30798";
 		public static final String HIV_GREEN_CARD = "22c68f86-bbf0-49ba-b2d1-23fa7ccf0259";
-		public static final String DRUG_PRESCRIPTION = "bd206284-889f-4291-94b9-6389e5acd7d6";
 		public static final String FAST_TRACK = "83fb6ab2-faec-4d87-a714-93e77a28a201";
 		public static final String FAMILY_TESTING_FORM_FOR_NEGATIVE_CLIENTS = "62846fae-8d0b-4202-827e-8b6ffd30e587";
 		public static final String DRUG_ORDER = "888dbabd-1c18-4653-82c2-e753415ab79a";
@@ -114,7 +113,6 @@ public class HivMetadata extends AbstractMetadataBundle {
 		install(form("MOH 257 Visit Summary", null, _EncounterType.HIV_CONSULTATION, "1", _Form.MOH_257_VISIT_SUMMARY));
 		install(form("HIV Discontinuation", null, _EncounterType.HIV_DISCONTINUATION, "1", _Form.HIV_DISCONTINUATION));
 		install(form("HIV Green Card", "Green Card Form", _EncounterType.HIV_CONSULTATION, "1", _Form.HIV_GREEN_CARD));
-		install(form("Drug Prescription", null, _EncounterType.HIV_CONSULTATION, "1", _Form.DRUG_PRESCRIPTION));
 		install(form("ART Fast Track", "ART Fast Track Form", _EncounterType.ART_REFILL, "1", _Form.FAST_TRACK));
 		install(form("Family and Partner Testing Results", "Family and Partner Testing for HIV Negative Patients", _EncounterType.FAMILY_AND_PARTNER_TESTING, "1", _Form.FAMILY_TESTING_FORM_FOR_NEGATIVE_CLIENTS));
 		install(form("Drug Order", "Drug Order", _EncounterType.DRUG_ORDER, "1", _Form.DRUG_ORDER));
