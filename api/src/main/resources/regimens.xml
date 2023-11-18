@@ -286,6 +286,11 @@
                 <component drugCode="DRV" />
                 <component drugCode="RTV" />
             </regimen>
+            <regimen name="AZT/3TC/DTG" conceptRef="6dec7d7d-0fda-4e8d-8295-cb6ef426878d" orderSetRef="b3af5ba7-bac7-4af9-9bd4-b43bdfb020de">
+                <component drugCode="AZT" />
+                <component drugCode="3TC" />
+                <component drugCode="DTG" />
+            </regimen>
 
         </group>
 
