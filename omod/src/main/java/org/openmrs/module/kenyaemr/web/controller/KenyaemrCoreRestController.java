@@ -1479,7 +1479,7 @@ public class KenyaemrCoreRestController extends BaseRestController {
                     programDetails.put("enrollmentFormUuid", VMMCMetadata._Form.VMMC_ENROLLMENT_FORM);
                     programDetails.put("enrollmentFormName", "VMMC Enrollment Form");
                     programDetails.put("discontinuationFormUuid", VMMCMetadata._Form.VMMC_DISCONTINUATION_FORM);
-                    programDetails.put("discontinuationFormUuid", "VMMC Discontinuation Form");
+                    programDetails.put("discontinuationFormName", "VMMC Discontinuation Form");
                 }
 
                 // prep program
