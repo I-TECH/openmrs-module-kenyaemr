@@ -50,6 +50,7 @@
 	<bean id="kenyaemr.config.report" class="org.openmrs.module.kenyacore.report.ReportConfiguration">
 		<property name="commonReports">
 			<set>
+				<ref bean="kenyaemr.etl.common.report.fmap"/>
 				<ref bean="kenyaemr.common.report.artDrug" />
 				<ref bean="kenyaemr.common.report.etlMissedAppointments" />
 				<ref bean="kenyaemr.etl.common.report.moh731"/>
@@ -557,6 +558,19 @@
 			</set></property>
 		<property name="template" value="kenyaemr:Datim_Template.xls" />
 	</bean>
+
+	<!--- Pharmacy FMAP -->
+	<bean id="kenyaemr.etl.common.report.fmap" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="dbfcf743-933f-4e1c-9d1b-b1f8afa1a6d2" />
+		<property name="name" value="FMAP MOH-729 Report" />
+		<property name="description" value="FMAP MOH-729 Report" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:fmaps_template.xls" />
+	</bean>
+
 	<bean id="kenyaemr.hiv.report.htsRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
 		<property name="targetUuid" value="c759e8da-d82d-41e3-88ee-c5e65ee6c9f6" />
 		<property name="name" value="HTS Register" />
