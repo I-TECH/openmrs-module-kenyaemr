@@ -11,6 +11,7 @@ package org.openmrs.module.kenyaemr.reporting.library.ETLReports.RevisedDatim;
 
 import org.openmrs.module.kenyacore.report.ReportUtils;
 
+import org.openmrs.module.kenyaemr.reporting.library.mer.MerCohortLibrary;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ public class DatimIndicatorLibrary {
     @Autowired
     private DatimCohortLibrary datimCohorts;
 
+    @Autowired
+    private MerCohortLibrary merCohortLibrary;
 
     /**
      * Number of patients who are currently on ART
@@ -70,55 +73,6 @@ public class DatimIndicatorLibrary {
     public CohortIndicator startedOnArt() {
         return cohortIndicator("Started on ART", ReportUtils.map(datimCohorts.startedOnART(), "startDate=${startDate},endDate=${endDate}"));
     }
-
-    /**
-     * Number of patients who were started on Art and are pregnant
-     * @return the indicator
-     */
-    public CohortIndicator startedOnARTAndPregnant() {
-        return cohortIndicator("Started on ART", ReportUtils.map(datimCohorts.startedOnARTAndPregnant(), "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * Number of patients who were started on Art and are TB co-infected
-     * @return the indicator
-     */
-    public CohortIndicator startedOnARTAndTBCoinfected() {
-        return cohortIndicator("Started on ART", ReportUtils.map(datimCohorts.startedOnARTAndTBCoinfected(), "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * Number of patients in the ART 12 month cohort
-     * @return the indicator
-     */
-    public CohortIndicator art12MonthCohort() {
-        return cohortIndicator("ART 12 Month Net Cohort", ReportUtils.map(datimCohorts.art12MonthCohort(), "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * Number of patients in the 12 month cohort who are on ART
-     * @return the indicator
-     */
-    public CohortIndicator onTherapyAt12Months() {
-        return cohortIndicator("On therapy at 12 months", ReportUtils.map(datimCohorts.onTherapyAt12Months(), "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * No of patients with successful VL test/result in the last 12 months
-     * @return the indicator
-     */
-    public CohortIndicator patientsWithVLResults() {
-        return cohortIndicator("VL Results", ReportUtils.<CohortDefinition>map(datimCohorts.viralLoadResultsInLast12Months(), "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * Number of patients with viral suppression in the last 12 months
-     * @return the indicator
-     */
-    public CohortIndicator patientsWithViralLoadSuppression() {
-        return cohortIndicator("Viral Suppression", ReportUtils.<CohortDefinition>map(datimCohorts.viralSuppressionInLast12Months(), "startDate=${startDate},endDate=${endDate}"));
-    }
-
     /**
      * Number of patients tested Negative for HIV at ANC
      * @return the indicator
@@ -136,21 +90,6 @@ public class DatimIndicatorLibrary {
     }
 
     /**
-     * Number of clients with known HIV status at ANC
-     * @return the indicator
-     */
-    public CohortIndicator clientsWithKnownHIVStatusAtANC() {
-        return cohortIndicator("Clients with Known HIV Status at ANC", ReportUtils.<CohortDefinition>map(datimCohorts.knownStatusAtANC(), "startDate=${startDate},endDate=${endDate}"));
-    }
-    /**
-     * Number of clients with known HIV status at ANC
-     * @return the indicator
-     */
-    public CohortIndicator clientsWithUnKnownHIVStatusAtANC() {
-        return cohortIndicator("Clients with Unknown HIV Status at ANC", ReportUtils.<CohortDefinition>map(datimCohorts.unKnownStatusAtANC(), "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
      * Number of clients with positive HIV status before ANC-1
      * @return the indicator
      */
@@ -159,20 +98,50 @@ public class DatimIndicatorLibrary {
     }
 
     /**
-     * Number of clients with Negative HIV status before ANC-1
-     * @return the indicator
-     */
-    public CohortIndicator clientsWithNegativeHivStatusBeforeAnc1() {
-        return cohortIndicator("Clients with Negative HIV Status before ANC-1", ReportUtils.<CohortDefinition>map(datimCohorts.negativeHivStatusBeforeAnc1(), "startDate=${startDate},endDate=${endDate}"));
-    }
-    /**
      * Number of clients newly enrolled for ANC
      * @return the indicator
      */
     public CohortIndicator clientsNewlyEnrolledToANC() {
         return cohortIndicator("Clients newly Enrolled For ANC", ReportUtils.<CohortDefinition>map(datimCohorts.newANCClients(), "startDate=${startDate},endDate=${endDate}"));
     }
+     /**
+     * New and relapsed TB cases who are Known positive
+     * @return
+     */
+/*    public CohortIndicator tbSTATKnownPositive() {
+        return cohortIndicator("New and relapsed TB cases who are Known positive", ReportUtils.<CohortDefinition>map(datimCohorts.tbSTATKnownPositive(), "startDate=${startDate},endDate=${endDate}"));
+    }*/
 
+    /**
+     * New and relapsed TB cases newly tested positive
+     * @return
+     */
+/*    public CohortIndicator tbSTATNewPositive() {
+        return cohortIndicator("New and relapsed TB cases newly tested positive", ReportUtils.<CohortDefinition>map(datimCohorts.tbSTATNewPositive(), "startDate=${startDate},endDate=${endDate}"));
+    }*/
+
+    /**
+     * New and relapsed TB cases newly tested negative
+     * @return
+     */
+/*    public CohortIndicator tbSTATNewNegative() {
+        return cohortIndicator("New and relapsed TB cases newly tested positive", ReportUtils.<CohortDefinition>map(datimCohorts.tbSTATNewNegative(), "startDate=${startDate},endDate=${endDate}"));
+    }*/
+
+    /**
+     * New and relapsed TB cases recently tested negative
+     * @return
+     */
+/*    public CohortIndicator tbSTATRecentNegative() {
+        return cohortIndicator("New and relapsed TB cases recently tested negative", ReportUtils.<CohortDefinition>map(datimCohorts.tbSTATRecentNegative(), "startDate=${startDate},endDate=${endDate}"));
+    }*/
+    /**
+     * Total number of new and relapsed TB cases, during the reporting period
+     * @return
+     */
+/*    public CohortIndicator tbSTATDenominator() {
+        return cohortIndicator("Total number of new and relapsed TB cases, during the reporting period", ReportUtils.<CohortDefinition>map(datimCohorts.tbSTATDenominator(), "startDate=${startDate},endDate=${endDate}"));
+    }*/
     /**
      *Infants sample taken for Virologic test within 2 months
      * @return
@@ -639,21 +608,6 @@ public class DatimIndicatorLibrary {
     }
 
     /**
-     * Number Tested NegativePMTCT services Post ANC-1 (including labour and delivery and BF)
-     * @return the indicator
-     */
-    public CohortIndicator testedNegativePMTCTPostANC1() {
-        return cohortIndicator("Tested NegativePMTCT services Post ANC-1", ReportUtils.<CohortDefinition>map(datimCohorts.negativePMTCTPostANC1(), "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
-     * Number Tested PositivePMTCT services Post ANC-1 (including labour and delivery and BF)
-     * @return the indicator
-     */
-    public CohortIndicator testedPositivePMTCTPostANC1() {
-        return cohortIndicator("Tested PositivePMTCT services Post ANC-1", ReportUtils.<CohortDefinition>map(datimCohorts.positivePMTCTPostANC1(), "startDate=${startDate},endDate=${endDate}"));
-    }
-    /**
      * Number Tested PositivePaediatric services
      * @return the indicator
      */
@@ -918,15 +872,6 @@ public class DatimIndicatorLibrary {
     }
 
     /**
-     * Number who Newly Started ART While Pregnant
-     * @return the indicator
-     */
-    public CohortIndicator newlyStartedARTWhilePregnant() {
-        return cohortIndicator("Newly Started ART While Pregnant", ReportUtils.<CohortDefinition>map(datimCohorts.newlyStartedARTWhilePregnant(),
-                "startDate=${startDate},endDate=${endDate}"));
-    }
-
-    /**
      * Number Newly Started ART While Confirmed TB and / or TB Treated
      * @return the indicator
      */
@@ -936,11 +881,28 @@ public class DatimIndicatorLibrary {
     }
 
     /**
-     * Disaggregated by Age / Sex
+     * Newly Started ART with baseline CD4 <= 200
      * @return the indicator
      */
-    public CohortIndicator newlyStartedARTByAgeSex() {
-        return cohortIndicator("Newly Started ART While Confirmed TB and / or TB Treated", ReportUtils.<CohortDefinition>map(datimCohorts.txNew(),
+    public CohortIndicator newlyStartedARTCD4Within200() {
+        return cohortIndicator("Newly Started ART with baseline CD4 <= 200", ReportUtils.<CohortDefinition>map(datimCohorts.newlyStartedARTCD4Under200(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Newly Started ART with baseline CD4 > 200
+     * @return
+     */
+    public CohortIndicator newlyStartedARTCD4200AndAbove() {
+        return cohortIndicator("Newly Started ART with baseline CD4 > 200", ReportUtils.<CohortDefinition>map(datimCohorts.newlyStartedARTCD4200AndAbove(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Newly Started ART with unknown baseline CD4
+     * @return
+     */
+    public CohortIndicator newlyStartedARTCD4Unknown() {
+        return cohortIndicator("Newly Started ART with unknown baseline CD4", ReportUtils.<CohortDefinition>map(datimCohorts.newlyStartedARTCD4Unknown(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
@@ -949,15 +911,6 @@ public class DatimIndicatorLibrary {
      */
     public CohortIndicator kpNewlyStartedART(Integer kpType) {
         return cohortIndicator("KP Newly Started ART", ReportUtils.<CohortDefinition>map(datimCohorts.kpNewlyStartedART(kpType),
-                "startDate=${startDate},endDate=${endDate}"));
-    }
-    /*Annual Cohort Indicators*/
-    /**
-     * PMTCT_FO Number of HIV-exposed infants who were born 24 months prior to the reporting period
-     * @return the indicator
-     */
-    public CohortIndicator totalHEI() {
-        return cohortIndicator("Total HEI Cohort", ReportUtils.<CohortDefinition>map(datimCohorts.totalHEICohort(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
     /**
@@ -1002,7 +955,6 @@ public class DatimIndicatorLibrary {
         return cohortIndicator("HEI Died with Unknown HIV Status", ReportUtils.<CohortDefinition>map(datimCohorts.heiDiedWithUnknownStatus(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
-
     /**
      * TX_RTT Number restarted Treatment during the reporting period
      * @return the indicator
@@ -1011,7 +963,39 @@ public class DatimIndicatorLibrary {
         return cohortIndicator("Number restarted Treatment during the reporting period", ReportUtils.<CohortDefinition>map(datimCohorts.txRTT(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
+    /**
+     * TNumber restarted Treatment during the reporting period with CD4 count <200
+     * @return the indicator
+     */
+/*    public CohortIndicator txRTTCD4Below200() {
+        return cohortIndicator("Number restarted Treatment during the reporting period with CD4 count <200", ReportUtils.<CohortDefinition>map(datimCohorts.txRTTCD4Below200(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }*/
 
+    /**
+     * Number restarted Treatment during the reporting period with CD4 count >=200
+     * @return
+     */
+/*    public CohortIndicator txRTTCD4200AndAbove() {
+        return cohortIndicator("Number restarted Treatment during the reporting period with CD4 count >=200", ReportUtils.<CohortDefinition>map(datimCohorts.txRTTCD4200AndAbove(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }*/
+    /**
+     * Number restarted Treatment during the reporting period with CD4 unknown
+     * @return
+     */
+/*    public CohortIndicator txRTTCD4Unknown() {
+        return cohortIndicator("Number restarted Treatment during the reporting period with CD4 count >=200", ReportUtils.<CohortDefinition>map(datimCohorts.txRTTCD4Unknown(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }*/
+    /**
+     * Number restarted Treatment during the reporting period not eligible for CD4
+     * @return
+     */
+  /*  public CohortIndicator txRTTIneligibleForCD4() {
+        return cohortIndicator("Number restarted Treatment during the reporting period not eligible for CD4", ReportUtils.<CohortDefinition>map(datimCohorts.txRTTIneligibleForCD4(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }*/
     /**
      * TX_RTT_KP Number of KPs restarted Treatment during the reporting period
      * @return the indicator
@@ -1275,14 +1259,6 @@ public class DatimIndicatorLibrary {
         return cohortIndicator("Known HIV Positive contacts", ReportUtils.<CohortDefinition>map(datimCohorts.knownPositiveContact(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
-
-    /**
-     * HTS_RECENT Persons aged ≥15 years newly diagnosed with HIV-1 infection who have a test for recent infection
-     */
-    public CohortIndicator recentHIVInfections() {
-        return cohortIndicator("Persons aged ≥15 years newly diagnosed with HIV-1 infection", ReportUtils.<CohortDefinition>map(datimCohorts.recentHIVInfections(),
-                "startDate=${startDate},endDate=${endDate}"));
-    }
     /**
      * Number of individuals who were already enrolled on oral antiretroviral pre-exposure prophylaxis (PrEP) to prevent HIV infection and came for PrEP followup or re-initiation during the reporting period
      */
@@ -1328,12 +1304,70 @@ public class DatimIndicatorLibrary {
     public CohortIndicator prepCTBreastfeeding() {
         return cohortIndicator("People who returned for PrEP follow-up or re-initiation", ReportUtils.<CohortDefinition>map(datimCohorts.prepCTBreastfeeding(), "startDate=${startDate},endDate=${endDate}"));
     }
+
+    /**
+     * Returned and on Oral PrEP
+     * @return
+     */
+    public CohortIndicator prepCTOnOralPrEP() {
+        return cohortIndicator("Returned and on Oral PrEP", ReportUtils.<CohortDefinition>map(datimCohorts.prepCTOnOralPrEP(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Returned and on CAB-LA Injectable PrEP
+     * @return
+     */
+    public CohortIndicator prepCTOnCABLAInjectablePrEP() {
+        return cohortIndicator("Returned and on CAB-LA Injectable PrEP", ReportUtils.<CohortDefinition>map(datimCohorts.prepCTOnCABLAInjectablePrEP(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Returned and on Other forms of PrEP
+     * @return
+     */
+    public CohortIndicator prepCTOnOtherPrEP() {
+        return cohortIndicator("Returned and on Other forms of PrEP", ReportUtils.<CohortDefinition>map(datimCohorts.prepCTOnOtherPrEP(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
     /**
      * Newly enrolled into PrEP
      */
-
     public CohortIndicator newlyEnrolledInPrEP() {
         return cohortIndicator("Number of individuals who are newly enrolled in PrEP", ReportUtils.<CohortDefinition>map(datimCohorts.newlyEnrolledInPrEP(), "startDate=${startDate},endDate=${endDate}"));
+    }
+
+    /**
+     * Newly enrolled on PrEP and pregnant
+     * @return
+     */
+    public CohortIndicator newlyEnrolledOnPrEPPregnant() {
+        return cohortIndicator("Newly enrolled on PrEP and pregnant", ReportUtils.<CohortDefinition>map(datimCohorts.newlyEnrolledOnPrEPPregnant(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Newly enrolled on PrEP and breastfeeding
+     * @return
+     */
+    public CohortIndicator newlyEnrolledInPrEPBreastFeeding() {
+        return cohortIndicator("Newly enrolled on PrEP and breastfeeding", ReportUtils.<CohortDefinition>map(datimCohorts.newlyEnrolledInPrEPBreastFeeding(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Newly enrolled on oral PrEP
+     * @return
+     */
+    public CohortIndicator newlyEnrolledOnOralPrEP() {
+        return cohortIndicator("Newly enrolled on oral PrEP", ReportUtils.<CohortDefinition>map(datimCohorts.newlyEnrolledOnOralPrEP(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Newly enrolled on CAB-LA Injectable PrEP
+     * @return
+     */
+    public CohortIndicator newlyEnrolledOnCABLAInjectablePrEP() {
+        return cohortIndicator("Newly enrolled on CAB-LA Injectable PrEP", ReportUtils.<CohortDefinition>map(datimCohorts.newlyEnrolledOnCABLAInjectablePrEP(), "startDate=${startDate},endDate=${endDate}"));
+    }
+    /**
+     * Newly enrolled on other forms of PrEP
+     * @return
+     */
+    public CohortIndicator newlyEnrolledOnOtherPrEP() {
+        return cohortIndicator("Newly enrolled on other forms of PrEP", ReportUtils.<CohortDefinition>map(datimCohorts.newlyEnrolledOnOtherPrEP(), "startDate=${startDate},endDate=${endDate}"));
     }
     /**
      * Newly enrolled into PrEP KPs

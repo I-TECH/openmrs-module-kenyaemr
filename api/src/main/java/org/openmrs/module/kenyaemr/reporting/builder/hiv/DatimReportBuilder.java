@@ -220,7 +220,9 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         List<ColumnParameters> datimPMTCTCXCAExpandedAgeDisaggregation =
                 Arrays.asList(f15_to19, f20_to24, f25_to29, f30_to34, f35_to39, f40_to44, f45_to49, f50_to54, f55_to59, f60_to64, fAbove65, colTotal);
 
-        List<ColumnParameters> datimAgeDisaggregationMonths = Arrays.asList(all0_to_2m, all2_to_12m, colTotal);
+        List<ColumnParameters> datim5To65PlusAgeDisaggregation = Arrays.asList(f5_to9, m5_to9, f10_to14, m10_to14, f15_to19, m15_to19, f20_to24, m20_to24,
+                f25_to29, m25_to29, f30_to34, m30_to34, f35_to39, m35_to39, f40_to44, m40_to44, f45_to49, m45_to49,
+                f50_to54, m50_to54, f55_to59, m55_to59, f60_to64, m60_to64, fAbove65, mAbove65,colTotal);
 
         List<ColumnParameters> datimPrEPNewAgeDisaggregation =
                 Arrays.asList(f15_to19, m15_to19, f20_to24, m20_to24,
@@ -273,16 +275,20 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("VMMC_CIRC_DEVICE-BASED_FOLLOWED_WITHIN_14_DAYS", "Number of males circumcised using device and followed up within 14 days", ReportUtils.map(datimIndicators.vmmcDeviceFollowupWithin14Days(), indParams), "");
         cohortDsd.addColumn("VMMC_CIRC_DEVICE-BASED_NOT_FOLLOWED_WITHIN_14_DAYS", "Number of males circumcised using device and did not follow up within 14 days", ReportUtils.map(datimIndicators.vmmcDeviceNoFollowupWithin14Days(), indParams), "");
 
-        // Number of people newly enrolled on Prep
-        EmrReportingUtils.addRow(cohortDsd, "PrEP_NEW", "Number of people newly enrolled on Prep", ReportUtils.map(datimIndicators.newlyEnrolledInPrEP(), indParams), datimPrEPNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17"));
+        // Number of people newly enrolled on PrEP
+        EmrReportingUtils.addRow(cohortDsd, "PrEP_NEW", "Number of people newly enrolled on PrEP", ReportUtils.map(datimIndicators.newlyEnrolledInPrEP(), indParams), datimPrEPNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17"));
 
-        // Number of KPs newly enrolled on Prep
-        cohortDsd.addColumn( "PrEP_NEW_PWID", "Number of PWIDs newly enrolled on Prep", ReportUtils.map(datimIndicators.newlyEnrolledInPrEPKP(PWID_CONCEPT), indParams),"");
-        cohortDsd.addColumn( "PrEP_NEW_MSM", "Number of MSMs newly enrolled on Prep", ReportUtils.map(datimIndicators.newlyEnrolledInPrEPKP(MSM_CONCEPT), indParams), "");
-        cohortDsd.addColumn("PrEP_NEW_TG", "Number of Transgenders newly enrolled on Prep", ReportUtils.map(datimIndicators.newlyEnrolledInPrEPKP(TG_CONCEPT), indParams),"");
-        cohortDsd.addColumn("PrEP_NEW_FSW", "Number of FSWs newly enrolled on Prep", ReportUtils.map(datimIndicators.newlyEnrolledInPrEPKP(FSW_CONCEPT), indParams),"");
-        cohortDsd.addColumn("PrEP_NEW_PRISONS_CLOSED_SETTINGS", "Number of prisoners and people in closed settings newly enrolled on Prep", ReportUtils.map(datimIndicators.newlyEnrolledInPrEPKP(PRISONERS_CLOSED_SETTINGS_CONCEPT), indParams), "");
-
+        // Number of KPs newly enrolled on PrEP
+        cohortDsd.addColumn( "PrEP_NEW_PWID", "Number of PWIDs newly enrolled on PrEP", ReportUtils.map(datimIndicators.newlyEnrolledInPrEPKP(PWID_CONCEPT), indParams),"");
+        cohortDsd.addColumn( "PrEP_NEW_MSM", "Number of MSMs newly enrolled on PrEP", ReportUtils.map(datimIndicators.newlyEnrolledInPrEPKP(MSM_CONCEPT), indParams), "");
+        cohortDsd.addColumn("PrEP_NEW_TG", "Number of Transgenders newly enrolled on PrEP", ReportUtils.map(datimIndicators.newlyEnrolledInPrEPKP(TG_CONCEPT), indParams),"");
+        cohortDsd.addColumn("PrEP_NEW_FSW", "Number of FSWs newly enrolled on PrEP", ReportUtils.map(datimIndicators.newlyEnrolledInPrEPKP(FSW_CONCEPT), indParams),"");
+        cohortDsd.addColumn("PrEP_NEW_PRISONS_CLOSED_SETTINGS", "Number of prisoners and people in closed settings newly enrolled on PrEP", ReportUtils.map(datimIndicators.newlyEnrolledInPrEPKP(PRISONERS_CLOSED_SETTINGS_CONCEPT), indParams), "");
+        cohortDsd.addColumn("PrEP_NEW_PREGNANT", "Number of pregnant women newly enrolled on PrEP", ReportUtils.map(datimIndicators.newlyEnrolledOnPrEPPregnant(), indParams), "");
+        cohortDsd.addColumn("PrEP_NEW_BREASTFEEDING", "Number of breastfeeding women newly enrolled on PrEP", ReportUtils.map(datimIndicators.newlyEnrolledInPrEPBreastFeeding(), indParams), "");
+        cohortDsd.addColumn("PrEP_NEW_ORAL", "Number of people newly enrolled on Oral PrEP", ReportUtils.map(datimIndicators.newlyEnrolledOnOralPrEP(), indParams), "");
+        cohortDsd.addColumn("PrEP_NEW_INJECTABLE", "Number of people newly enrolled on CAB-LA Injectable PrEP", ReportUtils.map(datimIndicators.newlyEnrolledOnCABLAInjectablePrEP(), indParams), "");
+        cohortDsd.addColumn("PrEP_NEW_OTHER", "Number of people newly enrolled on Other forms of PrEP", ReportUtils.map(datimIndicators.newlyEnrolledOnOtherPrEP(), indParams), "");
         //PrEP_CT
         EmrReportingUtils.addRow(cohortDsd, "PrEP_CT", "People who returned for PrEP follow-up or re-initiation", ReportUtils.map(datimIndicators.prepCT(), indParams), datimPrEPNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17"));
 
@@ -311,6 +317,10 @@ public class DatimReportBuilder extends AbstractReportBuilder {
 
         //Returned for PrEP and breastfeeding
         cohortDsd.addColumn("PrEP_CT_BF", "Returned for PrEP while breastfeeding", ReportUtils.map(datimIndicators.prepCTBreastfeeding(), indParams), "");
+
+        cohortDsd.addColumn("PrEP_CT_ORAL", "Returned and on Oral PrEP", ReportUtils.map(datimIndicators.prepCTOnOralPrEP(), indParams), "");
+        cohortDsd.addColumn("PrEP_CT_INJECTABLE", "Returned and on CAB-LA Injectable PrEP", ReportUtils.map(datimIndicators.prepCTOnCABLAInjectablePrEP(), indParams), "");
+        cohortDsd.addColumn("PrEP_CT_OTHER", "Returned and on Other forms of PrEP", ReportUtils.map(datimIndicators.prepCTOnOtherPrEP(), indParams), "");
 
         //KP_PREV by KP type
         cohortDsd.addColumn("KP_PREV_MSM", "Reached with individual and/or small group-level HIV prevention interventions designed for the target population",ReportUtils.map(datimIndicators.kpPrev("MSM"), indParams),"");
@@ -556,7 +566,13 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         //Newly enrolled to ANC
         //cohortDsd.addColumn( "PMTCT_STAT_Denominator", "Newly enrolled to ANC", ReportUtils.map(datimIndicators.clientsNewlyEnrolledToANC(), indParams), "");
         EmrReportingUtils.addRow(cohortDsd, "PMTCT_STAT_Denominator", "Newly enrolled to ANC", ReportUtils.map(datimIndicators.clientsNewlyEnrolledToANC(), indParams), datimPMTCTANCAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"));
-
+// TODO: 04/12/2023 TB_STAT introducing maximum_allowed_packet limit break error. Review the queries
+        //TB_STAT
+       // EmrReportingUtils.addRow(cohortDsd, "TB_STAT_KNOWN_POS", "New and relapsed TB cases who are Known positive", ReportUtils.map(datimIndicators.tbSTATKnownPositive(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+        //EmrReportingUtils.addRow(cohortDsd, "TB_STAT_NEW_POS", "New and relapsed TB cases newly tested positive", ReportUtils.map(datimIndicators.tbSTATNewPositive(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+        //EmrReportingUtils.addRow(cohortDsd, "TB_STAT_NEW_NEG", "New and relapsed TB cases newly tested negative", ReportUtils.map(datimIndicators.tbSTATNewNegative(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+        //EmrReportingUtils.addRow(cohortDsd, "TB_STAT_RECENT_NEG", "New and relapsed TB cases recently tested negative", ReportUtils.map(datimIndicators.tbSTATRecentNegative(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
+        //EmrReportingUtils.addRow(cohortDsd, "TB_STAT_DENOMINATOR", "Total number of new and relapsed TB cases, during the reporting period", ReportUtils.map(datimIndicators.tbSTATDenominator(), indParams), datimNewAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"));
         //PMTCT_EID
         cohortDsd.addColumn("PMTCT_EID_NUMERATOR", "Infants who had a virologic HIV test (sample collected) by 12 months of age during the reporting period", ReportUtils.map(datimIndicators.firstInfantVirologicTestsAt12Months(), indParams), "");
         cohortDsd.addColumn("PMTCT_EID_FIRST_TEST_WITHIN_2_MONTHS", "First sample collected for a virologic HIV test between birth and <= 2 months of age", ReportUtils.map(datimIndicators.infantFirstVirologicTestWithin2Months(), indParams), "");
@@ -650,8 +666,10 @@ public class DatimReportBuilder extends AbstractReportBuilder {
 
         //Treatment Indicators
         //TX_New
-        //Disaggregated by Age / Sex
-        EmrReportingUtils.addRow(cohortDsd, "TX_New", "Newly Started ART", ReportUtils.map(datimIndicators.newlyStartedARTByAgeSex(), indParams),  datimAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27","28","29","30","31"));
+        //Disaggregated by CD4, Age / Sex
+        EmrReportingUtils.addRow(cohortDsd, "TX_NEW_CD4_BELOW_200", "Newly Started ART baseline CD4 < 200", ReportUtils.map(datimIndicators.newlyStartedARTCD4Within200(), indParams),  datim5To65PlusAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_NEW_CD4_200_AND_ABOVE", "Newly Started ART baseline CD4 >= 200", ReportUtils.map(datimIndicators.newlyStartedARTCD4200AndAbove(), indParams),  datim5To65PlusAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27"));
+        EmrReportingUtils.addRow(cohortDsd, "TX_NEW_CD4_UNKOWN", "Newly Started ART baseline CD4 Unknown", ReportUtils.map(datimIndicators.newlyStartedARTCD4Unknown(), indParams),  datimAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27","28","29","30","31"));
 
         //Newly Started ART While BreastFeeding
         cohortDsd.addColumn("TX_New_BF", "Newly Started ART While Breastfeeding", ReportUtils.map(datimIndicators.newlyStartedARTWhileBF(), indParams), "");
@@ -672,7 +690,6 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("TX_NEW_PRISONS_CLOSED_SETTINGS", "Prisoners and Closed settings with HIV new on ART", ReportUtils.map(datimIndicators.kpNewlyStartedART(PRISONERS_CLOSED_SETTINGS_CONCEPT), indParams), "");
 
         //TX_CURR
-
         //Number of Adults and Children with HIV infection receiving ART By Age/Sex Disagreggation
         EmrReportingUtils.addRow(cohortDsd, "TX_CURR", "Adults and Children with HIV infection receiving ART", ReportUtils.map(datimIndicators.currentlyOnArt(), indParams), datimTxCurrDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"));
 
@@ -741,7 +758,7 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("TX_TB_GeneXpert", "GeneXpert MTB/RIF assay-mWRD (with or without other testing)", ReportUtils.map(datimIndicators.geneXpertMTBRIF(), indParams), "");
 
         //TX_TB_SMEAR_MICROSCOPY_ONLY
-        cohortDsd.addColumn( "TX_TB_SMEAR_MICROSCOPY_ONLY", "Smear microscopy only (Symptom screen alone)", ReportUtils.map(datimIndicators.smearMicroscopy(), indParams), "");
+        cohortDsd.addColumn( "TX_TB_SMEAR_MICROSCOPY_ONLY", "Smear microscopy only", ReportUtils.map(datimIndicators.smearMicroscopy(), indParams), "");
 
         //TX_TB_CHEST_XRAY
         cohortDsd.addColumn( "TX_TB_CXR", "Chest xRay (CXR)", ReportUtils.map(datimIndicators.onARTChestXrayDone(), indParams), "");
@@ -825,7 +842,11 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         /**
          * Number of ART patients who experienced IIT during any previous reporting period, who successfully restarted ARVs within the reporting period and remained on treatment until the end of the reporting period
          */
-        EmrReportingUtils.addRow(cohortDsd, "TX_RTT", "Number restarted Treatment during the reporting period", ReportUtils.map(datimIndicators.txRTT(), indParams),  datimAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27","28","29","30","31"));
+        // TODO: 04/12/2023 TX_RTT additional disaggregates introducing maximum_allowed_packet limit break error. Review the queries
+       // EmrReportingUtils.addRow(cohortDsd, "TX_RTT_CD4_BELOW_200", "Number restarted Treatment during the reporting period with CD4 count <200", ReportUtils.map(datimIndicators.txRTTCD4Below200(), indParams),  datim5To65PlusAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27"));
+       // EmrReportingUtils.addRow(cohortDsd, "TX_RTT_CD4_200_AND_ABOVE", "Number restarted Treatment during the reporting period with CD4 count >=200", ReportUtils.map(datimIndicators.txRTTCD4200AndAbove(), indParams),  datim5To65PlusAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27"));
+       // EmrReportingUtils.addRow(cohortDsd, "TX_RTT_CD4_UNKNOWN", "Number restarted Treatment during the reporting period with CD4 unknown", ReportUtils.map(datimIndicators.txRTTCD4Unknown(), indParams),  datimAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27","28","29","30","31"));
+        //EmrReportingUtils.addRow(cohortDsd, "TX_RTT_INELIGIBLE_FOR_CD4", "Number restarted Treatment during the reporting period not eligible for CD4", ReportUtils.map(datimIndicators.txRTTIneligibleForCD4(), indParams),  datimAgeDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27","28","29","30","31"));
         /**
          * Number of PWID ART patients who experienced IIT during any previous reporting period, who successfully restarted ARVs within the reporting period and remained on treatment until the end of the reporting period
          */
