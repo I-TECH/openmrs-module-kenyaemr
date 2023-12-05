@@ -108,40 +108,40 @@ public class DatimIndicatorLibrary {
      * New and relapsed TB cases who are Known positive
      * @return
      */
-/*    public CohortIndicator tbSTATKnownPositive() {
+    public CohortIndicator tbSTATKnownPositive() {
         return cohortIndicator("New and relapsed TB cases who are Known positive", ReportUtils.<CohortDefinition>map(datimCohorts.tbSTATKnownPositive(), "startDate=${startDate},endDate=${endDate}"));
-    }*/
+    }
 
     /**
      * New and relapsed TB cases newly tested positive
      * @return
      */
-/*    public CohortIndicator tbSTATNewPositive() {
+    public CohortIndicator tbSTATNewPositive() {
         return cohortIndicator("New and relapsed TB cases newly tested positive", ReportUtils.<CohortDefinition>map(datimCohorts.tbSTATNewPositive(), "startDate=${startDate},endDate=${endDate}"));
-    }*/
+    }
 
     /**
      * New and relapsed TB cases newly tested negative
      * @return
      */
-/*    public CohortIndicator tbSTATNewNegative() {
+    public CohortIndicator tbSTATNewNegative() {
         return cohortIndicator("New and relapsed TB cases newly tested positive", ReportUtils.<CohortDefinition>map(datimCohorts.tbSTATNewNegative(), "startDate=${startDate},endDate=${endDate}"));
-    }*/
+    }
 
     /**
      * New and relapsed TB cases recently tested negative
      * @return
      */
-/*    public CohortIndicator tbSTATRecentNegative() {
+    public CohortIndicator tbSTATRecentNegative() {
         return cohortIndicator("New and relapsed TB cases recently tested negative", ReportUtils.<CohortDefinition>map(datimCohorts.tbSTATRecentNegative(), "startDate=${startDate},endDate=${endDate}"));
-    }*/
+    }
     /**
      * Total number of new and relapsed TB cases, during the reporting period
      * @return
      */
-/*    public CohortIndicator tbSTATDenominator() {
+    public CohortIndicator tbSTATDenominator() {
         return cohortIndicator("Total number of new and relapsed TB cases, during the reporting period", ReportUtils.<CohortDefinition>map(datimCohorts.tbSTATDenominator(), "startDate=${startDate},endDate=${endDate}"));
-    }*/
+    }
     /**
      *Infants sample taken for Virologic test within 2 months
      * @return
@@ -967,35 +967,35 @@ public class DatimIndicatorLibrary {
      * TNumber restarted Treatment during the reporting period with CD4 count <200
      * @return the indicator
      */
-/*    public CohortIndicator txRTTCD4Below200() {
+    public CohortIndicator txRTTCD4Below200() {
         return cohortIndicator("Number restarted Treatment during the reporting period with CD4 count <200", ReportUtils.<CohortDefinition>map(datimCohorts.txRTTCD4Below200(),
                 "startDate=${startDate},endDate=${endDate}"));
-    }*/
+    }
 
     /**
      * Number restarted Treatment during the reporting period with CD4 count >=200
      * @return
      */
-/*    public CohortIndicator txRTTCD4200AndAbove() {
+    public CohortIndicator txRTTCD4200AndAbove() {
         return cohortIndicator("Number restarted Treatment during the reporting period with CD4 count >=200", ReportUtils.<CohortDefinition>map(datimCohorts.txRTTCD4200AndAbove(),
                 "startDate=${startDate},endDate=${endDate}"));
-    }*/
+    }
     /**
      * Number restarted Treatment during the reporting period with CD4 unknown
      * @return
      */
-/*    public CohortIndicator txRTTCD4Unknown() {
+    public CohortIndicator txRTTCD4Unknown() {
         return cohortIndicator("Number restarted Treatment during the reporting period with CD4 count >=200", ReportUtils.<CohortDefinition>map(datimCohorts.txRTTCD4Unknown(),
                 "startDate=${startDate},endDate=${endDate}"));
-    }*/
+    }
     /**
      * Number restarted Treatment during the reporting period not eligible for CD4
      * @return
      */
-  /*  public CohortIndicator txRTTIneligibleForCD4() {
+    public CohortIndicator txRTTIneligibleForCD4() {
         return cohortIndicator("Number restarted Treatment during the reporting period not eligible for CD4", ReportUtils.<CohortDefinition>map(datimCohorts.txRTTIneligibleForCD4(),
                 "startDate=${startDate},endDate=${endDate}"));
-    }*/
+    }
     /**
      * TX_RTT_KP Number of KPs restarted Treatment during the reporting period
      * @return the indicator
