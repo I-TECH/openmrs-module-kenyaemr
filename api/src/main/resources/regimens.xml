@@ -291,6 +291,8 @@
                 <component drugCode="3TC" />
                 <component drugCode="DTG" />
             </regimen>
+             <regimen name="AZT/3TC/DTG/DRV/r" conceptRef="167442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+            </regimen>
 
         </group>
 
