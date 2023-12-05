@@ -114,98 +114,6 @@ public class DatimCohortLibrary {
         cd.setDescription("Previously Started on ART before reporting period");
         return cd;
     }
-
-    /**
-     * Patients started on ART during the reporting period (last 3 months) and are pregnant during that period
-     * TX_New Datim indicator
-     * @return
-     */
-    public CohortDefinition startedOnARTAndPregnant() {
-        String sqlQuery = "select net.patient_id\n" +
-                "       from (\n" +
-                "       select e.patient_id,e.date_started,\n" +
-                "       e.gender,\n" +
-                "       e.dob,\n" +
-                "       d.visit_date as dis_date,\n" +
-                "       if(d.visit_date is not null, 1, 0) as TOut,\n" +
-                "       e.regimen, e.regimen_line, e.alternative_regimen,\n" +
-                "       fup.visit_date, fup.pregnancy_status,\n" +
-                "       mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
-                "       max(if(enr.date_started_art_at_transferring_facility is not null and enr.facility_transferred_from is not null, 1, 0)) as TI_on_art,\n" +
-                "       max(if(enr.transfer_in_date is not null, 1, 0)) as TIn,\n" +
-                "       max(fup.visit_date) as latest_vis_date\n" +
-                "       from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started,\n" +
-                "       mid(min(concat(e.date_started,e.regimen_name)),11) as regimen,\n" +
-                "       mid(min(concat(e.date_started,e.regimen_line)),11) as regimen_line,\n" +
-                "       max(if(discontinued,1,0))as alternative_regimen\n" +
-                "       from kenyaemr_etl.etl_drug_event e\n" +
-                "       join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id \n" +
-                "        where e.program = 'HIV'\n" +
-                "       group by e.patient_id) e\n" +
-                "       left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id and d.program_name='HIV'\n" +
-                "       left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id\n" +
-                "       left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id\n" +
-                "       left outer join kenyaemr_etl.etl_mch_enrollment mch on mch.patient_id=e.patient_id\n" +
-                "       where date(e.date_started) between :startDate and date(:endDate)\n" +
-                "       and ((fup.pregnancy_status =1065 and fup.visit_date between :startDate and date(:endDate)) OR\n" +
-                "            mch.visit_date between :startDate and date(:endDate) )\n" +
-                "       group by e.patient_id\n" +
-                "       having TI_on_art=0\n" +
-                "       )net;";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("TX_New_pregnant");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Started on ART in the last 3 months and are pregnant");
-        return cd;
-    }
-
-    /**
-     * Patients started on ART during the reporting period (last 3 months) and are on new or existing TB cases
-     * TX_New Datim indicator
-     * @return
-     */
-    public CohortDefinition startedOnARTAndTBCoinfected() {
-        String sqlQuery = "select net.patient_id\n" +
-                "       from (\n" +
-                "       select e.patient_id,e.date_started,\n" +
-                "       e.gender,\n" +
-                "       e.dob,\n" +
-                "       d.visit_date as dis_date,\n" +
-                "       if(d.visit_date is not null, 1, 0) as TOut,\n" +
-                "       e.regimen, e.regimen_line, e.alternative_regimen,\n" +
-                "       fup.visit_date, fup.on_anti_tb_drugs,\n" +
-                "       mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
-                "       max(if(enr.date_started_art_at_transferring_facility is not null and enr.facility_transferred_from is not null, 1, 0)) as TI_on_art,\n" +
-                "       max(if(enr.transfer_in_date is not null, 1, 0)) as TIn,\n" +
-                "       max(fup.visit_date) as latest_vis_date\n" +
-                "       from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started,\n" +
-                "       mid(min(concat(e.date_started,e.regimen_name)),11) as regimen,\n" +
-                "       mid(min(concat(e.date_started,e.regimen_line)),11) as regimen_line,\n" +
-                "       max(if(discontinued,1,0))as alternative_regimen\n" +
-                "       from kenyaemr_etl.etl_drug_event e\n" +
-                "       join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id\n" +
-                "       where e.program = 'HIV'\n" +
-                "       group by e.patient_id) e\n" +
-                "       left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id and d.program_name='HIV'\n" +
-                "       left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id\n" +
-                "       left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id\n" +
-                "       left outer join kenyaemr_etl.etl_tb_enrollment tbenr on tbenr.patient_id = e.patient_id\n" +
-                "       where date(e.date_started) between date(:startDate) and date(:endDate)\n" +
-                "       and fup.on_anti_tb_drugs =1065 or  tbenr.visit_date < tbenr.date_of_discontinuation\n" +
-                "       group by e.patient_id\n" +
-                "       having TI_on_art=0\n" +
-                "       )net;";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("TX_New_TB_co_infected");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Started on ART in the last 3 months and are pregnant");
-        return cd;
-    }
-
     /**
      * Patients currently on ART
      * TX_Curr Datim indicator
@@ -259,63 +167,6 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("currently on ART");
         return cd;
-    }
-
-    /**
-     * TX_RET Denominator
-     * Includes patients who started art 12 months ago irrespective of their active status
-     * @return
-     */
-    protected CohortDefinition art12MonthCohort() {
-
-        String sqlQuery = "  ";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("TX_RET_Denominator");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("art 12 Months Net Cohort Denominator");
-        return cd;
-
-    }
-
-    /**
-     * TX_RET Datim Indicator
-     * Patients who were started on treatment 12 months ago and are still on treatment
-     * @return
-     */
-    protected CohortDefinition onTherapyAt12Months() {
-
-        String sqlQuery = "select  net.patient_id, date_started, dis_date, TOut, date_died, latest_vis_date, latest_tca\n" +
-                "  from ( \n" +
-                "  select e.patient_id,e.date_started, d.visit_date as dis_date, if(d.visit_date is not null and d.discontinuation_reason=159492, 1, 0) as TOut, d.date_died,\n" +
-                " mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca, \n" +
-                " if(enr.transfer_in_date is not null, 1, 0) as TIn, max(fup.visit_date) as latest_vis_date\n" +
-                "   from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started\n" +
-                "   from kenyaemr_etl.etl_drug_event e \n" +
-                "   join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id \n" +
-                "   where e.program='HIV' \n" +
-                "   group by e.patient_id) e \n" +
-                "   left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id and d.program_uuid='2bdada65-4c72-4a48-8730-859890e25cee' \n" +
-                "   left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id \n" +
-                "   left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id \n" +
-                "   where  date(e.date_started) between date_sub(date(:startDate) , interval 1 year) and date_sub(date(:endDate) , interval 1 year) \n" +
-                "   group by e.patient_id \n" +
-                "   having   (dis_date>date(:endDate) or dis_date is null or TOut=0 ) and (\n" +
-                "        (date(latest_tca) > date(:endDate) and (date(latest_tca) > date(dis_date) or dis_date is null ))  or \n" +
-                "         (((date(latest_tca) between date(:startDate) and date(:endDate)) and (date(latest_vis_date) >= date(latest_tca)) or date(latest_tca) > curdate()) ) and \n" +
-                "         (date(latest_tca) > date(dis_date) or dis_date is null )\n" +
-                "        )\n" +
-                "   )net; ";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("TX_RET_Numerator");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("on Therapy At 12 Months");
-        return cd;
-
     }
 
     /**
@@ -387,95 +238,6 @@ public class DatimCohortLibrary {
         return cd;
     }
 
-    /**
-     * TX_PVLS
-     * Patients with VL in the last 12 months
-     * @return
-     */
-    protected CohortDefinition viralLoadResultsInLast12Months() {
-
-        String sqlQuery = " select patient_id \n" +
-                "from kenyaemr_etl.etl_laboratory_extract \n" +
-                "where (visit_date BETWEEN date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate)) \n" +
-                "and (lab_test in (856, 1305));";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("TX_PVLS_Denominator");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("VL in last 12 months");
-        return cd;
-
-    }
-
-    /**
-     * TX_PVLS Datim Indicator
-     * Patients with viral suppression in last 12 months
-     * @return
-     */
-    //TODO refer below
-    protected CohortDefinition viralSuppressionInLast12Months() {
-
-        String sqlQuery = " select patient_id \n" +
-                "from kenyaemr_etl.etl_laboratory_extract \n" +
-                "where (visit_date BETWEEN date_sub(date(:endDate) , interval 12 MONTH) and date(:endDate)) \n" +
-                "and ((lab_test=856 and test_result < 1000) or (lab_test=1305 and test_result=1302));";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("TX_PVLS_Numerator");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("on Therapy At 12 Months");
-        return cd;
-
-    }
-
-    /**
-     * TODO: review this query. it is a killer
-     * @return
-     */
-    public CohortDefinition startingARTPregnant() {
-
-        String sqlQuery = " select  fup.patient_id " +
-                "from kenyaemr_etl.etl_patient_hiv_followup fup " +
-                "join (select patient_id from kenyaemr_etl.etl_drug_event e " +
-                "where e.program = 'HIV' and date_started between date(:startDate) and date(:endDate)) started_art on  " +
-                "started_art.patient_id = fup.patient_id " +
-                "where fup.pregnancy_status =1065 " +
-                "and fup.visit_date between date(:startDate) and date(:endDate);";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("startingARTPregnant");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Pregnant Women Started on ART");
-        return cd;
-
-    }
-
-    public CohortDefinition startingARTWhileTbPatient() {
-
-        String sqlQuery = "select  fup.patient_id \n" +
-                "from kenyaemr_etl.etl_patient_hiv_followup fup \n" +
-                "join (select patient_id from kenyaemr_etl.etl_drug_event e \n" +
-                "where e.program = 'HIV' and date_started between date(:startDate) and date(:endDate)) started_art on  \n" +
-                "started_art.patient_id = fup.patient_id \n" +
-                "join kenyaemr_etl.etl_tb_enrollment tb on tb.patient_id=fup.patient_id\n" +
-                "where fup.visit_date between date(:startDate) and date(:endDate);";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("startingARTonTb");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tb positive Started on ART");
-        return cd;
-
-    }
-
     /*PMTCT ANC only*/
 //TODO find max test - Done
     public CohortDefinition patientHIVPositiveResultsAtANC() {
@@ -505,44 +267,6 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("HIV Negative Results at ANC");
-        return cd;
-
-    }
-
-    public CohortDefinition knownStatusAtANC() {
-
-        String sqlQuery = "select e.patient_id\n" +
-                "from kenyaemr_etl.etl_mch_enrollment e\n" +
-                "       join kenyaemr_etl.etl_mch_antenatal_visit v on e.patient_id = v.patient_id\n" +
-                "where e.hiv_status in (664, 703)\n" +
-                "group by e.patient_id\n" +
-                "having  min(v.visit_date) between date_sub(:endDate, interval 3 MONTH) and date(:endDate);";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("knownHIVStatusAtANC");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Clients with Known HIV status at ANC");
-        return cd;
-
-    }
-
-    public CohortDefinition unKnownStatusAtANC() {
-
-        String sqlQuery = "select e.patient_id\n" +
-                "from kenyaemr_etl.etl_mch_enrollment e\n" +
-                "join kenyaemr_etl.etl_mch_antenatal_visit v on e.patient_id = v.patient_id\n" +
-                "where (e.hiv_status = 1067 )\n" +
-                "and v.visit_date between date_sub(:endDate, interval 3 MONTH) and date(:endDate)\n" +
-                "group by e.patient_id;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("unknownHIVStatusAtANC");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Clients with Known HIV status at ANC");
         return cd;
 
     }
@@ -578,34 +302,8 @@ public class DatimCohortLibrary {
         return cd;
 
     }
-
-    //Clients with negative HIV status before ANC-1
-    public CohortDefinition negativeHivStatusBeforeAnc1() {
-
-        String sqlQuery = "select n.patient_id from (select e.patient_id,e.latest_enrollment_date,t.latest_test_date,av.visit_date as anc_visit_date,e.1st_anc_visit from\n" +
-                "(select e.patient_id, max(e.visit_date) as latest_enrollment_date,e.visit_date as 1st_anc_visit from kenyaemr_etl.etl_mch_enrollment e\n" +
-                "group by e.patient_id) e\n" +
-                "inner join\n" +
-                "(select av.patient_id,av.visit_date as visit_date from kenyaemr_etl.etl_mch_antenatal_visit av where av.anc_visit_number = 1\n" +
-                " and av.visit_date between date_sub(:endDate, interval 3 MONTH) and date(:endDate)\n" +
-                "group by av.patient_id) av on e.patient_id = av.patient_id\n" +
-                "inner join (select max(t.visit_date) as latest_test_date,t.patient_id from kenyaemr_etl.etl_hts_test t\n" +
-                "group by t.patient_id having mid(max(concat(t.visit_date,t.final_test_result)),11) = 'Negative') t on e.patient_id = t.patient_id\n" +
-                "group by e.patient_id\n" +
-                "having coalesce(1st_anc_visit,anc_visit_date) between date_sub(:endDate, interval 3 MONTH) and date(:endDate)\n" +
-                "and timestampdiff(MONTH,t.latest_test_date,anc_visit_date)< 3)n;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("PMTCT_STAT_RECENT_NEGATIVE");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Clients with negative HIV status before ANC-1");
-        return cd;
-
-    }
-
     /**
+     * PMTCT_STAT DENOMINATOR - Number of new ANC clients
      * PMTCT_STAT DENOMINATOR - Number of new ANC clients
      * @return
      */
@@ -622,80 +320,193 @@ public class DatimCohortLibrary {
 
     }
 
-    //TODO use the orders table to pick sample_date () or discontinued=null)
-    //TODO for +or- results  (if there are  result(orders.order_id with corresponding obs.order_id)
-    public CohortDefinition infantVirologyNegativeResults() {
-
-        String sqlQuery = "select hv.patient_id from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
-                "inner join kenyaemr_etl.etl_patient_demographics de on de.patient_id = hv.patient_id\n" +
-                "where hv.dna_pcr_result=664\n" +
-                "  and timestampdiff(month, de.DOB,hv.dna_pcr_sample_date) <=12\n" +
-                "and hv.visit_date between date(:startDate) and date(:endDate) group by hv.patient_id;";
-
+    /**
+     * New and relapsed TB cases who are Known positive
+     * @return
+     */
+    public CohortDefinition tbSTATKnownPositive() {
+        String sqlQuery = "\n" +
+                "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_tb_enrollment e\n" +
+                "         left join (select h.patient_id,\n" +
+                "                           coalesce(date(h.date_first_enrolled_in_care),\n" +
+                "                                    min(date(visit_date))) as hiv_enr_date\n" +
+                "                    from kenyaemr_etl.etl_hiv_enrollment h\n" +
+                "                    where h.visit_date <= date(:endDate)\n" +
+                "                    group by h.patient_id) h on e.patient_id = h.patient_id\n" +
+                "         left join (select t.patient_id,\n" +
+                "                           max(date(visit_date)) as latest_hiv_test_date\n" +
+                "                    from kenyaemr_etl.etl_hts_test t\n" +
+                "                    where t.visit_date <= date(:endDate)\n" +
+                "                      and t.final_test_result = 'Positive'\n" +
+                "                    group by t.patient_id) t on e.patient_id = t.patient_id\n" +
+                "         left join (select patient_id,\n" +
+                "                           max(date(visit_date)) as disc_date\n" +
+                "                    from kenyaemr_etl.etl_patient_program_discontinuation d\n" +
+                "                    where date(visit_date) <= date(:endDate)\n" +
+                "                      and program_name = 'TB'\n" +
+                "                    group by patient_id) d on e.patient_id = d.patient_id\n" +
+                "where e.patient_classification in (159878, 159877, 159876)\n" +
+                "  and e.visit_date between date(:startDate) and date(:endDate)\n" +
+                "  and (d.patient_id is null or d.disc_date < e.visit_date or d.disc_date > date(:endDate))\n" +
+                "  and ((timestampdiff(WEEK, t.latest_hiv_test_date, h.hiv_enr_date) > 6) or\n" +
+                "       timestampdiff(WEEK, h.hiv_enr_date, e.visit_date) > 6)\n" +
+                "group by e.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("infantVirologyNegativeResults12m");
+        cd.setName("tbSTATKnownPositive");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Infants with negative Virology test result");
+        cd.setDescription("New and relapsed TB cases who are Known positive");
         return cd;
-
     }
 
-    public CohortDefinition infantVirologyPositiveResults() {
-
-        String sqlQuery = "select hv.patient_id from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
-                "inner join kenyaemr_etl.etl_patient_demographics de on de.patient_id = hv.patient_id\n" +
-                "where hv.dna_pcr_result=703\n" +
-                "  and timestampdiff(month, de.DOB,hv.dna_pcr_sample_date) <=12\n" +
-                "and hv.visit_date between date(:startDate) and date(:endDate) group by hv.patient_id;";
-
+    /**
+     * New and relapsed TB cases newly tested positive
+     * @return
+     */
+    public CohortDefinition tbSTATNewPositive() {
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_tb_enrollment e\n" +
+                "         left join (select h.patient_id,\n" +
+                "                           coalesce(mid(min(concat(date(visit_date), date(h.date_first_enrolled_in_care))), 11),\n" +
+                "                                    min(date(visit_date))) as hiv_enr_date\n" +
+                "                    from kenyaemr_etl.etl_hiv_enrollment h\n" +
+                "                    where h.visit_date between date(:startDate) and date(:endDate)\n" +
+                "                    group by h.patient_id) h on e.patient_id = h.patient_id and hiv_enr_date >= e.visit_date\n" +
+                "         left join (select t.patient_id,\n" +
+                "                           max(date(visit_date))                                       as latest_hiv_test_date,\n" +
+                "                           mid(max(concat(date(visit_date), t.final_test_result)), 11) as latest_hiv_test_results\n" +
+                "                    from kenyaemr_etl.etl_hts_test t\n" +
+                "                    group by t.patient_id\n" +
+                "                    having latest_hiv_test_date between date(:startDate) and date(:endDate)\n" +
+                "                       and latest_hiv_test_results = 'Positive') t\n" +
+                "                   on e.patient_id = t.patient_id and t.latest_hiv_test_date >= e.visit_date\n" +
+                "         left join (select patient_id,\n" +
+                "                           max(date(visit_date)) as disc_date\n" +
+                "                    from kenyaemr_etl.etl_patient_program_discontinuation d\n" +
+                "                    where date(visit_date) <= date(:endDate)\n" +
+                "                      and program_name = 'TB'\n" +
+                "                    group by patient_id) d on e.patient_id = d.patient_id\n" +
+                "where e.patient_classification in (159878, 159877, 159876)\n" +
+                "  and e.visit_date between date(:startDate) and date(:endDate)\n" +
+                "  and (d.patient_id is null or d.disc_date < e.visit_date or d.disc_date > date(:endDate))\n" +
+                "  and (h.patient_id is not null or t.patient_id is not null)\n" +
+                "group by e.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("infantVirologyPositiveResults12m");
+        cd.setName("tbSTATNewPositive");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Infants with Positive Virology test result");
+        cd.setDescription("New and relapsed TB cases newly tested positive");
         return cd;
-
     }
 
-    public CohortDefinition infantVirologyNoResults() {
-
-        String sqlQuery = "select hv.patient_id from kenyaemr_etl.etl_hei_follow_up_visit hv\n" +
-                "inner join kenyaemr_etl.etl_patient_demographics de on de.patient_id = hv.patient_id\n" +
-                "where hv.dna_pcr_result in (1138,1304)\n" +
-                "  and timestampdiff(month, de.DOB,hv.dna_pcr_sample_date) <=12\n" +
-                "and hv.visit_date between date(:startDate) and date(:endDate) group by hv.patient_id;";
-
+    /**
+     * New and relapsed TB cases newly tested negative
+     * @return
+     */
+    public CohortDefinition tbSTATNewNegative() {
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_tb_enrollment e\n" +
+                "         inner join (select t.patient_id,\n" +
+                "                            max(date(visit_date))                                       as latest_hiv_test_date,\n" +
+                "                            mid(max(concat(date(visit_date), t.final_test_result)), 11) as latest_hiv_test_results\n" +
+                "                     from kenyaemr_etl.etl_hts_test t\n" +
+                "                     group by t.patient_id\n" +
+                "                     having latest_hiv_test_date between date(:startDate) and date(:endDate)\n" +
+                "                        and latest_hiv_test_results = 'Negative') t\n" +
+                "                    on e.patient_id = t.patient_id and t.latest_hiv_test_date >= e.visit_date\n" +
+                "         left join (select patient_id,\n" +
+                "                           max(date(visit_date)) as disc_date\n" +
+                "                    from kenyaemr_etl.etl_patient_program_discontinuation d\n" +
+                "                    where date(visit_date) <= date(:endDate)\n" +
+                "                      and program_name = 'TB'\n" +
+                "                    group by patient_id) d on e.patient_id = d.patient_id\n" +
+                "where e.patient_classification in (159878, 159877, 159876)\n" +
+                "  and e.visit_date between date(:startDate) and date(:endDate)\n" +
+                "  and (d.patient_id is null or d.disc_date < e.visit_date or d.disc_date > date(:endDate))\n" +
+                "group by e.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("infantVirologyWithNoResults");
+        cd.setName("tbSTATNewNegative");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Infants with Positive Virology test result");
+        cd.setDescription("New and relapsed TB cases newly tested positive");
         return cd;
-
     }
 
-    public CohortDefinition infantsTurnedHIVPositive() {
-
-        String sqlQuery = "select t.patient_id from (select e.patient_id,timestampdiff(MONTH,d.dob,max(f.dna_pcr_sample_date)) months,f.dna_pcr_results_date results_date,e.exit_date exit_date,f.dna_pcr_contextual_status test_type from kenyaemr_etl.etl_hei_enrollment e inner join\n" +
-                "                                                           kenyaemr_etl.etl_patient_demographics d on e.patient_id = d.patient_id\n" +
-                "                                                inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id where (e.hiv_status_at_exit = 'Positive' or f.dna_pcr_result= 703)\n" +
-                "                         group by e.patient_id)t\n" +
-                "where test_type in (162081,162083,162080) and\n" +
-                "    t.months <=12 and ((t.results_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate)) or (t.exit_date between date_sub(date(:endDate), interval 3 MONTH) and date(:endDate)))\n" +
-                "group by t.patient_id;";
-
+    /**
+     * New and relapsed TB cases recently tested negative
+     * @return
+     */
+    public CohortDefinition tbSTATRecentNegative() {
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_tb_enrollment e\n" +
+                "         left join (select h.patient_id,\n" +
+                "                           coalesce(mid(min(concat(date(visit_date), date(h.date_first_enrolled_in_care))), 11),\n" +
+                "                                    min(date(visit_date))) as hiv_enr_date\n" +
+                "                    from kenyaemr_etl.etl_hiv_enrollment h\n" +
+                "                    where h.visit_date <= date(:endDate)\n" +
+                "                    group by h.patient_id) h on e.patient_id = h.patient_id\n" +
+                "         left join (select t.patient_id,\n" +
+                "                           max(date(visit_date)) as latest_hiv_test_date\n" +
+                "                    from kenyaemr_etl.etl_hts_test t\n" +
+                "                    where t.visit_date <= date(:endDate)\n" +
+                "                      and t.final_test_result = 'Negative'\n" +
+                "                    group by t.patient_id) t on e.patient_id = t.patient_id\n" +
+                "         left join (select patient_id,\n" +
+                "                           max(date(visit_date)) as disc_date\n" +
+                "                    from kenyaemr_etl.etl_patient_program_discontinuation d\n" +
+                "                    where date(visit_date) <= date(:endDate)\n" +
+                "                      and program_name = 'TB'\n" +
+                "                    group by patient_id) d on e.patient_id = d.patient_id\n" +
+                "where e.patient_classification in (159878, 159877, 159876)\n" +
+                "  and e.visit_date between date(:startDate) and date(:endDate)\n" +
+                "  and (d.patient_id is null or d.disc_date < e.visit_date or d.disc_date > date(:endDate))\n" +
+                "  and (t.latest_hiv_test_date < e.visit_date and\n" +
+                "       (timestampdiff(WEEK, t.latest_hiv_test_date, e.visit_date) <= 6) or\n" +
+                "       (h.hiv_enr_date < e.visit_date and\n" +
+                "        timestampdiff(WEEK, h.hiv_enr_date, e.visit_date) <= 6))\n" +
+                "group by e.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("infantsTurnedHIVPositive");
+        cd.setName("tbSTATRecentNegative");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Infants Turned HIV Positive within 12 months of birth");
+        cd.setDescription("New and relapsed TB cases newly tested negative");
         return cd;
+    }
 
+    /**
+     * Total number of new and relapsed TB cases, during the reporting period
+     * @return
+     */
+    public CohortDefinition tbSTATDenominator() {
+        String sqlQuery = "select a.patient_id\n" +
+                "from (select e.patient_id,\n" +
+                "             coalesce(mid(max(concat(date(e.visit_date), date(e.date_first_enrolled_in_tb_care))), 11),\n" +
+                "                      max(date(e.visit_date))) as enrollment_date,\n" +
+                "             d.patient_id                      as disc_patient,\n" +
+                "             d.disc_date\n" +
+                "      from kenyaemr_etl.etl_tb_enrollment e\n" +
+                "               left join (select patient_id,\n" +
+                "                                 max(date(visit_date)) as disc_date\n" +
+                "                          from kenyaemr_etl.etl_patient_program_discontinuation D\n" +
+                "                          where date(visit_date) <= date(:endDate)\n" +
+                "                            and program_name = 'TB'\n" +
+                "                          group by patient_id) d on e.patient_id = d.patient_id\n" +
+                "      where e.patient_classification in (159878, 159877, 159876)\n" +
+                "      group by e.patient_id) a\n" +
+                "where a.enrollment_date between date(:startDate) and date(:endDate)\n" +
+                "  and (a.disc_patient is null or a.disc_date < a.enrollment_date or a.disc_date > date(:endDate));";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("tbSTATDenominator");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Total number of new and relapsed TB cases, during the reporting period");
+        return cd;
     }
 
     public CohortDefinition ovcOnART() {
@@ -974,6 +785,173 @@ public class DatimCohortLibrary {
 
     }
 
+    /**
+     *  Number of Infants tested by 12 months of age and results returned
+     * @return
+     */
+    public CohortDefinition infantsTestedAndResultsReturned() {
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "         inner join kenyaemr_etl.etl_patient_demographics d on e.patient_id = d.patient_id\n" +
+                "         inner join (select x.patient_id,\n" +
+                "                            mid(max(concat(date(x.visit_date), date(x.date_test_requested))), 11)       as sample_date,\n" +
+                "                            mid(max(concat(date(x.visit_date), date(x.date_test_result_received))), 11) as results_Date,\n" +
+                "                            mid(max(concat(date(x.visit_date), x.test_result)), 11)                     as test_results\n" +
+                "                     from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "                     where x.lab_test = 1030\n" +
+                "                       and x.order_reason in (1040, 1326, 844)\n" +
+                "                       and x.date_test_result_received between date(:startDate) and date(:endDate)\n" +
+                "                       and x.test_result in (703, 664)\n" +
+                "                     group by x.patient_id) x on e.patient_id = x.patient_id\n" +
+                "where timestampdiff(DAY, d.DOB, x.sample_date) <= 365;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("infantsTestedAndResultsReturned");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("HIV-exposed infants with a virologic HIV test result returned in the reporting period, whose diagnostic sample was collected by 12 months of age");
+        return cd;
+    }
+
+    /**
+     * HIV-exposed infants with a virologic Negative HIV test result returned in the reporting period, whose diagnostic sample was collected by 2 months of age
+     * @return
+     */
+    public CohortDefinition infantsTestedNegativeby2MonthsOfAge() {
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "         inner join kenyaemr_etl.etl_patient_demographics d on e.patient_id = d.patient_id\n" +
+                "         inner join (select x.patient_id,\n" +
+                "                            mid(max(concat(date(x.visit_date), date(x.date_test_requested))), 11)       as sample_date,\n" +
+                "                            mid(max(concat(date(x.visit_date), date(x.date_test_result_received))), 11) as results_Date,\n" +
+                "                            mid(max(concat(date(x.visit_date), x.test_result)), 11)                     as test_results\n" +
+                "                     from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "                     where x.lab_test = 1030\n" +
+                "                       and x.order_reason in (1040, 1326, 844)\n" +
+                "                       and x.date_test_result_received between date(:startDate) and date(:endDate)\n" +
+                "                       and x.test_result = 664\n" +
+                "                     group by x.patient_id) x on e.patient_id = x.patient_id\n" +
+                "where timestampdiff(DAY, d.DOB, x.sample_date) <= 60;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("infantsTestedNegativeby2MonthsOfAge");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("HIV-exposed infants with a virologic Negative HIV test result returned in the reporting period, whose diagnostic sample was collected by 2 months of age");
+        return cd;
+    }
+
+    /**
+     *HIV-exposed infants with a virologic Negative HIV test result returned in the reporting period, whose diagnostic sample was collected at 3-12 months of age
+     * @return
+     */
+    public CohortDefinition infantsTestedNegativeby3To12MonthsOfAge() {
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "         inner join kenyaemr_etl.etl_patient_demographics d on e.patient_id = d.patient_id\n" +
+                "         inner join (select x.patient_id,\n" +
+                "                            mid(max(concat(date(x.visit_date), date(x.date_test_requested))), 11)       as sample_date,\n" +
+                "                            mid(max(concat(date(x.visit_date), date(x.date_test_result_received))), 11) as results_Date,\n" +
+                "                            mid(max(concat(date(x.visit_date), x.test_result)), 11)                     as test_results\n" +
+                "                     from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "                     where x.lab_test = 1030\n" +
+                "                       and x.order_reason in (1040, 1326, 844)\n" +
+                "                       and x.date_test_result_received between date(:startDate) and date(:endDate)\n" +
+                "                       and x.test_result = 664\n" +
+                "                     group by x.patient_id) x on e.patient_id = x.patient_id\n" +
+                "where timestampdiff(DAY, d.DOB, x.sample_date) between 61 and 365;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("infantsTestedNegativeby3To12MonthsOfAge");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("HIV-exposed infants with a virologic Negative HIV test result returned in the reporting period, whose diagnostic sample was collected by 3- 12 months of age");
+        return cd;
+    }
+
+    /**
+     * HIV-exposed infants with a virologic Positive HIV test result returned in the reporting period, whose diagnostic sample was collected by 2 months of age
+     * @return
+     */
+    public CohortDefinition infantsTestedPositiveby2MonthsOfAge() {
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "         inner join kenyaemr_etl.etl_patient_demographics d on e.patient_id = d.patient_id\n" +
+                "         inner join (select x.patient_id,\n" +
+                "                            mid(max(concat(date(x.visit_date), date(x.date_test_requested))), 11)       as sample_date,\n" +
+                "                            mid(max(concat(date(x.visit_date), date(x.date_test_result_received))), 11) as results_Date,\n" +
+                "                            mid(max(concat(date(x.visit_date), x.test_result)), 11)                     as test_results\n" +
+                "                     from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "                     where x.lab_test = 1030\n" +
+                "                       and x.order_reason in (1040, 1326, 844)\n" +
+                "                       and x.date_test_result_received between date(:startDate) and date(:endDate)\n" +
+                "                       and x.test_result = 703\n" +
+                "                     group by x.patient_id) x on e.patient_id = x.patient_id\n" +
+                "where timestampdiff(DAY, d.DOB, x.sample_date) <= 60;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("infantsTestedPositiveby2MonthsOfAge");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("HIV-exposed infants with a virologic Positive HIV test result returned in the reporting period, whose diagnostic sample was collected by 2 months of age");
+        return cd;
+    }
+
+    /**
+     * HIV-exposed infants with a virologic Positive HIV test result returned in the reporting period, whose diagnostic sample was collected at 3-12 months of age
+     * @return
+     */
+    public CohortDefinition infantsTestedPositiveby3To12MonthsOfAge() {
+        String sqlQuery = "select e.patient_id\n" +
+                "from kenyaemr_etl.etl_hei_enrollment e\n" +
+                "         inner join kenyaemr_etl.etl_patient_demographics d on e.patient_id = d.patient_id\n" +
+                "         inner join (select x.patient_id,\n" +
+                "                            mid(max(concat(date(x.visit_date), date(x.date_test_requested))), 11)       as sample_date,\n" +
+                "                            mid(max(concat(date(x.visit_date), date(x.date_test_result_received))), 11) as results_Date,\n" +
+                "                            mid(max(concat(date(x.visit_date), x.test_result)), 11)                     as test_results\n" +
+                "                     from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "                     where x.lab_test = 1030\n" +
+                "                       and x.order_reason in (1040, 1326, 844)\n" +
+                "                       and x.date_test_result_received between date(:startDate) and date(:endDate)\n" +
+                "                       and x.test_result = 703\n" +
+                "                     group by x.patient_id) x on e.patient_id = x.patient_id\n" +
+                "where timestampdiff(DAY, d.DOB, x.sample_date) between 61 and 365;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("infantsTestedPositiveby3To12MonthsOfAge");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("HIV-exposed infants with a virologic Positive HIV test result returned in the reporting period, whose diagnostic sample was collected at 3-12 months of age");
+        return cd;
+    }
+
+    /**
+     * HIV Positive started ART in the reporting period, whose diagnostic sample was collected by 2 months of age.
+     * @return
+     */
+    public CohortDefinition infantsInitiatedARTTestedPositiveby2MonthsOfAge() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("startedOnART", ReportUtils.map(startedOnART(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("infantsTestedPositiveby2MonthsOfAge", ReportUtils.map(infantsTestedPositiveby2MonthsOfAge(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("startedOnART AND infantsTestedPositiveby2MonthsOfAge");
+        return cd;
+    }
+
+    /**
+     * HIV Positive started ART in the reporting period, whose diagnostic sample was collected at 3-12 months of age.
+     * @return
+     */
+    public CohortDefinition infantsInitiatedARTTestedPositiveby3To12MonthsOfAge() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("startedOnART", ReportUtils.map(startedOnART(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("infantsTestedPositiveby3To12MonthsOfAge", ReportUtils.map(infantsTestedPositiveby3To12MonthsOfAge(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("startedOnART AND infantsTestedPositiveby3To12MonthsOfAge");
+        return cd;
+    }
     /**
      *Screened negative for CXCA for the first time
      * @return
@@ -1425,75 +1403,117 @@ public class DatimCohortLibrary {
         return cd;
     }
 
-    /**
-     * @return
-     */
-    public CohortDefinition infantsTurnedHIVPositiveOnART() {
-
-        String sqlQuery = "select t.patient_id from (select e.patient_id,timestampdiff(MONTH,d.dob,max(f.dna_pcr_sample_date)) months,f.dna_pcr_results_date results_date,e.exit_date exit_date,f.dna_pcr_contextual_status test_type from kenyaemr_etl.etl_hei_enrollment e inner join\n" +
-                "                                       kenyaemr_etl.etl_patient_demographics d on e.patient_id = d.patient_id\n" +
-                "       inner join kenyaemr_etl.etl_hei_follow_up_visit f on e.patient_id = f.patient_id\n" +
-                "                                       inner join (select net.patient_id\n" +
-                "                                                   from (\n" +
-                "                                                        select e.patient_id,e.date_started,\n" +
-                " e.gender,\n" +
-                " e.dob,\n" +
-                " d.visit_date as dis_date,\n" +
-                " if(d.visit_date is not null, 1, 0) as TOut,\n" +
-                " e.regimen, e.regimen_line, e.alternative_regimen,\n" +
-                " mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
-                " max(if(enr.date_started_art_at_transferring_facility is not null and enr.facility_transferred_from is not null, 1, 0)) as TI_on_art,\n" +
-                " max(if(enr.transfer_in_date is not null, 1, 0)) as TIn,\n" +
-                " max(fup.visit_date) as latest_vis_date\n" +
-                "                                                        from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started,\n" +
-                "       mid(min(concat(e.date_started,e.regimen_name)),11) as regimen,\n" +
-                "       mid(min(concat(e.date_started,e.regimen_line)),11) as regimen_line,\n" +
-                "       max(if(discontinued,1,0))as alternative_regimen\n" +
-                "from kenyaemr_etl.etl_drug_event e\n" +
-                "       join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id\n" +
-                "where e.program = 'HIV'\n" +
-                "group by e.patient_id) e\n" +
-                " left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id and d.program_name='HIV'\n" +
-                " left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id\n" +
-                " left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id\n" +
-                "group by e.patient_id\n" +
-                "                                            having TI_on_art=0\n" +
-                "                                            )net) onart on e.patient_id = onart.patient_id\n" +
-                "                           where (e.hiv_status_at_exit = 'Positive' or f.dna_pcr_result= 703)\n" +
-                "                           group by e.patient_id)t\n" +
-                " where t.test_type in (162081,162083,162080) and\n" +
-                "       t.months <=12 and ((t.results_date between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate)) or (t.exit_date between date_sub(date(:endDate), interval 3 MONTH) and date(:endDate)))\n" +
-                " group by t.patient_id;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("infantsTurnedHIVPositiveOnART");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Infants Turned HIV Positive within 12 months of birth and on ART");
-        return cd;
-
-    }
-
-    public CohortDefinition infantVirologySampleTaken() {
-
-        String sqlQuery = "select dm.patient_id from kenyaemr_etl.etl_patient_demographics  dm\n" +
-                "  left join kenyaemr_etl.etl_hei_follow_up_visit hf on hf.patient_id = dm.patient_id\n" +
-                "  left join openmrs.orders od on od.patient_id = dm.patient_id\n" +
-                "where (od.concept_id =844 and timestampdiff(month, dm.DOB,od.date_activated) <=12 and substr(od.date_created,1,10) between (:startDate) and (:endDate))\n" +
-                "     or(hf.dna_pcr_result=664 and timestampdiff(month, dm.DOB,hf.dna_pcr_sample_date) <=12 and hf.visit_date between date(:startDate) and date(:endDate))\n" +
+    public CohortDefinition infantFirstVirologicTestWithin2Months() {
+        String sqlQuery = "select od.patient_id as patient\n" +
+                "from orders od\n" +
+                "         inner join kenyaemr_etl.etl_patient_demographics dm on od.patient_id = dm.patient_id\n" +
+                "where od.concept_id = 1030\n" +
+                "  and od.order_reason in (1040,1326,844)\n" +
+                "  and timestampdiff(DAY, dm.DOB, date(od.date_activated)) <= 60\n" +
+                "  and substr(date(od.date_activated), 1, 10) between (:startDate) and (:endDate)\n" +
+                "  and od.voided = 0\n" +
                 "group by dm.patient_id;";
-
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("infantVirologySampleTaken");
+        cd.setName("FirstVirologicSampleTakenWithin2Months");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Infants with Virology sample taken");
+        cd.setDescription("Infants with 1st Virologic sample taken within 2 months");
         return cd;
 
     }
+    public CohortDefinition infantVirologicTest3To12Months() {
+        String sqlQuery = "select od.patient_id as patient\n" +
+                "from orders od\n" +
+                "         inner join kenyaemr_etl.etl_patient_demographics dm on od.patient_id = dm.patient_id\n" +
+                "where od.concept_id = 1030\n" +
+                "  and od.order_reason in (1040,1326,844)\n" +
+                "  and timestampdiff(DAY, dm.DOB, date(od.date_activated)) between 61 and 365\n" +
+                "  and substr(date(od.date_activated), 1, 10) between (:startDate) and (:endDate)\n" +
+                "  and od.voided = 0\n" +
+                "group by dm.patient_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("infantFirstVirologicTest3To12Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Infants with Virologic sample taken at 3-12 months");
+        return cd;
 
+    }
+    public CohortDefinition infantFirstVirologicTest3To12Months() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("infantVirologicTest3To12Months", ReportUtils.map(infantVirologicTest3To12Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("infantFirstVirologicTestWithin2Months", ReportUtils.map(infantFirstVirologicTestWithin2Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("infantVirologicTest3To12Months AND NOT infantFirstVirologicTestWithin2Months");
+        return cd;
+
+    }
+    public CohortDefinition atleast2InfantVirologicTestWithin2Months() {
+        String sqlQuery = "select dm.patient_id\n" +
+                "from kenyaemr_etl.etl_patient_demographics dm\n" +
+                "         left join (select od.patient_id, od.concept_id, od.order_reason\n" +
+                "                    from orders od\n" +
+                "                             inner join kenyaemr_etl.etl_patient_demographics dm on dm.patient_id = od.patient_id\n" +
+                "                    where od.concept_id = 1030\n" +
+                "                      and od.order_reason = 1040\n" +
+                "                      and timestampdiff(DAY, dm.DOB, date(od.date_activated)) <= 60\n" +
+                "                      and substr(date(od.date_activated), 1, 10) between (:startDate) and (:endDate)\n" +
+                "                      and od.voided = 0\n" +
+                "                    group by dm.patient_id, od.order_reason) od on od.patient_id = dm.patient_id\n" +
+                "         left join (select od1.patient_id, od1.concept_id, od1.order_reason\n" +
+                "                    from orders od1\n" +
+                "                             inner join kenyaemr_etl.etl_patient_demographics dm on dm.patient_id = od1.patient_id\n" +
+                "                    where od1.concept_id = 1030\n" +
+                "                      and od1.order_reason = 1326\n" +
+                "                      and timestampdiff(DAY, dm.DOB, date(od1.date_activated)) <= 60\n" +
+                "                      and substr(date(od1.date_activated), 1, 10) between (:startDate) and (:endDate)\n" +
+                "                      and od1.voided = 0\n" +
+                "                    group by dm.patient_id, od1.order_reason) od1 on od1.patient_id = dm.patient_id\n" +
+                "         left join (select od2.patient_id, od2.concept_id, od2.order_reason\n" +
+                "                    from orders od2\n" +
+                "                             inner join kenyaemr_etl.etl_patient_demographics dm on dm.patient_id = od2.patient_id\n" +
+                "                    where od2.concept_id = 1030\n" +
+                "                      and od2.order_reason = 844\n" +
+                "                      and timestampdiff(DAY, dm.DOB, date(od2.date_activated)) <= 60\n" +
+                "                      and substr(date(od2.date_activated), 1, 10) between (:startDate) and (:endDate)\n" +
+                "                      and od2.voided = 0\n" +
+                "                    group by dm.patient_id, od2.order_reason) od2 on od2.patient_id = dm.patient_id\n" +
+                "where (od.patient_id is not null\n" +
+                "    and (od1.patient_id is not null or od2.patient_id is not null))\n" +
+                "   or (od1.patient_id is not null and (od.patient_id is not null or od2.patient_id is not null))\n" +
+                "   or (od2.patient_id is not null and (od.patient_id is not null or od1.patient_id is not null))\n" +
+                " group by dm.patient_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("atleast2InfantVirologicTestWithin2Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Infants with atleast 2 Virologic samples taken within 2 months");
+        return cd;
+    }
+
+    public CohortDefinition atleast2InfantVirologicTestsAt3To12Months() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("infantFirstVirologicTestWithin2Months", ReportUtils.map(infantFirstVirologicTestWithin2Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("atleast2InfantVirologicTestWithin2Months", ReportUtils.map(atleast2InfantVirologicTestWithin2Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("infantFirstVirologicTestWithin2Months OR ");
+        return cd;
+    }
+
+    public CohortDefinition firstInfantVirologicTestsAt12Months() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("infantFirstVirologicTestWithin2Months", ReportUtils.map(infantFirstVirologicTestWithin2Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("infantFirstVirologicTest3To12Months", ReportUtils.map(infantFirstVirologicTest3To12Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("(infantFirstVirologicTestWithin2Months OR infantFirstVirologicTest3To12Months");
+        return cd;
+    }
     public CohortDefinition alreadyOnARTAtBeginningOfPregnacy() {
 
         String sqlQuery = "select t.patient_id from(\n" +
@@ -1668,6 +1688,25 @@ public class DatimCohortLibrary {
         return cd;
     }
 
+    /**
+     * Patients screened for TB using chest X-Ray
+     * @return
+     */
+    public CohortDefinition chestXray() {
+        String sqlQuery = "\n" +
+                "select patient_id\n" +
+                "from kenyaemr_etl.etl_tb_screening s\n" +
+                "where s.genexpert_ordered = 12\n" +
+                "  and s.visit_date between date_sub(date(:endDate), INTERVAL 6 MONTH) and date(:endDate)\n" +
+                "group by s.patient_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("chestXray");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patients screened for TB and chest X-Ray diagnosis done");
+        return cd;
+    }
     /**
      * Patients screened TB and additional tests for TB done other than GeneXpert
      * @return
@@ -1853,6 +1892,19 @@ public class DatimCohortLibrary {
         return cd;
     }
 
+    /**
+     * Chest xRay for TX_CURR patients
+     * @return
+     */
+    public CohortDefinition onARTChestXrayDone() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("chestXray", ReportUtils.map(chestXray(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("currentlyOnArt", ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("chestXray AND currentlyOnArt");
+        return cd;
+    }
     /**
      *  Additional test other than GeneXpert for TX_CURR patients
      */
@@ -2139,7 +2191,7 @@ public class DatimCohortLibrary {
      *
      * @return
      */
-    public CohortDefinition testedPmtct() {
+/*    public CohortDefinition testedPmtct() {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts\n" +
                 "        where hts.hts_entry_point in (160538,160456,1623)\n" +
@@ -2154,7 +2206,7 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Tested HTS");
         return cd;
-    }
+    }*/
 
     /**
      * Tested positive PMTCT at ANC-1
@@ -2211,26 +2263,53 @@ public class DatimCohortLibrary {
         cd.setDescription("HTS Negative at PMTCT ANC-1");
         return cd;
     }
+    /**
+     * Tested Positive at PMTCT post ANC-1 Pregnant & Labour/delivery
+     * @return
+     */
+    public CohortDefinition testedPositivePmtctPostANC1PregLabourAndDelivery() {
+        String sqlQuery = "select e.patient_id\n" +
+                "       from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "                left join (select av.patient_id\n" +
+                "                           from kenyaemr_etl.etl_mch_antenatal_visit av\n" +
+                "                           where av.anc_visit_number > 1\n" +
+                "                             and av.visit_date between date(:startDate) and date(:endDate)\n" +
+                "                           group by av.patient_id\n" +
+                "                           having mid(max(concat(av.visit_date, av.final_test_result)), 11) = 'Positive') av\n" +
+                "                          on av.patient_id = e.patient_id\n" +
+                "                left join (select d.patient_id\n" +
+                "                           from kenyaemr_etl.etl_mchs_delivery d\n" +
+                "                           where d.visit_date between date(:startDate) and date(:endDate)\n" +
+                "                           group by d.patient_id\n" +
+                "                           having mid(max(concat(d.visit_date, d.final_test_result)), 11) = 'Positive') d\n" +
+                "                          on d.patient_id = e.patient_id\n" +
+                "                left join (select t.patient_id, t.visit_date\n" +
+                "                           from kenyaemr_etl.etl_hts_test t\n" +
+                "                           where t.visit_date between date(:startDate) and date(:endDate)\n" +
+                "                             and t.hts_entry_point in (160538, 160456, 1623)\n" +
+                "                           group by t.patient_id\n" +
+                "                           having mid(max(concat(t.visit_date, t.final_test_result)), 11) = 'Positive') t\n" +
+                "                          on t.patient_id = e.patient_id\n" +
+                "       where av.patient_id is not null\n" +
+                "          or d.patient_id is not null\n" +
+                "          or (t.visit_date > date(e.first_anc_visit_date) and t.patient_id is not null)\n" +
+                "       group by e.patient_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested Positive at PMTCT post ANC-1 Pregnant & Labour/delivery");
+        return cd;
+    }
 
     /**
-     * Tested Positive PMTCT post ANC-1
+     * Tested positive at PMTCT post ANC-1 Breastfeeding
+     * @return
      */
-    public CohortDefinition testedPositivePmtctPostANC1() {
+    public CohortDefinition testedPositivePmtctPostANC1BreastFeeding() {
         String sqlQuery = "select e.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_enrollment e\n" +
-                "         left join (select av.patient_id\n" +
-                "                    from kenyaemr_etl.etl_mch_antenatal_visit av\n" +
-                "                    where av.anc_visit_number > 1\n" +
-                "                      and av.visit_date between date(:startDate) and date(:endDate)\n" +
-                "                    group by av.patient_id\n" +
-                "                    having mid(max(concat(av.visit_date, av.final_test_result)), 11) = 'Positive') av\n" +
-                "                   on av.patient_id = e.patient_id\n" +
-                "         left join (select d.patient_id\n" +
-                "                    from kenyaemr_etl.etl_mchs_delivery d\n" +
-                "                    where d.visit_date between date(:startDate) and date(:endDate)\n" +
-                "                    group by d.patient_id\n" +
-                "                    having mid(max(concat(d.visit_date, d.final_test_result)), 11) = 'Positive') d\n" +
-                "                   on d.patient_id = e.patient_id\n" +
                 "         left join (select pv.patient_id\n" +
                 "                    from kenyaemr_etl.etl_mch_postnatal_visit pv\n" +
                 "                    where pv.visit_date between date(:startDate) and date(:endDate)\n" +
@@ -2244,9 +2323,7 @@ public class DatimCohortLibrary {
                 "                    group by t.patient_id\n" +
                 "                    having mid(max(concat(t.visit_date, t.final_test_result)), 11) = 'Positive') t\n" +
                 "                   on t.patient_id = e.patient_id\n" +
-                "where av.patient_id is not null\n" +
-                "   or d.patient_id is not null\n" +
-                "   or pv.patient_id is not null\n" +
+                "where pv.patient_id is not null\n" +
                 "   or (t.visit_date > date(e.first_anc_visit_date) and t.patient_id is not null)\n" +
                 "group by e.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -2254,29 +2331,69 @@ public class DatimCohortLibrary {
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested positive at PMTCT post ANC-1");
+        cd.setDescription("Tested positive at PMTCT post ANC-1 Breastfeeding");
+        return cd;
+    }
+    /**
+     * Tested Positive PMTCT post ANC-1
+     */
+    public CohortDefinition testedPositivePmtctPostANC1() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedPositivePmtctPostANC1PregLabourAndDelivery", ReportUtils.map(testedPositivePmtctPostANC1PregLabourAndDelivery(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedPositivePmtctPostANC1BreastFeeding", ReportUtils.map(testedPositivePmtctPostANC1BreastFeeding(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("testedPositivePmtctPostANC1PregLabourAndDelivery OR testedPositivePmtctPostANC1BreastFeeding");
         return cd;
     }
 
     /**
-     * Tested Negative PMTCT post ANC-1
+     * Tested negative at PMTCT post ANC-1 Pregnant & Labour/delivery
+     * @return
      */
-    public CohortDefinition testedNegativePmtctPostANC1() {
+    public CohortDefinition testedNegativePmtctPostANC1PregLabourAndDelivery() {
+        String sqlQuery = "select e.patient_id\n" +
+                "       from kenyaemr_etl.etl_mch_enrollment e\n" +
+                "                left join (select av.patient_id\n" +
+                "                           from kenyaemr_etl.etl_mch_antenatal_visit av\n" +
+                "                           where av.anc_visit_number > 1\n" +
+                "                             and av.visit_date between date(:startDate) and date(:endDate)\n" +
+                "                           group by av.patient_id\n" +
+                "                           having mid(max(concat(av.visit_date, av.final_test_result)), 11) = 'Negative') av\n" +
+                "                          on av.patient_id = e.patient_id\n" +
+                "                left join (select d.patient_id\n" +
+                "                           from kenyaemr_etl.etl_mchs_delivery d\n" +
+                "                           where d.visit_date between date(:startDate) and date(:endDate)\n" +
+                "                           group by d.patient_id\n" +
+                "                           having mid(max(concat(d.visit_date, d.final_test_result)), 11) = 'Negative') d\n" +
+                "                          on d.patient_id = e.patient_id\n" +
+                "                left join (select t.patient_id, t.visit_date\n" +
+                "                           from kenyaemr_etl.etl_hts_test t\n" +
+                "                           where t.visit_date between date(:startDate) and date(:endDate)\n" +
+                "                             and t.hts_entry_point in (160538, 160456, 1623)\n" +
+                "                           group by t.patient_id\n" +
+                "                           having mid(max(concat(t.visit_date, t.final_test_result)), 11) = 'Negative') t\n" +
+                "                          on t.patient_id = e.patient_id\n" +
+                "       where av.patient_id is not null\n" +
+                "          or d.patient_id is not null\n" +
+                "          or (t.visit_date > date(e.first_anc_visit_date) and t.patient_id is not null)\n" +
+                "       group by e.patient_id;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("HTS_TST");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Tested negative at PMTCT post ANC-1 Pregnant & Labour/delivery");
+        return cd;
+    }
+
+    /**
+     * Tested negative at PMTCT post ANC-1 Breastfeeding
+     * @return
+     */
+    public CohortDefinition testedNegativePmtctPostANC1BreastFeeding() {
         String sqlQuery = "select e.patient_id\n" +
                 "from kenyaemr_etl.etl_mch_enrollment e\n" +
-                "         left join (select av.patient_id\n" +
-                "                    from kenyaemr_etl.etl_mch_antenatal_visit av\n" +
-                "                    where av.anc_visit_number > 1\n" +
-                "                      and av.visit_date between date(:startDate) and date(:endDate)\n" +
-                "                    group by av.patient_id\n" +
-                "                    having mid(max(concat(av.visit_date, av.final_test_result)), 11) = 'Negative') av\n" +
-                "                   on av.patient_id = e.patient_id\n" +
-                "         left join (select d.patient_id\n" +
-                "                    from kenyaemr_etl.etl_mchs_delivery d\n" +
-                "                    where d.visit_date between date(:startDate) and date(:endDate)\n" +
-                "                    group by d.patient_id\n" +
-                "                    having mid(max(concat(d.visit_date, d.final_test_result)), 11) = 'Negative') d\n" +
-                "                   on d.patient_id = e.patient_id\n" +
                 "         left join (select pv.patient_id\n" +
                 "                    from kenyaemr_etl.etl_mch_postnatal_visit pv\n" +
                 "                    where pv.visit_date between date(:startDate) and date(:endDate)\n" +
@@ -2290,9 +2407,7 @@ public class DatimCohortLibrary {
                 "                    group by t.patient_id\n" +
                 "                    having mid(max(concat(t.visit_date, t.final_test_result)), 11) = 'Negative') t\n" +
                 "                   on t.patient_id = e.patient_id\n" +
-                "where av.patient_id is not null\n" +
-                "   or d.patient_id is not null\n" +
-                "   or pv.patient_id is not null\n" +
+                "where pv.patient_id is not null\n" +
                 "   or (t.visit_date > date(e.first_anc_visit_date) and t.patient_id is not null)\n" +
                 "group by e.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -2300,7 +2415,20 @@ public class DatimCohortLibrary {
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Tested negative at PMTCT post ANC-1");
+        cd.setDescription("Tested negative at PMTCT post ANC-1 Breastfeeding");
+        return cd;
+    }
+    /**
+     * testedNegativePmtctPostANC1
+     * Tested Negative PMTCT post ANC-1
+     */
+    public CohortDefinition testedNegativePmtctPostANC1() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedNegativePmtctPostANC1PregLabourAndDelivery", ReportUtils.map(testedNegativePmtctPostANC1PregLabourAndDelivery(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedNegativePmtctPostANC1BreastFeeding", ReportUtils.map(testedNegativePmtctPostANC1BreastFeeding(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("testedNegativePmtctPostANC1PregLabourAndDelivery OR testedNegativePmtctPostANC1BreastFeeding");
         return cd;
     }
 
@@ -2311,7 +2439,7 @@ public class DatimCohortLibrary {
      *
      * @return
      */
-    public CohortDefinition testedHospitalPatient() {
+ /*   public CohortDefinition testedHospitalPatient() {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
                 "                where hts.test_strategy =164163\n" +
@@ -2327,14 +2455,14 @@ public class DatimCohortLibrary {
         cd.setDescription("Tested HP");
         return cd;
     }
-
+*/
     /**HTS Strategies
      *NP: HTS for non-patients
      * Compositions for HTS_TST Datim indicators
      *
      * @return
      */
-    public CohortDefinition testedNonPatient() {
+  /*  public CohortDefinition testedNonPatient() {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
                 "                where hts.test_strategy =164953\n" +
@@ -2349,7 +2477,7 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Tested NP");
         return cd;
-    }
+    }*/
 
     /**HTS Strategies
      * VI:Integrated VCT Center
@@ -2357,7 +2485,7 @@ public class DatimCohortLibrary {
      *
      * @return
      */
-    public CohortDefinition testedIntegratedVCT() {
+  /*  public CohortDefinition testedIntegratedVCT() {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
                 "                where hts.test_strategy =164954\n" +
@@ -2372,7 +2500,7 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Tested VI");
         return cd;
-    }
+    }*/
 
     /**HTS Strategies
      * Stand Alone VCT Center
@@ -2380,7 +2508,7 @@ public class DatimCohortLibrary {
      *
      * @return
      */
-    public CohortDefinition testedStandAloneVCT() {
+  /*  public CohortDefinition testedStandAloneVCT() {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
                 "                where hts.test_strategy =164955\n" +
@@ -2395,7 +2523,7 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Tested VS");
         return cd;
-    }
+    }*/
 
     /**HTS Strategies
      * HB: Home Based Testing
@@ -2403,7 +2531,7 @@ public class DatimCohortLibrary {
      *
      * @return
      */
-    public CohortDefinition testedHomeBasedTesting() {
+  /*  public CohortDefinition testedHomeBasedTesting() {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
                 "                where hts.test_strategy =159938\n" +
@@ -2418,7 +2546,7 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Tested HB");
         return cd;
-    }
+    }*/
 
     /**HTS Strategies
      * MO: Mobile Outreach HTS
@@ -2426,7 +2554,7 @@ public class DatimCohortLibrary {
      *
      * @return
      */
-    public CohortDefinition testedMobileOutreach() {
+  /*  public CohortDefinition testedMobileOutreach() {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
                 "                where hts.test_strategy =159939\n" +
@@ -2441,7 +2569,7 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Tested MO");
         return cd;
-    }
+    }*/
 
     /**HTS Strategies
      * Index testing
@@ -2495,7 +2623,7 @@ public class DatimCohortLibrary {
      *
      * @return
      */
-    public CohortDefinition testedOthers() {
+   /* public CohortDefinition testedOthers() {
 
         String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts \n" +
                 "                where hts.test_strategy =5622\n" +
@@ -2510,7 +2638,7 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Tested O");
         return cd;
-    }
+    }*/
 
     public CohortDefinition testedVCTEntryPoint() {
 
@@ -3296,57 +3424,6 @@ public class DatimCohortLibrary {
         cd.setCompositionString("(testedVMMCServices AND initialNegativeHIVTestResult) AND NOT (testedIndexTesting OR testedSocialNetworks OR testedSTIClinic)");
         return cd;
     }
-
-    /*Newly Started ART While Pregnant*/
-    public CohortDefinition newlyStartedARTWhilePregnant() {
-        String sqlQuery = "select net.patient_id\n" +
-                "from (\n" +
-                "     select e.patient_id,e.date_started,\n" +
-                "            e.gender,\n" +
-                "            e.dob,\n" +
-                "            d.visit_date as dis_date,\n" +
-                "            if(d.visit_date is not null, 1, 0) as TOut,\n" +
-                "            e.regimen, e.regimen_line, e.alternative_regimen,\n" +
-                "            mid(max(concat(fup.visit_date,fup.next_appointment_date)),11) as latest_tca,\n" +
-                "            max(if(enr.date_started_art_at_transferring_facility is not null and enr.facility_transferred_from is not null, 1, 0)) as TI_on_art,\n" +
-                "            max(if(enr.transfer_in_date is not null, 1, 0)) as TIn,\n" +
-                "            max(fup.visit_date) as latest_vis_date\n" +
-                "     from (select e.patient_id,p.dob,p.Gender,min(e.date_started) as date_started,\n" +
-                "                  mid(min(concat(e.date_started,e.regimen_name)),11) as regimen,\n" +
-                "                  mid(min(concat(e.date_started,e.regimen_line)),11) as regimen_line,\n" +
-                "                  max(if(discontinued,1,0))as alternative_regimen\n" +
-                "           from kenyaemr_etl.etl_drug_event e\n" +
-                "                  join kenyaemr_etl.etl_patient_demographics p on p.patient_id=e.patient_id\n" +
-                "                 where e.program = 'HIV'\n" +
-                "           group by e.patient_id) e\n" +
-                "           left outer join (select mid(max(concat(en.visit_date,en.patient_id)),11 )latest_enr, max(visit_date) lst_mch_visit_date\n" +
-                "                  from kenyaemr_etl.etl_mch_enrollment en group by en.patient_id) enr on enr.latest_enr = e.patient_id\n" +
-                "           left outer join (select mid(max(concat(del.visit_date,del.patient_id)),11 )latest_del, max(visit_date) lst_del_visit_date\n" +
-                "                  from  kenyaemr_etl.etl_mchs_delivery del group by del.patient_id) dl on dl.latest_del = e.patient_id\n" +
-                "           left outer join (select mid(max(concat(pv.visit_date,pv.patient_id)),11 )latest_pv, max(visit_date) lst_pv_visit_date\n" +
-                "                            from  kenyaemr_etl.etl_mch_postnatal_visit pv group by pv.patient_id) psnv on psnv.lst_pv_visit_date = e.patient_id\n" +
-                "            left outer join kenyaemr_etl.etl_patient_program_discontinuation d on d.patient_id=e.patient_id and d.program_name='HIV'\n" +
-                "            left outer join kenyaemr_etl.etl_hiv_enrollment enr on enr.patient_id=e.patient_id\n" +
-                "            left outer join kenyaemr_etl.etl_patient_hiv_followup fup on fup.patient_id=e.patient_id\n" +
-                "            left outer join kenyaemr_etl.etl_mch_postnatal_visit pv on pv.patient_id=e.patient_id\n" +
-                "     where  fup.pregnancy_status = 1065\n" +
-                "            or (e.date_started >= enr.lst_mch_visit_date)\n" +
-                "            and (e.date_started < dl.lst_del_visit_date or dl.lst_del_visit_date is null)\n" +
-                "            and (e.date_started < psnv.lst_pv_visit_date or psnv.lst_pv_visit_date is null )\n" +
-                "            and date(e.date_started) between date(:startDate) and :endDate\n" +
-                "     group by e.patient_id\n" +
-                "     having TI_on_art=0\n" +
-                "     )net;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("TX_New_Pregnant");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Newly Started ART While Pregnant");
-        return cd;
-
-    }
 //TODO: To review with startedOnART on ETLDAtimCohortLibrary add filter for pregnancy :Done
     /*Newly Started ART While BreastFeeding - redo query*/
 
@@ -3442,25 +3519,6 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Newly Started ART While Confirmed TB and / or TB Treated");
-        return cd;
-
-    }
-
-    /*Annual Cohort Indicators*/
-
-    /*Total HEI Cohort*/
-    public CohortDefinition totalHEICohort() {
-
-        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_hei_enrollment e\n" +
-                "join kenyaemr_etl.etl_patient_demographics de on de.patient_id = e.patient_id\n" +
-                "where timestampdiff(month,de.dob,:endDate) =24 and e.visit_date between date(:startDate) and date(:endDate);";
-//TODO age == 24 months and (enrollmentdate == 24 months ago or transfer in is true),
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("PMTCT_FO_HEI_COHORT");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Total HEI Cohort");
         return cd;
 
     }
@@ -3574,24 +3632,6 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("HIV uninfected HEI hts");
         return cd;
-    }
-
-    /*Unknown HIV Status HEI Cohort*/
-    public CohortDefinition unknownHIVStatusHEICohortSql() {
-        String sqlQuery = "select e.patient_id\n" +
-                "from kenyaemr_etl.etl_hei_enrollment e\n" +
-                "         inner join kenyaemr_etl.etl_patient_program_discontinuation d on e.patient_id = d.patient_id\n" +
-                "where d.program_name in ('MCH Child HEI', 'MCH Child')\n" +
-                "  and d.discontinuation_reason in (5240, 159492)\n" +
-                "  and e.hiv_status_at_exit = 'Inconclusive';";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("PMTCT_FO_HEI_UNKNOWN_HIV_STATUS");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Unknown HIV Status HEI Cohort");
-        return cd;
-
     }
 
     /*HEI died*/
@@ -3829,7 +3869,97 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Patients Experienced IIT for atleast 6 months before returning to Tx");
         return cd;
+    }
 
+    /**
+     * Experienced IIT for at least 3 months
+     * @return
+     */
+    public CohortDefinition patientsExperiencedIITAtleast3Months() {
+        String sqlQuery = "select e.patient_id\n" +
+                "from (\n" +
+                "     select fup_prev_period.patient_id,\n" +
+                "            max(fup_prev_period.visit_date) as prev_period_latest_vis_date,\n" +
+                "            mid(max(concat(fup_prev_period.visit_date,fup_prev_period.next_appointment_date)),11) as prev_period_latest_tca,\n" +
+                "            max(d.visit_date) as date_discontinued,\n" +
+                "            d.patient_id as disc_patient,\n" +
+                "            fup_reporting_period.first_visit_after_IIT as first_visit_after_IIT\n" +
+                "     from kenyaemr_etl.etl_patient_hiv_followup fup_prev_period\n" +
+                "            join (select fup_reporting_period.patient_id,min(fup_reporting_period.visit_date) as first_visit_after_IIT from kenyaemr_etl.etl_patient_hiv_followup fup_reporting_period where fup_reporting_period.visit_date >= date_sub(:endDate , interval 3 MONTH) group by fup_reporting_period.patient_id)fup_reporting_period on fup_reporting_period.patient_id = fup_prev_period.patient_id\n" +
+                "            left outer JOIN\n" +
+                "              (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
+                "               where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
+                "               group by patient_id\n" +
+                "              ) d on d.patient_id = fup_prev_period.patient_id\n" +
+                "     where fup_prev_period.visit_date < date_sub(date(:endDate) , interval 3 MONTH)\n" +
+                "     group by patient_id\n" +
+                "     having\n" +
+                "         ((date(prev_period_latest_tca) < date(:endDate) and date(prev_period_latest_vis_date) < date(prev_period_latest_tca))) and ((date(prev_period_latest_tca) > date(date_discontinued) and date(prev_period_latest_vis_date) > date(date_discontinued)) or disc_patient is null) and\n" +
+                "         timestampdiff(day, date(prev_period_latest_tca),date(:startDate)) > 30 and timestampdiff(MONTH, date(prev_period_latest_tca),date(first_visit_after_IIT)) >= 3\n" +
+                "     )e;";
+
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("patientsExperiencedIITAtleast3Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patients Experienced IIT for atleast 3 months before returning to Tx");
+        return cd;
+    }
+    /**
+     * Patients with CD4 count >= 200 within the reporting period after > 3 months IIT
+     * @return
+     */
+    public CohortDefinition cd4Count200AndAboveAfterIITOver3Months() {
+        String sqlQuery = "select a.patient_id\n" +
+                "from (select x.patient_id,\n" +
+                "             mid(min(concat(coalesce(date(date_test_requested), date(visit_date)),\n" +
+                "                            if(lab_test = 167718 and test_result = 1254, '>200',\n" +
+                "                               if(lab_test = 167718 and test_result = 167717, '<=200',\n" +
+                "                                  if(lab_test = 5497, test_result, ''))),\n" +
+                "                            '')),\n" +
+                "                 11) as cd4_after_IIT,\n" +
+                "             mid(max(concat(date(x.visit_date),x.order_reason)),11) as order_reason\n" +
+                "      from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "      where lab_test in (167718, 5497)\n" +
+                "        and date(x.date_test_requested) between date(:startDate) and date(:endDate)\n" +
+                "      GROUP BY x.patient_id\n" +
+                "      having (cd4_after_IIT >= 200\n" +
+                "          or cd4_after_IIT = '>200') and order_reason = 160740) a;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("cd4Count200AndAboveAfterIITOver3Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patients with CD4 count >= 200 within the reporting period after > 3 months IIT");
+        return cd;
+    }
+    /**
+     * Patients with CD4 count <200 within the reporting period after > 3 months IIT
+     * @return
+     */
+    public CohortDefinition cd4CountBelow200AfterIITOver3Months() {
+        String sqlQuery = "select a.patient_id\n" +
+                "from (select x.patient_id,\n" +
+                "             mid(max(concat(coalesce(date(date_test_requested), date(visit_date)),\n" +
+                "                            if(lab_test = 167718 and test_result = 1254, '>200',\n" +
+                "                               if(lab_test = 167718 and test_result = 167717, '<=200',\n" +
+                "                                  if(lab_test = 5497, test_result, ''))),\n" +
+                "                            '')),\n" +
+                "                 11) as cd4_after_IIT,\n" +
+                "          mid(max(concat(date(x.visit_date),x.order_reason)),11) as order_reason\n" +
+                "      from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "      where lab_test in (167718, 5497) and date(x.date_test_requested) between date(:startDate) and date(:endDate)\n" +
+                "      GROUP BY x.patient_id\n" +
+                "      having (cd4_after_IIT < 200\n" +
+                "          or cd4_after_IIT = '<=200') and order_reason = 160740) a;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("cd4CountBelow200AfterIITOver3Months");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patients with CD4 count < 200 within the reporting period after > 3 months IIT");
+        return cd;
     }
 
     /**
@@ -3846,6 +3976,64 @@ public class DatimCohortLibrary {
         return cd;
     }
 
+    /**
+     * Number restarted Treatment during the reporting period with CD4 count <200
+     * @return
+     */
+    public CohortDefinition txRTTCD4Below200() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("txRTT", ReportUtils.map(txRTT(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("patientsExperiencedIITAtleast3Months", ReportUtils.map(patientsExperiencedIITAtleast3Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("cd4CountBelow200AfterIITOver3Months", ReportUtils.map(cd4CountBelow200AfterIITOver3Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txRTT AND cd4CountBelow200AfterIITOver3Months AND patientsExperiencedIITAtleast3Months");
+        return cd;
+    }
+
+    /**
+     * Number restarted Treatment during the reporting period with CD4 count >=200
+     * @return
+     */
+    public CohortDefinition txRTTCD4200AndAbove() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("txRTT", ReportUtils.map(txRTT(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("patientsExperiencedIITAtleast3Months", ReportUtils.map(patientsExperiencedIITAtleast3Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("cd4Count200AndAboveAfterIITOver3Months", ReportUtils.map(cd4Count200AndAboveAfterIITOver3Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txRTT AND patientsExperiencedIITAtleast3Months AND cd4Count200AndAboveAfterIITOver3Months");
+        return cd;
+    }
+
+    /**
+     * Number restarted Treatment during the reporting period with CD4 unknown
+     * @return
+     */
+    public CohortDefinition txRTTCD4Unknown() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("txRTT", ReportUtils.map(txRTT(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("childrenAgedUnder5Years", ReportUtils.map(childrenAgedUnder5Years(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("cd4CountBelow200AfterIITOver3Months", ReportUtils.map(cd4CountBelow200AfterIITOver3Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("cd4Count200AndAboveAfterIITOver3Months", ReportUtils.map(cd4Count200AndAboveAfterIITOver3Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txRTT AND (childrenAgedUnder5Years OR NOT (cd4CountBelow200AfterIITOver3Months OR cd4Count200AndAboveAfterIITOver3Months))");
+        return cd;
+    }
+    /**
+     * Number restarted Treatment during the reporting period not eligible for CD4
+     * @return
+     */
+    public CohortDefinition txRTTIneligibleForCD4() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("childrenAgedUnder5Years", ReportUtils.map(childrenAgedUnder5Years(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("txRTTIITBelow3Months", ReportUtils.map(txRTTIITBelow3Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txRTTIITBelow3Months AND NOT childrenAgedUnder5Years");
+        return cd;
+    }
     /**
      * Number of KPs ART patients who experienced IIT during any previous reporting period, who successfully restarted ARVs within the reporting period and remained on treatment until the end of the reporting period
      * @return
@@ -3906,42 +4094,6 @@ public class DatimCohortLibrary {
         return cd;
     }
 
-    /*Patients on ART with Suppressed undocumented VL within last 12 Months*/
-    public CohortDefinition onARTWithSuppressedUndocumentedVLLast12Months() {
-
-        String sqlQuery = "select e.patient_id\n" +
-                "from kenyaemr_etl.etl_drug_event e\n" +
-                "       inner join\n" +
-                "         (\n" +
-                "         select\n" +
-                "                patient_id,\n" +
-                "                visit_date,\n" +
-                "                if(lab_test = 856, test_result, if(lab_test=1305 and test_result = 1302, \"LDL\",\"\")) as vl_result,\n" +
-                "                urgency\n" +
-                "         from kenyaemr_etl.etl_laboratory_extract\n" +
-                "         where lab_test in (1305, 856)  and visit_date between  date_sub(:endDate , interval 12 MONTH) and visit_date\n" +
-                "           and urgency is null or urgency not in ('IMMEDIATELY','ROUTINE')\n" +
-                "         ) vl_result on vl_result.patient_id = e.patient_id\n" +
-                "\n" +
-                "       left JOIN\n" +
-                "         (select patient_id, visit_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
-                "          where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
-                "          group by patient_id\n" +
-                "         ) d on d.patient_id = e.patient_id\n" +
-                "where e.program = 'HIV'  and date(e.date_started) <= date_sub(:endDate, interval 3 MONTH)\n" +
-                "group by e.patient_id\n" +
-                "having mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)=\"LDL\" or mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)<1000;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("TX_PVLS_SUPP_UNDOCUMENTED_ALL");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Patients on ART with Suppressed undocumented VL within last 12 Months");
-        return cd;
-
-    }
-
     /**
      * Current suppressed vl (Within 12 months)
      * @return
@@ -3990,109 +4142,37 @@ public class DatimCohortLibrary {
     }
 
     /**
-     * Women on ART and pregnant during their current suppressed routine VL test
+     * Women on ART and pregnant during their current suppressed VL test
      * */
-    public CohortDefinition pregnantOnARTWithSuppressedRoutineVLLast12Months() {
+    public CohortDefinition pregnantOnARTWithSuppressedVLLast12Months() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("txpvlsDenominatorRoutinePregnant", ReportUtils.map(txpvlsDenominatorRoutinePregnant(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("txpvlsDenominatorPregnant", ReportUtils.map(txpvlsDenominatorPregnant(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("currentSuppressedVL", ReportUtils.map(currentSuppressedVL(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txpvlsDenominatorRoutinePregnant AND currentSuppressedVL");
+        cd.setCompositionString("txpvlsDenominatorPregnant AND currentSuppressedVL");
+        return cd;
+    }
+
+     /**
+     * Women on ART and breastfeeding during their current suppressed VL test
+     * */
+    public CohortDefinition breastfeedingOnARTSuppressedVLLast12Months() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("txpvlsDenominatorBreastfeeding", ReportUtils.map(txpvlsDenominatorBreastfeeding(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("currentSuppressedVL", ReportUtils.map(currentSuppressedVL(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txpvlsDenominatorBreastfeeding AND currentSuppressedVL");
         return cd;
     }
 
     /**
-     * Women on ART and pregnant during their current suppressed targeted VL test
-     * */
-    public CohortDefinition pregnantOnARTSuppressedTargetedVLLast12Months() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("txpvlsDenominatorTargetedPregnant", ReportUtils.map(txpvlsDenominatorTargetedPregnant(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("currentSuppressedVL", ReportUtils.map(currentSuppressedVL(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txpvlsDenominatorTargetedPregnant AND currentSuppressedVL");
-        return cd;
-    }
-
-    /**
-     * Women on ART and breastfeeding during their current routine suppressed VL test
-     * */
-    public CohortDefinition breastfeedingOnARTRoutineSuppressedVLLast12Months() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("txpvlsDenominatorRoutineBreastfeeding", ReportUtils.map(txpvlsDenominatorRoutineBreastfeeding(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("currentSuppressedVL", ReportUtils.map(currentSuppressedVL(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txpvlsDenominatorRoutineBreastfeeding AND currentSuppressedVL");
-        return cd;
-    }
-
-    /**
-     * Women on ART and breastfeeding during their current targeted suppressed VL test
-     * */
-    public CohortDefinition breastfeedingOnARTTargetedSuppressedVLLast12Months() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("txpvlsDenominatorTargetedBreastfeeding", ReportUtils.map(txpvlsDenominatorTargetedBreastfeeding(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("currentSuppressedVL", ReportUtils.map(currentSuppressedVL(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txpvlsDenominatorTargetedBreastfeeding AND currentSuppressedVL");
-        return cd;
-    }
-
-    /*Pregnant Women on ART with Suppressed targeted VL within last 12 Months*/
-    public CohortDefinition pregnantOnARTWithSuppressedTargetedVLLast12Months() {
-
-        String sqlQuery = "select vl.patient_id from\n" +
-                "                          (select e.patient_id from kenyaemr_etl.etl_drug_event e\n" +
-                "                                                      inner join\n" +
-                "  (\n" +
-                "  select\n" +
-                " l.patient_id,\n" +
-                " l.visit_date,\n" +
-                " if(l.lab_test = 856, l.test_result, if(l.lab_test=1305 and l.test_result = 1302, \"LDL\",\"\")) as vl_result,\n" +
-                " l.urgency\n" +
-                "  from kenyaemr_etl.etl_laboratory_extract l\n" +
-                "  where l.lab_test in (1305, 856)  and l.visit_date between  date_sub(:endDate , interval 12 MONTH) and date(:endDate)\n" +
-                "and l.urgency='IMMEDIATELY'\n" +
-                "  ) vl_result on vl_result.patient_id = e.patient_id\n" +
-                "left JOIN\n" +
-                "  (select pd.patient_id, pd.visit_date from kenyaemr_etl.etl_patient_program_discontinuation pd\n" +
-                "   where date(visit_date) <= date(:endDate) and pd.program_name='HIV'\n" +
-                "   group by pd.patient_id\n" +
-                "  ) d on d.patient_id = e.patient_id\n" +
-                "where e.program = 'HIV'  and date(e.date_started) <= date_sub(:endDate, interval 3 MONTH)\n" +
-                "group by e.patient_id\n" +
-                "having mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)=\"LDL\" or mid(max(concat(vl_result.visit_date, vl_result.vl_result)), 11)<1000) vl\n" +
-                " inner join\n" +
-                "   (select mid(max(concat(en.visit_date,en.patient_id)),11 )latest_enr\n" +
-                "    from kenyaemr_etl.etl_mch_enrollment en\n" +
-                "           left outer join (select mid(max(concat(del.visit_date,del.patient_id)),11 )latest_del, max(visit_date) lst_del_visit_date\n" +
-                " from kenyaemr_etl.etl_mchs_delivery del group by del.patient_id) dl on dl.latest_del = en.patient_id\n" +
-                "           left outer join (select mid(max(concat(pv.visit_date,pv.patient_id)),11 )latest_pv, max(visit_date) lst_pv_visit_date\n" +
-                " from kenyaemr_etl.etl_mch_postnatal_visit pv group by pv.patient_id) psnv on psnv.lst_pv_visit_date = en.patient_id\n" +
-                "    group by en.patient_id)t on t.latest_enr = vl.patient_id\n" +
-                " left join (select fup.patient_id from kenyaemr_etl.etl_patient_hiv_followup fup where fup.pregnancy_status =1065 and fup.voided = 0\n" +
-                "            group by fup.patient_id having max(fup.visit_date) between date_sub(:endDate, interval 12 MONTH )\n" +
-                "            and date(:endDate)) f on vl.patient_id = f.patient_id ;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("TX_PVLS_SUPP_PREGNANT_TARGETED");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Pregnant Women on ART with Suppressed targeted VL within last 12 Months");
-        return cd;
-
-    }
-
-    /**
-     * TX_PVLS (suppressed / numerator): Routine VL
+     * TX_PVLS (suppressed / numerator)
      * @param
      * @return
      */
-    public CohortDefinition currentSuppRoutineVLResult() {
+    public CohortDefinition currentSuppVLResult() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery = "select a.patient_id\n" +
                 "from (select b.patient_id,\n" +
@@ -4114,60 +4194,21 @@ public class DatimCohortLibrary {
                 "      group by b.patient_id\n" +
                 "      having b.latest_visit_date between\n" +
                 "          date_sub(:endDate, interval 12 MONTH) and date(:endDate)\n" +
-                "         and (b.order_reason = 161236 or b.order_reason is null or b.order_reason = '')\n" +
                 "         and (b.vl_result < 1000 or b.vl_result = 'LDL')) a;";
-        cd.setName("txpvlsNumByTestType");
+        cd.setName("currentSuppVLResult");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("txpvlsNumByTestType");
+        cd.setDescription("currentSuppVLResult");
 
         return cd;
     }
-
     /**
-     * TX_PVLS (suppressed / numerator): Targeted VL
-     * @return
-     */
-    public CohortDefinition currentSuppTargetedVLResult() {
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select a.patient_id\n" +
-                "from (select b.patient_id,\n" +
-                "             b.latest_visit_date,\n" +
-                "             b.vl_result,\n" +
-                "             b.order_reason as order_reason\n" +
-                "      from (select x.patient_id                                                                             as patient_id,\n" +
-                "                   max(x.visit_date)                                                                        as latest_visit_date,\n" +
-                "                   mid(max(concat(x.visit_date, x.lab_test)), 11)                                           as lab_test,\n" +
-                "                   mid(max(concat(x.visit_date, x.order_reason)), 11)                                       as order_reason,\n" +
-                "                   if(mid(max(concat(x.visit_date, x.lab_test)), 11) = 856,\n" +
-                "                      mid(max(concat(x.visit_date, x.test_result)), 11), if(\n" +
-                "                                      mid(max(concat(x.visit_date, x.lab_test)), 11) = 1305 and\n" +
-                "                                      mid(max(concat(x.visit_date, x.test_result)), 11) = 1302, 'LDL', '')) as vl_result\n" +
-                "            from kenyaemr_etl.etl_laboratory_extract x\n" +
-                "            where x.lab_test in (1305, 856)\n" +
-                "              and x.visit_date <= date(:endDate)\n" +
-                "            group by x.patient_id) b\n" +
-                "      group by b.patient_id\n" +
-                "      having b.latest_visit_date between\n" +
-                "          date_sub(:endDate, interval 12 MONTH) and date(:endDate)\n" +
-                "         and b.order_reason in (843,1434,162080,1259,159882,163523,160032)\n" +
-                "         and (b.vl_result < 1000 or b.vl_result = 'LDL')) a;";
-        cd.setName("txpvlsNumByTestType");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("txpvlsNumByTestType");
-
-        return cd;
-    }
-
-    /**
-     * Pregnant with routine VL order
+     * Pregnant with VL order
      * @param
      * @return
      */
-    public CohortDefinition pregnantRoutineVLOrder() {
+    public CohortDefinition pregnantVLOrder() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery = "select a.patient_id\n" +
                 "from (select b.patient_id, b.latest_visit_date, b.pregnant_status\n" +
@@ -4181,7 +4222,7 @@ public class DatimCohortLibrary {
                 "                        where lab_test in (1305, 856)\n" +
                 "                          and visit_date between\n" +
                 "                            date_sub(:endDate, interval 12 MONTH) and date(:endDate)\n" +
-                "                          and (order_reason = 161236 or order_reason is null or order_reason = ''))l on f.patient_id = l.patient_id\n" +
+                "                          )l on f.patient_id = l.patient_id\n" +
                 "            where f.visit_date <= date(order_date)\n" +
                 "            group by f.patient_id) b\n" +
                 "      group by b.patient_id\n" +
@@ -4197,42 +4238,7 @@ public class DatimCohortLibrary {
         return cd;
     }
 
-    /**
-     * Pregnant with targeted VL order
-     * @param
-     * @return
-     */
-    public CohortDefinition pregnantTargetedVLOrder() {
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select a.patient_id\n" +
-                "from (select b.patient_id, b.latest_visit_date, b.pregnant_status\n" +
-                "      from (select f.patient_id                                           as patient_id,\n" +
-                "                   max(f.visit_date)                                      as latest_visit_date,\n" +
-                "                   mid(max(concat(f.visit_date, f.pregnancy_status)), 11) as pregnant_status,\n" +
-                "                   l.order_date\n" +
-                "            from kenyaemr_etl.etl_patient_hiv_followup f\n" +
-                "            inner join (select patient_id,date_test_requested as order_date,order_reason\n" +
-                "                        from kenyaemr_etl.etl_laboratory_extract\n" +
-                "                        where lab_test in (1305, 856)\n" +
-                "                          and visit_date between\n" +
-                "                            date_sub(:endDate, interval 12 MONTH) and date(:endDate)\n" +
-                "                          and order_reason in (843,1434,162080,1259,159882,163523,160032))l on f.patient_id = l.patient_id\n" +
-                "            where f.visit_date <= date(order_date)\n" +
-                "            group by f.patient_id) b\n" +
-                "      group by b.patient_id\n" +
-                "      having b.latest_visit_date between\n" +
-                "          date_sub(:endDate, interval 12 MONTH) and date(:endDate)\n" +
-                "         and pregnant_status = 1065) a;";
-        cd.setName("Pregnant");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Pregnant during last VL test");
-
-        return cd;
-    }
-
-    public CohortDefinition breastfeedingTargetedVLOrder() {
+    public CohortDefinition breastfeedingVLOrder() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
         String sqlQuery = "select a.patient_id\n" +
                 "from (select b.patient_id, b.latest_visit_date, b.breastfeeding_status\n" +
@@ -4246,201 +4252,34 @@ public class DatimCohortLibrary {
                 "                                 where lab_test in (1305, 856)\n" +
                 "                                   and visit_date between\n" +
                 "                                     date_sub(:endDate, interval 12 MONTH) and date(:endDate)\n" +
-                "                                   and order_reason in (843,1434,162080,1259,159882,163523,160032))l on f.patient_id = l.patient_id\n" +
+                "                                   )l on f.patient_id = l.patient_id\n" +
                 "            where f.visit_date <= date(order_date)\n" +
                 "            group by f.patient_id) b\n" +
                 "      group by b.patient_id\n" +
                 "      having b.latest_visit_date between\n" +
                 "          date_sub(:endDate, interval 12 MONTH) and date(:endDate)\n" +
                 "         and breastfeeding_status = 1065) a;";
-        cd.setName("Targeted BF");
+        cd.setName("BF");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Targeted BF");
+        cd.setDescription("BF");
 
         return cd;
     }
 
     /**
-     * Breastfeeding with routine VL order
-     * @param
+     * TX_PVLS NUMERATOR
      * @return
      */
-    public CohortDefinition breastfeedingRoutineVLOrder() {
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select a.patient_id\n" +
-                "from (select b.patient_id, b.latest_visit_date, b.breastfeeding_status\n" +
-                "      from (select f.patient_id                                           as patient_id,\n" +
-                "                   max(f.visit_date)                                      as latest_visit_date,\n" +
-                "                   mid(max(concat(f.visit_date, f.breastfeeding)), 11) as breastfeeding_status,\n" +
-                "                   l.order_date\n" +
-                "            from kenyaemr_etl.etl_patient_hiv_followup f\n" +
-                "                     inner join (select patient_id,date_test_requested as order_date,order_reason\n" +
-                "                                 from kenyaemr_etl.etl_laboratory_extract\n" +
-                "                                 where lab_test in (1305, 856)\n" +
-                "                                   and visit_date between\n" +
-                "                                     date_sub(:endDate, interval 12 MONTH) and date(:endDate)\n" +
-                "                                   and (order_reason = 161236 or order_reason is null or order_reason = ''))l on f.patient_id = l.patient_id\n" +
-                "            where f.visit_date <= date(order_date)\n" +
-                "            group by f.patient_id) b\n" +
-                "      group by b.patient_id\n" +
-                "      having b.latest_visit_date between\n" +
-                "          date_sub(:endDate, interval 12 MONTH) and date(:endDate)\n" +
-                "         and breastfeeding_status = 1065) a;";
-        cd.setName("breastfeedingRoutineVL");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Breastfeeding last VL test");
-
-        return cd;
-    }
-
-    /**
-     * Pregnant during last VL test
-     * @param
-     * @return
-     */
-    public CohortDefinition currentVLTestPregnantOrderReason() {
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select a.patient_id\n" +
-                "from (select b.patient_id, b.latest_visit_date, b.order_reason\n" +
-                "      from (select x.patient_id                                       as patient_id,\n" +
-                "                   max(x.visit_date)                                  as latest_visit_date,\n" +
-                "                   mid(max(concat(x.visit_date, x.order_reason)), 11) as order_reason\n" +
-                "            from kenyaemr_etl.etl_laboratory_extract x\n" +
-                "            where x.lab_test in (1305, 856)\n" +
-                "              and x.visit_date <= date(:endDate)\n" +
-                "            group by x.patient_id)b\n" +
-                "      group by b.patient_id\n" +
-                "      having b.latest_visit_date between\n" +
-                "                 date_sub(:endDate, interval 12 MONTH) and date(:endDate)\n" +
-                "         and order_reason = 1434)a;";
-        cd.setName("currentVLTestPregnantOrderReason");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Pregnant during last VL test");
-
-        return cd;
-    }
-
-    /**
-     * Breastfeeding during last VL test
-     * @param
-     * @return
-     */
-    public CohortDefinition currentVLTestBreastfeedingOrderReason() {
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select a.patient_id\n" +
-                "from (select b.patient_id, b.latest_visit_date, b.order_reason\n" +
-                "      from (select x.patient_id                                       as patient_id,\n" +
-                "                   max(x.visit_date)                                  as latest_visit_date,\n" +
-                "                   mid(max(concat(x.visit_date, x.order_reason)), 11) as order_reason\n" +
-                "            from kenyaemr_etl.etl_laboratory_extract x\n" +
-                "            where x.lab_test in (1305, 856)\n" +
-                "              and x.visit_date <= date(:endDate)\n" +
-                "            group by x.patient_id)b\n" +
-                "      group by b.patient_id\n" +
-                "      having b.latest_visit_date between\n" +
-                "                 date_sub(:endDate, interval 12 MONTH) and date(:endDate)\n" +
-                "         and order_reason = 159882)a;";
-        cd.setName("currentVLTestBreastfeedingOrderReason");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Breastfeeding during last VL test");
-
-        return cd;
-    }
-
-    public CohortDefinition kpOnARTSuppVLLast12Months(String testType, KPTypeDataDefinition kpType) {
-
-        String sqlQuery = "select a.patient_id as patient_id\n" +
-                "            from(select t.patient_id,vl.vl_date,vl.vl_result,vl.urgency,t.kp_type from (\n" +
-                "                         select fup.visit_date,fup.patient_id, max(e.visit_date) as enroll_date,\n" +
-                "                                mid(max(concat(e.visit_date, e.patient_type)), 11)  as patient_type,\n" +
-                "                                greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
-                "                                greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
-                "                                d.patient_id as disc_patient,\n" +
-                "                                d.effective_disc_date as effective_disc_date,\n" +
-                "                                max(d.visit_date) as date_discontinued,\n" +
-                "                                de.patient_id as started_on_drugs,\n" +
-                "                                 mid(max(concat(date(de.date_started), ifnull(de.discontinued, 0))), 11) as on_drugs,\n" +
-                "                                de.date_started,\n" +
-                "                                mid(max(concat(fup.visit_date,fup.key_population_type)),11) as kp_type\n" +
-                "                         from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
-                "                                join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
-                "                                join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
-                "                                inner join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:startDate)\n" +
-                "                                left outer JOIN\n" +
-                "                                  (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
-                "                                   where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
-                "                                   group by patient_id\n" +
-                "                                  ) d on d.patient_id = fup.patient_id\n" +
-                "                         where fup.visit_date <= date(:endDate)\n" +
-                "                         group by patient_id\n" +
-                "                         having (patient_type != 164931 and on_drugs != 1) and (\n" +
-                "                             (\n" +
-                "                                 (timestampdiff(DAY, date(latest_tca), date(:endDate)) <= 30 and ((date(d.effective_disc_date) > date(:endDate) or date(enroll_date) > date(d.effective_disc_date)) or d.effective_disc_date is null))\n" +
-                "                                   and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null)\n" +
-                "                                 )\n" +
-                "                             ) order by date_started desc\n" +
-                "                         ) t\n" +
-                "                           inner join (\n" +
-                "                                      select\n" +
-                "                                             b.patient_id,\n" +
-                "                                             max(b.visit_date) as vl_date,\n" +
-                "                                             mid(max(concat(b.visit_date,b.lab_test)),11) as lab_test,\n" +
-                "                                             if(mid(max(concat(b.visit_date,b.lab_test)),11) = 856, mid(max(concat(b.visit_date,b.test_result)),11), if(mid(max(concat(b.visit_date,b.lab_test)),11)=1305 and mid(max(concat(visit_date,test_result)),11) = 1302, \"LDL\",\"\")) as vl_result,\n" +
-                "                                             mid(max(concat(b.visit_date,b.urgency)),11) as urgency\n" +
-                "                                      from (select x.patient_id as patient_id,x.visit_date as visit_date,x.lab_test as lab_test, x.test_result as test_result,urgency as urgency\n" +
-                "                                            from kenyaemr_etl.etl_laboratory_extract x where x.lab_test in (1305,856)\n" +
-                "                                            group by x.patient_id,x.visit_date order by visit_date desc)b\n" +
-                "                                      group by patient_id\n" +
-                "                            having mid(max(concat(visit_date,lab_test)),11) in (1305,856) and max(visit_date) between\n" +
-                "                                date_sub(:endDate , interval 12 MONTH) and date(:endDate)\n" +
-                "                            )vl\n" +
-                "                   on t.patient_id = vl.patient_id  where urgency = " + testType + " and kp_type = " + kpType.getKpTypeConcept() + " and (vl_result < 1000 or vl_result='LDL'))a;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("TX_PVLS_SUPP_KP");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Pregnant Women on ART with Suppressed undocumented VL within last 12 Months");
-        return cd;
-
-    }
-
-    /**
-     * TX_PVLS NUMERATOR ROUTINE
-     * @return
-     */
-    public CohortDefinition onARTSuppRoutineVLAgeSex() {
+    public CohortDefinition onARTSuppVLAgeSex() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("txcurr", ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("currentSuppRoutineVLResult", ReportUtils.map(currentSuppRoutineVLResult(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("currentSuppVLResult", ReportUtils.map(currentSuppVLResult(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("patientInTXAtleast3Months", ReportUtils.map(patientInTXAtleast3Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND currentSuppRoutineVLResult AND patientInTXAtleast3Months");
-        return cd;
-    }
-
-    /**
-     * TX_PVLS NUMERATOR TARGETED
-     * @return
-     */
-    public CohortDefinition onARTSuppTargetedVLAgeSex() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("txcurr", ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("currentSuppTargetedVLResult", ReportUtils.map(currentSuppTargetedVLResult(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("patientInTXAtleast3Months", ReportUtils.map(patientInTXAtleast3Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND currentSuppTargetedVLResult AND patientInTXAtleast3Months");
+        cd.setCompositionString("txcurr AND currentSuppVLResult AND patientInTXAtleast3Months");
         return cd;
     }
 
@@ -4466,179 +4305,11 @@ public class DatimCohortLibrary {
         return cd;
     }
 
-    /*Pregnant or Breastfeeding mother on ART with Routine VL within last 12 Months*/
-    public CohortDefinition breastfeedingOnARTVLLast12Months(String testType) {
-
-        String sqlQuery = "select a.patient_id as patient_id\n" +
-                "from(select t.patient_id,vl.vl_date,vl.vl_result,vl.urgency,vl.order_reason from (\n" +
-                "             select fup.visit_date,fup.patient_id, max(e.visit_date) as enroll_date,\n" +
-                "                    mid(max(concat(e.visit_date, e.patient_type)), 11)  as patient_type,\n" +
-                "                    greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
-                "                    greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
-                "                    d.patient_id as disc_patient,\n" +
-                "                    d.effective_disc_date as effective_disc_date,\n" +
-                "                    max(d.visit_date) as date_discontinued,\n" +
-                "                    de.patient_id as started_on_drugs,\n" +
-                "                    mid(max(concat(date(de.date_started), ifnull(de.discontinued, 0))), 11) as on_drugs,\n" +
-                "                    de.date_started\n" +
-                "             from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
-                "                    join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
-                "                    join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
-                "                    inner join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:startDate)\n" +
-                "                    left outer JOIN\n" +
-                "                      (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
-                "                       where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
-                "                       group by patient_id\n" +
-                "                      ) d on d.patient_id = fup.patient_id\n" +
-                "             where fup.visit_date <= date(:endDate)\n" +
-                "             group by patient_id\n" +
-                "             having (patient_type != 164931 and on_drugs != 1) and (\n" +
-                "                 (\n" +
-                "                     (timestampdiff(DAY, date(latest_tca), date(:endDate)) <= 30 and ((date(d.effective_disc_date) > date(:endDate) or date(enroll_date) > date(d.effective_disc_date)) or d.effective_disc_date is null))\n" +
-                "                       and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null)\n" +
-                "                     )\n" +
-                "                 ) order by date_started desc\n" +
-                "             ) t\n" +
-                "               inner join (\n" +
-                "                          select\n" +
-                "                                 patient_id,encounter_id,\n" +
-                "                                 max(visit_date) as vl_date,\n" +
-                "                                 date_sub(:endDate , interval 12 MONTH),\n" +
-                "                                 if(mid(max(concat(visit_date,lab_test)),11) = 856, mid(max(concat(visit_date,test_result)),11), if(mid(max(concat(visit_date,lab_test)),11)=1305 and mid(max(concat(visit_date,test_result)),11) = 1302, \"LDL\",\"\")) as vl_result,\n" +
-                "                                 mid(max(concat(visit_date,urgency)),11) as urgency,\n" +
-                "                                 mid(max(concat(visit_date,order_reason)),11) as order_reason\n" +
-                "                          from kenyaemr_etl.etl_laboratory_extract\n" +
-                "                          group by patient_id\n" +
-                "                          having mid(max(concat(visit_date,lab_test)),11) in (1305,856) and max(visit_date) between\n" +
-                "                              date_sub(:endDate , interval 12 MONTH) and date(:endDate)\n" +
-                "                          )vl\n" +
-                "                 on t.patient_id = vl.patient_id where urgency = " + testType + " and order_reason in (1434,159882))a;";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("TX_PVLS_DENOMINATOR_BF_PG");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Breastfeeding Women on ART with VL within last 12 Months");
-        return cd;
-    }
-
-    /*Breastfeeding Mother on ART with Undocumented VL within last 12 Months*/
-    public CohortDefinition kpWithVLLast12Months(String testType, KPTypeDataDefinition kpType) {
-
-        String sqlQuery = "select a.patient_id as patient_id\n" +
-                "from(select t.patient_id,vl.vl_date,vl.vl_result,vl.urgency,t.kp_type from (\n" +
-                "   select fup.visit_date,fup.patient_id, max(e.visit_date) as enroll_date,\n" +
-                "          mid(max(concat(e.visit_date, e.patient_type)), 11)  as patient_type,\n" +
-                "          greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
-                "          greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
-                "          d.patient_id as disc_patient,\n" +
-                "          d.effective_disc_date as effective_disc_date,\n" +
-                "          max(d.visit_date) as date_discontinued,\n" +
-                "          de.patient_id as started_on_drugs,\n" +
-                "          mid(max(concat(date(de.date_started), ifnull(de.discontinued, 0))), 11) as on_drugs,\n" +
-                "          de.date_started,\n" +
-                "          mid(max(concat(fup.visit_date,fup.key_population_type)),11) as kp_type\n" +
-                "     from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
-                "          join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
-                "          join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
-                "          inner join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:startDate)\n" +
-                "          left outer JOIN\n" +
-                "            (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
-                "             where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
-                "             group by patient_id\n" +
-                "            ) d on d.patient_id = fup.patient_id\n" +
-                "   where fup.visit_date <= date(:endDate)\n" +
-                "   group by patient_id\n" +
-                "   having (patient_type != 164931 and on_drugs != 1) and (\n" +
-                "       (\n" +
-                "           (timestampdiff(DAY, date(latest_tca), date(:endDate)) <= 30 and ((date(d.effective_disc_date) > date(:endDate) or date(enroll_date) > date(d.effective_disc_date)) or d.effective_disc_date is null))\n" +
-                "             and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null)\n" +
-                "           )\n" +
-                "       ) order by date_started desc\n" +
-                "   ) t\n" +
-                "     inner join (\n" +
-                "                select\n" +
-                "                       patient_id,encounter_id,\n" +
-                "                       max(visit_date) as vl_date,\n" +
-                "                       date_sub(:endDate , interval 12 MONTH),\n" +
-                "                       if(mid(max(concat(visit_date,lab_test)),11) = 856, mid(max(concat(visit_date,test_result)),11), if(mid(max(concat(visit_date,lab_test)),11)=1305 and mid(max(concat(visit_date,test_result)),11) = 1302, \"LDL\",\"\")) as vl_result,\n" +
-                "                       mid(max(concat(visit_date,urgency)),11) as urgency\n" +
-                "                from kenyaemr_etl.etl_laboratory_extract\n" +
-                "                group by patient_id\n" +
-                "                having mid(max(concat(visit_date,lab_test)),11) in (1305,856) and max(visit_date) between\n" +
-                "                    date_sub(:endDate , interval 12 MONTH) and date(:endDate)\n" +
-                "                )vl\n" +
-                "       on t.patient_id = vl.patient_id  where urgency = " + testType + " and kp_type = " + kpType.getKpTypeConcept() + ")a;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("TX_PVLS_DENOMINATOR_BF_UNDOCUMENTED");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Breastfeeding Women on ART with Undocumented VL within last 12 Months");
-        return cd;
-    }
-
-    /*On ART with Routine VL within last 12 Months by sex/age*/
-    public CohortDefinition onARTAndVLLast12MonthsbyAgeSex(String testType) {
-
-        String sqlQuery = "select a.patient_id as patient_id\n" +
-                "from(select t.patient_id,vl.vl_date,vl.vl_result,vl.urgency from (\n" +
-                "    select fup.visit_date,fup.patient_id, max(e.visit_date) as enroll_date,\n" +
-                "           mid(max(concat(e.visit_date, e.patient_type)), 11)  as patient_type,\n" +
-                "           greatest(max(fup.visit_date), ifnull(max(d.visit_date),'0000-00-00')) as latest_vis_date,\n" +
-                "           greatest(mid(max(concat(fup.visit_date,fup.next_appointment_date)),11), ifnull(max(d.visit_date),'0000-00-00')) as latest_tca,\n" +
-                "           d.patient_id as disc_patient,\n" +
-                "           d.effective_disc_date as effective_disc_date,\n" +
-                "           max(d.visit_date) as date_discontinued,\n" +
-                "           de.patient_id as started_on_drugs,\n" +
-                "           mid(max(concat(date(de.date_started), ifnull(de.discontinued, 0))), 11) as on_drugs,\n" +
-                "           de.date_started\n" +
-                "    from kenyaemr_etl.etl_patient_hiv_followup fup\n" +
-                "           join kenyaemr_etl.etl_patient_demographics p on p.patient_id=fup.patient_id\n" +
-                "           join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id=e.patient_id\n" +
-                "           inner join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program='HIV' and date(date_started) <= date(:startDate)\n" +
-                "           left outer JOIN\n" +
-                "             (select patient_id, coalesce(date(effective_discontinuation_date),visit_date) visit_date,max(date(effective_discontinuation_date)) as effective_disc_date from kenyaemr_etl.etl_patient_program_discontinuation\n" +
-                "              where date(visit_date) <= date(:endDate) and program_name='HIV'\n" +
-                "              group by patient_id\n" +
-                "             ) d on d.patient_id = fup.patient_id\n" +
-                "    where fup.visit_date <= date(:endDate)\n" +
-                "    group by patient_id\n" +
-                "    having (patient_type != 164931 and on_drugs != 1) and (\n" +
-                "        (\n" +
-                "            (timestampdiff(DAY,date(latest_tca),date(:endDate)) <= 30 and ((date(d.effective_disc_date) > date(:endDate) or date(enroll_date) > date(d.effective_disc_date)) or d.effective_disc_date is null))\n" +
-                "              and (date(latest_vis_date) >= date(date_discontinued) or date(latest_tca) >= date(date_discontinued) or disc_patient is null)\n" +
-                "            )\n" +
-                "        ) order by date_started desc\n" +
-                "    ) t\n" +
-                "inner join (\n" +
-                "           select\n" +
-                "                  patient_id,encounter_id,\n" +
-                "                  max(visit_date) as vl_date,\n" +
-                "                  date_sub(:endDate , interval 12 MONTH),\n" +
-                "                  if(mid(max(concat(visit_date,lab_test)),11) = 856, mid(max(concat(visit_date,test_result)),11), if(mid(max(concat(visit_date,lab_test)),11)=1305 and mid(max(concat(visit_date,test_result)),11) = 1302, \"LDL\",\"\")) as vl_result,\n" +
-                "                  mid(max(concat(visit_date,urgency)),11) as urgency\n" +
-                "           from kenyaemr_etl.etl_laboratory_extract\n" +
-                "             group by patient_id\n" +
-                "           having mid(max(concat(visit_date,lab_test)),11) in (1305,856) and max(visit_date) between\n" +
-                "               date_sub(:endDate , interval 12 MONTH) and date(:endDate)\n" +
-                "    )vl\n" +
-                "on t.patient_id = vl.patient_id  where urgency = " + testType + ")a;";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("TX_PVLS_DENOMINATOR");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("On ART with Routine VL within last 12 Months by sex/age");
-        return cd;
-    }
-
     /**
      * Patients with VL results within the last 12 months
      * @return
      */
-    public CohortDefinition currentVLResultLast12Months() {
+   /* public CohortDefinition currentVLResultLast12Months() {
 
         String sqlQuery = "select patient_id from kenyaemr_etl.etl_laboratory_extract where lab_test in (1305,856) and visit_date between\n" +
                 "date_sub(:endDate,interval 12 MONTH) and date(:endDate);";
@@ -4649,79 +4320,41 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("On ART with VL result within last 12 Months");
         return cd;
-    }
+    }*/
 
     /**
-     * Patients with Routine VL results within the last 12 months by test type/indication
+     * Patients with VL results within the last 12 months
      * @return
      */
-    public CohortDefinition currentRoutineVLLast12Months() {
+    public CohortDefinition currentVLLast12Months() {
 
         String sqlQuery = "select patient_id\n" +
                 "from kenyaemr_etl.etl_laboratory_extract\n" +
                 "where lab_test in (1305, 856)\n" +
                 "  and visit_date between\n" +
-                "    date_sub(:endDate, interval 12 MONTH) and date(:endDate)\n" +
-                "  and (order_reason = 161236 or order_reason is null or order_reason = '');";
+                "    date_add(date_sub(:endDate, interval 12 MONTH), interval 1 day) and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("currentVLResultLast12MonthsByTestType");
+        cd.setName("currentVLLast12Months");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("On ART with VL result within last 12 Months by Test type");
+        cd.setDescription("On ART with VL result within last 12 Months");
         return cd;
     }
 
-    /**
-     * Patients with targeted VL within the last 12 months
-     * @return
-     */
-    public CohortDefinition currentTargetedVLLast12Months() {
-
-        String sqlQuery = "select patient_id\n" +
-                "from kenyaemr_etl.etl_laboratory_extract\n" +
-                "where lab_test in (1305, 856)\n" +
-                "  and visit_date between\n" +
-                "    date_sub(:endDate, interval 12 MONTH) and date(:endDate)\n" +
-                "  and order_reason in (843,1434,162080,1259,159882,163523,160032);";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("currentVLResultLast12MonthsByTestType");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("On ART with VL result within last 12 Months by Test type");
-        return cd;
-    }
-
-    /**Number of ART patients with a Targeted VL result documented in the medical or laboratory records/LIS within the past 12 months.
+    /**Number of ART patients with a VL result documented in the medical or laboratory records/LIS within the past 12 months.
      * TX_PVLS DENOMINATOR
      * @return
      */
-    public CohortDefinition txpvlsDenominatorTargeted() {
+    public CohortDefinition txpvlsDenominator() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("txcurr",
                 ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("patientInTXAtleast3Months", ReportUtils.map(patientInTXAtleast3Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("currentTargetedVLLast12Months", ReportUtils.map(currentTargetedVLLast12Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND patientInTXAtleast3Months AND currentTargetedVLLast12Months");
-        return cd;
-    }
-
-    /**Number of ART patients with a Routine VL result documented in the medical or laboratory records/LIS within the past 12 months.
-     * TX_PVLS DENOMINATOR
-     * @return
-     */
-    public CohortDefinition txpvlsDenominatorRoutine() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("txcurr",
-                ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("patientInTXAtleast3Months", ReportUtils.map(patientInTXAtleast3Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("currentRoutineVLLast12Months", ReportUtils.map(currentRoutineVLLast12Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND patientInTXAtleast3Months AND currentRoutineVLLast12Months");
+        cd.addSearch("currentVLLast12Months", ReportUtils.map(currentVLLast12Months(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txcurr AND patientInTXAtleast3Months AND currentVLLast12Months");
         return cd;
     }
 
@@ -4729,123 +4362,51 @@ public class DatimCohortLibrary {
      * TX_PVLS DENOMINATOR
      * @return
      */
-    public CohortDefinition txpvlsDenominatorRoutinePregnant() {
+    public CohortDefinition txpvlsDenominatorPregnant() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("txcurr",
                 ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("patientInTXAtleast3Months", ReportUtils.map(patientInTXAtleast3Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("pregnantRoutineVLOrder", ReportUtils.map(pregnantRoutineVLOrder(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND patientInTXAtleast3Months AND pregnantRoutineVLOrder");
+        cd.addSearch("pregnantVLOrder", ReportUtils.map(pregnantVLOrder(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txcurr AND patientInTXAtleast3Months AND pregnantVLOrder");
         return cd;
     }
-
-    public CohortDefinition txpvlsDenominatorRoutineBreastFeeding() {
+    public CohortDefinition txpvlsDenominatorBreastfeeding() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("txcurr",
                 ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("patientInTXAtleast3Months", ReportUtils.map(patientInTXAtleast3Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("breastfeedingRoutineVLOrder", ReportUtils.map(breastfeedingRoutineVLOrder(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND patientInTXAtleast3Months AND breastfeedingRoutineVLOrder");
-        return cd;
-    }
-
-    public CohortDefinition txpvlsDenominatorTargetedPregnant() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("txcurr",
-                ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("patientInTXAtleast3Months", ReportUtils.map(patientInTXAtleast3Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("pregnantTargetedVLOrder", ReportUtils.map(pregnantTargetedVLOrder(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND patientInTXAtleast3Months AND pregnantTargetedVLOrder");
-        return cd;
-    }
-
-    public CohortDefinition txpvlsDenominatorTargetedBreastfeeding() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("txcurr",
-                ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("patientInTXAtleast3Months", ReportUtils.map(patientInTXAtleast3Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("breastfeedingTargetedVLOrder", ReportUtils.map(breastfeedingTargetedVLOrder(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND patientInTXAtleast3Months AND breastfeedingTargetedVLOrder");
-        return cd;
-    }
-
-    /**Number of Breastfeeding ART patients with a VL result documented in the medical or laboratory records/LIS within the past 12 months.
-     * TX_PVLS DENOMINATOR
-     * @return
-     */
-    public CohortDefinition txpvlsDenominatorRoutineBreastfeeding() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("txcurr",
-                ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("patientInTXAtleast3Months", ReportUtils.map(patientInTXAtleast3Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("breastfeedingRoutineVLOrder", ReportUtils.map(breastfeedingRoutineVLOrder(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txcurr AND patientInTXAtleast3Months AND breastfeedingRoutineVLOrder");
+        cd.addSearch("breastfeedingVLOrder", ReportUtils.map(breastfeedingVLOrder(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txcurr AND patientInTXAtleast3Months AND breastfeedingVLOrder");
         return cd;
     }
 
     /**
-     * TX_PVLS NUMERATOR Routine Indication by Key Population
+     * TX_PVLS NUMERATOR Indication by Key Population
      * @param kpType
      * @return
      */
-    public CohortDefinition onARTKpWithSuppRoutineVLLast12Months(Integer kpType) {
+    public CohortDefinition onARTKpWithSuppVLLast12Months(Integer kpType) {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("onARTSuppRoutineVLAgeSex", ReportUtils.map(onARTSuppRoutineVLAgeSex(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("onARTSuppVLAgeSex", ReportUtils.map(onARTSuppVLAgeSex(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("keyPop", ReportUtils.map(kpByKPType(kpType), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("onARTSuppRoutineVLAgeSex AND keyPop");
+        cd.setCompositionString("onARTSuppVLAgeSex AND keyPop");
         return cd;
     }
 
-    /**
-     * TX_PVLS NUMERATOR Targeted Indication by Key Population
-     * @param kpType
-     * @return
-     */
-    public CohortDefinition onARTKpWithSuppTargetedVLLast12Months(Integer kpType) {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("onARTSuppTargetedVLAgeSex", ReportUtils.map(onARTSuppTargetedVLAgeSex(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("keyPop", ReportUtils.map(kpByKPType(kpType), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("onARTSuppTargetedVLAgeSex AND keyPop");
-        return cd;
-    }
-
-    /**
-     * TX_PVLS NUMERATOR Indication by Key Population and test Type
-     * @param kpType
-     * @return
-     */
-
-    public CohortDefinition kpOnARTRoutineVLLast12Months(Integer kpType) {
+    public CohortDefinition kpOnARTWithVLLast12Months(Integer kpType) {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("keyPop", ReportUtils.map(kpByKPType(kpType), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("txpvlsDenominatorRoutine", ReportUtils.map(txpvlsDenominatorRoutine(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("keyPop AND txpvlsDenominatorRoutine");
-        return cd;
-    }
-
-    public CohortDefinition kpOnARTTargetedVLLast12Months(Integer kpType) {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("keyPop", ReportUtils.map(kpByKPType(kpType), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("txpvlsDenominatorTargeted", ReportUtils.map(txpvlsDenominatorTargeted(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("keyPop AND txpvlsDenominatorTargeted");
+        cd.addSearch("txpvlsDenominator", ReportUtils.map(txpvlsDenominator(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("keyPop AND txpvlsDenominator");
         return cd;
     }
 
@@ -4908,7 +4469,7 @@ public class DatimCohortLibrary {
      * A component of TxML
      * @return
      */
-    public CohortDefinition newOnARTAndNotTxCur() {
+   /* public CohortDefinition newOnARTAndNotTxCur() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -4918,20 +4479,7 @@ public class DatimCohortLibrary {
         cd.setCompositionString("newlyStartedArt AND NOT txcurr");
         return cd;
     }
-
-    /**
-     * Number of ART patients with no clinical contact since their last expected contact
-     * @return
-     */
-    public CohortDefinition currentOnARTAtStartIitAtEndOfReportingPeriod() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("currentOnARTAtStartOfReportingPeriod", ReportUtils.map(currentOnARTAtStartOfReportingPeriod(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("currentlyOnART", ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("currentOnARTAtStartOfReportingPeriod AND NOT currentlyOnART");
-        return cd;
-    }
+*/
 
     public CohortDefinition txCurrThisPeriodNotTXCurrPreviousPeriod() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -5409,25 +4957,6 @@ public class DatimCohortLibrary {
     }
 
     /**
-     *Proportion of  clients who have a hiv test documented in the EMR
-     * Composition component - documented tested
-     * @return
-     */
-    public CohortDefinition clientsWithDocumentedTest() {
-
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts\n" +
-                "where hts.voided =0 and hts.visit_date between date(:startDate) and date(:endDate) group by hts.patient_id;";
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("DOCUMENTED_TESTED");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Clients who have a hiv test documented in the EMR");
-        return cd;
-
-    }
-
-    /**
      *Proportion of Children 1-14 yrs with reported Negative status and without any documented status in EMR
      * HTS_INDEX_DOCUMENTED_NEGATIVE Datim indicator
      * Composition startedOnART + prevOnIPTandCompleted
@@ -5453,24 +4982,6 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Number of Contacts tested through Index Services");
-        return cd;
-
-    }
-
-    /*HTS_RECENT Persons aged ≥15 years newly diagnosed with HIV-1 infection who have a test for recent infection */
-    public CohortDefinition recentHIVInfections() {
-
-        String sqlQuery = "select hts.patient_id from kenyaemr_etl.etl_hts_test hts\n" +
-                "inner join kenyaemr_etl.etl_patient_demographics d\n" +
-                "on d.patient_id = hts.patient_id and YEAR(:startDate)-YEAR(d.DOB)>= 15\n" +
-                "where hts.final_test_result = \"Positive\" group by hts.patient_id having mid(min(concat(hts.visit_date,hts.patient_id)),1,10) > :startDate;";
-
-        SqlCohortDefinition cd = new SqlCohortDefinition();
-        cd.setName("HTS_RECENT");
-        cd.setQuery(sqlQuery);
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.setDescription("Persons ≥15 years newly diagnosed with HIV-1 infection");
         return cd;
 
     }
@@ -5503,32 +5014,69 @@ public class DatimCohortLibrary {
 
     }
 
-    /*Number Tested Negative PMTCT services Post ANC-1 (including labour and delivery and BF)*/
-    public CohortDefinition negativePMTCTPostANC1() {
+    /**
+     * Number Tested Negative PMTCT services Post ANC-1 (Breastfeeding)
+     * @return
+     */
+    public CohortDefinition negativePMTCTPostANC1PregnantAndLabourAndDelivery() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("testedNegativePmtctPostANC1", ReportUtils.map(testedNegativePmtctPostANC1(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedNegativePmtctPostANC1BreastFeeding", ReportUtils.map(testedNegativePmtctPostANC1BreastFeeding(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("testedIndexTesting", ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("testedSocialNetworks", ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("testedSTIClinic", ReportUtils.map(testedSTIClinic(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("testedNegativePmtctPostANC1 AND NOT (testedIndexTesting OR testedSocialNetworks OR testedSTIClinic)");
+        cd.addSearch("testedNegativePmtctPostANC1PregLabourAndDelivery", ReportUtils.map(testedNegativePmtctPostANC1PregLabourAndDelivery(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("testedNegativePmtctPostANC1PregLabourAndDelivery AND NOT (testedIndexTesting OR testedSocialNetworks OR testedSTIClinic OR testedNegativePmtctPostANC1BreastFeeding)");
         return cd;
-
     }
-
-    /*Number Tested Positive PMTCT services Post ANC-1 (including labour and delivery and BF)*/
-    public CohortDefinition positivePMTCTPostANC1() {
+    /**
+     * Number Tested Negative PMTCT services Post ANC-1 (Breastfeeding)
+     * @return
+     */
+    public CohortDefinition negativePMTCTPostANC1Breastfeeding() {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("testedPositivePmtctPostANC1", ReportUtils.map(testedPositivePmtctPostANC1(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedNegativePmtctPostANC1BreastFeeding", ReportUtils.map(testedNegativePmtctPostANC1BreastFeeding(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("testedIndexTesting", ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("testedSocialNetworks", ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("testedSTIClinic", ReportUtils.map(testedSTIClinic(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("testedPositivePmtctPostANC1 AND NOT (testedIndexTesting OR testedSocialNetworks OR testedSTIClinic)");
+        cd.addSearch("testedNegativePmtctPostANC1PregLabourAndDelivery", ReportUtils.map(testedNegativePmtctPostANC1PregLabourAndDelivery(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("testedNegativePmtctPostANC1BreastFeeding AND NOT (testedIndexTesting OR testedSocialNetworks OR testedSTIClinic or testedNegativePmtctPostANC1PregLabourAndDelivery)");
         return cd;
-
+    }
+    /**
+     * Number Tested Positive PMTCT services Post ANC-1 (Breastfeeding)
+     * @return
+     */
+    public CohortDefinition positivePMTCTPostANC1PregnantAndLabourAndDelivery() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedPositivePmtctPostANC1BreastFeeding", ReportUtils.map(testedPositivePmtctPostANC1BreastFeeding(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting", ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSocialNetworks", ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSTIClinic", ReportUtils.map(testedSTIClinic(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedPositivePmtctPostANC1PregLabourAndDelivery", ReportUtils.map(testedPositivePmtctPostANC1PregLabourAndDelivery(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("testedPositivePmtctPostANC1PregLabourAndDelivery AND NOT (testedIndexTesting OR testedSocialNetworks OR testedSTIClinic OR testedPositivePmtctPostANC1BreastFeeding)");
+        return cd;
+    }
+    /**
+     * Number Tested Positive PMTCT services Post ANC-1 (Breastfeeding)
+     * @return
+     */
+    public CohortDefinition positivePMTCTPostANC1Breastfeeding() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("testedPositivePmtctPostANC1BreastFeeding", ReportUtils.map(testedPositivePmtctPostANC1BreastFeeding(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedIndexTesting", ReportUtils.map(testedIndexTesting(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSocialNetworks", ReportUtils.map(testedSocialNetworks(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedSTIClinic", ReportUtils.map(testedSTIClinic(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("testedPositivePmtctPostANC1PregLabourAndDelivery", ReportUtils.map(testedPositivePmtctPostANC1PregLabourAndDelivery(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("testedPositivePmtctPostANC1BreastFeeding AND NOT (testedIndexTesting OR testedSocialNetworks OR testedSTIClinic or testedPositivePmtctPostANC1PregLabourAndDelivery)");
+        return cd;
     }
 
     /**
@@ -5613,24 +5161,123 @@ public class DatimCohortLibrary {
         cd.setCompositionString("txcurr AND tca6MonthsAndAbove");
         return cd;
     }
+
+    /**
+     * Baseline CD4 < 200
+     * @return
+     */
+    public CohortDefinition baselineCD4Under200() {
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select a.patient_id\n" +
+                "from (select x.patient_id,\n" +
+                "             mid(min(concat(coalesce(date(date_test_requested), date(visit_date)),\n" +
+                "                            if(lab_test = 167718 and test_result = 1254, '>200',\n" +
+                "                               if(lab_test = 167718 and test_result = 167717, '<=200',\n" +
+                "                                  if(lab_test = 5497, test_result, ''))),\n" +
+                "                            '')),\n" +
+                "                 11) as baseline_cd4\n" +
+                "      from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "      where lab_test in (167718, 5497) and date(x.date_test_requested) <= date(:endDate)\n" +
+                "      GROUP BY x.patient_id\n" +
+                "      having baseline_cd4 < 200\n" +
+                "          or baseline_cd4 = '<=200') a;";
+        cd.setName("baselineCD4Under200");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Baseline CD4 < 200");
+        return cd;
+    }
+    /**
+     * Baseline CD4 > 200
+     * @return
+     */
+    public CohortDefinition baselineCD4200AndAbove() {
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select a.patient_id\n" +
+                "from (select x.patient_id,\n" +
+                "             mid(min(concat(coalesce(date(date_test_requested), date(visit_date)),\n" +
+                "                            if(lab_test = 167718 and test_result = 1254, '>200',\n" +
+                "                               if(lab_test = 167718 and test_result = 167717, '<=200',\n" +
+                "                                  if(lab_test = 5497, test_result, ''))),\n" +
+                "                            '')),\n" +
+                "                 11) as baseline_cd4\n" +
+                "      from kenyaemr_etl.etl_laboratory_extract x\n" +
+                "      where lab_test in (167718, 5497)\n" +
+                "        and date(x.date_test_requested) <= date(:endDate)\n" +
+                "      GROUP BY x.patient_id\n" +
+                "      having baseline_cd4 >= 200\n" +
+                "          or baseline_cd4 = '>200') a;";
+        cd.setName("baselineCD4200AndAbove");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Baseline CD4 > 200");
+        return cd;
+    }
+
+    /**
+     * Children aged under 5 years
+     * @return
+     */
+    public CohortDefinition childrenAgedUnder5Years() {
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        String sqlQuery = "select d.patient_id from kenyaemr_etl.etl_patient_demographics d where timestampdiff(YEAR, date(d.dob),date(:endDate)) < 5;";
+        cd.setName("childrenAgedUnder5Years");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Children aged under 5 years");
+        return cd;
+    }
+    /**
+     * Newly Started ART baseline CD4 < 200
+     * @return
+     */
+    public CohortDefinition newlyStartedARTCD4Under200() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("newlyStartedArt", ReportUtils.map(startedOnART(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("baselineCD4Under200", ReportUtils.map(baselineCD4Under200(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("newlyStartedArt AND baselineCD4Under200");
+        return cd;
+    }
+
+    /**
+     * Newly Started ART baseline CD4 >= 200
+     * @return
+     */
+    public CohortDefinition newlyStartedARTCD4200AndAbove() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("newlyStartedArt", ReportUtils.map(startedOnART(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("baselineCD4200AndAbove", ReportUtils.map(baselineCD4200AndAbove(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("newlyStartedArt AND baselineCD4200AndAbove");
+        return cd;
+    }
+
+    /**
+     * Newly Started ART baseline CD4 Unknown
+     * @return
+     */
+    public CohortDefinition newlyStartedARTCD4Unknown() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("newlyStartedArt", ReportUtils.map(startedOnART(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("baselineCD4Under200", ReportUtils.map(baselineCD4Under200(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("baselineCD4200AndAbove", ReportUtils.map(baselineCD4200AndAbove(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("childrenAgedUnder5Years", ReportUtils.map(childrenAgedUnder5Years(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("newlyStartedArt AND (childrenAgedUnder5Years OR NOT (baselineCD4200AndAbove OR baselineCD4200AndAbove))");
+        return cd;
+    }
     /**
      * TX_PVLS NUMERATOR BY KP TEST AND KP TYPE
      * @param kpType
      * @return
      */
-    /**
-     *TX_NEW Patients started ART within the reporting period
-     * @return
-     */
-    public CohortDefinition txNew() {
-        CompositionCohortDefinition cd = new CompositionCohortDefinition();
-        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("newlyStartedArt", ReportUtils.map(startedOnART(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("newlyStartedArt");
-        return cd;
-    }
-
     public CohortDefinition kpNewlyStartedART(Integer kpType) {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -5994,18 +5641,55 @@ public class DatimCohortLibrary {
         cd.setCompositionString("prepCT AND breastfeedingPatientInPrEPFollowup");
         return cd;
     }
-
+    /**
+     * Returned and on Oral PrEP
+     * @return
+     */
+    public CohortDefinition prepCTOnOralPrEP() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("prepCT", ReportUtils.map(prepCT(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("onOralPrEP", ReportUtils.map(onOralPrEP(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("prepCT AND onOralPrEP");
+        return cd;
+    }
+    /**
+     * Returned and on CAB-LA Injectable PrEP
+     * @return
+     */
+    public CohortDefinition prepCTOnCABLAInjectablePrEP() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("prepCT", ReportUtils.map(prepCT(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("onCABLAInjectablePrEP", ReportUtils.map(onCABLAInjectablePrEP(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("prepCT AND onCABLAInjectablePrEP");
+        return cd;
+    }
+    /**
+     * Returned and on other forms of PrEP
+     * @return
+     */
+    public CohortDefinition prepCTOnOtherPrEP() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("prepCT", ReportUtils.map(prepCT(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("onCABLAInjectablePrEP", ReportUtils.map(onCABLAInjectablePrEP(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("onOralPrEP", ReportUtils.map(onOralPrEP(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("prepCT AND NOT (onOralPrEP OR onCABLAInjectablePrEP)");
+        return cd;
+    }
     /**
      * Number of individuals who were newly enrolled on oral antiretroviral pre-exposure prophylaxis (PrEP) to prevent HIV infection in the reporting period
      * PrEP_NEWLY_ENROLLED indicator
      * @return
      */
     public CohortDefinition newlyEnrolledInPrEP() {
-
         String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_prep_enrolment e\n" +
                 "group by e.patient_id\n" +
                 "having min(date(e.visit_date)) between date_sub(date(:endDate) , interval 3 MONTH) and date(:endDate);";
-
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("PrEP_NEWLY_ENROLLED");
         cd.setQuery(sqlQuery);
@@ -6013,9 +5697,127 @@ public class DatimCohortLibrary {
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.setDescription("Newly enrolled on PrEP");
         return cd;
-
+    }
+    public CohortDefinition onOralPrEP() {
+        String sqlQuery = "select a.patient_id\n" +
+                "from (select patient_id, mid(max(concat(latest_date, prep_type)), 11) as prep_type\n" +
+                "      from (select f.patient_id                                          as patient_id,\n" +
+                "                   max(f.visit_date)                                     as latest_date,\n" +
+                "                   mid(max(concat(date(f.visit_date), f.prep_type)), 11) as prep_type\n" +
+                "            from kenyaemr_etl.etl_prep_followup f\n" +
+                "            where date(f.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "            group by f.patient_id\n" +
+                "            union all\n" +
+                "            select r.patient_id                                          as patient_id,\n" +
+                "                   max(r.visit_date)                                     as latest_date,\n" +
+                "                   mid(max(concat(date(r.visit_date), r.prep_type)), 11) as prep_type\n" +
+                "            from kenyaemr_etl.etl_prep_monthly_refill r\n" +
+                "            where date(r.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "            group by r.patient_id) a\n" +
+                "      group by patient_id\n" +
+                "      having prep_type = 'Daily Oral PrEP') a;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("onOralPrEP");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("On Oral PrEP");
+        return cd;
+    }
+    public CohortDefinition onCABLAInjectablePrEP() {
+        String sqlQuery = "select a.patient_id\n" +
+                "from (select patient_id, mid(max(concat(latest_date, prep_type)), 11) as prep_type\n" +
+                "      from (select f.patient_id                                          as patient_id,\n" +
+                "                   max(f.visit_date)                                     as latest_date,\n" +
+                "                   mid(max(concat(date(f.visit_date), f.prep_type)), 11) as prep_type\n" +
+                "            from kenyaemr_etl.etl_prep_followup f\n" +
+                "            where date(f.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "            group by f.patient_id\n" +
+                "            union all\n" +
+                "            select r.patient_id                                          as patient_id,\n" +
+                "                   max(r.visit_date)                                     as latest_date,\n" +
+                "                   mid(max(concat(date(r.visit_date), r.prep_type)), 11) as prep_type\n" +
+                "            from kenyaemr_etl.etl_prep_monthly_refill r\n" +
+                "            where date(r.visit_date) between date(:startDate) and date(:endDate)\n" +
+                "            group by r.patient_id) a\n" +
+                "      group by patient_id\n" +
+                "      having prep_type = 'CAB-LA') a;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("onCABLAInjectablePrEP");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("On CAB-LA Injectable PrEP");
+        return cd;
+    }
+    /**
+     * Newly enrolled on PrEP and pregnant
+     * @return
+     */
+    public CohortDefinition newlyEnrolledOnPrEPPregnant() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("newlyEnrolledInPrEP", ReportUtils.map(newlyEnrolledInPrEP(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("pregnantPatientInPrEPFollowup", ReportUtils.map(pregnantPatientInPrEPFollowup(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("newlyEnrolledInPrEP AND pregnantPatientInPrEPFollowup");
+        return cd;
+    }
+    /**
+     * Newly enrolled on PrEP and breastfeeding
+     * @return
+     */
+    public CohortDefinition newlyEnrolledInPrEPBreastFeeding() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("newlyEnrolledInPrEP", ReportUtils.map(newlyEnrolledInPrEP(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("breastfeedingPatientInPrEPFollowup", ReportUtils.map(breastfeedingPatientInPrEPFollowup(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("newlyEnrolledInPrEP AND breastfeedingPatientInPrEPFollowup");
+        return cd;
+    }
+    /**
+     * Newly enrolled on oral PrEP
+     * @return
+     */
+    public CohortDefinition newlyEnrolledOnOralPrEP() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("newlyEnrolledInPrEP", ReportUtils.map(newlyEnrolledInPrEP(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("onOralPrEP", ReportUtils.map(onOralPrEP(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("newlyEnrolledInPrEP AND onOralPrEP");
+        return cd;
     }
 
+    /**
+     * Newly enrolled on CAB-LA Injectable PrEP
+     * @return
+     */
+    public CohortDefinition newlyEnrolledOnCABLAInjectablePrEP() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("newlyEnrolledInPrEP", ReportUtils.map(newlyEnrolledInPrEP(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("onCABLAInjectablePrEP", ReportUtils.map(onCABLAInjectablePrEP(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("newlyEnrolledInPrEP AND onCABLAInjectablePrEP");
+        return cd;
+    }
+
+    /**
+     * Newly enrolled on other forms of PrEP
+     * @return
+     */
+    public CohortDefinition newlyEnrolledOnOtherPrEP() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("newlyEnrolledInPrEP", ReportUtils.map(newlyEnrolledInPrEP(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("onCABLAInjectablePrEP", ReportUtils.map(onCABLAInjectablePrEP(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("onOralPrEP", ReportUtils.map(onOralPrEP(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("newlyEnrolledInPrEP AND NOT (onCABLAInjectablePrEP OR onOralPrEP)");
+        return cd;
+    }
     /**
      *Proportion of ART patients who started on a standard course of TB Preventive Treatment (TPT) in the previous reporting period who completed therapy
      * TB_PREV_COM Datim indicator
