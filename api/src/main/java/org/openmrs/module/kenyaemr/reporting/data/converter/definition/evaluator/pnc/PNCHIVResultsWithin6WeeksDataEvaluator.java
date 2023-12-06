@@ -36,13 +36,13 @@ public class PNCHIVResultsWithin6WeeksDataEvaluator implements EncounterDataEval
         EvaluatedEncounterData c = new EvaluatedEncounterData(definition, context);
 
         String qry = "select a.encounter_id,\n" +
-                "       if(timestampdiff(WEEK, a.date_of_delivery, a.visit_date) <= 6 and tested_at_pnc is not null, 'Yes',\n" +
+                "       if(timestampdiff(WEEK, a.date_of_delivery, a.visit_date) <= 6 and tested_at_pnc in ('Positive', 'Negative'), 'Yes',\n" +
                 "          'No') as tested_within_6_weeks\n" +
                 "from (select v.patient_id,\n" +
                 "             v.encounter_id,\n" +
-                "             coalesce(nullif(v.visit_date, ''), nullif(t.visit_date, ''))               as visit_date,\n" +
-                "             coalesce(nullif(d.date_of_delivery, ''), nullif(v.delivery_date, ''))      as date_of_delivery,\n" +
-                "             coalesce(nullif(v.final_test_result, ''), nullif(t.final_test_result, '')) as tested_at_pnc\n" +
+                "             coalesce(v.visit_date, t.visit_date)               as visit_date,\n" +
+                "             coalesce(d.date_of_delivery, v.delivery_date)      as date_of_delivery,\n" +
+                "             coalesce(v.final_test_result, t.final_test_result) as tested_at_pnc\n" +
                 "      from kenyaemr_etl.etl_mch_postnatal_visit v\n" +
                 "               left join (select d.patient_id,\n" +
                 "                                 mid(max(concat(d.visit_date, date(d.date_of_delivery))), 11) as date_of_delivery\n" +
