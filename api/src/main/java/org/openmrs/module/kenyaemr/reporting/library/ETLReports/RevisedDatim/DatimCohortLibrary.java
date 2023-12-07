@@ -5296,8 +5296,8 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition tcaUnder3Months() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select f.patient_id from (select f.patient_id,timestampdiff(MONTH,max(f.visit_date),mid(max(concat(f.visit_date,f.next_appointment_date)),11))  months_tca from kenyaemr_etl.etl_patient_hiv_followup f\n" +
-                "where f.visit_date <=date(:endDate) and f.next_appointment_date is not null group by f.patient_id having months_tca < 3)f;";
+        String sqlQuery = "select f.patient_id from (select f.patient_id,timestampdiff(DAY,max(f.visit_date),mid(max(concat(f.visit_date,f.next_appointment_date)),11)) days_tca from kenyaemr_etl.etl_patient_hiv_followup f\n" +
+                "    where f.visit_date <= date (:endDate) and f.next_appointment_date is not null group by f.patient_id having days_tca < 90) f;";
         cd.setName("TX_CURR_UNDER_3_MONTHS_MMD");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -5313,8 +5313,8 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition tca3To5Months() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select f.patient_id from (select f.patient_id,timestampdiff(MONTH,max(f.visit_date),mid(max(concat(f.visit_date,f.next_appointment_date)),11))  months_tca from kenyaemr_etl.etl_patient_hiv_followup f\n" +
-                "where f.visit_date <=date(:endDate) and f.next_appointment_date is not null group by f.patient_id having months_tca between 3 and 5)f;";
+        String sqlQuery = "select f.patient_id from (select f.patient_id,timestampdiff(DAY,max(f.visit_date),mid(max(concat(f.visit_date,f.next_appointment_date)),11)) days_tca from kenyaemr_etl.etl_patient_hiv_followup f\n" +
+                            "where f.visit_date <= date(:endDate) and f.next_appointment_date is not null group by f.patient_id having days_tca between 90 and 179)f;";
         cd.setName("TX_CURR_3_TO_5_MONTHS_TCA");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -5330,8 +5330,8 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition tca6MonthsAndAbove() {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select f.patient_id from (select f.patient_id,timestampdiff(MONTH,max(f.visit_date),mid(max(concat(f.visit_date,f.next_appointment_date)),11))  months_tca from kenyaemr_etl.etl_patient_hiv_followup f\n" +
-                "where f.visit_date <=date(:endDate) and f.next_appointment_date is not null group by f.patient_id having months_tca >= 6)f;";
+        String sqlQuery = "select f.patient_id from (select f.patient_id,timestampdiff(DAY,max(f.visit_date),mid(max(concat(f.visit_date,f.next_appointment_date)),11)) days_tca from kenyaemr_etl.etl_patient_hiv_followup f\n" +
+                            "where f.visit_date <= date (:endDate) and f.next_appointment_date is not null group by f.patient_id having days_tca >= 180) f;";
         cd.setName("TX_CURR_6_AND_ABOVE_MONTHS_TCA");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
