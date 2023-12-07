@@ -350,15 +350,13 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("KP_PREV_FSW_DECLINED_HTS", "Declined testing and/or referral",ReportUtils.map(datimIndicators.kpPrevDeclinedTesting("FSW"), indParams), "");
         cohortDsd.addColumn("KP_PREV_PWID_DECLINED_HTS", "Declined testing and/or referral",ReportUtils.map(datimIndicators.kpPrevDeclinedTesting("PWID"), indParams),"");
         cohortDsd.addColumn("KP_PREV_PRISONS_CLOSED_SETTINGS_DECLINED_HTS", "Declined testing and/or referral",ReportUtils.map(datimIndicators.kpPrevDeclinedTesting("People in prison and other closed settings"), indParams), "");
-
-        // TODO: 02/03/2023 : Fix max_packet size overflow error in mysql caused by pp_prev queries. Once done uncomment PP_PREV Indicators
         /**
          * PP_PREV
          */
         /**
          * Age/sex disaggregation
          */
-   /*     EmrReportingUtils.addRow(cohortDsd, "PP_PREV", "Reached with individual and/or small group-level HIV prevention interventions designed for the target population", ReportUtils.map(datimIndicators.ppPrev(), indParams), ppAgeGenderDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19"));
+        EmrReportingUtils.addRow(cohortDsd, "PP_PREV", "Reached with individual and/or small group-level HIV prevention interventions designed for the target population", ReportUtils.map(datimIndicators.ppPrev(), indParams), ppAgeGenderDisaggregation, Arrays.asList("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19"));
 
         //PP_PREV by PP type by Testing services
         //Known Positive
@@ -376,8 +374,8 @@ public class DatimReportBuilder extends AbstractReportBuilder {
         // Priority population type
         cohortDsd.addColumn("PP_PREV_FISHING_COMMUNITIES", "Reached with individual and/or small group-level HIV prevention interventions designed for the target population",ReportUtils.map(datimIndicators.ppPrevByType("Fisher Folk"), indParams),"");
         cohortDsd.addColumn("PP_PREV_MOBILE_POPULATION", "Reached with individual and/or small group-level HIV prevention interventions designed for the target population",ReportUtils.map(datimIndicators.ppPrevByType("Truck Driver"), indParams), "");
+        cohortDsd.addColumn("PP_PREV_MILITARY_AND_UNIFORMED_POPULATION", "Reached with individual and/or small group-level HIV prevention interventions designed for the target population",ReportUtils.map(datimIndicators.ppPrevByType("Military and other uniformed services"), indParams), "");
         cohortDsd.addColumn("PP_PREV_OTHER", "Reached with individual and/or small group-level HIV prevention interventions (Prisoners))",ReportUtils.map(datimIndicators.ppPrevOther(), indParams), "");
-*/
         /*GEND_GBV
         Number of people receiving post-gender-based violence (GBV) clinical care based on the minimum package*/
         //1. Sexual violence (post-rape care)

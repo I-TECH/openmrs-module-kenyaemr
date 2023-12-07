@@ -1481,61 +1481,60 @@ public class DatimIndicatorLibrary {
     public CohortIndicator receivedPEP() {
         return cohortIndicator("Number of beneficiaries for post-exposure prophylaxis (PEP) Services", ReportUtils.<CohortDefinition>map(datimCohorts.receivedPEP(), "startDate=${startDate},endDate=${endDate}"));
     }
-    // TODO: 02/03/2023 : Fix max_packet size overflow error in mysql caused by pp_prev queries
     /**
      * Number of Priority populations reached with individual and/or small group-level HIV prevention interventions designed for the target population
      */
-/*    public CohortIndicator ppPrev() {
+    public CohortIndicator ppPrev() {
         return cohortIndicator("Number of PPs received prevention services",
                 ReportUtils.map(datimCohorts.ppPrev(), "startDate=${startDate},endDate=${endDate}"));
     }
 
-    *//**
+    /**
      * PP_PREV Priority populations known positive
      * @return
-     *//*
+     */
     public CohortIndicator ppPrevKnownPositive() {
         return cohortIndicator("PP_PREV Number of Priority populations known positive", ReportUtils.<CohortDefinition>map(datimCohorts.ppPrevKnownPositive(), "startDate=${startDate},endDate=${endDate}"));
     }
 
-    *//**
+    /**
      * PP_PREV Priority populations newly tested or referred
      * @return
-     *//*
+     */
     public CohortIndicator ppPrevNewlyTestedOrReferred() {
         return cohortIndicator("PP_PREV Priority populations newly tested or referred", ReportUtils.<CohortDefinition>map(datimCohorts.ppPrevNewlyTestedOrReferred(), "startDate=${startDate},endDate=${endDate}"));
     }
 
-    *//**
+    /**
      * PP_PREV Priority populations declined testing
      * @return
-     *//*
+     */
     public CohortIndicator ppPrevDeclinedTesting() {
         return cohortIndicator("PP_PREV Priority populations declined testing", ReportUtils.<CohortDefinition>map(datimCohorts.ppPrevDeclinedTesting(), "startDate=${startDate},endDate=${endDate}"));
     }
 
-    *//**
+    /**
      * PP_PREV Priority populations testing not required based on HTS screening
      * @return
-     *//*
+     */
     public CohortIndicator ppPrevTestNotRequired() {
         return cohortIndicator("PP_PREV Priority populations testing not required based on HTS screening", ReportUtils.<CohortDefinition>map(datimCohorts.ppPrevTestNotRequired(), "startDate=${startDate},endDate=${endDate}"));
     }
 
-    *//**
+    /**
      * PP_PREV by priority population type
      * @param ppType
      * @return
-     *//*
+     */
     public CohortIndicator ppPrevByType(String ppType) {
         return cohortIndicator("PP_PREV by priority population type", ReportUtils.<CohortDefinition>map(datimCohorts.ppPrevByType(ppType), "startDate=${startDate},endDate=${endDate}"));
     }
 
-    *//**
+    /**
      * PP_PREV Other priority pops
      * @return
-     *//*
+     */
     public CohortIndicator ppPrevOther() {
         return cohortIndicator("PP_PREV Other", ReportUtils.<CohortDefinition>map(datimCohorts.ppPrevOther(), "startDate=${startDate},endDate=${endDate}"));
-    }*/
+    }
 }
