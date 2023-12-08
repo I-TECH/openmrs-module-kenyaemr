@@ -4018,7 +4018,8 @@ public class DatimCohortLibrary {
         cd.addSearch("childrenAgedUnder5Years", ReportUtils.map(childrenAgedUnder5Years(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("cd4CountBelow200AfterIITOver3Months", ReportUtils.map(cd4CountBelow200AfterIITOver3Months(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("cd4Count200AndAboveAfterIITOver3Months", ReportUtils.map(cd4Count200AndAboveAfterIITOver3Months(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("txRTT AND (childrenAgedUnder5Years OR NOT (cd4CountBelow200AfterIITOver3Months OR cd4Count200AndAboveAfterIITOver3Months))");
+        cd.addSearch("txRTTIneligibleForCD4", ReportUtils.map(txRTTIneligibleForCD4(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txRTT AND (childrenAgedUnder5Years OR NOT (cd4CountBelow200AfterIITOver3Months OR cd4Count200AndAboveAfterIITOver3Months OR txRTTIneligibleForCD4))");
         return cd;
     }
     /**
