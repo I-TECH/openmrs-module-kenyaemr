@@ -5087,9 +5087,9 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition kpByKPType(Integer kpType) {
         SqlCohortDefinition cd = new SqlCohortDefinition();
-        String sqlQuery = "select kp.patient_id from (select fup.patient_id,mid(max(concat(fup.visit_date,fup.key_population_type)),11) as kp_type " +
-                "from kenyaemr_etl.etl_patient_hiv_followup fup where fup.visit_date <= date(:endDate) group by fup.patient_id\n" +
-                "having kp_type = " + kpType + ")kp;";
+        String sqlQuery = "select c.client_id from kenyaemr_etl.etl_contact c\n" +
+                "    where date (c.visit_date) <= date (:endDate)\n" +
+                "    group by c.client_id having mid(max(concat(date (c.visit_date), c.key_population_type)), 11) = " + kpType + ";";
         cd.setName("kpByKPType");
         cd.setQuery(sqlQuery);
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));

@@ -78,10 +78,9 @@ public class ETLMoh731GreenCardCohortLibrary {
         CompositionCohortDefinition cd = new CompositionCohortDefinition();
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-        cd.addSearch("enrolledKPs",ReportUtils.map(enrolledKPs(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("kpsWithHIVFollowupVisit",ReportUtils.map(kpsWithHIVFollowupVisit(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("hivEnrollment", ReportUtils.map(hivEnrollment(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("(enrolledKPs or kpsWithHIVFollowupVisit) AND hivEnrollment");
+        cd.setCompositionString("kpsWithHIVFollowupVisit AND hivEnrollment");
         return cd;
     }
     /**
@@ -169,9 +168,8 @@ public class ETLMoh731GreenCardCohortLibrary {
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("kpsWithHIVFollowupVisit",ReportUtils.map(kpsWithHIVFollowupVisit(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("enrolledKPs",ReportUtils.map(enrolledKPs(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("startedOnART", ReportUtils.map(startedOnART(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("(enrolledKPs or kpsWithHIVFollowupVisit) AND startedOnART");
+        cd.setCompositionString("kpsWithHIVFollowupVisit AND startedOnART");
         return cd;
     }
 
@@ -250,9 +248,8 @@ public class ETLMoh731GreenCardCohortLibrary {
         cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
         cd.addParameter(new Parameter("endDate", "End Date", Date.class));
         cd.addSearch("kpsWithHIVFollowupVisit",ReportUtils.map(kpsWithHIVFollowupVisit(), "startDate=${startDate},endDate=${endDate}"));
-        cd.addSearch("enrolledKPs",ReportUtils.map(enrolledKPs(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("currentlyOnArt", ReportUtils.map(currentlyOnArt(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("(enrolledKPs or kpsWithHIVFollowupVisit) AND currentlyOnArt");
+        cd.setCompositionString("kpsWithHIVFollowupVisit AND currentlyOnArt");
         return cd;
     }
     public CohortDefinition revisitsArt() {
