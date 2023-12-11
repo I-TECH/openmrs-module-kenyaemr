@@ -1696,7 +1696,7 @@ public class DatimCohortLibrary {
         String sqlQuery = "\n" +
                 "select patient_id\n" +
                 "from kenyaemr_etl.etl_tb_screening s\n" +
-                "where s.genexpert_ordered = 12\n" +
+                "where s.chest_xray_ordered = 12\n" +
                 "  and s.visit_date between date_sub(date(:endDate), INTERVAL 6 MONTH) and date(:endDate)\n" +
                 "group by s.patient_id;";
         SqlCohortDefinition cd = new SqlCohortDefinition();
