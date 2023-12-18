@@ -6083,7 +6083,7 @@ public class DatimCohortLibrary {
      * @return
      */
     public CohortDefinition kpPrevOfferedHTSServices() {
-        String sqlQuery = "select v.client_id from kenyaemr_etl.etl_clinical_visit v where timestampdiff(MONTH,v.visit_date,date(:endDate)) <3 and v.counselled_for_hiv = 'Yes' and v.hiv_tested in ('Yes','Declined','Referred for testing');";
+        String sqlQuery = "select v.client_id from kenyaemr_etl.etl_clinical_visit v where timestampdiff(MONTH,v.visit_date,date(:endDate)) <3 and v.hiv_tested = 'Yes';";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("kpPrevOfferedHTSServices");
         cd.setQuery(sqlQuery);
@@ -6093,6 +6093,20 @@ public class DatimCohortLibrary {
         return cd;
     }
 
+    /**
+     * KPs self-tested within the last 3 months
+     * @return
+     */
+    public CohortDefinition kpPrevOfferedSelfTestServices() {
+        String sqlQuery = "select v.client_id from kenyaemr_etl.etl_clinical_visit v where timestampdiff(MONTH,v.visit_date,date(:endDate)) <3 and v.self_use_kits > 0;";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("kpPrevOfferedSelfTestServices");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("KP self tested");
+        return cd;
+    }
     /**
      * KPs in KP program who were newly tested/referred for HTS within the last 3 months
      * @return
@@ -6116,11 +6130,7 @@ public class DatimCohortLibrary {
      */
     public CohortDefinition kpPrevReceivedService() {
         String sqlQuery = "select v.client_id from kenyaemr_etl.etl_clinical_visit v\n" +
-                "       where (v.condom_use_education = 'Yes' or v.post_abortal_care = 'Yes' or v.female_condoms_no > 0 or v.male_condoms_no > 0 or v.lubes_no > 0 or v.sti_screened = 'Y' or v.sti_treated ='Yes' or v.sti_referred = 'Yes'\n" +
-                "    or v.linked_to_art='Yes' or v.tb_screened='Y' or v.tb_treated = 'Y' or v.tb_referred = 'Yes'\n" +
-                "          or (v.hepatitisB_screened = 'Y' and v.hepatitisB_treated = 'Vaccinated') or v.hepatitisB_referred ='Yes'\n" +
-                "          or (v.hepatitisC_screened = 'Y' and v.hepatitisC_treated = 'Vaccinated') or v.hepatitisC_referred ='Yes'\n" +
-                "          or (v.fp_screened = 'Yes' and v.fp_eligibility = 'Eligible' and v.fp_treated in ('Y','on-going'))) and\n" +
+                "       where (v.female_condoms_no > 0 or v.male_condoms_no > 0 or v.lubes_no > 0 or prep_treated = 'Y') and \n" +
                 "             v.visit_date between (CASE MONTH(date(:startDate)) when 5 then replace(date(:startDate), MONTH(date(:startDate)),4) when 6 then replace(date(:startDate), MONTH(date(:startDate)),4)\n" +
                 "    when 7 then replace(date(:startDate), MONTH(date(:startDate)),4) when 8 then replace(date(:startDate), MONTH(date(:startDate)),4) when 9 then replace(date(:startDate), MONTH(date(:startDate)),4) when 11 then replace(date(:startDate), MONTH(date(:startDate)),10)\n" +
                 "    when 12 then replace(date(:startDate), MONTH(date(:startDate)),10) when 1 then (replace('" + startOfYear + "', '0000',YEAR(date_sub(date(:startDate), INTERVAL 1 YEAR))))\n" +
@@ -6200,8 +6210,9 @@ public class DatimCohortLibrary {
         cd.addSearch("kpProgramByKpType", ReportUtils.map(kpProgramByKpType(kpType), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("kpPrevReceivedService", ReportUtils.map(kpPrevReceivedService(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("kpPrevOfferedHTSServices", ReportUtils.map(kpPrevOfferedHTSServices(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("kpPrevOfferedSelfTestServices", ReportUtils.map(kpPrevOfferedSelfTestServices(), "startDate=${startDate},endDate=${endDate}"));
         cd.addSearch("kpPrevKnownPositiveSql", ReportUtils.map(kpPrevKnownPositiveSql(), "startDate=${startDate},endDate=${endDate}"));
-        cd.setCompositionString("(kpPrevCurrentPeriod AND NOT kpPrevPreviousPeriod) AND kpProgramByKpType AND ((kpPrevReceivedService AND kpPrevOfferedHTSServices) OR (kpPrevReceivedService AND kpPrevKnownPositiveSql))");
+        cd.setCompositionString("(kpPrevCurrentPeriod AND NOT kpPrevPreviousPeriod) AND kpProgramByKpType AND ((kpPrevReceivedService AND (kpPrevOfferedHTSServices OR kpPrevOfferedSelfTestServices)) OR (kpPrevReceivedService AND kpPrevKnownPositiveSql))");
         return cd;
     }
 
