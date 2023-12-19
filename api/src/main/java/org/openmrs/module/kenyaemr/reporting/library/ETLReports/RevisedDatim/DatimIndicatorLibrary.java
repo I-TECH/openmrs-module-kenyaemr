@@ -963,6 +963,15 @@ public class DatimIndicatorLibrary {
         return cohortIndicator("Number restarted Treatment during the reporting period", ReportUtils.<CohortDefinition>map(datimCohorts.txRTT(),
                 "startDate=${startDate},endDate=${endDate}"));
     }
+
+    /**
+     * TxCurr this period, not TXCurr previous period due to re-enrollment
+     * @return
+     */
+    public CohortIndicator txCurrMissingInPreviousPeriodTxCurrReenrollment() {
+        return cohortIndicator("Number txcurr this period and not in previous period due to re-enrollment", ReportUtils.<CohortDefinition>map(datimCohorts.txCurrMissingInPreviousPeriodTxCurrReenrollment(),
+                "startDate=${startDate},endDate=${endDate}"));
+    }
     /**
      * TNumber restarted Treatment during the reporting period with CD4 count <200
      * @return the indicator

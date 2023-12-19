@@ -15,7 +15,6 @@ import org.openmrs.module.kenyacore.report.builder.AbstractReportBuilder;
 import org.openmrs.module.kenyacore.report.builder.Builds;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.Datim.TXCurrLinelistIndicatorLibrary;
 import org.openmrs.module.kenyaemr.reporting.library.ETLReports.RevisedDatim.DatimIndicatorLibrary;
-import org.openmrs.module.kenyaemr.reporting.library.ETLReports.viralSuppression.ViralSuppressionIndicatorLibrary;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -24,7 +23,6 @@ import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -72,6 +70,7 @@ public class TXCurrMonthlyLinelistReportBuilder extends AbstractReportBuilder {
         cohortDsd.addColumn("New on ART", "", ReportUtils.map(datimIndicatorLibrary.txCurrThisPeriodNotTXCurrPreviousPeriodNewOnART(), indParams), "");
         cohortDsd.addColumn("Return to Care", "", ReportUtils.map(datimIndicatorLibrary.txRTT(), indParams), "");
         cohortDsd.addColumn("Transfer in", "", ReportUtils.map(suppressionIndicatorLibrary.txCurLinelistForPatientsPresentInCurrentButMissingInPreviousTrfInReport(), indParams), "");
+        cohortDsd.addColumn("Re-enrollment", "", ReportUtils.map(datimIndicatorLibrary.txCurrMissingInPreviousPeriodTxCurrReenrollment(), indParams), "");
         cohortDsd.addColumn("Number of patients present in the previous report but missing in the current report", "", ReportUtils.map(datimIndicatorLibrary.txML(), indParams), "");
         cohortDsd.addColumn("Died", "", ReportUtils.map(datimIndicatorLibrary.txmlPatientDied(), indParams), "");
         cohortDsd.addColumn("Lost to followup", "", ReportUtils.map(suppressionIndicatorLibrary.txCurLinelistForPatientsPresentInPreviousButMissingInCurrentLTFUReport(), indParams), "");

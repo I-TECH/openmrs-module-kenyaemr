@@ -10,7 +10,6 @@
 package org.openmrs.module.kenyaemr.reporting.library.ETLReports.RevisedDatim;
 
 import org.openmrs.module.kenyacore.report.ReportUtils;
-import org.openmrs.module.kenyaemr.reporting.data.converter.definition.KPTypeDataDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
@@ -3977,6 +3976,34 @@ public class DatimCohortLibrary {
     }
 
     /**
+     * Patient re-enrolled in HIV program
+     * @return
+     */
+    public CohortDefinition reenrolledInHIV() {
+        String sqlQuery = "select e.patient_id from kenyaemr_etl.etl_hiv_enrollment e where e.patient_type = 159833 and date(e.visit_date) between date(:startDate) and date(:endDate);";
+        SqlCohortDefinition cd = new SqlCohortDefinition();
+        cd.setName("reenrolledInHIV");
+        cd.setQuery(sqlQuery);
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.setDescription("Patients re-enrolled in HIV");
+        return cd;
+    }
+
+    /**
+     * TXRTT - Re-enrolled during the reporting period
+     * @return
+     */
+    public CohortDefinition txCurrMissingInPreviousPeriodTxCurrReenrollment() {
+        CompositionCohortDefinition cd = new CompositionCohortDefinition();
+        cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+        cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+        cd.addSearch("txCurrThisPeriodNotTXCurrPreviousPeriod", ReportUtils.map(txCurrThisPeriodNotTXCurrPreviousPeriod(), "startDate=${startDate},endDate=${endDate}"));
+        cd.addSearch("reenrolledInHIV", ReportUtils.map(reenrolledInHIV(), "startDate=${startDate},endDate=${endDate}"));
+        cd.setCompositionString("txCurrThisPeriodNotTXCurrPreviousPeriod AND reenrolledInHIV");
+        return cd;
+    }
+    /**
      * Number restarted Treatment during the reporting period with CD4 count <200
      * @return
      */
@@ -4434,7 +4461,7 @@ public class DatimCohortLibrary {
                 "                              join kenyaemr_etl.etl_patient_demographics p on p.patient_id = fup.patient_id\n" +
                 "                              join kenyaemr_etl.etl_hiv_enrollment e on fup.patient_id = e.patient_id\n" +
                 "                              inner join kenyaemr_etl.etl_drug_event de on e.patient_id = de.patient_id and de.program = 'HIV' and\n" +
-                "                                                                                date(date_started) < date(:startDate)\n" +
+                "                                                                                date(date_started) < date(:endDate)\n" +
                 "                              left outer JOIN\n" +
                 "                          (select patient_id,\n" +
                 "                                  coalesce(date(effective_discontinuation_date), visit_date) visit_date,\n" +
