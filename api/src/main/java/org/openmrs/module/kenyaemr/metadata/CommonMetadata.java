@@ -21,6 +21,7 @@ import org.openmrs.module.kenyaemr.datatype.LocationDatatype;
 import org.openmrs.module.metadatadeploy.bundle.AbstractMetadataBundle;
 import org.springframework.stereotype.Component;
 import org.openmrs.customdatatype.datatype.FreeTextDatatype;
+import org.openmrs.customdatatype.datatype.ConceptDatatype;
 
 import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.encounterType;
 import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.form;
@@ -156,6 +157,11 @@ public class CommonMetadata extends AbstractMetadataBundle {
 	public static final class _VisitAttributeType {
 		public static final String SOURCE_FORM = "8bfab185-6947-4958-b7ab-dfafae1a3e3d";
 		public static final String VISIT_QUEUE_NUMBER = "c61ce16f-272a-41e7-9924-4c555d0932c5";
+		public static final String PATIENT_TYPE_UUID = "3b9dfac8-9e4d-11ee-8c90-0242ac120002";
+		public static final String  PAYMENT_METHOD_UUID = "e6cb0c3b-04b0-4117-9bc6-ce24adbda802";
+		public static final String POLICY_NUMBER = "0f4f3306-f01b-43c6-af5b-fdb60015cb02";
+		public static final String INSURANCE_SCHEME = "2d0fa959-6780-41f1-85b1-402045935068";
+		public static final String NON_PAYING_PATIENT_CATEGORY_UUID = "df0362f9-782e-4d92-8bb2-3112e9e9eb3c";
 	}
 
 	public static final class _VisitType {
@@ -360,7 +366,12 @@ public class CommonMetadata extends AbstractMetadataBundle {
 				FormDatatype.class, null, 0, 1, _VisitAttributeType.SOURCE_FORM));
 
 		install(visitAttributeType("Visit queue number", "The visit queue number assigned to a visit when they are added to the queue", FreeTextDatatype.class, null, 0, 1, _VisitAttributeType.VISIT_QUEUE_NUMBER));
-
+		install(visitAttributeType("Patient Type", "To indicate whether the patient is paying for a service", ConceptDatatype.class, null, 0, 1, _VisitAttributeType.PATIENT_TYPE_UUID));
+		install(visitAttributeType("Payment Method", "The payment method used by the patient to settle payment", ConceptDatatype.class, null, 0, 1, _VisitAttributeType.PAYMENT_METHOD_UUID));
+		install(visitAttributeType("Policy Number", "The insurance policy number or member number", FreeTextDatatype.class, null, 0, 1, _VisitAttributeType.POLICY_NUMBER));
+		install(visitAttributeType("Insurance scheme", "The insurance scheme the patient is using to settle payment for services e.g. NHIF, Old mutual.", FreeTextDatatype.class, null, 0, 1, _VisitAttributeType.INSURANCE_SCHEME));
+		install(visitAttributeType("Non-Paying patient category", "If a patient isn't paying for service, The catergory the fall in.", ConceptDatatype.class, null, 0, 1, _VisitAttributeType.NON_PAYING_PATIENT_CATEGORY_UUID));
+		
 		install(visitType("Outpatient", "Visit where the patient is not admitted to the hospital", _VisitType.OUTPATIENT));
 		uninstall(possible(PersonAttributeType.class, "73d34479-2f9e-4de3-a5e6-1f79a17459bb"), "Became patient identifier"); // National ID attribute type
 
