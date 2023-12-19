@@ -74,6 +74,7 @@ public class TXCurrQuarterlyLinelistReportBuilder extends AbstractReportBuilder 
         cohortDsd.addColumn("New on ART", "", ReportUtils.map(datimIndicatorLibrary.txCurrThisPeriodNotTXCurrPreviousPeriodNewOnART(), indParams), "");
         cohortDsd.addColumn("Return to Care", "", ReportUtils.map(datimIndicatorLibrary.txRTT(), indParams), "");
         cohortDsd.addColumn("Transfer in", "", ReportUtils.map(suppressionIndicatorLibrary.txCurLinelistForPatientsPresentInCurrentButMissingInPreviousTrfInReport(), indParams), "");
+        cohortDsd.addColumn("Re-enrollment", "", ReportUtils.map(datimIndicatorLibrary.txCurrMissingInPreviousPeriodTxCurrReenrollment(), indParams), "");
         cohortDsd.addColumn("Number of patients present in the previous report but missing in the current report", "", ReportUtils.map(datimIndicatorLibrary.txML(), indParams), "");
         cohortDsd.addColumn("Died", "", ReportUtils.map(datimIndicatorLibrary.txmlPatientDied(), indParams), "");
         cohortDsd.addColumn("Lost to followup", "", ReportUtils.map(suppressionIndicatorLibrary.txCurLinelistForPatientsPresentInPreviousButMissingInCurrentLTFUReport(), indParams), "");
