@@ -1711,7 +1711,7 @@ public class DatimCohortLibrary {
      * @return
      */
     public CohortDefinition additionalTestsForTBDiagnosis() {
-        String sqlQuery = "select patient_id from kenyaemr_etl.etl_laboratory_extract x where x.lab_test=1465\n" +
+        String sqlQuery = "select patient_id from kenyaemr_etl.etl_laboratory_extract x where x.lab_test=167459\n" +
                 "and x.visit_date between date_sub(date(:endDate),INTERVAL 6 MONTH ) and date(:endDate);";
         SqlCohortDefinition cd = new SqlCohortDefinition();
         cd.setName("additionalTestsForTBDiagnosis");
