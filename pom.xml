@@ -477,17 +477,17 @@
         </pluginRepository>
     </pluginRepositories>
 
-    <distributionManagement>
-        <repository>
-            <id>openmrs-repo-modules</id>
-            <name>Modules</name>
-            <url>https://mavenrepo.openmrs.org/nexus/content/repositories/modules/</url>
-        </repository>
-        <snapshotRepository>
-            <id>openmrs-repo-snapshots</id>
-            <name>OpenMRS Snapshots</name>
-            <url>https://mavenrepo.openmrs.org/nexus/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
+	<distributionManagement>
+		<repository>
+			<id>mks-nexus</id>
+			<name>Mekom Nexus Releases</name>
+			<url>https://nexus.mekomsolutions.net/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>mks-nexus</id>
+			<name>Mekom Nexus Snapshots</name>
+			<url>https://nexus.mekomsolutions.net/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 </project>
