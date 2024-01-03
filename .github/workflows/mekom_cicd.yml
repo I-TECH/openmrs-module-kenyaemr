@@ -1,10 +1,11 @@
-
-name: Deploy to Mekom
+name: Deploy to Nexus
 
 on:
   # Manually triggered workflow using the "Run workflow" button
   workflow_dispatch:
   push:
+    branches: [ master ]
+  pull_request:
     branches: [ master ]
   
 jobs:
@@ -25,7 +26,8 @@ jobs:
 
       # Build with Maven
       - name: Build with Maven
-        run: mvn -B package
+        run: mvn -B package -DskipTests
+
 
   publish:
     runs-on: ubuntu-latest
@@ -33,12 +35,15 @@ jobs:
     needs: build
     
     # Specify conditions for when this job should run
-    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
+    if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' }}
 
     # Set up enviroment for Publish
 
     steps:
-      # Step 1: Set up JDK 8 for Publish
+      #set up the build enviroment
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      # Step 2: Set up JDK 8 for Publish
       - name: Set up JDK 8 for Publish
         uses: actions/setup-java@v4
         with:
@@ -48,7 +53,7 @@ jobs:
           server-username: $MAVEN_USERNAME
           server-password: $MAVEN_TOKEN
 
-      - name: Publish to Mekom repository
+      - name: Publish to Nexus repository
         run: mvn -B deploy
         
         env:
