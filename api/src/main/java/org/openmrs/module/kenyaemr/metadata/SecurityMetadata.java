@@ -1,17 +1,12 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.metadata;
 
 import org.openmrs.Privilege;
@@ -27,7 +22,9 @@ import org.springframework.stereotype.Component;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.*;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.idSet;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.privilege;
+import static org.openmrs.module.metadatadeploy.bundle.CoreConstructors.role;
 
 /**
  * Security metadata bundle
@@ -41,6 +38,10 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 
 	public static final class _Privilege {
 		public static final String VIEW_LEGACY_INTERFACE = "Emr: View Legacy Interface";
+		public static final String MANAGE_DRUG_ORDERS = "Can service drug prescriptions";
+		public static final String MANAGE_LAB_REQUESTS = "Can service lab requests";
+		public static final String MANAGE_AIR = "Can service AIR";
+		public static final String MANAGE_LAB_MANIFEST = "Can manage viral load lab manifest";
 	}
 
 	public static final class _Role {
@@ -53,6 +54,14 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 		public static final String REGISTRATION = "Registration";
 		public static final String SYSTEM_ADMIN = "System Administrator";
 		public static final String SYSTEM_DEVELOPER = "System Developer";
+		public static final String DRUG_ORDER = "Pharmacist";
+		public static final String LAB_TECHNICIAN = "Lab Technician";
+		public static final String PEER_EDUCATOR = "Peer Educator";
+		public static final String HIV_TESTING_COUNSELLOR = "HTS Counsellor";
+		public static final String AIR = "AIR";
+		public static final String LAB_MANIFEST = "Lab Manifest";
+		public static final String ADHERENCE_COUNSELOR = "Adherence Counselor";
+		public static final String UPI_VERIFICATION = "Upi verification";
 	}
 
 	/**
@@ -70,7 +79,21 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				EmrConstants.APP_FACILITIES,
 				EmrConstants.APP_ADMIN,
 				DqConstants.APP_DATAQUALITY,
-				DqConstants.APP_DATAMANAGER
+				DqConstants.APP_DATAMANAGER,
+				EmrConstants.APP_FACILITY_DASHBOARD,
+				EmrConstants.APP_DRUG_ORDER,
+				EmrConstants.APP_LAB_ORDER,
+				EmrConstants.APP_DEFAULTER_TRACING,
+				EmrConstants.APP_HIV_TESTING,
+				EmrConstants.APP_PREP,
+				EmrConstants.APP_REFERRALS,
+				EmrConstants.APP_AIR,
+				EmrConstants.APP_LAB_MANIFEST,
+				EmrConstants.APP_ADHERENCE_COUNSELOR,
+				EmrConstants.APP_NUPI_VERIFICATION,
+				EmrConstants.APP_O3_QUEUES_SHORTCUT,
+				EmrConstants.APP_O3_APPOINTMENTS_SHORTCUT,
+				EmrConstants.APP_O3_SHORTCUT
 		};
 
 		// Ensure a privilege exists for each app. App framework does create these but not always before this
@@ -81,6 +104,11 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 
 		// Add custom privileges
 		install(privilege(_Privilege.VIEW_LEGACY_INTERFACE, "Can view legacy web interface"));
+		install(privilege(_Privilege.MANAGE_DRUG_ORDERS, "Can view and edit drug orders"));
+		install(privilege(_Privilege.MANAGE_LAB_REQUESTS, "Able to service lab requests"));
+		install(privilege(_Privilege.MANAGE_AIR, "Able to service AIR"));
+		install(privilege(_Privilege.MANAGE_LAB_MANIFEST, "Can manage viral load lab manifest"));
+
 
 		// Ensure that some extra API privileges exist as core doesn't create these by default
 		install(privilege(PrivilegeConstants.PURGE_PATIENT_IDENTIFIERS, "Able to purge patient identifiers"));
@@ -98,7 +126,15 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				idSet(
 						app(EmrConstants.APP_REGISTRATION),
 						app(EmrConstants.APP_DIRECTORY),
-						app(EmrConstants.APP_FACILITIES)
+						app(EmrConstants.APP_FACILITIES),
+						app(EmrConstants.APP_FACILITY_DASHBOARD),
+						app(EmrConstants.APP_DEFAULTER_TRACING),
+						app(EmrConstants.APP_PREP),
+						app(EmrConstants.APP_REFERRALS),
+						app(EmrConstants.APP_AIR),
+						app(EmrConstants.APP_O3_APPOINTMENTS_SHORTCUT),
+						app(EmrConstants.APP_O3_QUEUES_SHORTCUT),
+						app(EmrConstants.APP_O3_SHORTCUT)
 				)
 		));
 
@@ -108,7 +144,16 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_REGISTRATION),
 						app(EmrConstants.APP_INTAKE),
 						app(EmrConstants.APP_DIRECTORY),
-						app(EmrConstants.APP_FACILITIES)
+						app(EmrConstants.APP_FACILITIES),
+						app(EmrConstants.APP_FACILITY_DASHBOARD),
+						app(EmrConstants.APP_DEFAULTER_TRACING),
+						app(EmrConstants.APP_PREP),
+						app(EmrConstants.APP_NUPI_VERIFICATION),
+						app(EmrConstants.APP_REFERRALS),
+						app(EmrConstants.APP_O3_APPOINTMENTS_SHORTCUT),
+						app(EmrConstants.APP_O3_QUEUES_SHORTCUT),
+						app(EmrConstants.APP_O3_SHORTCUT),
+						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
 
@@ -123,12 +168,24 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES),
 						app(DqConstants.APP_DATAQUALITY),
-						app(DqConstants.APP_DATAMANAGER)
+						app(DqConstants.APP_DATAMANAGER),
+						app(EmrConstants.APP_FACILITY_DASHBOARD),
+						app(EmrConstants.APP_DRUG_ORDER),
+						app(EmrConstants.APP_LAB_ORDER),
+						app(EmrConstants.APP_LAB_MANIFEST),
+						app(EmrConstants.APP_DEFAULTER_TRACING),
+						app(EmrConstants.APP_PREP),
+						app(EmrConstants.APP_REFERRALS),
+						app(EmrConstants.APP_AIR),
+						app(EmrConstants.APP_O3_APPOINTMENTS_SHORTCUT),
+						app(EmrConstants.APP_O3_QUEUES_SHORTCUT),
+						app(EmrConstants.APP_O3_SHORTCUT),
+						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
 
 		install(role(_Role.CLINICIAN, "Can access the registration, triage, clinician, chart and reports apps",
-				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
+				idSet(_Role.API_PRIVILEGES),
 				idSet(
 						app(EmrConstants.APP_REGISTRATION),
 						app(EmrConstants.APP_INTAKE),
@@ -136,18 +193,75 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 						app(EmrConstants.APP_CHART),
 						app(EmrConstants.APP_REPORTS),
 						app(EmrConstants.APP_DIRECTORY),
-						app(EmrConstants.APP_FACILITIES)
+						app(EmrConstants.APP_FACILITIES),
+						app(EmrConstants.APP_FACILITY_DASHBOARD),
+						app(EmrConstants.APP_DRUG_ORDER),
+						app(EmrConstants.APP_LAB_ORDER),
+						app(EmrConstants.APP_LAB_MANIFEST),
+						app(EmrConstants.APP_DEFAULTER_TRACING),
+						app(EmrConstants.APP_PREP),
+						app(EmrConstants.APP_REFERRALS),
+						app(EmrConstants.APP_AIR),
+						app(EmrConstants.APP_NUPI_VERIFICATION),
+						app(EmrConstants.APP_O3_APPOINTMENTS_SHORTCUT),
+						app(EmrConstants.APP_O3_QUEUES_SHORTCUT),
+						app(EmrConstants.APP_O3_SHORTCUT),
+						_Privilege.MANAGE_DRUG_ORDERS,
+						_Privilege.VIEW_LEGACY_INTERFACE,
+						_Privilege.MANAGE_AIR
 				)
 		));
 
 		install(role(_Role.DATA_CLERK, "Can access the chart, reporting and data quality apps",
-				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
+				idSet(_Role.API_PRIVILEGES),
 				idSet(
 						app(EmrConstants.APP_CHART),
 						app(EmrConstants.APP_REPORTS),
 						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES),
-						app(DqConstants.APP_DATAQUALITY)
+						app(DqConstants.APP_DATAQUALITY),
+						app(EmrConstants.APP_FACILITY_DASHBOARD),
+						app(EmrConstants.APP_DRUG_ORDER),
+						app(EmrConstants.APP_LAB_ORDER),
+						app(EmrConstants.APP_DEFAULTER_TRACING),
+						app(EmrConstants.APP_PREP),
+						app(EmrConstants.APP_AIR),
+						app(EmrConstants.APP_NUPI_VERIFICATION),
+						app(EmrConstants.APP_O3_APPOINTMENTS_SHORTCUT),
+						app(EmrConstants.APP_O3_QUEUES_SHORTCUT),
+						app(EmrConstants.APP_O3_SHORTCUT),
+						_Privilege.VIEW_LEGACY_INTERFACE
+				)
+		));
+
+		install(role(_Role.PEER_EDUCATOR, "Can access the defaulter tracing and reporting apps",
+				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
+				idSet(
+						app(EmrConstants.APP_REPORTS),
+						app(EmrConstants.APP_DIRECTORY),
+						app(EmrConstants.APP_FACILITIES),
+						app(EmrConstants.APP_FACILITY_DASHBOARD),
+						app(EmrConstants.APP_DEFAULTER_TRACING),
+						app(EmrConstants.APP_O3_APPOINTMENTS_SHORTCUT),
+						app(EmrConstants.APP_O3_QUEUES_SHORTCUT),
+						app(EmrConstants.APP_O3_SHORTCUT),
+						_Privilege.VIEW_LEGACY_INTERFACE
+				)
+		));
+
+		install(role(_Role.HIV_TESTING_COUNSELLOR, "Can access the hts and reporting apps",
+				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
+				idSet(
+						app(EmrConstants.APP_REPORTS),
+						app(EmrConstants.APP_DIRECTORY),
+						app(EmrConstants.APP_FACILITIES),
+						app(EmrConstants.APP_FACILITY_DASHBOARD),
+						app(EmrConstants.APP_HIV_TESTING),
+						app(EmrConstants.APP_PREP),
+						app(EmrConstants.APP_O3_APPOINTMENTS_SHORTCUT),
+						app(EmrConstants.APP_O3_QUEUES_SHORTCUT),
+						app(EmrConstants.APP_O3_SHORTCUT),
+						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
 
@@ -156,7 +270,76 @@ public class SecurityMetadata extends AbstractMetadataBundle {
 				idSet(
 						app(EmrConstants.APP_ADMIN),
 						app(EmrConstants.APP_DIRECTORY),
+						app(EmrConstants.APP_FACILITIES),
+						app(EmrConstants.APP_FACILITY_DASHBOARD)
+				)
+		));
+
+		install(role(_Role.DRUG_ORDER, "Can access the drug prescriptions app",
+				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
+				idSet(
+						app(EmrConstants.APP_DRUG_ORDER),
+						app(EmrConstants.APP_DIRECTORY),
+						app(EmrConstants.APP_FACILITIES),
+						_Privilege.VIEW_LEGACY_INTERFACE
+				)
+		));
+
+		install(role(_Role.LAB_TECHNICIAN, "Can access the lab requests app",
+				idSet(_Role.API_PRIVILEGES),
+				idSet(
+						app(EmrConstants.APP_LAB_ORDER),
+						app(EmrConstants.APP_LAB_MANIFEST),
+						app(EmrConstants.APP_DIRECTORY),
+						app(EmrConstants.APP_FACILITIES),
+						app(EmrConstants.APP_O3_QUEUES_SHORTCUT),
+						app(EmrConstants.APP_O3_SHORTCUT),
+						_Privilege.VIEW_LEGACY_INTERFACE
+				)
+		));
+		install(role(_Role.AIR, "Can access AIR app",
+				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
+				idSet(
+						app(EmrConstants.APP_AIR),
+						app(EmrConstants.APP_DIRECTORY),
+						app(EmrConstants.APP_FACILITIES),
+						_Privilege.VIEW_LEGACY_INTERFACE,
+						_Privilege.MANAGE_AIR
+				)
+		));
+		install(role(_Role.LAB_MANIFEST, "Can access the lab manifest app",
+				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
+				idSet(
+						app(EmrConstants.APP_LAB_MANIFEST),
+						app(EmrConstants.APP_DIRECTORY),
 						app(EmrConstants.APP_FACILITIES)
+				)
+		));
+
+		install(role(_Role.ADHERENCE_COUNSELOR, "Can access the adherence counselor app",
+				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
+				idSet(
+						app(EmrConstants.APP_REPORTS),
+						app(EmrConstants.APP_DIRECTORY),
+						app(EmrConstants.APP_FACILITIES),
+						app(EmrConstants.APP_FACILITY_DASHBOARD),
+						app(EmrConstants.APP_ADHERENCE_COUNSELOR),
+						app(EmrConstants.APP_O3_APPOINTMENTS_SHORTCUT),
+						app(EmrConstants.APP_O3_QUEUES_SHORTCUT),
+						app(EmrConstants.APP_O3_SHORTCUT),
+						_Privilege.VIEW_LEGACY_INTERFACE
+				)
+		));
+		install(role(_Role.UPI_VERIFICATION, "Can access the upi verification app",
+				idSet(_Role.API_PRIVILEGES_VIEW_AND_EDIT),
+				idSet(
+						app(EmrConstants.APP_REPORTS),
+						app(EmrConstants.APP_DIRECTORY),
+						app(EmrConstants.APP_FACILITIES),
+						app(EmrConstants.APP_FACILITY_DASHBOARD),
+						app(EmrConstants.APP_ADHERENCE_COUNSELOR),
+						app(EmrConstants.APP_NUPI_VERIFICATION),
+						_Privilege.VIEW_LEGACY_INTERFACE
 				)
 		));
 	}

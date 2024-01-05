@@ -9,6 +9,9 @@
 		<div class="ke-stack-item ke-navigable" ng-repeat="patient in results" ng-click="onResultClick(patient)">
 			${ ui.includeFragment("kenyaemr", "patient/result.full") }
 		</div>
-		<div ng-if="results.length == 0" style="text-align: center; font-style: italic">None</div>
+		<div ng-if="results.length == 0 && !showLoader" style="text-align: center; font-style: italic">None</div>
+		<div ng-if= "showLoader" style="text-align: center;"> 
+		<img src="${ ui.resourceLink("kenyaui", "images/loader_small.gif") }" />
+		</div>
 	</div>
 </div>

@@ -1,22 +1,19 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.calculation.library.tb;
 
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.Program;
+import org.openmrs.api.ConceptService;
+import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.kenyacore.calculation.AbstractPatientCalculation;
@@ -50,7 +47,7 @@ public class NeedsTbSputumTestCalculation extends AbstractPatientCalculation imp
 	 */
 	@Override
 	public String getFlagMessage() {
-		return "Due for TB Sputum";
+		return "Due for GeneXpert";
 	}
 
 	/**
@@ -65,6 +62,7 @@ public class NeedsTbSputumTestCalculation extends AbstractPatientCalculation imp
 		// Get all patients who are alive and in TB program
 		Set<Integer> alive = Filters.alive(cohort, context);
 		Set<Integer> inTbProgram = Filters.inProgram(tbProgram, alive, context);
+		ConceptService cs = Context.getConceptService();
 
 		// Get concepts
 		Concept tbsuspect = Dictionary.getConcept(Dictionary.DISEASE_SUSPECTED);
@@ -72,6 +70,7 @@ public class NeedsTbSputumTestCalculation extends AbstractPatientCalculation imp
 		Concept smearPositive = Dictionary.getConcept(Dictionary.POSITIVE);
 		Concept NEGATIVE = Dictionary.getConcept(Dictionary.NEGATIVE);
 		Concept SPUTUM_FOR_ACID_FAST_BACILLI = Dictionary.getConcept(Dictionary.SPUTUM_FOR_ACID_FAST_BACILLI);
+		Concept geneXpertConcept = cs.getConcept(162202);
 
 		// check if there is any observation recorded per the tuberculosis disease status
 		CalculationResultMap lastObsTbDiseaseStatus = Calculations.lastObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_DISEASE_STATUS), cohort, context);
@@ -86,6 +85,7 @@ public class NeedsTbSputumTestCalculation extends AbstractPatientCalculation imp
 
 		// get the date when Tb treatment was started, the patient should be in tb program to have this date
 		CalculationResultMap tbStartTreatmentDate = Calculations.lastObs(Dictionary.getConcept(Dictionary.TUBERCULOSIS_DRUG_TREATMENT_START_DATE), cohort, context);
+		CalculationResultMap lastGeneXpertConcept = Calculations.lastObs(geneXpertConcept, alive, context);
 
 		CalculationResultMap ret = new CalculationResultMap();
 		for (Integer ptId : cohort) {
@@ -96,10 +96,11 @@ public class NeedsTbSputumTestCalculation extends AbstractPatientCalculation imp
 			Date  treatmentStartDate = EmrCalculationUtils.datetimeObsResultForPatient(tbStartTreatmentDate, ptId);
 			Obs lastObsTbDiseaseResults = EmrCalculationUtils.obsResultForPatient(lastObsTbDiseaseStatus, ptId);
 			Obs lastSputumResultsObs = EmrCalculationUtils.obsResultForPatient(lastSputumResults, ptId);
-
+			Obs lastGeneXpertObs = EmrCalculationUtils.obsResultForPatient(lastGeneXpertConcept, ptId);
+//
 			// check if a patient is alive
 			if (alive.contains(ptId)) {
-				if ((lastObsTbDiseaseResults != null) && (lastObsTbDiseaseResults.getValueCoded().equals(tbsuspect)) && lastSputumResultsObs == null && !(inTbProgram.contains(ptId))) {
+				if ((lastObsTbDiseaseResults != null) && (lastObsTbDiseaseResults.getValueCoded().equals(tbsuspect)) && lastSputumResultsObs == null && !(inTbProgram.contains(ptId)) && lastGeneXpertObs ==null) {
 						needsSputum = true;
 				}
 				else if(inTbProgram.contains(ptId) && diseaseClassification != null && tbResults != null && (diseaseClassification.getValueCoded().equals(pulmonaryTb)) && (tbResults.getValueCoded().equals(smearPositive)) && treatmentStartDate != null) {

@@ -15,8 +15,8 @@
 		<input type="radio" ng-model="which" ng-change="updateSearch()" value="checked-in" /> Only Checked In
 	</span>
 
-	<label class="ke-field-label">ID or name (3 chars min)</label>
+	<label class="ke-field-label">ID or name (3 chars min and press enter)</label>
 	<span class="ke-field-content">
-		<input type="text" name="query" ng-model="query" ng-change="updateSearch()" style="width: 260px" />
+		<input type="text" name="query" ng-model="query" ng-enter="updateSearch()" ng-change="onQueryChange()" style="width: 260px" />
 	</span>
 </form>

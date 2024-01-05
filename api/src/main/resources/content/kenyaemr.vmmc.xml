@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    This Source Code Form is subject to the terms of the Mozilla Public License,
+    v. 2.0. If a copy of the MPL was not distributed with this file, You can
+    obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+    the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+
+    Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+    graphic logo is a trademark of OpenMRS Inc.
+
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- ===================== Program ===================== -->
+
+	<bean id="kenyaemr.vmmc.program" class="org.openmrs.module.kenyacore.program.ProgramDescriptor">
+		<property name="targetUuid" value="${metadata.program.VMMC}" />
+		<property name="eligibilityCalculation" value="org.openmrs.module.kenyaemr.calculation.library.vmmc.EligibleForVmmcProgramCalculation" />
+		<property name="defaultEnrollmentForm" ref="kenyaemr.vmmc.form.enrollment" />
+		<property name="defaultCompletionForm" ref="kenyaemr.vmmc.form.completion" />
+		<property name="visitForms" >
+			<set>
+				<ref bean="kenyaemr.vmmc.form.procedure" />
+				<ref bean="kenyaemr.vmmc.form.medicalHistoryExamination" />
+				<ref bean="kenyaemr.vmmc.form.clientFollowup" />
+				<ref bean="kenyaemr.vmmc.form.postOperationAssessment" />
+			</set>
+		</property>
+
+		<property name="fragments">
+			<map>
+				<entry key="enrollment-summary" value="kenyaemr:program/vmmc/vmmcEnrollmentSummary" />
+				<entry key="care-panel" value="kenyaemr:program/vmmc/vmmcCarePanel" />
+				<entry key="completion-summary" value="kenyaemr:program/vmmc/vmmcOutcomeSummary" />
+			</map>
+		</property>
+		<property name="reports">
+			<set>
+				<ref bean="kenyaemr.vmmc.report.VMMCRegister"/>
+				<ref bean="kenyaemr.vmmc.report.vmmcadverseevents"/>
+
+			</set>
+		</property>
+		<property name="order" value="600" />
+	</bean>
+
+	<!-- ===================== Forms ===================== -->
+
+	<!--VMMC enrollment-->
+	<bean id="kenyaemr.vmmc.form.enrollment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="a74e3e4a-9e2a-41fb-8e64-4ba8a71ff984" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="htmlform" value="kenyaemr:vmmc/vmmcEnrollment.html" />
+	</bean>
+
+	<!--VMMC Completion -->
+	<bean id="kenyaemr.vmmc.form.completion" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="bc6a9e7d-58f7-43c0-8334-d8011fef4000" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/completion.png" />
+		<property name="htmlform" value="kenyaemr:vmmc/vmmcDiscontinuation.html" />
+	</bean>
+
+	<!--VMMC Procedure Form -->
+	<bean id="kenyaemr.vmmc.form.procedure" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="5ee93f48-960b-11ec-b909-0242ac120002" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.vmmc.PatientsEligibleForVMMCProcedureCalculation" />
+		<property name="htmlform" value="kenyaemr:vmmc/vmmcCircumcisionProcedure.html" />
+	</bean>
+
+	<!--VMMC Medical History and Examination Form -->
+	<bean id="kenyaemr.vmmc.form.medicalHistoryExamination" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="d42aeb3d-d5d2-4338-a154-f75ddac78b59" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.vmmc.PatientsEligibleForVMMCHistoryAndExaminationFormCalculation" />
+		<property name="htmlform" value="kenyaemr:vmmc/vmmcMedicalHistoryExamination.html" />
+	</bean>
+
+	<!--VMMC Client Followup Form -->
+	<bean id="kenyaemr.vmmc.form.clientFollowup" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="08873f91-7161-4f90-931d-65b131f2b12b" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.vmmc.PatientsEligibleForVMMCFollowupFormCalculation" />
+		<property name="htmlform" value="kenyaemr:vmmc/vmmcClientFollowup.html" />
+	</bean>
+
+	<!--VMMC PostOperation Assessment Form -->
+	<bean id="kenyaemr.vmmc.form.postOperationAssessment" class="org.openmrs.module.kenyacore.form.FormDescriptor">
+		<property name="targetUuid" value="620b3404-9ae5-11ec-b909-0242ac120002" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.registration" />
+				<ref bean="kenyaemr.app.intake" />
+				<ref bean="kenyaemr.app.clinician" />
+				<ref bean="kenyaemr.app.chart" />
+			</set>
+		</property>
+		<property name="icon" value="kenyaui:forms/generic.png" />
+		<property name="showIfCalculation" value="org.openmrs.module.kenyaemr.calculation.library.vmmc.PatientsEligibleForVMMCPostOperationCalculation" />
+		<property name="htmlform" value="kenyaemr:vmmc/vmmcPostOperationAssessment.html" />
+	</bean>
+
+	<!-- ===================== Reports ===================== -->
+	<!-- Vmmc Register-->
+	<bean id="kenyaemr.vmmc.report.VMMCRegister" class="org.openmrs.module.kenyacore.report.HybridReportDescriptor">
+		<property name="targetUuid" value="681df61a-a37d-11ec-b909-0242ac120002" />
+		<property name="name" value="VMMC Register" />
+		<property name="description" value="VMMC Theatre Register" />
+		<property name="apps">
+			<set>
+				<ref bean="kenyaemr.app.reports" />
+			</set></property>
+		<property name="template" value="kenyaemr:vmmc_register_template.xls" />
+		<property name="repeatingSection" value="sheet:1,row:7,dataset:VMMCInformation" />
+	</bean>
+	<bean id="kenyaemr.vmmc.report.vmmcadverseevents" class="org.openmrs.module.kenyacore.report.IndicatorReportDescriptor">
+		<property name="targetUuid" value="8e90bcf6-aabc-11ec-b909-0242ac120002" />
+		<property name="name" value="Adverse events for VMMC clients" />
+		<property name="description" value="Report of VMMC clients with Adverse events" />
+		<property name="apps"><set><ref bean="kenyaemr.app.reports" /></set></property>
+		<property name="template" value="kenyaemr:vmmc_adverse_events.xls" />
+	</bean>
+</beans>

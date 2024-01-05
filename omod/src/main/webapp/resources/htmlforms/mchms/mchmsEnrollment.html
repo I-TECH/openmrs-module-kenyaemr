@@ -31,40 +31,181 @@
 		padding: 10px;
 	}
 </style>
-
+	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
 <script type="text/javascript">
 
 	var NOT_HIV_TESTED_ID = 1402;
 	var NEGATIVE = 664;
+	var REVISIT = 164142;
+    var HIV_POSITIVE = 703;
+    var INCONCLUSIVE = 1138;
 	var UNKNOWN = 1067;
+    var ANC_CLIENT = 1622;
+    var DELIVERY_CLIENT = 164835;
+    var PNC_CLIENT = 1623;
+    var HIV_TEST = "159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 	var PATIENT_IS_ENROLLED_HIV = <lookup expression="kenyaemr.hasHivUniquePatientNumber()" />;
-
+	var ANC_START_DATE =  "<lookup expression="fn.latestObs(163547).getValueDatetime()"/>";
+	var HIV_TEST_DATE =  "<lookup expression="fn.latestObs(160554).getValueDatetime()"/>";
+	var LATEST_LMP_DATE =  "<lookup expression="fn.latestObs(1427).getValueDatetime()"/>";
+	var LATEST_LMP_OBSDATE =  "<lookup expression="fn.latestObs(1427).getObsDatetime()"/>";
+	var HIV_TEST_DATE =  "<lookup expression="fn.latestObs(160554).getValueDatetime()"/>";
+	var LATEST_HTS_RESULT = "<lookup expression="fn.latestObs(159427).getValueCoded().getConceptId()"/>";
+	var HTS_DATE =  "<lookup expression="fn.latestObs(159427).getObsDatetime()"/>";
+    var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
+    var PATIENT_ON_ART = GREENCARD_VELOCITY.split(",")[2].split(":")[1];
+    var REGIMEN_NAME = GREENCARD_VELOCITY.split(",")[4].split(":")[1];
+	var latestTestDate = null;
+    //Start on ready
 	jq(function () {
+	    //Service area validations
+        jq('#ancStar').hide();
+        jq('#lmpStar').hide();
+        jq('#hivStar').hide();
+        jq('#ti-art-details').hide();
+        jq('#ti-facility-details').hide();
+
+        jq('#service-type input').change(onServiceTypeChange);
+	    //Gravida validations
+        getField('parity-term.value').change(onParityChange);
+        getField('parity-abortion.value').change(onParityChange);
+        jq('#gravida input[type=text]').attr("style", "pointer-events:none;");
 		onLmpChange();
+        validateOtherFields();
 		onPatientHivStatusChange();
-		onPartnerHivStatusChange()
+		onPartnerHivStatusChange();
+        onEncounterDateChange();
 		getField('lmp.value').change(onLmpChange);
 		getField('patient-hiv-status.value').change(onPatientHivStatusChange);
 		getField('partner-hiv-status.value').change(onPartnerHivStatusChange);
-	});
 
-	beforeSubmit.push(function () {
-		if (validateRequiredFields() &amp;&amp; validateOtherFields()) {
-			return true;
+		//First ANC visit date validation
+        if(ANC_START_DATE !="" || ANC_START_DATE != null){
+            getField('first-anc-date.value').val(ANC_START_DATE);
+        }
+		var formattedEncounterDate = moment(moment(getValue('encounter-date.value')).toDate()).format('DD-MMM-YYYY');
+		var formattedLatestHTSDate = null;
+		var formattedLatestHIVTestDate = null;
+
+		if (HTS_DATE != "" &amp;&amp; HTS_DATE != null) {
+			formattedLatestHTSDate = moment(moment(HTS_DATE).toDate()).format("DD-MMM-YYYY");
 		}
-		return false;
-	});
+		if (HIV_TEST_DATE != "" &amp;&amp; HIV_TEST_DATE != null) {
+			formattedLatestHIVTestDate = moment(moment(HIV_TEST_DATE).toDate()).format("DD-MMM-YYYY");
+		}
+		if (formattedLatestHTSDate &amp;&amp; (!formattedLatestHIVTestDate || formattedLatestHTSDate > formattedLatestHIVTestDate)) {
+			latestTestDate = formattedLatestHTSDate;
+		} else {
+			latestTestDate = formattedLatestHIVTestDate;
+		}
 
+		if (moment(latestTestDate).isBefore(formattedEncounterDate, 'day')) {
+			jq('#patient-hiv-test-date input').prop('disabled', false);
+			getField('patient-hiv-test-date.value').val(latestTestDate);
+			if (LATEST_HTS_RESULT == HIV_POSITIVE || PATIENT_IS_ENROLLED_HIV) {
+				getField('patient-hiv-status.value').val(HIV_POSITIVE);
+			} else if (LATEST_HTS_RESULT == NEGATIVE) {
+				getField('patient-hiv-status.value').val(REVISIT);
+			}
+			else if (LATEST_HTS_RESULT == INCONCLUSIVE) {
+				getField('patient-hiv-status.value').val(UNKNOWN);
+			}
+		}
+		else{
+			getField('patient-hiv-status.value').val(UNKNOWN);
+		}
+		if (LATEST_HTS_RESULT != null &amp;&amp; LATEST_HTS_RESULT != "") {
+			jq('#tbl-known-positive').show();
+			if (LATEST_HTS_RESULT == HIV_POSITIVE) {
+				jq('#hiv-known-positive:text').val('Positive');
+				//Prepopulate if already on HAART
+				if (PATIENT_ON_ART == "true") {
+					jq('#on-art:text').val('Yes');
+				} else {
+					jq('#on-art:text').val('No');
+				}
+			} else if (LATEST_HTS_RESULT == NEGATIVE) {
+				jq('#hiv-known-positive:text').val('Negative');
+			} else if (LATEST_HTS_RESULT == INCONCLUSIVE) {
+				jq('#hiv-known-positive:text').val('Inconclusive');
+			}
+
+		} else{
+            jq('#tbl-known-positive').hide();
+		}
+		jq('#first-anc-today').click(defaultFirstAncDateChange);
+
+        //Prepopulate last LMP if added in previous forms
+        if(LATEST_LMP_DATE !="" || LATEST_LMP_DATE != null) {
+            var encounterDate = getValue('encounter-date.value');
+            var formattedEncDate = moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD');
+            var lmpObsDate = moment(moment(LATEST_LMP_OBSDATE, 'DD/MMM/YYYY').toDate()).format('YYYY-MM-DD');
+            var latestLMPAddedOnSameEncounterDate = moment(formattedEncDate).isSame(lmpObsDate, 'day');
+            if (latestLMPAddedOnSameEncounterDate) {
+                setValue('lmp.value', moment(moment(LATEST_LMP_DATE, 'DD/MMM/YYYY').toDate()).format('YYYY-MM-DD'));
+            }
+        }
+
+
+	});
+	//End on ready
+    function onServiceTypeChange() {
+        var serviceType = getValue('service-type.value');
+        //ANC
+        if (serviceType == ANC_CLIENT) {
+            jq('#ancStar').show();
+            jq('#lmpStar').show();
+            jq('#hivStar').show();
+
+           }else{
+            jq('#ancStar').hide();
+            jq('#lmpStar').hide();
+            jq('#hivStar').hide();
+		  }
+        }
+
+    function onParityChange() {
+        var gravida = '';
+        var parityTerm = parseInt(getValue('parity-term.value'));
+        var parityAbortion = parseInt(getValue('parity-abortion.value'));
+        if (!isNaN(parityTerm) &amp;&amp; !isNaN(parityAbortion)) {
+            gravida = parityTerm + parityAbortion + 1;
+            getField('gravida.value').val(gravida);
+        }
+    }
 	function onLmpChange() {
-		var display = 'EDD could not be calculated!';
+//		var display = 'EDD could not be calculated!';
+//		var displayGes = 'Gestation could not be calculated!';
+        var display = '-';
+		var displayGes = '-';
 		var lmpValue = getValue('lmp.value');
 		if (lmpValue) {
 			var lmp = Date.parse(getValue('lmp.value'));
 			var edd = lmp;
 			display = calculateEdd(new Date(lmp));
+            displayGes = calculateGestation(new Date(lmp))
 		}
-		$j('#calculated-edd').html(display);
+        $j('#calculated-edd').html(display);
+		if(displayGes &gt; 42){
+            $j('#calculated-gestation').html("Check encounter and LMP dates for correct gestation");
+		}else {
+            $j('#calculated-gestation').html(displayGes);
+        }
+
 	}
+    //Ckeckbox to prepopulate default today as first anc visit date
+    var defaultFirstAncDateChange = function () {
+        val = jq(this).val();
+        var encDate = getValue('encounter-date.value');
+        var formattedEncounterDate =moment(moment(encDate,'YYYY-MM-DD').toDate()).format("DD-MMM-YYYY");
+        if (jq(this).is(':checked')){
+            getField('first-anc-date.value').val(formattedEncounterDate);
+            setDatetimeValue('first-anc-date.value',formattedEncounterDate);
+
+        }else{
+            getField('first-anc-date.value').val("");
+        }
+    }
 
 	function daysInMonth(month, year) {
 		var dim = 31;
@@ -104,28 +245,60 @@
 		return (eddDay &lt;= 9 ? '0' + eddDay : eddDay) + '-' + (eddMonth &lt;= 9 ? '0' + eddMonth : eddMonth) + '-' +
 				eddYear;
 	}
+    function calculateGestation(lmp) {
+        var today = new Date();
+        var encounterDate = Date.parse(getValue('encounter-date.value'));
+        var timeDiff = Math.abs(lmp.getTime() - encounterDate);
+        return Math.floor(timeDiff / (1000 * 3600 * 24 * 7));
 
+    }
 	function validateRequiredFields() {
 		var gravida = getValue('gravida.value');
 		var parityTerm = getValue('parity-term.value');
 		var parityAbortion = getValue('parity-abortion.value');
 		var parity = parseInt(parityTerm, 10) + parseInt(parityAbortion, 10);
+        var serviceType = getValue('service-type.value');
+        var ancNumber = getValue('anc-number.value');
+        var lmpDate = getValue('lmp.value');
+        var patientHivStatus = getValue('patient-hiv-status.value');
+        var encounterDate = getValue('encounter-date.value');
+        var formattedEncDate = moment(moment(encounterDate, 'YYYY-MM-DD').toDate()).format('YYYY-MM-DD');
+        var lmpObsDate = moment(moment(LATEST_LMP_OBSDATE, 'DD/MMM/YYYY').toDate()).format('YYYY-MM-DD');
+        var latestLMPAddedOnSameEncounterDate = moment(formattedEncDate).isSame(lmpObsDate,'day');
+
+        //ANC
+        if (serviceType == ANC_CLIENT &amp;&amp; ancNumber == "") {
+            getField('anc-number.error').html('ANC Number should not be empty').show();
+            return false;
+        }
+        if (serviceType == ANC_CLIENT &amp;&amp; lmpDate == "" &amp;&amp; latestLMPAddedOnSameEncounterDate == false)
+        {
+            getField('lmp.error').html('LMP date should not be empty').show();
+            return false;
+        }
+        if (serviceType == ANC_CLIENT &amp;&amp; patientHivStatus == "") {
+            getField('patient-hiv-status.error').html('HIV status should not be empty').show();
+            return false;
+        }
 		if (parity &gt; gravida) {
 			getField('parity-abortion.error').html('Parity (x+y) should be less or equal to Gravida.').show();
 			return false;
 		}
 
 		var hivStatus = getValue('patient-hiv-status.value');
-		if (hivStatus != NOT_HIV_TESTED_ID) {
+		if (hivStatus == UNKNOWN || hivStatus == "") {
+
+        }else{
 			var hivTestDate = getValue('patient-hiv-test-date.value');
-			if (hivTestDate == "") {
+			if (hivTestDate == "" &amp;&amp; latestTestDate == "") {
 				getField('patient-hiv-test-date.error').html('Specify the date when the patient was tested for HIV.').show();
 				return false;
 			}
 		}
-
 		var partnerHivStatus = getValue('partner-hiv-status.value');
-		if (partnerHivStatus != UNKNOWN) {
+		if (partnerHivStatus == UNKNOWN || partnerHivStatus == "" ) {
+
+        }else{
 			var partnerHivTestDate = getValue('partner-hiv-test-date.value');
 			if (partnerHivTestDate == "") {
 				getField('partner-hiv-test-date.error').html('Specify the date when the partner was tested for HIV.').show();
@@ -136,10 +309,19 @@
 	}
 
 	function validateOtherFields() {
+
+        var menarche = getValue('menarche-age.value');
 		var urinePh = getValue('urine-ph.value');
 		var urineSpecificGravity = getValue('urine-specific-gravity.value');
 		var ultrasoundEdd = getValue('ultrasound-edd.value');
 
+        if (menarche != null) {
+            var menarcheValue = parseFloat(menarche);
+            if (menarcheValue &lt; 8.0 || menarcheValue &gt; 18.0) {
+                getField('menarche-age.error').html('Menarche must be between 8 and 18 years.').show();
+                return false;
+            }
+        }
 		if (urinePh != null) {
 			var urinePhValue = parseFloat(urinePh);
 			if (urinePhValue &lt; 5.0 || urinePhValue &gt; 9.0) {
@@ -172,15 +354,25 @@
 	function onPatientHivStatusChange() {
 		var patientHivStatus = getValue('patient-hiv-status.value');
 
-		if (patientHivStatus == '' || patientHivStatus == NOT_HIV_TESTED_ID) {
+		if (patientHivStatus == '' || patientHivStatus == UNKNOWN) {
 			jq('#patient-hiv-test-date input').prop('disabled', true);
 			setValue('patient-hiv-test-date.value', null);
 		} else {
 			jq('#patient-hiv-test-date input').prop('disabled', false);
 		}
-
-		var isMismatch = ((patientHivStatus == NOT_HIV_TESTED_ID || patientHivStatus == NEGATIVE) &amp;&amp; PATIENT_IS_ENROLLED_HIV);
+		var isMismatch = ((patientHivStatus == UNKNOWN || patientHivStatus == "") &amp;&amp; PATIENT_IS_ENROLLED_HIV);
 		jq('#patient-hiv-status-mismatch').toggle(isMismatch);
+
+        if (!PATIENT_IS_ENROLLED_HIV &amp;&amp; patientHivStatus == HIV_POSITIVE ) {
+            jq('#ti-art-details').show();
+            jq('#ti-facility-details').show();
+        }else{
+            jq('#ti-art-details').hide();
+            jq('#ti-facility-details').hide();
+            getField('art-start-date.value').val("");
+            getField('patient-regimen.value').val("");
+            getField('care-facility.value').val("");
+		}
 	}
 
 	/**
@@ -196,7 +388,24 @@
 			jq('#partner-hiv-test-date input').prop('disabled', false);
 		}
 	}
-
+    function onEncounterDateChange() {
+        var patientId = <lookup expression="patient.patientId"/>;
+        var encDate = getValue('encounter-date.value');
+        if(encDate == null) {
+            encDate = new Date();
+        }
+        if(PATIENT_ON_ART =="true") {
+            jq('#current-regimen').html(REGIMEN_NAME);
+        }else{
+            jq('#current-regimen').html("None");
+        }
+    }
+    beforeSubmit.push(function () {
+        if (validateRequiredFields() &amp;&amp; validateOtherFields()) {
+            return true;
+        }
+        return false;
+    });
 </script>
 
 <div class="ke-form-header">
@@ -230,43 +439,49 @@
 		<legend>Maternal/Antenatal Profile</legend>
 		<table align="center" width="100%" class="tb1">
 			<tr>
-				<td width="250">ANC No:</td>
+				<td>Service Type:</td>
 				<td>
-					<obs conceptId="161655AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="false"/>
+					<obs
+							id="service-type" conceptId="160478AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							style="radio"
+							answerConceptIds="1622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							                  164835AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							                  1623AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							answerLabels="ANC, Delivery, PNC"
+							required="true"
+					/>
 				</td>
 			</tr>
 			<tr>
-				<td>Gravida:</td>
+				<td width="250">ANC No:</td>
 				<td>
-					<obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="gravida"/>
+					<obs conceptId="163530AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="anc-number"/> <span id="ancStar" style="color:red;"><strong>*</strong></span>
+					<i>(xxxx/yy)</i>
+				</td>
+				<td>Gestation in weeks:</td>
+				<td>
+					<span id="calculated-gestation" class="value"></span>
 				</td>
 			</tr>
 			<tr>
 				<td>Parity:</td>
 				<td>
-					<obs conceptId="160080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true" id="parity-term"/>
+					<obs conceptId="160080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="parity-term"/>
 					+
-					<obs conceptId="1823AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
+					<obs conceptId="1823AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 id="parity-abortion"/>
 				</td>
-			</tr>
-			<tr>
-				<td>L.M.P:</td>
-				<td>
-					<obs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="lmp" required="true"/>
-				</td>
-				<td>
-					<obs conceptId="162095AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"/>
-					Estimated
-				</td>
-			</tr>
-			<tr>
 				<td>EDD (Calculated from L.M.P):</td>
 				<td>
 					<span id="calculated-edd" class="value"></span>
 				</td>
 			</tr>
 			<tr>
+				<td>Gravida:</td>
+				<td>
+					<obs conceptId="5624AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="gravida"/>
+				</td>
+
 				<td>EDD (Ultrasound):</td>
 				<td>
 					<obs conceptId="5596AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true"
@@ -274,60 +489,97 @@
 				</td>
 			</tr>
 			<tr>
-				<td width="250">Blood Group/Rhesus:</td>
+				<td width="250">Age at Menarche:</td>
 				<td>
-					<obs conceptId="300AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					<obs conceptId="160598AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="menarche-age" />
 				</td>
-			</tr>
-		</table>
-	</td>
-	<td valign="top">
-		<legend>Maternal/Antenatal Profile</legend>
-		<table align="center" width="100%" class="tb1">
-			<tr>
-				<td>Serology:</td>
+				<td>TB Screening results:</td>
 				<td>
-					<obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					<obs id="tb-result-status"
+						 conceptId="1659AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerConceptIds="1660AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142177AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1662AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160737AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 style="dropdown"
+						 answerLabels="No TB Signs,Presumed TB,TB Confirmed,TB Screening Not Done" />
 				</td>
 			</tr>
 			<tr>
-				<td>TB Screening:</td>
+				<td>L.M.P:</td>
 				<td>
-					<obs conceptId="160108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+					<obs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="lmp"/><span id="lmpStar" style="color:red;"><strong>*</strong></span>
+
+					<obs conceptId="162095AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="checkbox"/>
+					Estimated
+				</td>
+
+				<td width="250">Date of first ANC visit:</td>
+				<td>
+					<obs conceptId="163547AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="first-anc-date"/> <input type="checkbox" name="anc-today" id="first-anc-today" /> Today
 				</td>
 			</tr>
 			<tr>
-				<td>BS for MPS:</td>
+				<td>HIV Status before first ANC Visit:</td>
 				<td>
-					<obs conceptId="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-				</td>
-			</tr>
-			<tr>
-				<td>HIV Status:</td>
-				<td>
-					<obs conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
+					<obs conceptId="159427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 id="patient-hiv-status"
-						 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1402AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-						 answerLabels="HIV Positive,HIV Negative,Not Tested"/>
+						 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164142AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerLabels="Known Positive,Revisit,Unknown"/>
+					<span id="hivStar" style="color:red;"><strong>*</strong></span>
 					<div id="patient-hiv-status-mismatch" class="ke-warning">Patient is enrolled in HIV program</div>
 				</td>
-			</tr>
-			<tr>
 				<td width="250">HIV Test Date:</td>
 				<td>
 					<obs id="patient-hiv-test-date" conceptId="160554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
 				</td>
 			</tr>
+			<tr id="ti-art-details">
+				<td>Date started ART:</td>
+				<td>
+					<obs conceptId="159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id ="art-start-date"/>
+				</td>
+				<td width="250">Current regimen:</td>
+				<td>
+					<obs id="patient-regimen" conceptId="164855AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerConceptIds="164968,164969,164970,164505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,792AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160104AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161361AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,104565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162201AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,817AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							                       162199AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162200AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162565AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1652AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162561AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164511AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164512AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162560AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                     162563AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162562AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162559AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+						 answerLabels="AZT/3TC/DTG,
+								               TDF/3TC/DTG,
+								               ABC/3TC/DTG,
+								               TDF-3TC-EFV,
+								               D4T/3TC/NVP,
+											   AZT/3TC/EFV,
+											   D4T/3TC/EFV,
+											   3TC/NVP/AZT,
+											   EDF/3TC/EFV,
+											   EFV/FTC/TDF,
+											   3TC/LPV/TDF/r,
+											   ABC/3TC/AZT,
+										       ABC/NVP/3TC,
+											   3TC/ABC/LPV/r,
+							                   3TC/NVP/TDF,
+                                               3TC/NVP/AZT,
+                                               3TC/AZT/LPV/r,
+                                               AZT-3TC-ATV/r,
+                                               TDF-3TC-ATV/r,
+                                               3TC/D4T/LPV/r,
+                                               3TC/ABC/EFV,
+                                               ABC/LPV/R/TDF,
+                                               ABC/DDI/LPV/r"
+					/>
+				</td>
+			</tr>
+			<tr id="ti-facility-details">
+				<td>Facility receiving HIV care</td>
+				<td><obs conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="care-facility"/></td>
+			</tr>
 			<tr>
 				<td>Partner HIV Status:</td>
 				<td>
-					<obs conceptId="1436AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
+					<obs conceptId="1436AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 id="partner-hiv-status"
 						 answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 						 answerLabels="HIV Positive,HIV Negative,Unknown"/>
 				</td>
-			</tr>
-			<tr id="partner-hiv-date">
 				<td width="250">Partner HIV Test Date:</td>
 				<td>
 					<obs conceptId="160082AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="partner-hiv-test-date"/>
@@ -338,16 +590,68 @@
 </tr>
 <tr>
 	<td colspan="2">
-		<legend>Urinalysis</legend>
+		<legend>Laboratory investigations</legend>
 		<table align="center" width="100%" class="tb1">
 			<obsgroup groupingConceptId="161446AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
 				<tr>
 					<td>
 						<table>
 							<tr>
+								<td>Syphilis serology:</td>
+								<td>
+									<obs conceptId="299AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 id="syphilis-test-results"
+										 answerConceptIds="1229AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1228AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1271AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1402AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1304AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Non Reactive,Reactive,Requested,Not Tested,Poor Sample quality"/>
+								</td>
+								<td>BS for MPS:</td>
+								<td>
+									<obs conceptId="32AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+							</tr>
+							<tr>
+								<td width="250">Blood Group/Rhesus:</td>
+								<td>
+									<obs conceptId="300AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+								</td>
+								<td>
+								<table id="tbl-known-positive" border="1">
+										<td>
+											<u>
+												HIV Test Recorded Recently
+											</u>
+											<br/>
+											<br/>Final results:
+											<input type="text" name="hiv-known-status" id="hiv-known-positive" readonly="True" />
+											&#160;&#160;&#160;&#160;
+											Date:
+											<lookup expression="fn.latestObs(159427).getObsDatetime()"/>
+											<br/>
+											<br/>On HAART:
+											<input type="text" name="on-art" id="on-art" readonly="True" />
+											&#160;&#160;&#160;&#160;
+											Regimen:
+											<span id="current-regimen" class="value"></span>
+											<br/>
+										</td>
+								</table>
+								</td>
+							</tr>
+						</table>
+			         <table>
+						 <br/>
+							<legend><strong>Urinalysis</strong></legend>
+							 <hr />
+							<tr>
 								<td>Urine Microscopy</td>
 								<td>
 									<obs conceptId="56AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="38"/>
+								</td>
+								<td>Urine Leukocyte Esterase Test</td>
+								<td>
+									<obs conceptId="161441AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Negative,Trace,One Plus(+),Two Plus(++),Three Plus(+++)"/>
 								</td>
 							</tr>
 							<tr>
@@ -358,48 +662,6 @@
 										 answerLabels="Negative,Trace - 15,One Plus(+) - 30,Two Plus(++) - 100,Three Plus(+++) - 300,Four Plus(++++) - 1000"/>
 									mg/dL
 								</td>
-							</tr>
-							<tr>
-								<td>Glucose Measurement (Qualitative)</td>
-								<td>
-									<obs conceptId="159734AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1365AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="Normal,Trace,One Plus(+),Two Plus(++),Three Plus(+++),Four Plus(++++)"/>
-								</td>
-							</tr>
-							<tr>
-								<td>Urine pH</td>
-								<td>
-									<obs conceptId="161438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="urine-ph"/>
-								</td>
-							</tr>
-							<tr>
-								<td>Urine Specific Gravity</td>
-								<td>
-									<obs conceptId="161439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="urine-specific-gravity"/>
-								</td>
-							</tr>
-							<tr>
-								<td>Urine Nitrite Test</td>
-								<td>
-									<obs conceptId="161440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="Negative,Positive,One Plus(+),Two Plus(++)"/>
-								</td>
-							</tr>
-						</table>
-					</td>
-					<td>
-						<table>
-							<tr>
-								<td>Urine Leukocyte Esterase Test</td>
-								<td>
-									<obs conceptId="161441AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="Negative,Trace,One Plus(+),Two Plus(++),Three Plus(+++)"/>
-								</td>
-							</tr>
-							<tr>
 								<td>Urinary Ketone</td>
 								<td>
 									<obs conceptId="161442AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -409,6 +671,12 @@
 								</td>
 							</tr>
 							<tr>
+								<td>Glucose Measurement (Qualitative)</td>
+								<td>
+									<obs conceptId="159734AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1365AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Normal,Trace,One Plus(+),Two Plus(++),Three Plus(+++),Four Plus(++++)"/>
+								</td>
 								<td>Urine Bile Salt Test</td>
 								<td>
 									<obs conceptId="161444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -418,6 +686,10 @@
 								</td>
 							</tr>
 							<tr>
+								<td>Urine pH</td>
+								<td>
+									<obs conceptId="161438AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="urine-ph"/>
+								</td>
 								<td>Urine Bile Pigment Test</td>
 								<td>
 									<obs conceptId="161443AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
@@ -426,25 +698,35 @@
 								</td>
 							</tr>
 							<tr>
+								<td>Urine Specific Gravity</td>
+								<td>
+									<obs conceptId="161439AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="urine-specific-gravity"/>
+								</td>
 								<td>Urine Color</td>
 								<td>
 									<obs conceptId="162106AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 								</td>
 							</tr>
 							<tr>
+								<td>Urine Nitrite Test</td>
+								<td>
+									<obs conceptId="161440AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Negative,Positive,One Plus(+),Two Plus(++)"/>
+								</td>
 								<td>Urine Turbidity</td>
 								<td>
 									<obs conceptId="162101AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
 								</td>
 							</tr>
-							<tr>
-								<td>Urine Dipstick for Blood</td>
-								<td>
-									<obs conceptId="162096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-										 answerLabels="Negative,Trace,One Plus(+),Two Plus(++),Three Plus(+++)"/>
-								</td>
-							</tr>
+						 <tr>
+							 <td>Urine Dipstick for Blood</td>
+							 <td>
+								 <obs conceptId="162096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									  answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1874AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1362AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1363AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1364AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+									  answerLabels="Negative,Trace,One Plus(+),Two Plus(++),Three Plus(+++)"/>
+							 </td>
+						 </tr>
 						</table>
 					</td>
 				</tr>

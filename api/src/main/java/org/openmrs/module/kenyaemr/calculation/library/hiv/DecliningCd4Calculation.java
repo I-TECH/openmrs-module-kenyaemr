@@ -1,17 +1,12 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.calculation.library.hiv;
 
 import org.openmrs.Program;
@@ -36,16 +31,17 @@ import java.util.Set;
 /**
  * Calculates whether a patient has a declining CD4 count. Calculation returns true if patient
  * is alive, enrolled in the HIV program and last CD4 count is less than CD4 count from 6 months ago
+ *  Retired flag
  */
-public class DecliningCd4Calculation extends AbstractPatientCalculation implements PatientFlagCalculation {
+public class DecliningCd4Calculation extends AbstractPatientCalculation  {
 
 	/**
 	 * @see org.openmrs.module.kenyacore.calculation.PatientFlagCalculation#getFlagMessage()
 	 */
-	@Override
-	public String getFlagMessage() {
-		return "Declining CD4";
-	}
+//	@Override
+//	public String getFlagMessage() {
+//		return "Declining CD4";
+//	}
 
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues, PatientCalculationContext context) {

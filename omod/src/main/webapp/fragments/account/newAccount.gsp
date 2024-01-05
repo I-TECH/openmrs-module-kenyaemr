@@ -54,6 +54,14 @@
 	def providerFields = [
 			[
 					[ formFieldName: "providerIdentifier", label: "Provider ID", class: java.lang.String ]
+			],
+			[
+					[
+							formFieldName: "providerFacility",
+							label: "Primary Facility",
+							class: java.util.List,
+							fieldFragment: "field/org.openmrs.Location"
+					]
 			]
 	]
 %>

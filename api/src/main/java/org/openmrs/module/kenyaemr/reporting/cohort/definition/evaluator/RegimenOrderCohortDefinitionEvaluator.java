@@ -1,17 +1,12 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.reporting.cohort.definition.evaluator;
 
 import org.openmrs.Cohort;
@@ -20,11 +15,11 @@ import org.openmrs.DrugOrder;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.reporting.cohort.definition.RegimenOrderCohortDefinition;
+import org.openmrs.module.kenyaemr.reporting.data.converter.definition.DrugOrdersListForPatientDataDefinition;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
 import org.openmrs.module.reporting.data.patient.PatientData;
-import org.openmrs.module.reporting.data.patient.definition.DrugOrdersForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.service.PatientDataService;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
@@ -49,7 +44,9 @@ public class RegimenOrderCohortDefinitionEvaluator implements CohortDefinitionEv
 
 		RegimenOrderCohortDefinition cd = (RegimenOrderCohortDefinition) cohortDefinition;
 
-		DrugOrdersForPatientDataDefinition drugOrdersForPatientDataDefinition = new DrugOrdersForPatientDataDefinition();
+		//DrugOrdersForPatientDataDefinition drugOrdersForPatientDataDefinition = new DrugOrdersForPatientDataDefinition();
+		DrugOrdersListForPatientDataDefinition drugOrdersForPatientDataDefinition = new DrugOrdersListForPatientDataDefinition();
+
 		drugOrdersForPatientDataDefinition.setDrugConceptSetsToInclude(Arrays.asList(cd.getMasterConceptSet()));
 		drugOrdersForPatientDataDefinition.setActiveOnDate(cd.getOnDate());
 

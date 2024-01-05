@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    This Source Code Form is subject to the terms of the Mozilla Public License,
+    v. 2.0. If a copy of the MPL was not distributed with this file, You can
+    obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+    the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+
+    Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+    graphic logo is a trademark of OpenMRS Inc.
+
+-->
 
 <module configVersion="1.2">
 
@@ -9,6 +20,7 @@
 	<author>${project.parent.organization.name}</author>
 	<description>${project.parent.description}</description>
 	<require_version>${openMRSVersion}</require_version>
+	<!--<require_version>1.11.*, 1.10.2 - 1.10.*, 1.12.*</require_version>-->
 
 	<require_modules>
 		<require_module version="${appframeworkVersion}">org.openmrs.module.appframework</require_module>
@@ -19,9 +31,26 @@
 		<require_module version="${kenyauiVersion}">org.openmrs.module.kenyaui</require_module>
 		<require_module version="${metadatasharingVersion}">org.openmrs.module.metadatasharing</require_module>
 		<require_module version="${reportingVersion}">org.openmrs.module.reporting</require_module>
+		<require_module version="${reportingcompatibilityVersion}">org.openmrs.module.reportingcompatibility</require_module>
 		<require_module version="${groovyVersion}">org.openmrs.module.groovy</require_module>
 		<require_module version="${uiframeworkVersion}">org.openmrs.module.uiframework</require_module>
+		<require_module version="${kenyaemrOrderentryVersion}">org.openmrs.module.kenyaemrorderentry</require_module>
+		<require_module version="${facilityReportingVersion}">org.openmrs.module.facilityreporting</require_module>
+		<require_module version="${bahmniAppointmentsVersion}">org.bahmni.module.appointments</require_module>
 	</require_modules>
+
+	<aware_of_modules>
+		<aware_of_module>org.openmrs.module.legacyui</aware_of_module>
+	</aware_of_modules>
+
+
+	<!--<aware_of_modules>
+		<aware_of_module version="${kenyaemrOrderentryVersion}">org.openmrs.module.kenyaemrorderentry</aware_of_module>
+	</aware_of_modules>-->
+
+	<!--<aware_of_modules>-->
+		<!--<aware_of_module version="${prepVersion}">org.openmrs.module.prep</aware_of_module>-->
+	<!--</aware_of_modules>-->
 
 	<activator>org.openmrs.module.kenyaemr.EmrActivator</activator>
 
@@ -29,10 +58,115 @@
 		<point>org.openmrs.api.EncounterService</point>
 		<class>${project.parent.groupId}.${project.parent.artifactId}.advice.EncounterServiceAdvice</class>
 	</advice>
+	<advice>
+		<point>org.openmrs.api.EncounterService</point>
+		<class>${project.parent.groupId}.${project.parent.artifactId}.advice.MCHMSDeliveryFormProcessor</class>
+	</advice>
+
+	<advice>
+		<point>org.openmrs.api.EncounterService</point>
+		<class>${project.parent.groupId}.${project.parent.artifactId}.advice.SyncHFEAppointmentsWithBahmniModule</class>
+	</advice>
 
 	<messages>
 		<lang>en</lang>
 		<file>messages.properties</file>
 	</messages>
+
+	<globalProperty>
+		<property>kenyaemr.autoUpdateReleaseUrl</property>
+		<defaultValue>https://api.github.com/repos/palladiumkenya/KenyaHMIS-KenyaEMR-Ver2.x/releases/latest</defaultValue>
+		<description>
+			A github api url for KenyaEMR auto-update pointing at the latest KenyaEMR release.
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>kenyaemr.isKDoD</property>
+		<defaultValue>false</defaultValue>
+		<description>
+			Defines whether facility is KDoD site or not
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>kenyaemr.generateUPN</property>
+		<defaultValue>false</defaultValue>
+		<description>
+			Defines facility to enable UPN Autogeneration
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>kenyaemr.web.datatool.url</property>
+		<defaultValue>http://localhost:3000</defaultValue>
+		<description>
+			URL for data tool in KenyaEMR
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>kenyaemr.isRecencySite</property>
+		<defaultValue>false</defaultValue>
+		<description>
+			Defines whether facility is Recency Test site or not
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>kenyaemr.ndwh.nupi.backend.url</property>
+		<defaultValue>https://data.kenyahmis.org:9783/api/Dataset/v2</defaultValue>
+		<description>
+			The URL of the data warehouse backend
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>kenyaemr.ndwh.nupi.client.id</property>
+		<defaultValue>test</defaultValue>
+		<description>
+			IIT ML - The oauth2 client-id of the data warehouse backend
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>kenyaemr.ndwh.nupi.client.secret</property>
+		<defaultValue>7f11e148-5741-11ec-bf63-0242ac130002</defaultValue>
+		<description>
+			The oauth2 client-secret of the data warehouse backend
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>kenyaemr.ndwh.nupi.scope</property>
+		<defaultValue>pdapiv1</defaultValue>
+		<description>
+			IIT ML - The oauth2 scope of the data warehouse backend
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>kenyaemr.ndwh.nupi.authorization.url</property>
+		<defaultValue>https://auth2.kenyahmis.org:8443/connect/authorize</defaultValue>
+		<description>
+			IIT ML - The oauth2 authorization URL of the data warehouse backend
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>kenyaemr.ndwh.nupi.token.url</property>
+		<defaultValue>https://auth2.kenyahmis.org:8443/connect/token</defaultValue>
+		<description>
+			The oauth2 token URL of the data warehouse backend
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>kenyaemr.ndwh.nupi.paging</property>
+		<defaultValue>400</defaultValue>
+		<description>
+			The paging threshold for NDWH response. Default is 400
+		</description>
+	</globalProperty>
 
 </module>

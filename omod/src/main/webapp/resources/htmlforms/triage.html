@@ -12,9 +12,14 @@
   ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
 -->
 <htmlform>
-
+    <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
     <script type="text/javascript">
+        var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
+        var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
+        var PATIENT_PREGNANT = GREENCARD_VELOCITY.split(",")[10].split(":")[1];
         function onWeightOrHeightChange() {
+            var age = parseInt('<lookup expression="patient.age"/>');
+            var gender = "<lookup expression="patient.gender" />";
             var display = '';
             var weightKg = parseFloat(getValue('weight.value'));
             var heightM = parseFloat(getValue('height.value')) / 100;
@@ -26,40 +31,176 @@
                 else {
                     display = bmi.toFixed(2);
                 }
+             if (age &lt; 5) {
+                    jq.getJSON('/' + ctxPath + '/kenyaemr/ZScoreUtils/calculateZScore.action', {
+                        height: heightM * 100,
+                        weight: weightKg,
+                        sex: gender
+                    }, function (data) {
+                        if (data != null) {
+                            jQuery('#calculated-zscore').html(data);
+                            setValue('z-score-value.value', data);
+                            if (data == -10) {
+                                getField('z-score.value').prop("selectedIndex", 0);
+                                getField('z-score.error').html('Z-score not within acceptable range').show();
+                            }else{
+                                getField('z-score.error').html('Z-score not within acceptable range').hide();
+                            }
+
+                            if (data &gt; -1) {
+                                getField('z-score.value').prop("selectedIndex", 1);
+                            }else if (data == -1) {
+                                getField('z-score.value').prop("selectedIndex", 2);
+                            }else if (data == -2) {
+                                getField('z-score.value').prop("selectedIndex", 3);
+                            }else if (data == -3) {
+                                getField('z-score.value').prop("selectedIndex", 4);
+                            }else if (data == -4) {
+                                getField('z-score.value').prop("selectedIndex", 4);
+                            }else if (data == -20) {
+                                getField('z-score.value').prop("selectedIndex", 0);
+                                getField('z-score.error').html('Missing either weight or height').show();
+                            }
+                        } else {
+                            jq("#calculated-zscore").text("Error computing z-score").addClass("ke-error-label");
+                        }
+
+                    });
+
+                }
             }
             jQuery('#calculated-bmi').html(display);
         }
+        function displayRecentBmi() {
+            var weightKg = "<lookup expression="fn.latestObs(5089).valueNumeric"/>"
+            var heightM = ("<lookup expression="fn.latestObs(5090).valueNumeric"/>")/100
+            var bmi = '';
+            var recent_bmi ='';
+            var pAge = parseInt('<lookup expression="patient.age"/>');
+            //If client is > 19 years prepopluate height
+            if (pAge &gt; 19 &amp;&amp; heightM !="" ) {
+                getField('height.value').val(heightM*100);
+            }else{
+                getField('height.value').val("");
+            }
+
+            if (weightKg != "" &amp;&amp; heightM !="") {
+                if (!isNaN(weightKg) &amp;&amp; !isNaN(heightM)) {
+                    bmi = weightKg / (heightM * heightM);
+                    recent_bmi = bmi.toFixed(2);
+                    jq('#recent-calculated-bmi').html(recent_bmi);
+                }
+            }else{
+                jq('#recent-calculated-bmi').html("");
+            }
+        }
+
+        function displayRecentZscore() {
+            var latestZscore = "<lookup expression="fn.latestObs(163515).getValueCoded()"/>"
+            var latestZscoreDate = "<lookup expression="fn.latestObs(163515).getObsDatetime()"/>";
+            var pAge = parseInt('<lookup expression="patient.age"/>');
+           var lastZscore = latestZscore.replace(/[^\d]/g, '');
+            var formattedZscoreDate = moment(moment(latestZscoreDate, 'DD/MMM/YYYY').toDate()).format("DD-MMM-YYYY");
+
+            if (pAge &lt; 5 &amp;&amp; lastZscore !="" ) {
+                if (lastZscore == 1115) {
+                    jq('#recent-calculated-zscore').html('Normal ('+formattedZscoreDate+')');
+                }else if (lastZscore == 123814) {
+                    jq('#recent-calculated-zscore').html('Mild ('+formattedZscoreDate+')');
+                }else if (lastZscore == 123815) {
+                    jq('#recent-calculated-zscore').html('Moderate ('+formattedZscoreDate+')');
+                }else if (lastZscore == 164131) {
+                    jq('#recent-calculated-zscore').html('Severe (' + formattedZscoreDate + ')');
+                }else{
+                    jq('#recent-calculated-zscore').html("");
+                 }
+            }
+        }
 
         jQuery(function () {
+            var pAge = parseInt('<lookup expression="patient.age"/>');
+            var miscariageVal = getValue('miscariage.value');
+            var fpVal = getValue('fplanning.value');
+            var lmpVal = getValue('last-menstrual-period.value');
+            babyVal = getValue('baby-last-wee.value');
             getField('weight.value').change(onWeightOrHeightChange);
             getField('height.value').change(onWeightOrHeightChange);
             onWeightOrHeightChange();
-
+            displayRecentBmi();
+            displayRecentZscore();
+            jq('#z-score').attr("style", "pointer-events: none;");
+            jq('#miscariage input').change(onMiscariageChange);
+            jq('#baby-last-week').hide();
             //limit letters only in text field
+            if(pAge &lt; 10 || PATIENT_PREGNANT == 'true' ) {
+                jq('#pregnancy-screening').hide();
+                jq('#triage-notes').hide();
+             }else{
+                jq('#pregnancy-screening').show();
+                jq('#triage-notes').show();
+             }
             jQuery('#rsn').keypress(function(event) {
-            var code = (event.keyCode ? event.keyCode : event.which);
-            //alert(code)
-            if (code &gt;= 48  &amp;&amp; code &lt;= 57) //numbers
-                event.preventDefault();
+                var code = (event.keyCode ? event.keyCode : event.which);
+                //alert(code)
+                if (code &gt;= 48  &amp;&amp; code &lt;= 57) //numbers
+                    event.preventDefault();
             });
 
-
+            function onMiscariageChange() {
+                if (getValue('miscariage.value') == 1066) {
+                    jq('#baby-last-week').show();
+                }else{
+                    jq('#baby-last-week').hide();
+                    clearHiddenSections(jq('#baby-last-week'));
+                }
+            }
             var pbirthdate = new Date("<lookup expression="patient.birthdate" />").getTime();
             var pgender = "<lookup expression="patient.gender" />";
+            var pAge = parseInt('<lookup expression="patient.age"/>');
+           beforeSubmit.push(function () {
+               var lmpdate = new Date(getValue('lmp-date.value')).getTime();
 
-            if (pgender === 'F') {
-                beforeSubmit.push(function () {
-                    var lmpdate = new Date(getValue('lmp-date.value')).getTime();
-                    if (lmpdate &lt; pbirthdate) {
-                        getField('lmp-date.error').html('Should not be earlier than birth date').show();
-                        return false;
-                    }
+                   if(pgender === 'F') {
+                        if (lmpdate &lt; pbirthdate) {
+                               getField('lmp-date.error').html('Should not be earlier than birth date').show();
+                               return false;
+                           }else{
+                               getField('lmp-date.error').html('Should not be earlier than birth date').hide();
+                           }
+                       }
                     return true;
                 });
-            }
-        });
-    </script>
 
+        });
+         //Clear hidden sections
+    clearHiddenSections = function(parentObj) {
+        parentObj.find('input[type=radio]').each(function() {
+            this.checked = false;
+        });
+        parentObj.find('input[type=checkbox]').each(function() {
+            this.checked = false;
+        });
+        parentObj.find('input[type=text]').each(function() {
+            jq(this).val("");
+        });
+        parentObj.find('select').each(function() {
+            this.selectedIndex =0;
+        });
+    }
+
+    </script>
+    <ifMode mode="EDIT">
+        <script type="text/javascript">
+            jq(function(){
+                if (getValue('miscariage.value') == 1066) {
+                    jq('#baby-last-week').show();
+                }else{
+                    jq('#baby-last-week').hide();
+                    clearHiddenSections(jq('#baby-last-week'));
+                }
+            });
+        </script>
+    </ifMode>
     <div class="ke-form-header">
         <table style="width: 100%">
             <tr>
@@ -127,65 +268,159 @@
                 </tr>
             </table>
         </fieldset>
-
         <fieldset>
             <legend>Other Recordings</legend>
-
-            <table>
-                <tr>
-                    <th></th>
-                    <th>Current</th>
-                    <th>Recent</th>
-                </tr>
-                <tr>
-                    <td>Weight</td>
-                    <td>
-                        <obs id="weight" conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                        kg
-                    </td>
-                    <td>
-                        <recentObs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Height</td>
-                    <td>
-                        <obs id="height" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                        cm
-                    </td>
-                    <td>
-                        <recentObs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>BMI</td>
-                    <td><span id="calculated-bmi" class="value"></span></td>
-                    <td>-</td>
-                </tr>
-                <tr>
-                    <td>MUAC</td>
-                    <td>
-                        <obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                    </td>
-                    <td>
-                        <recentObs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
-                    </td>
-                </tr>
-                <includeIf velocityTest="$patient.gender == 'F' ">
+            <td colspan="6">
+                <table>
                     <tr>
-                        <td>LMP</td>
+                        <th></th>
+                        <th>Current</th>
+                        <th>Recent</th>
+                    </tr>
+                    <tr>
+                        <td>Weight</td>
                         <td>
-                            <obs id="lmp-date" conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                            <obs id="weight" conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"/>
+                            kg
                         </td>
                         <td>
-                            <recentObs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                            <recentObs conceptId="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
                         </td>
                     </tr>
-                </includeIf>
-            </table>
+                    <tr>
+                        <td>Height</td>
+                        <td>
+                            <obs id="height" conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"/>
+                            cm
+                        </td>
+                        <td>
+                            <recentObs conceptId="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                        </td>
+                    </tr>
+                    <includeIf velocityTest="$patient.age &gt; 14">
+                        <tr>
+                            <td>BMI</td>
+                            <td><span id="calculated-bmi" class="value"></span></td>
+                            <td><span id="recent-calculated-bmi"></span></td>
+                        </tr>
+                    </includeIf>
+                    <tr>
+                        <td>MUAC</td>
+                        <td>
+                            <obs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                        </td>
+                        <td>
+                            <recentObs conceptId="1343AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                        </td>
+                    </tr>
+                    <includeIf velocityTest="$patient.age &lt; 5">
+                    <tr>
+                        <td>
+                            Nutritional status:</td>
+                        <td>
+                            <obs conceptId="163515AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                   123814AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                   123815AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                                   164131AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabels="Normal (Median),Mild (-1 SD),Moderate (-2 SD),Severe (-3 SD and -4 SD)"
+                                 style="dropdown"
+                                 id="z-score"/>
+                        </td>
+                        <td><span id="recent-calculated-zscore"></span></td>
+                        <td>&#160;&#160;&#160;  Z-Score : &#160;</td>
+                        <td><span id="calculated-zscore" class="value"></span></td>
+                       </tr>
+                        <tr style="display: none">
+                            <td>
+                                <obs id="z-score-value" conceptId="162584AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                            </td>
+                        </tr>
+                    </includeIf>
+                    <includeIf velocityTest="$patient.gender == 'F' ">
+                        <tr>
+                            <td>LMP</td>
+                            <td>
+                                <obs id="lmp-date" conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                            </td>
+                            <td>
+                                <recentObs conceptId="1427AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"/>
+                            </td>
+                        </tr>
+                    </includeIf>
+                    <includeIf velocityTest="($patient.gender == 'F') &amp;&amp; ($patient.age &gt; 8) &amp;&amp; ($patient.age &lt; 15)">
+                        <tr id="hpv-vaccine">
+                            <td>Client Vaccinated against HPV? &#160;&#160;&#160;&#160;&#160;&#160;&#160;</td>
+                            <td>  <obs  align="right" conceptId="160325AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                        style="radio"
+                                        answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                        answerLabels="Yes,No"/>
+                            </td>
+                        </tr>
+                    </includeIf>
+                </table>
+            </td>
         </fieldset>
-    </div>
 
+        <includeIf velocityTest="$patient.gender == 'F'  &amp;&amp; ($patient.age &gt; 9)" >
+            <fieldset id="pregnancy-screening">
+                <legend>Pregnancy Screening</legend>
+                <table>
+                    <obsgroup groupingConceptId="160108AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+
+                        <tr>
+                            <td>Have you abstained from sexual intercourse from your last menstrual period/delivery?  &#160;&#160; </td>
+                            <td><obs conceptId="160109AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                     answerLabels="Yes,No"
+                                     style="radio" id="sexual-abstained" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Did your last menstrual period start within the past 7 days ? &#160;&#160;</td>
+                            <td><obs conceptId="162877AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="last-menstrual-period" labelText=" " answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+
+                        </tr>
+                        <tr>
+                            <td>Are you on FP method ? &#160; </td>
+                            <td><obs conceptId="160653AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "  id="fplanning" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+                        </tr>
+                        <tr>
+                            <td>Have you had a miscarriage in the past 7 days ? &#160; </td>
+                            <td><obs conceptId="48AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "  id="miscariage" answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+                        </tr>
+                        <tr id="baby-last-week">
+                            <td>Have you had a baby in the last 4 weeks? &#160; </td>
+                            <td><obs conceptId="1657AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=" "  answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" style="radio" answerLabels="Yes,No" /></td>
+                        </tr>
+                    </obsgroup>
+                </table>
+            </fieldset>
+            <fieldset id="triage-notes">
+                <legend>Triage Notes</legend>
+                <table align="center" width="100%" class="tb1">
+                    <tr>
+                        <td>Did you refer the client for a Pregnancy test?
+                            <obs class ="refer-client-for-pregnancy"
+                                 conceptId="1282AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                 answerLabels="Yes,No"
+                                 style="radio" id="refer-client-for-pregnancy" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Triage Notes:</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <obs conceptId="159395AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="100"
+                                 style="textarea"/>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+
+        </includeIf>
+    </div>
     <div class="ke-form-footer">
         <submit/>
     </div>

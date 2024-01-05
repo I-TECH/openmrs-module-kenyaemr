@@ -1,17 +1,12 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.fragment.controller.system;
 
 import org.openmrs.api.context.Context;
@@ -21,6 +16,7 @@ import org.openmrs.module.kenyaemr.util.ServerInformation;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
 import org.openmrs.module.kenyaui.annotation.AppAction;
 import org.openmrs.module.kenyaui.annotation.SharedAction;
+import org.openmrs.module.reportingcompatibility.service.ReportingCompatibilityService;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.annotation.SpringBean;
 
@@ -76,7 +72,7 @@ public class SystemUtilsFragmentController {
 	@SharedAction({EmrConstants.APP_ADMIN, DqConstants.APP_DATAMANAGER})
 	public List<SimpleObject> getDatabaseSummary() {
 		List<SimpleObject> points = new ArrayList<SimpleObject>();
-		points.add(SimpleObject.create("label", "Total patients", "value", Context.getPatientSetService().getCountOfPatients()));
+		points.add(SimpleObject.create("label", "Total patients", "value", Context.getService(ReportingCompatibilityService.class).getCountOfPatients()));
 		points.add(SimpleObject.create("label", "Total providers", "value", Context.getProviderService().getAllProviders().size()));
 		points.add(SimpleObject.create("label", "Total users", "value", Context.getUserService().getAllUsers().size()));
 		return points;

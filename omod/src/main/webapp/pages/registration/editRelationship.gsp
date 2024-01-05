@@ -3,5 +3,5 @@
 %>
 
 <div class="ke-page-content">
-	${ ui.includeFragment("kenyaemr", "patient/editRelationship", [ relationship: relationship, patient: currentPatient, returnUrl: returnUrl ]) }
+	${ ui.includeFragment("kenyaemr", "patient/editRelationship", [ relationship: relationship, patient: currentPatient, providerId:providerId, returnUrl: returnUrl ]) }
 </div>

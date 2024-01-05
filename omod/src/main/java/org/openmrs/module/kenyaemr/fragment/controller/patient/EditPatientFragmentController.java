@@ -1,17 +1,12 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.fragment.controller.patient;
 
 import org.apache.commons.lang.StringUtils;
@@ -26,6 +21,9 @@ import org.openmrs.Person;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonName;
 import org.openmrs.Program;
+import org.openmrs.Relationship;
+import org.openmrs.api.AdministrationService;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
@@ -47,11 +45,19 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.openmrs.module.kenyaemr.wrapper.Facility;
+import org.openmrs.ui.framework.annotation.SpringBean;
+import org.openmrs.module.kenyaui.KenyaUiUtils;
+import org.openmrs.module.kenyaui.annotation.AppAction;
+import org.openmrs.module.kenyaemr.EmrConstants;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Controller for creating and editing patients in the registration app
@@ -60,6 +66,29 @@ public class EditPatientFragmentController {
 
 	// We don't record cause of death, but data model requires a concept
 	private static final String CAUSE_OF_DEATH_PLACEHOLDER = Dictionary.UNKNOWN;
+	//private static final String INSCHOOL = Dictionary.INSCHOOL;
+	private ConceptService conceptService = Context.getConceptService();
+	private AdministrationService administrationService = Context.getAdministrationService();
+	final String isKDoD = (administrationService.getGlobalProperty("kenyaemr.isKDoD"));
+	final String clientNumberFieldEnabled = (administrationService.getGlobalProperty("clientNumber.enabled"));
+	final String clientNumberPreferredLabel = (administrationService.getGlobalProperty("client_number_label"));
+	final String clientRegistryClientVerificationApi = (administrationService.getGlobalProperty(CommonMetadata.GP_CLIENT_VERIFICATION_GET_END_POINT));
+	final String clientRegistryApiToken = (administrationService.getGlobalProperty(CommonMetadata.GP_CLIENT_VERIFICATION_API_TOKEN));
+
+	/**
+	 * Gets the facility name given the facility code
+	 * @return
+	 */
+	@AppAction(EmrConstants.APP_REGISTRATION)
+	public String getFacilityName(@RequestParam("facilityCode") String facilityCode, @SpringBean KenyaUiUtils kenyaUi, UiUtils ui) {
+		String ret = "";
+
+		Location facility = Context.getService(KenyaEmrService.class).getLocationByMflCode(facilityCode);
+		ret = facility.getName();
+
+		return(ret);
+	}
+
 
 	/**
 	 * Main controller method
@@ -77,11 +106,70 @@ public class EditPatientFragmentController {
 
 		Person existing = patient != null ? patient : person;
 
+		model.addAttribute("clientVerificationApi", clientRegistryClientVerificationApi);
+
+		model.addAttribute("clientVerificationApiToken", "");
 		model.addAttribute("command", newEditPatientForm(existing));
 
 		model.addAttribute("civilStatusConcept", Dictionary.getConcept(Dictionary.CIVIL_STATUS));
 		model.addAttribute("occupationConcept", Dictionary.getConcept(Dictionary.OCCUPATION));
 		model.addAttribute("educationConcept", Dictionary.getConcept(Dictionary.EDUCATION));
+		model.addAttribute("enableClientNumberField", (StringUtils.isBlank(clientNumberFieldEnabled) || clientNumberFieldEnabled.equalsIgnoreCase("false")) ? false : true);
+		model.addAttribute("clientNumberLabel", clientNumberPreferredLabel);
+		model.addAttribute("countryConcept", Dictionary.getConcept(Dictionary.COUNTRY));
+
+		//create list of countries
+		List<Concept> countryList = new ArrayList<Concept>();
+		for(Concept countryConcept : conceptService.getConcept(165657).getSetMembers()) {
+			countryList.add(countryConcept);
+		}
+
+		
+		model.addAttribute("countryOptions", countryList);
+		
+		// create list of counties
+		List<String> countyList = new ArrayList<String>();
+		List<Location> locationList = Context.getLocationService().getAllLocations();
+		for(Location loc: locationList) {
+			String locationCounty = loc.getCountyDistrict();
+			if(!StringUtils.isEmpty(locationCounty) && !StringUtils.isBlank(locationCounty)) {
+				countyList.add(locationCounty);
+			}
+		}
+
+		Set<String> uniqueCountyList = new HashSet<String>(countyList);
+		model.addAttribute("countyList", uniqueCountyList);
+		KenyaEmrService kenyaEmrService = Context.getService(KenyaEmrService.class);
+		model.addAttribute("defaultMflCode", kenyaEmrService.getDefaultLocationMflCode());
+		PatientIdentifierType pit = MetadataUtils.existing(PatientIdentifierType.class, HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
+        String nascopCCCNumber = "";
+		if (patient != null) {
+			PatientIdentifier cccObject = patient.getPatientIdentifier(pit);
+			if(cccObject != null) {
+				nascopCCCNumber = cccObject.getIdentifier();
+			  }
+		   }
+		model.addAttribute("nascopCCCNumber", nascopCCCNumber);
+
+		// create list of next of kin relationship
+
+		List<String> nextOfKinRelationshipOptions = Arrays.asList(
+			new String("Partner"),
+			new String("Spouse"),
+			Dictionary.getConcept(Dictionary.FATHER).getName().getName(),
+			Dictionary.getConcept(Dictionary.MOTHER).getName().getName(),
+			Dictionary.getConcept(Dictionary.GRANDMOTHER).getName().getName(),
+			Dictionary.getConcept(Dictionary.GRANDFATHER).getName().getName(),
+			Dictionary.getConcept(Dictionary.SIBLING).getName().getName(),
+			Dictionary.getConcept(Dictionary.CHILD).getName().getName(),
+			Dictionary.getConcept(Dictionary.AUNT).getName().getName(),
+			Dictionary.getConcept(Dictionary.UNCLE).getName().getName(),
+			Dictionary.getConcept(Dictionary.GUARDIAN).getName().getName(),
+			Dictionary.getConcept(Dictionary.FRIEND).getName().getName(),
+			Dictionary.getConcept(Dictionary.CO_WORKER).getName().getName()
+		);
+
+		model.addAttribute("nextOfKinRelationshipOptions", nextOfKinRelationshipOptions);
 
 		// Create list of education answer concepts
 		List<Concept> educationOptions = new ArrayList<Concept>();
@@ -90,6 +178,18 @@ public class EditPatientFragmentController {
 		educationOptions.add(Dictionary.getConcept(Dictionary.SECONDARY_EDUCATION));
 		educationOptions.add(Dictionary.getConcept(Dictionary.COLLEGE_UNIVERSITY_POLYTECHNIC));
 		model.addAttribute("educationOptions", educationOptions);
+
+		/*Create list of occupation answer concepts  */
+		List<Concept> occupationOptions = new ArrayList<Concept>();
+		occupationOptions.add(Dictionary.getConcept(Dictionary.FARMER));
+		occupationOptions.add(Dictionary.getConcept(Dictionary.TRADER));
+		occupationOptions.add(Dictionary.getConcept(Dictionary.EMPLOYEE));
+		occupationOptions.add(Dictionary.getConcept(Dictionary.STUDENT));
+		occupationOptions.add(Dictionary.getConcept(Dictionary.DRIVER));
+		occupationOptions.add(Dictionary.getConcept(Dictionary.NONE));
+		occupationOptions.add(Dictionary.getConcept(Dictionary.OTHER_NON_CODED));
+		model.addAttribute("occupationOptions", occupationOptions);
+
 
 		// Create a list of marital status answer concepts
 		List<Concept> maritalStatusOptions = new ArrayList<Concept>();
@@ -105,7 +205,59 @@ public class EditPatientFragmentController {
 		List<Concept> causeOfDeathOptions = new ArrayList<Concept>();
 		causeOfDeathOptions.add(Dictionary.getConcept(Dictionary.UNKNOWN));
 		model.addAttribute("causeOfDeathOptions", causeOfDeathOptions);
-	}
+
+		// Create a list of yes_no options
+		List<Concept> yesNoOptions = new ArrayList<Concept>();
+		yesNoOptions.add(Dictionary.getConcept(Dictionary.YES));
+		yesNoOptions.add(Dictionary.getConcept(Dictionary.NO));
+		model.addAttribute("yesNoOptions", yesNoOptions);
+
+		// Get peer educators
+		boolean isPeerEducator = false;
+		if(patient != null) {
+			for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
+				if (relationship.getRelationshipType().getaIsToB().equalsIgnoreCase("Peer-educator")
+						&& relationship.getEndDate() == null && relationship.getPersonA().getPersonId() == patient.getId()) {
+					isPeerEducator = true;
+					break;
+
+				}
+			}
+		}
+
+		model.addAttribute("peerEducator", isPeerEducator);
+
+		/*Create list of cadre answer concepts  */
+        List<String> cadreOptions = Arrays.asList(
+                new String("Troop"),
+                new String("Civilian")
+        );
+        model.addAttribute("cadreOptions", cadreOptions);
+
+        /*Create list of rank answer Options  */
+        List<String> rankOptions = Arrays.asList(
+                new String("General(Gen)"),
+                new String("Lieutenant General (Lt Gen)"),
+                new String("Major General (Maj Gen)"),
+                new String("Brigadier (Brig)"),
+                new String("Colonel (Col)"),
+                new String("Lieutenant Colonel (Lt Col)"),
+                new String("Major (Maj)"),
+                new String("Captain (Capt)"),
+                new String("Lieutenant (Lt)"),
+                new String("2nd Lieutenant (2lt)"),
+                new String("Warrant officer 1 (WO1)"),
+                new String("Warrant officer 2 (WO2)"),
+                new String("Senior Sergeant (Ssgt)"),
+                new String("Sergeant (Sgt)"),
+                new String("Corporal (Cpl)"),
+                new String("Private (Spte)")
+        );
+        model.addAttribute("rankOptions", rankOptions);
+        model.addAttribute("isKDoD", isKDoD);
+        model.addAttribute("idTypes", Context.getPatientService().getAllPatientIdentifierTypes());
+
+    }
 
 	/**
 	 * Saves the patient being edited by this form
@@ -153,25 +305,70 @@ public class EditPatientFragmentController {
 		private Boolean birthdateEstimated;
 		private String gender;
 		private PersonAddress personAddress;
+
+		public Concept getCountry() {
+			return country;
+		}
+
+		public void setCountry(Concept country) {
+			this.country = country;
+		}
+
 		private Concept maritalStatus;
 		private Concept occupation;
 		private Concept education;
+		private Concept inSchool;
+		private Concept orphan;
 		private Obs savedMaritalStatus;
 		private Obs savedOccupation;
 		private Obs savedEducation;
+		private Obs savedInSchool;
+		private Obs savedOrphan;
 		private Boolean dead = false;
 		private Date deathDate;
-
 		private String nationalIdNumber;
 		private String patientClinicNumber;
+		private String clientNumber;
 		private String uniquePatientNumber;
-
 		private String telephoneContact;
 		private String nameOfNextOfKin;
 		private String nextOfKinRelationship;
 		private String nextOfKinContact;
 		private String nextOfKinAddress;
 		private String subChiefName;
+		private String alternatePhoneContact;
+		private String nearestHealthFacility;
+		private String emailAddress;
+		private String guardianFirstName;
+		private String guardianLastName;
+		private String chtReferenceNumber;
+		private String kDoDCadre;
+		private String kDoDRank;
+		private String kDoDServiceNumber;
+		private String kDoDUnit;
+		private String passPortNumber;
+		private String hudumaNumber;
+		private String nhifNumber;
+		private String birthCertificateNumber;
+		private String alienIdNumber;
+		private String drivingLicenseNumber;
+		private String CRVerificationStatus;
+		private String CRVerificationMessage;
+		private Concept country;
+		private Obs savedCountry;
+
+
+		public String getNationalUniquePatientNumber() {
+			return nationalUniquePatientNumber;
+		}
+
+		public void setNationalUniquePatientNumber(String nationalUniquePatientNumber) {
+			this.nationalUniquePatientNumber = nationalUniquePatientNumber;
+		}
+
+		private String nationalUniquePatientNumber;
+
+
 
 		/**
 		 * Creates an edit form for a new patient
@@ -184,7 +381,7 @@ public class EditPatientFragmentController {
 		}
 
 		/**
-		 * Creates an edit form for an existing patient
+		 * Creates an edit form for an existing person
 		 */
 		public EditPatientForm(Person person) {
 			this();
@@ -208,9 +405,8 @@ public class EditPatientFragmentController {
 			birthdateEstimated = person.getBirthdateEstimated();
 			dead = person.isDead();
 			deathDate = person.getDeathDate();
-
 			PersonWrapper wrapper = new PersonWrapper(person);
-			telephoneContact = wrapper.getTelephoneContact();
+			telephoneContact = wrapper.getTelephoneContact();			
 		}
 
 		/**
@@ -221,16 +417,37 @@ public class EditPatientFragmentController {
 
 			PatientWrapper wrapper = new PatientWrapper(patient);
 
+			clientNumber = wrapper.getClientNumber();
 			patientClinicNumber = wrapper.getPatientClinicNumber();
-			uniquePatientNumber = wrapper.getUniquePatientNumber();
+			passPortNumber = wrapper.getPassPortNumber();
+			hudumaNumber = wrapper.getHudumaNumber();
+			nhifNumber = wrapper.getNhifNumber();
+			alienIdNumber = wrapper.getAlienIdNumber();
+			drivingLicenseNumber = wrapper.getDrivingLicenseNumber();
+			birthCertificateNumber = wrapper.getBirthCertificateNumber();
 			nationalIdNumber = wrapper.getNationalIdNumber();
-
 			nameOfNextOfKin = wrapper.getNextOfKinName();
 			nextOfKinRelationship = wrapper.getNextOfKinRelationship();
 			nextOfKinContact = wrapper.getNextOfKinContact();
 			nextOfKinAddress = wrapper.getNextOfKinAddress();
 			subChiefName = wrapper.getSubChiefName();
-
+			alternatePhoneContact = wrapper.getAlternativePhoneContact();
+			emailAddress = wrapper.getEmailAddress();
+			nearestHealthFacility = wrapper.getNearestHealthFacility();
+			guardianFirstName = wrapper.getGuardianFirstName();
+			guardianLastName = wrapper.getGuardianLastName();
+			chtReferenceNumber = wrapper.getChtReferenceNumber();
+			CRVerificationStatus = wrapper.getCRVerificationStatus();
+			CRVerificationMessage = wrapper.getCRVerificationMessage();
+			if(isKDoD.equals("true")){
+			kDoDServiceNumber = wrapper.getKDoDServiceNumber();
+			kDoDCadre = wrapper.getCadre();
+			kDoDRank = wrapper.getRank();
+			kDoDUnit = wrapper.getKDoDUnit();
+			}
+			else{
+				uniquePatientNumber = wrapper.getUniquePatientNumber();
+			}
 			savedMaritalStatus = getLatestObs(patient, Dictionary.CIVIL_STATUS);
 			if (savedMaritalStatus != null) {
 				maritalStatus = savedMaritalStatus.getValueCoded();
@@ -245,6 +462,21 @@ public class EditPatientFragmentController {
 			if (savedEducation != null) {
 				education = savedEducation.getValueCoded();
 			}
+			savedInSchool = getLatestObs(patient, Dictionary.IN_SCHOOL);
+			if (savedInSchool != null) {
+				inSchool = savedInSchool.getValueCoded();
+			}
+			savedOrphan = getLatestObs(patient, Dictionary.ORPHAN);
+			if (savedOrphan != null) {
+				orphan = savedOrphan.getValueCoded();
+			}
+			nationalUniquePatientNumber = wrapper.getNationalUniquePatientNumber();
+
+			savedCountry = getLatestObs(patient, Dictionary.COUNTRY);
+			if(savedCountry != null) {
+				country = savedCountry.getValueCoded();
+			}
+
 		}
 
 		private Obs getLatestObs(Patient patient, String conceptIdentifier) {
@@ -263,10 +495,20 @@ public class EditPatientFragmentController {
 		 */
 		@Override
 		public void validate(Object target, Errors errors) {
+			if(isKDoD.equals("true")){
+			require(errors, "kDoDServiceNumber");
+			require(errors, "kDoDCadre");
 			require(errors, "personName.givenName");
 			require(errors, "personName.familyName");
 			require(errors, "gender");
 			require(errors, "birthdate");
+			}
+			else {
+				require(errors, "personName.givenName");
+				require(errors, "personName.familyName");
+				require(errors, "gender");
+				require(errors, "birthdate");
+			}
 
 			// Require death details if patient is deceased
 			if (dead) {
@@ -287,15 +529,29 @@ public class EditPatientFragmentController {
 			if (StringUtils.isNotBlank(telephoneContact)) {
 				validateField(errors, "telephoneContact", new TelephoneNumberValidator());
 			}
+			if (StringUtils.isNotBlank(alternatePhoneContact)) {
+				validateField(errors, "alternatePhoneContact", new TelephoneNumberValidator());
+			}
 			if (StringUtils.isNotBlank(nextOfKinContact)) {
 				validateField(errors, "nextOfKinContact", new TelephoneNumberValidator());
 			}
 
 			validateField(errors, "personAddress");
 
+            if(isKDoD.equals("true")){
+                validateIdentifierField(errors, "kDoDServiceNumber", CommonMetadata._PatientIdentifierType.KDoD_SERVICE_NUMBER);
+            }
+            else {
+				validateIdentifierField(errors, "uniquePatientNumber", HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
+			}
 			validateIdentifierField(errors, "nationalIdNumber", CommonMetadata._PatientIdentifierType.NATIONAL_ID);
 			validateIdentifierField(errors, "patientClinicNumber", CommonMetadata._PatientIdentifierType.PATIENT_CLINIC_NUMBER);
-			validateIdentifierField(errors, "uniquePatientNumber", HivMetadata._PatientIdentifierType.UNIQUE_PATIENT_NUMBER);
+			validateIdentifierField(errors, "passPortNumber", CommonMetadata._PatientIdentifierType.PASSPORT_NUMBER);
+			validateIdentifierField(errors, "hudumaNumber", CommonMetadata._PatientIdentifierType.HUDUMA_NUMBER);
+			validateIdentifierField(errors, "birthCertificateNumber", CommonMetadata._PatientIdentifierType.BIRTH_CERTIFICATE_NUMBER);
+			validateIdentifierField(errors, "alienIdNumber", CommonMetadata._PatientIdentifierType.ALIEN_ID_NUMBER);
+			validateIdentifierField(errors, "drivingLicenseNumber", CommonMetadata._PatientIdentifierType.DRIVING_LICENSE);
+			validateIdentifierField(errors, "nationalUniquePatientNumber", CommonMetadata._PatientIdentifierType.NATIONAL_UNIQUE_PATIENT_IDENTIFIER);
 
 			// check birth date against future dates and really old dates
 			if (birthdate != null) {
@@ -382,12 +638,44 @@ public class EditPatientFragmentController {
 			wrapper.getPerson().setTelephoneContact(telephoneContact);
 			wrapper.setNationalIdNumber(nationalIdNumber, location);
 			wrapper.setPatientClinicNumber(patientClinicNumber, location);
-			wrapper.setUniquePatientNumber(uniquePatientNumber, location);
+			wrapper.setClientNumber(clientNumber, location);
+			wrapper.setPassPortNumber(passPortNumber, location);
+			wrapper.setHudumaNumber(hudumaNumber, location);
+			wrapper.setBirthCertificateNumber(birthCertificateNumber, location);
+			wrapper.setAlienIdNumber(alienIdNumber, location);
+			wrapper.setDrivingLicenseNumber(drivingLicenseNumber, location);
+			wrapper.setNationalUniquePatientNumber(nationalUniquePatientNumber, location);
+			wrapper.setNhifNumber(nhifNumber, location);
+
+
 			wrapper.setNextOfKinName(nameOfNextOfKin);
 			wrapper.setNextOfKinRelationship(nextOfKinRelationship);
 			wrapper.setNextOfKinContact(nextOfKinContact);
 			wrapper.setNextOfKinAddress(nextOfKinAddress);
 			wrapper.setSubChiefName(subChiefName);
+			wrapper.setAlternativePhoneContact(alternatePhoneContact);
+			wrapper.setNearestHealthFacility(nearestHealthFacility);
+			wrapper.setEmailAddress(emailAddress);
+			wrapper.setGuardianFirstName(guardianFirstName);
+			wrapper.setGuardianLastName(guardianLastName);
+			wrapper.setChtReferenceNumber(chtReferenceNumber);
+			wrapper.setCRVerificationStatus(CRVerificationStatus);
+			
+			if(nationalUniquePatientNumber.trim().equalsIgnoreCase("")) {
+				wrapper.setCRVerificationMessage(CRVerificationMessage);
+			} else {
+				wrapper.setCRVerificationMessage("");
+			}
+
+			if(isKDoD.equals("true")){
+				wrapper.setKDoDServiceNumber(kDoDServiceNumber, location);
+				wrapper.setCadre(kDoDCadre);
+				wrapper.setRank(kDoDRank);
+				wrapper.setKDoDUnit(kDoDUnit);
+			}
+			else{
+				wrapper.setUniquePatientNumber(uniquePatientNumber, location);
+			}
 
 			// Make sure everyone gets an OpenMRS ID
 			PatientIdentifierType openmrsIdType = MetadataUtils.existing(PatientIdentifierType.class, CommonMetadata._PatientIdentifierType.OPENMRS_ID);
@@ -407,6 +695,7 @@ public class EditPatientFragmentController {
 
 			// Explicitly save all identifier objects including voided
 			for (PatientIdentifier identifier : toSave.getIdentifiers()) {
+
 				Context.getPatientService().savePatientIdentifier(identifier);
 			}
 
@@ -417,6 +706,9 @@ public class EditPatientFragmentController {
 			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.CIVIL_STATUS), savedMaritalStatus, maritalStatus);
 			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.OCCUPATION), savedOccupation, occupation);
 			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.EDUCATION), savedEducation, education);
+			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.IN_SCHOOL), savedInSchool, inSchool);
+			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.ORPHAN), savedOrphan, orphan);
+			handleOncePerPatientObs(ret, obsToSave, obsToVoid, Dictionary.getConcept(Dictionary.COUNTRY), savedCountry, country);
 
 			for (Obs o : obsToVoid) {
 				Context.getObsService().voidObs(o, "KenyaEMR edit patient");
@@ -458,6 +750,34 @@ public class EditPatientFragmentController {
 			}
 		}
 
+		/**
+		 * Handles saving a field which is stored as an obs whose value is boolean
+		 * @param patient the patient being saved
+		 * @param obsToSave
+		 * @param obsToVoid
+		 * @param question
+		 * @param savedObs
+		 * @param newValue
+		 */
+		protected void handleOncePerPatientObs(Patient patient, List<Obs> obsToSave, List<Obs> obsToVoid, Concept question,
+											   Obs savedObs, Boolean newValue) {
+			if (!OpenmrsUtil.nullSafeEquals(savedObs != null ? savedObs.getValueBoolean() : null, newValue)) {
+				// there was a change
+				if (savedObs != null && newValue == null) {
+					// treat going from a value to null as voiding all past civil status obs
+					obsToVoid.addAll(Context.getObsService().getObservationsByPersonAndConcept(patient, question));
+				}
+				if (newValue != null) {
+					Obs o = new Obs();
+					o.setPerson(patient);
+					o.setConcept(question);
+					o.setObsDatetime(new Date());
+					o.setLocation(Context.getService(KenyaEmrService.class).getDefaultLocation());
+					o.setValueBoolean(newValue);
+					obsToSave.add(o);
+				}
+			}
+		}
 		public boolean isInHivProgram() {
 			if (original == null || !original.isPatient()) {
 				return false;
@@ -500,6 +820,14 @@ public class EditPatientFragmentController {
 			this.personName = personName;
 		}
 
+		public String getClientNumber() {
+			return clientNumber;
+		}
+
+		public void setClientNumber(String clientNumber) {
+			this.clientNumber = clientNumber;
+		}
+
 		/**
 		 * @return the patientClinicNumber
 		 */
@@ -513,6 +841,88 @@ public class EditPatientFragmentController {
 		public void setPatientClinicNumber(String patientClinicNumber) {
 			this.patientClinicNumber = patientClinicNumber;
 		}
+
+		/**
+		 * @return the passPortNumber
+		 */
+		public String getPassPortNumber() {
+			return passPortNumber;
+		}
+
+		/**
+		 * @param passPortNumber the passPortNumber to set
+		 */
+		public void setPassPortNumber(String passPortNumber) {
+			this.passPortNumber = passPortNumber;
+		}
+
+		/**
+		 * @return the hudumaNumber
+		 */
+		public String getHudumaNumber() {
+			return hudumaNumber;
+		}
+
+		/**
+		 * @param hudumaNumber the hudumaNumber to set
+		 */
+		public void setHudumaNumber(String hudumaNumber) {
+			this.hudumaNumber = hudumaNumber;
+		}
+
+		/**
+		 * @return the nhif Number
+		 */
+		public String getNhifNumber() {
+			return nhifNumber;
+		}
+		/**
+		 * @param nhifNumber the nhifNumber to set
+		 */
+		public void setNhifNumber(String nhifNumber) {
+			this.nhifNumber = nhifNumber;
+		}
+
+		/**
+		 * @return the birthCertificateNumber
+		 */
+		public String getBirthCertificateNumber() {
+			return birthCertificateNumber;
+		}
+
+		/**
+		 * @param birthCertificateNumber the birthCertificateNumber to set
+		 */
+		public void setBirthCertificateNumber(String birthCertificateNumber) {
+			this.birthCertificateNumber = birthCertificateNumber;
+		}
+		/**
+		 * @return the alienIdNumber
+		 */
+
+		public String getAlienIdNumber() {
+			return alienIdNumber;
+		}
+		/**
+		 * @param alienIdNumber the alienIdNumber to set
+		 */
+		public void setAlienIdNumber(String alienIdNumber) {
+			this.alienIdNumber = alienIdNumber;
+		}
+		/**
+		 * @return the drivingLicenseNumber
+		 */
+
+		public String getDrivingLicenseNumber() {
+			return drivingLicenseNumber;
+		}
+		/**
+		 * @param drivingLicenseNumber the drivingLicenseNumber to set
+		 */
+		public void setDrivingLicenseNumber(String drivingLicenseNumber) {
+			this.drivingLicenseNumber = drivingLicenseNumber;
+		}
+
 
 		/**
 		 * @return the hivIdNumber
@@ -662,7 +1072,25 @@ public class EditPatientFragmentController {
 		public void setDead(Boolean dead) {
 			this.dead = dead;
 		}
+		/*  greencard  */
 
+		public Concept getInSchool() {
+			return inSchool;
+		}
+
+		public void setInSchool(Concept inSchool) {
+			this.inSchool = inSchool;
+		}
+
+		public Concept getOrphan() {
+			return orphan;
+		}
+
+		public void setOrphan(Concept orphan) {
+			this.orphan = orphan;
+		}
+
+		/*  .greencard   */
 		public Date getDeathDate() {
 			return deathDate;
 		}
@@ -740,5 +1168,103 @@ public class EditPatientFragmentController {
 		public void setSubChiefName(String subChiefName) {
 			this.subChiefName = subChiefName;
 		}
+
+		public String getAlternatePhoneContact() {
+			return alternatePhoneContact;
+		}
+
+		public void setAlternatePhoneContact(String alternatePhoneContact) {
+			this.alternatePhoneContact = alternatePhoneContact;
+		}
+
+		public String getNearestHealthFacility() {
+			return nearestHealthFacility;
+		}
+
+		public void setNearestHealthFacility(String nearestHealthFacility) {
+			this.nearestHealthFacility = nearestHealthFacility;
+		}
+
+		public String getEmailAddress() {
+			return emailAddress;
+		}
+
+		public void setEmailAddress(String emailAddress) {
+			this.emailAddress = emailAddress;
+		}
+
+		public String getGuardianFirstName() {
+			return guardianFirstName;
+		}
+
+		public void setGuardianFirstName(String guardianFirstName) {
+			this.guardianFirstName = guardianFirstName;
+		}
+
+		public String getGuardianLastName() {
+			return guardianLastName;
+		}
+
+		public void setGuardianLastName(String guardianLastName) {
+			this.guardianLastName = guardianLastName;
+		}
+
+		public String getChtReferenceNumber() {
+			return chtReferenceNumber;
+		}
+
+		public void setChtReferenceNumber(String chtReferenceNumber) {
+			this.chtReferenceNumber = chtReferenceNumber;
+		}
+
+		public String getkDoDCadre() {
+			return kDoDCadre;
+		}
+
+		public void setkDoDCadre(String cadre) {
+			this.kDoDCadre = cadre;
+		}
+
+		public String getkDoDRank() {
+			return kDoDRank;
+		}
+
+		public void setkDoDRank(String rank) {
+			this.kDoDRank = rank;
+		}
+
+		public String getkDoDServiceNumber() {
+			return kDoDServiceNumber;
+		}
+
+		public void setkDoDServiceNumber(String kDoDServiceNumber) {
+			this.kDoDServiceNumber = kDoDServiceNumber;
+		}
+
+		public String getkDoDUnit() {
+			return kDoDUnit;
+		}
+
+		public void setkDoDUnit(String kDoDUnit) {
+			this.kDoDUnit = kDoDUnit;
+		}
+
+		public String getCRVerificationStatus() {
+			return CRVerificationStatus;
+		}
+
+		public void setCRVerificationStatus(String CRVerificationStatus) {
+			this.CRVerificationStatus = CRVerificationStatus;
+		}
+
+		public String getCRVerificationMessage() {
+			return CRVerificationMessage;
+		}
+
+		public void setCRVerificationMessage(String cRVerificationMessage) {
+			CRVerificationMessage = cRVerificationMessage;
+		}	
+
 	}
+
 }

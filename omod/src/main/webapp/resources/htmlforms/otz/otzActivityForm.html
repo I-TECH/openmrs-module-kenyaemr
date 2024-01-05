@@ -1,0 +1,275 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+	<script type="text/javascript">
+		var orientation = "<lookup expression="fn.latestObs(165359).getValueCoded()"/>";
+		var leadership = "<lookup expression="fn.latestObs(165361).getValueCoded()"/>";
+		var participation = "<lookup expression="fn.latestObs(165360).getValueCoded()"/>";
+		var decision = "<lookup expression="fn.latestObs(165362).getValueCoded()"/>";
+		var transitionAdultCare = "<lookup expression="fn.latestObs(165363).getValueCoded()"/>";
+		var treatmentLiteracy = "<lookup expression="fn.latestObs(165364).getValueCoded()"/>";
+		var shr = "<lookup expression="fn.latestObs(165365).getValueCoded()"/>";
+		var beyond = "<lookup expression="fn.latestObs(165366).getValueCoded()"/>";
+		jQuery(function($){
+			if(orientation == null|| orientation == "" || orientation == undefined||orientation == 'undefined') {
+				jq('#recent-obs-orientation').hide();
+			}else {
+				jq('#recent-obs-orientation').show();
+			}
+
+			if(participation == null|| participation == "" || participation == undefined||participation == 'undefined') {
+				jq('#recent-obs-participation').hide();
+			}else {
+				jq('#recent-obs-participation').show();
+			}
+
+			if(leadership == null|| leadership == "" || leadership == undefined||leadership == 'undefined') {
+				jq('#recent-obs-leadership').hide();
+			}else {
+				jq('#recent-obs-leadership').show();
+			}
+
+			if(decision == null|| decision == "" || decision == undefined||decision == 'undefined') {
+				jq('#recent-obs-decision').hide();
+			}else {
+				jq('#recent-obs-decision').show();
+			}
+
+			if(transitionAdultCare == null|| transitionAdultCare == "" || transitionAdultCare == undefined||transitionAdultCare == 'undefined') {
+				jq('#recent-obs-transition').hide();
+			}else {
+				jq('#recent-obs-transition').show();
+			}
+
+			if(treatmentLiteracy == null|| treatmentLiteracy == "" || treatmentLiteracy == undefined||treatmentLiteracy == 'undefined') {
+				jq('#recent-obs-treatment').hide();
+			}else {
+				jq('#recent-obs-treatment').show();
+			}
+
+			if(shr == null|| shr == "" || shr == undefined||shr == 'undefined') {
+				jq('#recent-obs-shr').hide();
+			}else {
+				jq('#recent-obs-shr').show();
+			}
+
+			if(beyond == null|| beyond == "" || beyond == undefined||beyond == 'undefined') {
+				jq('#recent-obs-beyond').hide();
+			}else {
+				jq('#recent-obs-beyond').show();
+			}
+
+		});
+	</script>
+	<style>
+		.simple-table {
+			border: solid 1px #DDEEEE;
+			border-collapse: collapse;
+			border-spacing: 0;
+			font: normal 13px Arial, sans-serif;
+		}
+
+		.simple-table thead th {
+			background-color: #DDEFEF;
+			border: solid 1px #DDEEEE;
+			color: #336B6B;
+			padding: 10px;
+			text-align: left;
+			text-shadow: 1px 1px 1px #fff;
+		}
+
+		.simple-table td {
+			border: solid 1px #DDEEEE;
+			color: #333;
+			padding: 10px;
+			text-shadow: 1px 1px 1px #fff;
+		}
+	</style>
+
+	<div class="ke-form-header">
+		<table width="100%">
+			<tr>
+				<td> Visit Date: <encounterDate id="encounter-date" showTime="true" /></td>
+				<td>Location: <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" /></td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="ke-form-content" id="previous-module">
+		<fieldset>
+			<legend> OTZ Modules</legend>
+			<table class="simple-table" id="assessment-questions">
+				<tr>
+					<td> <b>Previously completed(Recent)</b> </td>
+					<td> <b>Completed(Today)</b> </td>
+				</tr>
+				<tr>
+					<td id="modules-previously-covered">
+						<table class="simple-table" >
+							<tr id="recent-obs-orientation">
+								<td>OTZ Orientation</td>
+								<td><span class="value"><recentObs conceptId="49b9347f-d4e2-4a77-b6d6-e35be16b5145"/></span></td>
+							</tr>
+							<tr id="recent-obs-participation">
+								<td>OTZ Participation</td>
+								<td><span class="value"><recentObs conceptId="f3489e70-12c7-47af-8209-5143d1cd9081"/></span></td>
+							</tr>
+							<tr id="recent-obs-leadership">
+								<td>OTZ Leadership</td>
+								<td><span class="value"><recentObs conceptId="39410779-ac9e-477c-b578-4e5e1c872fd9"/></span></td>
+							</tr>
+							<tr id="recent-obs-decision">
+								<td>OTZ Making decision for the future</td>
+								<td><span class="value"><recentObs conceptId="b462c1b8-aa2f-4b5a-bad1-03a91fc11e0e"/></span></td>
+							</tr>
+							<tr id="recent-obs-transition">
+								<td>OTZ Transition to Adult care</td>
+								<td><span class="value"><recentObs conceptId="190dea55-186f-40c8-845d-43635eab262a"/></span></td>
+							</tr>
+							<tr id="recent-obs-treatment">
+								<td>OTZ Treatment literacy</td>
+								<td><span class="value"><recentObs conceptId="a85836a2-ef80-44b9-9570-79a6b63703d7"/></span></td>
+							</tr>
+							<tr id="recent-obs-shr">
+								<td>OTZ SRH</td>
+								<td><span class="value"><recentObs conceptId="7305dfba-4661-4703-b47c-c8c2620c88ae"/></span></td>
+							</tr>
+							<tr id="recent-obs-beyond">
+								<td>OTZ Beyond the 3rd 90</td>
+								<td><span class="value"><recentObs conceptId="2c3127c2-3adc-424d-b329-e424f0976dc5"/></span></td>
+							</tr>
+						</table>
+					</td>
+					<td id="modules-completed-today">
+						<table class="simple-table">
+							<tr>
+								<td>OTZ Orientation</td>
+								<td>
+									<obs
+											id="orientation" conceptId="165359" style="radio"
+											answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											answerLabels="Yes"/>
+								</td>
+							</tr>
+							<tr>
+								<td>OTZ Participation</td>
+								<td>
+									<obs
+											id="participation" conceptId="165360" style="radio"
+											answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											answerLabels="Yes"/>
+								</td>
+							</tr>
+							<tr>
+								<td>OTZ Leadership</td>
+								<td>
+									<obs
+											id="leadership" conceptId="165361" style="radio"
+											answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											answerLabels="Yes"/>
+								</td>
+							</tr>
+							<tr>
+								<td>OTZ Making decision for the future</td>
+								<td>
+									<obs
+											id="future-decision" conceptId="165362" style="radio"
+											answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											answerLabels="Yes"/>
+								</td>
+							</tr>
+							<tr>
+								<td>OTZ Transition to Adult care</td>
+								<td>
+									<obs
+											id="transition-adult-care" conceptId="165363" style="radio"
+											answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											answerLabels="Yes"/>
+								</td>
+							</tr>
+							<tr>
+								<td>OTZ Treatment literacy</td>
+								<td>
+									<obs
+											id="treatment-literacy" conceptId="165364" style="radio"
+											answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											answerLabels="Yes"/>
+								</td>
+							</tr>
+							<tr>
+								<td>OTZ SRH</td>
+								<td>
+									<obs
+											id="srh" conceptId="165365" style="radio"
+											answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											answerLabels="Yes"/>
+								</td>
+							</tr>
+							<tr>
+								<td>OTZ Beyond the 3rd 90</td>
+								<td>
+									<obs
+											id="beyond-third-90" conceptId="165366" style="radio"
+											answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											answerLabels="Yes"/>
+								</td>
+							</tr>
+
+						</table>
+					</td>
+				</tr>
+			</table>
+		</fieldset>
+
+	</div>
+
+	<div class="ke-form-content">
+		<fieldset>
+			<legend>Support group involvement</legend>
+			<table class="simple-table">
+				<tr>
+					<td>Attended support group?</td>
+					<td>
+						<obs
+								id="support-group" conceptId="165302" style="radio"
+								answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+								answerLabels="Yes,No"
+								required="true"/>
+					</td>
+				</tr>
+			</table>
+		</fieldset>
+	</div>
+
+
+	<div class="ke-form-content">
+		<fieldset>
+			<legend>Remarks</legend>
+			<table class="simple-table">
+				<tr>
+					<td>Remarks:</td>
+					<td>
+						<obs conceptId="161011AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" style="textarea" />
+					</td>
+
+				</tr>
+			</table>
+		</fieldset>
+	</div>
+
+	<div class="ke-form-footer">
+		<submit />
+	</div>
+</htmlform>

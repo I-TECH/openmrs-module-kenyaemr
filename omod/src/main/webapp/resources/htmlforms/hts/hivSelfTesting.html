@@ -1,0 +1,306 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+
+-->
+<htmlform>
+
+    <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+    <script type="text/javascript">
+        var pgender = "<lookup expression="patient.gender" />";
+
+        //On Ready
+        $(document).ready(function () {
+
+            jq("#key-population").hide();
+            jq("#priority-population").hide();
+            jq("#test-results").hide();
+
+            jq('#population-type :input[type=radio]').change(populationTypeSelected);
+            jq('#everTested :input[type=radio]').change(everTestedSelected);
+
+            //Gender validations
+            if (pgender == 'F') {
+                jq("#key_pop_type input[value=160578]").prop("checked", false);
+                jq("#key_pop_type input[value=165084]").prop("checked", false);
+                jq("#key_pop_type input[value=160578]").prop("disabled", true);
+                jq("#key_pop_type input[value=165084]").prop("disabled", true);
+            }
+            if (pgender == 'M') {
+                jq("#key_pop_type input[value=165083]").prop("checked", false);
+                jq("#key_pop_type input[value=165083]").prop("disabled", true);
+
+            }
+
+        });
+
+        var populationTypeSelected = function () {
+            var val = jq(this).val();
+            var keypop = jq('#key-population');
+            var pripop = jq('#priority-population');
+            if (val == 164929 ){
+                jq("#key-population").show();
+                jq("#priority-population").hide();
+            }
+            if (val == 138643 ){
+                jq("#priority-population").show();
+                jq("#key-population").hide();
+            }
+            if(val == 164928){
+                jq("#key-population").hide();
+                jq("#priority-population").hide();
+                clearHiddenSections(keypop);
+                clearHiddenSections(pripop);
+            }
+        }
+
+        var everTestedSelected = function () {
+            var val = jq(this).val();
+            var testResults = jq('#testResults');
+            if (val == 1065) {
+                jq("#test-results").show();
+            }
+            if(val == 1066){
+                jq("#test-results").hide();
+                clearHiddenSections(testResults);
+            }
+        }
+
+        //Before Submit
+        //Clear hidden sections
+        clearHiddenSections = function(parentObj) {
+            parentObj.find('input[type=radio]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=checkbox]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=text]').each(function() {
+                jq(this).val("");
+            });
+            parentObj.find('select').each(function() {
+                this.selectedIndex =0;
+            });
+        }
+    </script>
+    <style>
+        .simple-table {
+            border: solid 1px #DDEEEE;
+            border-collapse: collapse;
+            border-spacing: 0;
+            font: normal 13px Arial, sans-serif;
+        }
+
+        .simple-table thead th {
+            background-color: #DDEFEF;
+            border: solid 1px #DDEEEE;
+            color: #336B6B;
+            padding: 10px;
+            text-align: left;
+            text-shadow: 1px 1px 1px #fff;
+        }
+
+        .simple-table td {
+            border: solid 1px #DDEEEE;
+            color: #333;
+            padding: 10px;
+            text-shadow: 1px 1px 1px #fff;
+        }
+
+        .disabled {
+            color: #ebebe4;
+    </style>
+
+    <div class="ke-form-header">
+        <table width="100%">
+            <tr>
+                <td>
+                    <ifMode mode="EDIT">
+                        <script type="text/javascript">
+                            jq(function(){
+                                var keyPop = getValue('population-type.value');
+                                var everTested = getValue('everTested.value');
+
+                                if (keyPop == 164929) {
+                                    jq("#key-population").show();
+                                    jq("#priority-population").hide();
+                                }
+                                if(keyPop == 138643){
+                                    jq("#priority-population").show();
+                                    jq("#key-population").hide();
+                                }
+
+                                if (everTested == 1065) {
+                                    jq("#test-results").show();
+                                }
+                                if(everTested == 1066){
+                                    jq("#test-results").hide();
+                                }
+                            });
+                        </script>
+                    </ifMode>
+                </td>
+                <td>Date:
+                    <encounterDate id="encounter-date" showTime="true"/>
+                </td>
+                <td>HIV Self Testing Form Provider:
+
+                        <obs id="ConName" conceptId="160632" class="remarks" answerConceptIds="162591"
+                             answerSeparator="&lt;br /&gt;"/>
+
+                </td>
+                <td>Location:
+                    <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="ke-form-content">
+        <fieldset>
+            <legend>Population Info</legend>
+           <table class="simple-table">
+                  <tr>
+                      <td>
+                     Population type :
+                    </td>
+                    <td>
+                <obs conceptId="164930"
+                     answerConceptIds="164928,164929,138643"
+                     answerLabels="General Population,Key Population,Priority Population" id="population-type"
+                     style="radio" />
+                      </td>
+                  </tr>
+                <tr id="key-population">
+                    <td>
+                            Key Population type :
+                    </td>
+                    <td>
+                            <obs conceptId="160581" id="key_pop_type"
+                                 answerConceptIds="165083,160578,105,165100,162277"
+                                 answerLabels="FSW,MSM,PWID,Transgender,People in Prison and other closed settings"
+                                 style="radio" />
+                    </td>
+                </tr>
+                <tr id="priority-population">
+                    <td>
+                            Priority Population type :
+                    </td><td>
+                            <obs conceptId="138643"
+                                 answerConceptIds="159674,162198,165192,1175"
+                                 answerLabels="Fisher Folk,Truck Driver,Military,Not Applicable"
+                                 style="radio" />
+                        </td>
+                </tr>
+            </table>
+            <br />
+
+        </fieldset>
+        <!--        ============HIV TESTING HISTORY===========================-->
+        <fieldset>
+            <legend>HIV Testing History</legend>
+            <table class="simple-table">
+                <tr>
+                    <td>
+                            Ever tested for HIV? :
+                    </td>
+                    <td>
+                            <obs conceptId="164401"
+                                 answerConceptIds="1065,1066"
+                                 answerLabels="Yes,No" id="everTested"
+                                 style="radio" />
+                     </td>
+                </tr>
+            <tr id="test-results">
+                <td>
+                            Knowledge of HIV Status ? :
+                </td>
+                <td>
+                            <obs conceptId="159427"
+                                 answerConceptIds="703,664,1067,1175"
+                                 answerLabels="Positive,Negative,Unknown,Not Applicable" id="testResults"
+                                 style="radio" />
+                 </td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset>
+            <legend>Self testing</legend>
+            <table class="simple-table">
+                <tr>
+                    <td>
+
+                        <div>
+                            Had a HIV Self Test in the past 12 months? : &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                            <obs conceptId="164952"
+                                 answerConceptIds="1065,1066"
+                                 answerLabels="Yes,No" id="population-type"
+                                 style="radio" />
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+    </div>
+
+    <!--        ===========================CARE AND TREATMENT=====================-->
+    <div id="currentHiv">
+
+        <fieldset>
+            <legend>Current HIV Self Test Services</legend>
+            <table class="simple-table">
+                <tr>
+                    <th>Reasons for taking HIV STK</th>
+                    <th>Name of HIV STK Issued</th>
+                    <th>HIV STK Lot Number</th>
+                    <th>HIV STK Lot Expiry Date</th>
+                </tr>
+                <repeat>
+                    <template>
+                        <obsgroup groupingConceptId="165221">
+                            <tr>
+                          <td>
+                              <obs id="reason_for_test" conceptId="164126"
+                                    answerConceptIds="165217,163568,5622"
+                                    answerLabels="Self Test,Sexual Partner/Spouse Testing,Friend or other family member,Other Testing"
+                                    answerSeparator="&lt;br /&gt;" style="dropdown"/>
+                    </td>
+                    <td>
+                            <obs id="name_of_kit" conceptId="164962" answerConceptIds="164960,160240,1920,164961,165351,5622"
+                                 answerLabels="Sure Check,Oraquick,Biosure,Insti,Atomo,Other"
+                                 style="dropdown" answerSeparator="&lt;br /&gt;"/>
+                    </td>
+                    <td>
+                            <obs id="kitLotNumber" conceptId="164964"
+                                 style="dropdown" answerSeparator="&lt;br /&gt;"/>
+                    </td>
+                    <td>
+                            <obs id="expiryDate" conceptId="162502AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+
+                    </td>
+                            </tr>
+                        </obsgroup>
+                    </template>
+                    <render n="1" concept=" " />
+                    <render n="2" concept=" " />
+                    <render n="3" concept=" " />
+                    <render n="4" concept=" " />
+                    <render n="5" concept=" " />
+                </repeat>
+
+            </table>
+        </fieldset>
+    </div>
+    <div class="ke-form-footer">
+        <submit/>
+    </div>
+
+</htmlform>

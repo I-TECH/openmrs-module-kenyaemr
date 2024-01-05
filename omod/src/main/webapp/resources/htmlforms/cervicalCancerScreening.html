@@ -1,0 +1,658 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+	<script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+	<script type="text/javascript">
+        var POST_TX_COMPLICATION_CONCEPT_ID = 165382;
+        var SCREENING_METHOD_CONCEPT_ID = 163589;
+        var VIA_CONCEPT_ID = 164805;
+        var VILI_CONCEPT_ID = 164977;
+        var PAP_SMEAR_CONCEPT_ID = 885;
+        var HPV_TEST_CONCEPT_ID = 159859;
+        var COLPOSCOPY = 160705;
+        var YES_CONCEPT_ID = 1065
+
+	jq(function() {
+		jq("#tr_via_screening_result").hide();
+		jq("#tr_vili_screening_result").hide();
+        jq("#tr_colposcopy_screening_result").hide();
+		jq("#tr_pap_smear_screening_result").hide();
+		jq("#tr_hpv_screening_result").hide();
+        jq("#tr_post_tx_complication").hide();
+        jq("#tbl-other-tx-complication").hide();
+        jq("#tbl-other-treatment").hide();
+        jq("#t_referred_out").hide();
+        jq("#visit_type select").change(onVisitTypeSelected);
+        jq('#screening_method select').change(screeningMethodSelected);
+        jq('#post_tx_complication select').change(postTxComplicationsSelected);
+        jq('#treatment select').change(otherTreatmentSelected);
+        jq('#referred_out :input[type=radio]').change(onReferralSelected);
+        // Options for selected screening methods
+        jq('#via_screening_result select').change(viaMethodSelected);
+        jq('#vili_screening_result select').change(viliMethodSelected);
+        jq('#colposcopy_screening_result select').change(colMethodSelected);
+        jq('#pap_smear_screening_result select').change(papMethodSelected);
+        jq('#hpv_screening_result select').change(hpvMethodSelected);
+
+
+	});
+
+    var onVisitTypeSelected  = function () {
+        var visitType = getValue("visit_type.value");
+        if (visitType == 165382 || visitType == "") {
+            jq("#tr_post_tx_complication").show();
+        } else {
+            jq("#tr_post_tx_complication").hide();
+        }
+    }
+
+    var postTxComplicationsSelected  = function () {
+        var complicationType = getValue("post_tx_complication.value");
+        if (complicationType == 5622) {
+            jq("#tbl-other-tx-complication").show();
+        } else {
+            jq("#tbl-other-tx-complication").hide();
+        }
+    }
+    var otherTreatmentSelected  = function () {
+        var treatmentType = getValue("treatment.value");
+        if (treatmentType == 5622) {
+            jq("#tbl-other-treatment").show();
+        } else {
+            jq("#tbl-other-treatment").hide();
+        }
+    }
+
+    var onReferralSelected  = function () {
+        var refferedOut = getValue("referred_out.value");
+        if (refferedOut == 1065) {
+            jq("#t_referred_out").show();
+        } else {
+            jq("#t_referred_out").hide();
+        }
+    }
+
+    var screeningMethodSelected = function(){
+        var val = getValue("screening_method.value");
+        if(val == 164805){
+            jq("#tr_via_screening_result").show();
+
+            jq("#tr_vili_screening_result").hide();
+            jq("#tr_colposcopy_screening_result").hide();
+            jq("#tr_pap_smear_screening_result").hide();
+            jq("#tr_hpv_screening_result").hide();
+        }
+        if(val == 164977){
+            jq("#tr_vili_screening_result").show();
+            jq("#tr_via_screening_result").hide();
+            jq("#tr_colposcopy_screening_result").hide();
+            jq("#tr_pap_smear_screening_result").hide();
+            jq("#tr_hpv_screening_result").hide();
+        }
+        if(val == 160705){
+            jq("#tr_colposcopy_screening_result").show();
+            jq("#tr_pap_smear_screening_result").hide();
+            jq("#tr_via_screening_result").hide();
+            jq("#tr_vili_screening_result").hide();
+            jq("#tr_hpv_screening_result").hide();
+        }
+        if(val == 885){
+            jq("#tr_pap_smear_screening_result").show();
+            jq("#tr_via_screening_result").hide();
+            jq("#tr_vili_screening_result").hide();
+            jq("#tr_colposcopy_screening_result").hide();
+            jq("#tr_hpv_screening_result").hide();
+        }
+        if(val == 159859){
+            jq("#tr_hpv_screening_result").show();
+            jq("#tr_via_screening_result").hide();
+            jq("#tr_vili_screening_result").hide();
+            jq("#tr_colposcopy_screening_result").hide();
+            jq("#tr_pap_smear_screening_result").hide();
+
+        }
+      }
+        var viaMethodSelected = function(){
+            var val = getValue("via_screening_result.value");
+            if(val == 664){
+                getField('treatment.value').prop("selectedIndex", 10);
+            }else{
+                getField('treatment.value').prop("selectedIndex", 0);
+			}
+        }
+
+        var viliMethodSelected = function(){
+            var val = getValue("vili_screening_result.value");
+            if(val == 664){
+                getField('treatment.value').prop("selectedIndex", 10);
+            }else{
+                getField('treatment.value').prop("selectedIndex", 0);
+            }
+        }
+
+        var colMethodSelected = function(){
+            var val = getValue("colposcopy_screening_result.value");
+            if(val == 1115){
+                getField('treatment.value').prop("selectedIndex", 10);
+            }else{
+                getField('treatment.value').prop("selectedIndex", 0);
+            }
+        }
+
+        var papMethodSelected = function(){
+            var val = getValue("pap_smear_screening_result.value");
+            if(val == 1115){
+                getField('treatment.value').prop("selectedIndex", 10);
+            }else{
+                getField('treatment.value').prop("selectedIndex", 0);
+            }
+        }
+
+        var hpvMethodSelected = function(){
+            var val = getValue("hpv_screening_result.value");
+            if(val == 664){
+                getField('treatment.value').prop("selectedIndex", 10);
+            }else{
+                getField('treatment.value').prop("selectedIndex", 0);
+            }
+        }
+
+    beforeSubmit.push(function() {
+        var screeningMethod = getValue("screening_method.value");
+
+        if (screeningMethod == VIA_CONCEPT_ID &amp;&amp; getValue("via_screening_result.value") == '') {
+            getField("via_screening_result.error").html("Required field").show();
+            return false;
+        }else{
+            getField("via_screening_result.error").html("Required field").hide();
+        }
+        if (screeningMethod == VILI_CONCEPT_ID &amp;&amp; getValue("vili_screening_result.value") == '') {
+            getField("vili_screening_result.error").html("Required field").show();
+            return false;
+        }else{
+            getField("vili_screening_result.error").html("Required field").hide();
+        }
+
+        if (screeningMethod == PAP_SMEAR_CONCEPT_ID &amp;&amp; getValue("pap_smear_screening_result.value") == '') {
+            getField("pap_smear_screening_result.error").html("Required field").show();
+            return false;
+        }else{
+            getField("pap_smear_screening_result.error").html("Required field").hide();
+        }
+
+        if (screeningMethod == HPV_TEST_CONCEPT_ID &amp;&amp; getValue("hpv_screening_result.value") == '') {
+            getField("hpv_screening_result.error").html("Required field").show();
+            return false;
+        }else{
+            getField("hpv_screening_result.error").html("Required field").hide();
+        }
+        if (screeningMethod == COLPOSCOPY &amp;&amp; getValue("colposcopy_screening_result.value") == '') {
+            getField("colposcopy_screening_result.error").html("Required field").show();
+            return false;
+        }else{
+            getField("colposcopy_screening_result.error").html("Required field").hide();
+        }
+        return true;
+    })
+
+
+	</script>
+
+	<ifMode mode="EDIT">
+		<script type="text/javascript">
+			jq(function(){
+
+			jq('#screening_method select').change(screeningMethodSelected);
+			jq('#referred_out :input[type=radio]').change(referredOutChange);
+
+			var GREENCARD_VELOCITY = "<lookup expression="kenyaemr.GreenCardVelocityCalculation()" />";
+			var CACx_Result = GREENCARD_VELOCITY.split(",")[14].split(":")[1];
+			var SCREENING_RESULT = CACx_Result.replace(/[^\d]/g, '');
+
+				var val = getValue("screening_method.value");
+
+				if(val == 164805){
+					jq("#tr_via_screening_result").show();
+					jq("#tr_vili_screening_result").hide();
+					jq("#tr_colposcopy_screening_result").hide();
+					jq("#tr_pap_smear_screening_result").hide();
+					jq("#tr_hpv_screening_result").hide();
+
+					getField('via_screening_result.value').val(SCREENING_RESULT);
+				}
+				if(val == 164977){
+					jq("#tr_vili_screening_result").show();
+					jq("#tr_via_screening_result").hide();
+					jq("#tr_colposcopy_screening_result").hide();
+					jq("#tr_pap_smear_screening_result").hide();
+					jq("#tr_hpv_screening_result").hide();
+
+					getField('vili_screening_result.value').val(SCREENING_RESULT);
+				}
+				if(val == 160705){
+					jq("#tr_colposcopy_screening_result").show();
+					jq("#tr_pap_smear_screening_result").hide();
+					jq("#tr_via_screening_result").hide();
+					jq("#tr_vili_screening_result").hide();
+					jq("#tr_hpv_screening_result").hide();
+
+					getField('colposcopy_screening_result.value').val(SCREENING_RESULT);
+				}
+				if(val == 885){
+					jq("#tr_pap_smear_screening_result").show();
+					jq("#tr_via_screening_result").hide();
+					jq("#tr_vili_screening_result").hide();
+					jq("#tr_colposcopy_screening_result").hide();
+					jq("#tr_hpv_screening_result").hide();
+
+					getField('pap_smear_screening_result.value').val(SCREENING_RESULT);
+				}
+				if(val == 159859){
+					jq("#tr_hpv_screening_result").show();
+					jq("#tr_via_screening_result").hide();
+					jq("#tr_vili_screening_result").hide();
+					jq("#tr_colposcopy_screening_result").hide();
+					jq("#tr_pap_smear_screening_result").hide();
+
+					getField('hpv_screening_result.value').val(SCREENING_RESULT);
+
+				}
+
+				var visitType = getValue("visit_type.value");
+				if (visitType == 165382 || visitType == "") {
+					jq("#tr_post_tx_complication").show();
+				} else {
+					jq("#tr_post_tx_complication").hide();
+				}
+
+				var complicationType = getValue("post_tx_complication.value");
+				if (complicationType == 5622) {
+					jq("#tbl-other-tx-complication").show();
+				} else {
+					jq("#tbl-other-tx-complication").hide();
+				}
+
+				var treatmentType = getValue("treatment.value");
+				if (treatmentType == 5622) {
+					jq("#tbl-other-treatment").show();
+				} else {
+					jq("#tbl-other-treatment").hide();
+				}
+
+				var refferedOut = getValue("referred_out.value");
+				if (refferedOut == 1065) {
+					jq("#t_referred_out").show();
+				} else {
+					jq("#t_referred_out").hide();
+				}
+
+			});
+
+			var screeningMethodSelected = function(){
+				var val = getValue("screening_method.value");
+
+				if(val == 164805){
+
+					jq("#tr_via_screening_result").show();
+					jq("#tr_vili_screening_result").hide();
+					jq("#tr_colposcopy_screening_result").hide();
+					jq("#tr_pap_smear_screening_result").hide();
+					jq("#tr_hpv_screening_result").hide();
+
+					clearHiddenSections(jq('#via_screening_result'));
+					clearHiddenSections(jq('#vili_screening_result'));
+					clearHiddenSections(jq('#colposcopy_screening_result'));
+					clearHiddenSections(jq('#pap_smear_screening_result'));
+					clearHiddenSections(jq('#treatment'));
+					clearHiddenSections(jq('#other-tx'));
+				}
+
+				if(val == 164977){
+
+					jq("#tr_vili_screening_result").show();
+					jq("#tr_via_screening_result").hide();
+					jq("#tr_colposcopy_screening_result").hide();
+					jq("#tr_pap_smear_screening_result").hide();
+					jq("#tr_hpv_screening_result").hide();
+
+					clearHiddenSections(jq('#via_screening_result'));
+					clearHiddenSections(jq('#vili_screening_result'));
+					clearHiddenSections(jq('#colposcopy_screening_result'));
+					clearHiddenSections(jq('#pap_smear_screening_result'));
+					clearHiddenSections(jq('#treatment'));
+					clearHiddenSections(jq('#other-tx'));
+				}
+
+				if(val == 160705){
+
+					jq("#tr_colposcopy_screening_result").show();
+					jq("#tr_pap_smear_screening_result").hide();
+					jq("#tr_via_screening_result").hide();
+					jq("#tr_vili_screening_result").hide();
+					jq("#tr_hpv_screening_result").hide();
+
+					clearHiddenSections(jq('#via_screening_result'));
+					clearHiddenSections(jq('#vili_screening_result'));
+					clearHiddenSections(jq('#colposcopy_screening_result'));
+					clearHiddenSections(jq('#pap_smear_screening_result'));
+					clearHiddenSections(jq('#treatment'));
+					clearHiddenSections(jq('#other-tx'));
+				}
+
+				 if(val == 885){
+
+					jq("#tr_pap_smear_screening_result").show();
+					jq("#tr_via_screening_result").hide();
+					jq("#tr_vili_screening_result").hide();
+					jq("#tr_colposcopy_screening_result").hide();
+					jq("#tr_hpv_screening_result").hide();
+
+					clearHiddenSections(jq('#via_screening_result'));
+					clearHiddenSections(jq('#vili_screening_result'));
+					clearHiddenSections(jq('#colposcopy_screening_result'));
+					clearHiddenSections(jq('#pap_smear_screening_result'));
+					clearHiddenSections(jq('#treatment'));
+					clearHiddenSections(jq('#other-tx'));
+				 }
+
+				 if(val == 159859){
+
+					jq("#tr_hpv_screening_result").show();
+					jq("#tr_via_screening_result").hide();
+					jq("#tr_vili_screening_result").hide();
+					jq("#tr_colposcopy_screening_result").hide();
+					jq("#tr_pap_smear_screening_result").hide();
+
+					clearHiddenSections(jq('#via_screening_result'));
+					clearHiddenSections(jq('#vili_screening_result'));
+					clearHiddenSections(jq('#colposcopy_screening_result'));
+					clearHiddenSections(jq('#pap_smear_screening_result'));
+					clearHiddenSections(jq('#treatment'));
+					clearHiddenSections(jq('#other-tx'));
+				 }
+			}
+
+			var referredOutChange = function(){
+				var val = getValue("referred_out.value");
+
+				if(val == 1066) {
+					clearHiddenSections(jq('#referred_to'));
+					clearHiddenSections(jq('#referral_reason'));
+				}
+			}
+
+			//Clear hidden sections
+			clearHiddenSections = function(parentObj) {
+				parentObj.find('input[type=radio]').each(function() {
+					this.checked = false;
+				});
+				parentObj.find('input[type=checkbox]').each(function() {
+					this.checked = false;
+				});
+				parentObj.find('input[type=text]').each(function() {
+					jq(this).val("");
+				});
+				parentObj.find('select').each(function() {
+					this.selectedIndex =0;
+				});
+			}
+
+		</script>
+	</ifMode>
+
+	<style>
+		.simple-table {
+			border: solid 1px #DDEEEE;
+			border-collapse: collapse;
+			border-spacing: 0;
+			font: normal 13px Arial, sans-serif;
+		}
+
+		.simple-table thead th {
+			background-color: #DDEFEF;
+			border: solid 1px #DDEEEE;
+			color: #336B6B;
+			padding: 10px;
+			text-align: left;
+			text-shadow: 1px 1px 1px #fff;
+		}
+
+		.simple-table td {
+			border: solid 1px #DDEEEE;
+			color: #333;
+			padding: 10px;
+			text-shadow: 1px 1px 1px #fff;
+		}
+
+		td .simple-table, td .simple-table td {
+			border: none;
+		}
+		
+	</style>
+
+	<div class="ke-form-header">
+		<table width="100%">
+			<tr>
+				<td>Date:
+					<encounterDate id="encounter-date" showTime="true" />
+				</td>
+				<td>Location:
+					<encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete" />
+				</td>
+			</tr>
+		</table>
+
+	</div>
+
+	<div class="ke-form-content">
+		<!-- add content here   -->
+		<fieldset>
+			<legend>
+				<strong> Cervical cancer screening form </strong>
+			</legend>
+			<table class="simple-table" style="width: 100%">
+				<tr>
+					<td style="width: 25%;"> Visit type: </td>
+					<td style="width: 25%;">
+						<obs id="visit_type" conceptId="160288AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							answerConceptIds="162080AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,161236AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165381,1185AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165382"
+							answerLabels="Initial visit,Routine visit,Post treatment visit,Treatment visit,Post treatment complication"
+							style="dropdown" required="true" />
+					</td>
+					<td style="width: 50%;">
+						<table class="simple-table" style="width: 100%">
+							<tr id="tr_screening_type">
+								<td>
+									Screening type
+								</td>
+								<td>
+									<obs id="screening_type" conceptId="164181AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerConceptIds="164180AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160530AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,165389"
+										answerLabels="First time screening,Re-screening after previous negative results,Post treatment followup screening"
+										 required="true" style="dropdown" />
+								</td>
+							</tr>
+							<tr id="tr_post_tx_complication">
+								<td>
+									Post treatment complication cause
+								</td>
+								<td>
+									<obs id="post_tx_complication" conceptId="165383"
+										answerConceptIds="162816AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162810AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerLabels="Cryotherapy,LEEP,Others" style="dropdown" />
+								</td>
+								<td>
+									<table id="tbl-other-tx-complication">
+										<tr>
+											<td>Explain:
+									              <obs id="other-tx-complication" conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" cols="20"/>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td>Screening method</td>
+					<td>
+						<obs id="screening_method" conceptId="163589AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerConceptIds="164805AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164977,160705AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,885AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159859AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							 answerLabels="VIA,VIA/VILI,Colposcopy,PAP Smear,HPV Test" style="dropdown" />
+					</td>
+					<td>
+						<ifMode mode="VIEW" include="false">
+							<table class="simple-table" style="width: 100%">
+							<tr id="tr_via_screening_result">
+								<td>VIA Screening result</td>
+								<td>
+									<obs id="via_screening_result" conceptId="164934"
+										answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159008AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerLabels="Negative,Positive,Suspicious for cancer,Other"
+										style="dropdown" />
+								</td>
+							</tr>
+							<tr id="tr_vili_screening_result">
+								<td>VIA/VILI Screening result</td>
+								<td>
+									<obs id="vili_screening_result" conceptId="164934"
+										answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159008AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerLabels="Negative,Positive,Suspicious for cancer, Other"
+										style="dropdown" />
+								</td>
+							</tr>
+							<tr id="tr_colposcopy_screening_result">
+								<td>Colposcopy Screening result</td>
+								<td>
+									<obs id="colposcopy_screening_result" conceptId="164934"
+										 answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1116AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159008AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										 answerLabels="Normal,Abnormal,Suspicious for cancer, Other"
+										 style="dropdown" />
+								</td>
+							</tr>
+							<tr id="tr_pap_smear_screening_result">
+								<td>PAP Smear Screening result</td>
+								<td>
+									<obs id="pap_smear_screening_result"
+										conceptId="164934"
+										answerConceptIds="1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145808AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145805AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,155424AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerLabels="Normal,Low grade lesion,High grade lesion,Invasive Cancer,Other"
+										style="dropdown" />
+								</td>
+							</tr>
+							<tr id="tr_hpv_screening_result">
+								<td>HPV Screening result</td>
+								<td>
+									<obs id="hpv_screening_result" conceptId="164934"
+										answerConceptIds="703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159393AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerLabels="Positive,Negative,Presumed Cancer" style="dropdown" />
+								</td>
+							</tr>
+						</table>
+						</ifMode>
+						<ifMode mode="VIEW" include="true">
+							<table class="simple-table" style="width: 100%">
+								<tr>
+									<td>Screening result</td>
+									<td>
+									<td>
+										<obs id="via_screening_result" conceptId="164934"
+											 answerConceptIds="664AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,703AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159008AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1115AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145808AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,145805AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,155424AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159393AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+											 answerLabels="Negative,Positive,Suspicious for cancer,Normal,Low grade lesion,High grade lesion,Invasive Cancer,Presumed Cancer,Other"
+											 style="dropdown" />
+									</td>
+									</td>
+								</tr>
+							</table>
+						</ifMode>
+					</td>
+				</tr>
+				<tr>
+					<td>Treatment today</td>
+					<td>
+						<obs id="treatment" conceptId="165266"
+							answerConceptIds="165385,
+							                  165381,
+							                  165386,
+							                  162810AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							                  165396,
+							                  165395,
+							                  159837AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+							                  165391,
+                                              5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                              1107AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							answerLabels="Cryotherapy performed (single Visit),
+							              Cryotherapy postponed,
+							              Cryotherapy performed (previously postponed),
+							              LEEP performed,
+							              Cold knife cone,
+							              Thermocoagulation,
+							              Hysterectomy,
+							              Referred for cancer treatment,
+                                          Other,
+                                          None"
+							style="dropdown" required="true"/>
+					</td>
+					<td>
+						<table id="tbl-other-treatment">
+							<tr>
+								<td>Explain:
+									<obs id="other-tx" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" cols="20"/>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td>Referred out</td>
+					<td>
+						<obs id="referred_out" conceptId="165267"
+							answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+							answerLabels="Yes, No" style="radio" />
+					</td>
+					<td>
+						<table class="simple-table" style="width: 100%" id="t_referred_out">
+							<tr>
+								<td>Referred out to</td>
+								<td>
+									<obs id="referred_to" conceptId="165268" />
+								</td>
+							</tr>
+							<tr>
+								<td>Referral reason</td>
+								<td>
+									<obs id="referral_reason" conceptId="1887AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerConceptIds="165388,132948AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,159008AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+										answerLabels="Site does not have cryotherapy machine,Large lesion, Suspect cancer,Other gynaecological problem"
+										style="dropdown" />
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td>Next appointment date</td>
+					<td>
+						<obs id="appointment" conceptId="5096AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" allowFutureDates="true" />
+					</td>
+					<td></td>
+				</tr>
+			</table>
+		</fieldset>
+	</div>
+	<div class="ke-form-footer">
+		<submit />
+	</div>
+</htmlform>

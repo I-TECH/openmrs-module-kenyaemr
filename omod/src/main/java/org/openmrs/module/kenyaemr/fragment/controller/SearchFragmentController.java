@@ -1,17 +1,12 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.fragment.controller;
 
 import org.apache.commons.lang.StringUtils;
@@ -21,9 +16,11 @@ import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
 import org.openmrs.ConceptSearchResult;
 import org.openmrs.Location;
+import org.openmrs.LocationAttribute;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.Provider;
+import org.openmrs.Relationship;
 import org.openmrs.User;
 import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
@@ -33,13 +30,13 @@ import org.openmrs.module.kenyacore.CoreConstants;
 import org.openmrs.module.kenyaemr.api.KenyaEmrService;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
-import org.openmrs.ui.framework.fragment.action.FailureResult;
 import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.PersonByNameComparator;
 import org.openmrs.web.user.CurrentUsers;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -164,7 +161,7 @@ public class SearchFragmentController {
 		Set<Location> results = new TreeSet<Location>(new Comparator<Location>() {
 			@Override
 			public int compare(Location location1, Location location2) {
-			return location1.getName().compareTo(location2.getName());
+				return location1.getName().compareTo(location2.getName());
 			}
 		});
 
@@ -178,11 +175,58 @@ public class SearchFragmentController {
 
 		// Add first 20 results of search by name
 		if (StringUtils.isNotBlank(query)) {
-			results.addAll(svc.getLocations(query, true, 0, 20));
+			results.addAll(svc.getLocations(query, null, null, true, 0, 20));
 		}
 
 		// Convert to simple objects
 		return ui.simplifyCollection(results);
+	}
+
+	/**
+	 * Searches for locations by name or MFL code
+	 * @param query the search query
+	 * @return the simplified locations
+	 */
+	public List<SimpleObject> simpleLocations(@RequestParam("q") String query) {
+		List<SimpleObject> finalResult = new ArrayList<SimpleObject>();
+		LocationService svc = Context.getLocationService();
+
+		// Sorts results by name
+		Set<Location> results = new TreeSet<Location>(new Comparator<Location>() {
+			@Override
+			public int compare(Location location1, Location location2) {
+				return location1.getName().compareTo(location2.getName());
+			}
+		});
+
+		// If term looks like an MFL code, add location with that code
+		if (StringUtils.isNumeric(query) && query.length() >= 5) {
+			Location locationByMflCode = Context.getService(KenyaEmrService.class).getLocationByMflCode(query);
+			if (locationByMflCode != null) {
+				results.add(locationByMflCode);
+			}
+		}
+
+		// Add first 20 results of search by name
+		if (StringUtils.isNotBlank(query)) {
+			results.addAll(svc.getLocations(query, null, null, true, 0, 20));
+		}
+
+		for (Location loc: results){
+			SimpleObject object = new SimpleObject();
+			String facilityName = loc.getName();
+			for (LocationAttribute attribute: loc.getActiveAttributes()) {
+				if (attribute.getAttributeType().getUuid().equals("8a845a89-6aa5-4111-81d3-0af31c45c002")) {
+					if (attribute.getValue() != null) {
+						object.put("name", facilityName);
+						object.put("mflCode", attribute.getValue() + "-" + facilityName);
+						finalResult.add(object);
+					}
+				}
+			}
+		}
+
+		return finalResult;
 	}
 
 	/**
@@ -196,16 +240,14 @@ public class SearchFragmentController {
 	}
 
 	/**
-	 * Searches for persons by name
+	 * Searches for persons by name or identifier. Previously used Context.getPersonService().getPeople(query, null) which was limiting
 	 * @param query the name query
 	 * @param ui the UI utils
 	 * @return the simplified persons
 	 */
 	public SimpleObject[] persons(@RequestParam(value = "q", required = false) String query, UiUtils ui) {
-		Collection<Person> results = Context.getPersonService().getPeople(query, null);
-
-		// Convert to simple objects
-		return ui.simplifyCollection(results);
+		List<Patient> matchedByNameOrID = Context.getPatientService().getPatients(query);
+		return ui.simplifyCollection(matchedByNameOrID);
 	}
 
 	/**
@@ -395,5 +437,90 @@ public class SearchFragmentController {
 			//do nothing
 		}
 		return minSearchCharacters;
+	}
+
+	/**
+	 * returns a list of peer educators
+	 * @param query
+	 * @param which
+	 * @param ui
+	 * @return
+	 */
+	public List<SimpleObject> peerEducators(@RequestParam(value = "q", required = false) String query,
+											@RequestParam(value = "which", required = false, defaultValue = "all") String which,
+											UiUtils ui) {
+
+		// Return empty list if we don't have enough input to search on
+		if (StringUtils.isBlank(query) && "all".equals(which)) {
+			return Collections.emptyList();
+		}
+
+		// Run main patient search query based on id/name
+		List<Patient> matchedByNameOrID = Context.getPatientService().getPatients(query);
+
+		// Gather up active visits for all patients. These are attached to the returned patient representations.
+		Map<Patient, Visit> patientActiveVisits = getActiveVisitsByPatients();
+
+		List<Patient> matched = new ArrayList<Patient>();
+		List<Patient> peerEducators = new ArrayList<Patient>();
+
+		// If query wasn't long enough to be searched on, and they've requested checked-in patients, return the list
+		// of checked in patients
+		if (StringUtils.isBlank(query) && "checked-in".equals(which)) {
+			matched.addAll(patientActiveVisits.keySet());
+			Collections.sort(matched, new PersonByNameComparator()); // Sort by person name
+		}
+		else {
+			if ("all".equals(which)) {
+				matched = matchedByNameOrID;
+			}
+			else if ("checked-in".equals(which)) {
+				for (Patient patient : matchedByNameOrID) {
+					if (patientActiveVisits.containsKey(patient)) {
+						matched.add(patient);
+					}
+				}
+			}
+			else if ("non-accounts".equals(which)) {
+				Set<Person> accounts = new HashSet<Person>();
+				accounts.addAll(getUsersByPersons(query).keySet());
+				accounts.addAll(getProvidersByPersons(query).keySet());
+
+				for (Patient patient : matchedByNameOrID) {
+					if (!accounts.contains(patient)) {
+						matched.add(patient);
+					}
+				}
+			}
+		}
+
+		//only filter those who are peer educators
+		for (Patient p : matched) {
+			if (patientIsPeerEducator(p)) {
+				peerEducators.add(p);
+			}
+		}
+
+		// Simplify and attach active visits to patient objects
+		List<SimpleObject> simplePatients = new ArrayList<SimpleObject>();
+		for (Patient patient : peerEducators) {
+			SimpleObject simplePatient = ui.simplifyObject(patient);
+
+			Visit activeVisit = patientActiveVisits.get(patient);
+			simplePatient.put("activeVisit", activeVisit != null ? ui.simplifyObject(activeVisit) : null);
+
+			simplePatients.add(simplePatient);
+		}
+
+		return simplePatients;
+	}
+
+	private boolean patientIsPeerEducator(Patient patient) {
+		for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
+			if (relationship.getPersonA().equals(patient) && relationship.getRelationshipType().getaIsToB().equals("Peer-educator")) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

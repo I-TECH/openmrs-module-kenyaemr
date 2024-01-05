@@ -1,0 +1,378 @@
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+  -->
+<htmlform>
+    <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+    <script type="text/javascript">
+        var YES_FINAL_OUTCOME = 1267;
+        var NO_FINAL_OUTCOME = 163339;
+        var DECEASED_STATUS = 160432;
+        jQuery(function ($) {
+            //Defaults
+            jq('#final_outcome').hide();
+            jq('#missed-appointment').hide();
+            jq('#final-outcome :input[type=radio]').change(onFinalOutcomeChange);
+            jq('#contact-status :input[type=radio]').change(onContactStatusChange);
+            jq("#missed-appointment-reasons select").change(onOtherReasonsSelected);
+            jq('#true-status :input[type=radio]').change(trueStatus);
+            jq('#booking-date :input').prop('disabled', true);
+            jq('#tbl-other-reasons').hide();
+            jq('#other-specify-no-contact').hide();
+            jq("#reasonForContact").hide();
+            jq("#reasonForNotContact").hide();
+            jq("#discontinuation-msg").hide();
+
+
+            jq("#idNotContactReason select").change(function() {
+                if ((getValue('idNotContactReason.value')) == 5622) {
+                    jq('#other-specify-no-contact').show();
+                } else {
+                    jq('#other-specify-no-contact').hide();
+                    clearHiddenSections(jq('#other-specify-no-contact'));
+				}
+
+            });
+
+
+            beforeSubmit.push(function () {
+                var reasonForMissedAppointment = jq('#missed-appointment-reasons option:selected').val();
+                var contact_status = getValue('contact-status.value');
+                if(contact_status ==1267 &amp;&amp; (reasonForMissedAppointment == "" || reasonForMissedAppointment == undefined
+                    || reasonForMissedAppointment == 'undefined' || reasonForMissedAppointment == null || reasonForMissedAppointment == 'null')) {
+                    getField('missed-appointment-reasons.error').html('Please specify reasons for missing appointment').show();
+                    return false;
+                }
+            });
+        });
+
+        function onFinalOutcomeChange(){
+            var final_outcome = getValue('final-outcome.value');
+            var final_status = jq('#true-status');
+            var final_status_other = jq('#true-status-other');
+                if(final_outcome == YES_FINAL_OUTCOME){
+                jq('#final_outcome').show();
+               }
+                if(final_outcome == NO_FINAL_OUTCOME){
+                    jq('#final_outcome').hide();
+                    clearHiddenSections([final_status,final_status_other]);
+                    }
+        }
+        function trueStatus(){
+            var val = getValue('true-status.value');
+            if(val == 160432 || val == 1693 ) {
+                jq('#discontinuation-msg').show();
+            }else{
+                jq('#discontinuation-msg').hide();
+                clearHiddenSections(jq("#discontinuation-msg"));
+            }
+        }
+
+
+        function onContactStatusChange(){
+            var val = getValue('contact-status.value');
+            var tracingType = getValue('tracing_type.value');
+            if(val == 1267) {
+                jq('#booking-date :input').prop('disabled', false);
+                jq('#missed-appointment').show();
+                jq("#reasonForNotContact").hide();
+                clearHiddenSections(jq("#reasonForNotContact"));
+            }else if(val == 1118 &amp;&amp; tracingType == 1650){    //called
+                 jq('#booking-date :input').prop('disabled', true);
+                 jq('#missed-appointment').hide();
+                 jq("#reasonForNotContact").show();
+                 jq('#idNotContactReason option[value=166538]').show();
+                 jq('#idNotContactReason option[value=165075]').show();
+                 jq('#idNotContactReason option[value=160034]').show();
+                 jq('#idNotContactReason option[value=1302]').show();
+                 jq('#idNotContactReason option[value=1567]').show();
+                 jq('#idNotContactReason option[value=160415]').hide();
+                 jq('#idNotContactReason option[value=1706]').hide();
+                 jq('#idNotContactReason option[value=5622]').show();
+                clearHiddenSections(jq("#missed-appointment"));
+            }else if(val == 1118 &amp;&amp; tracingType == 164965){    //physical
+                jq('#booking-date :input').prop('disabled', true);
+                jq('#missed-appointment').hide();
+                jq("#reasonForNotContact").show();
+                jq('#idNotContactReason option[value=166538]').show();
+                jq('#idNotContactReason option[value=165075]').show();
+                jq('#idNotContactReason option[value=160034]').show();
+                jq('#idNotContactReason option[value=1302]').hide();
+                jq('#idNotContactReason option[value=1567]').hide();
+                jq('#idNotContactReason option[value=160415]').show();
+                jq('#idNotContactReason option[value=1706]').show();
+                jq('#idNotContactReason option[value=5622]').show();
+                clearHiddenSections(jq("#missed-appointment"));
+            }
+        }
+
+
+        //Specify other Reasons for missing appointments
+        function onOtherReasonsSelected() {
+            var val = jq(this).val();
+            if (val == 5622) {
+                jq('#tbl-other-reasons').show();
+            } else {
+                jq('#tbl-other-reasons').hide();
+            }
+        }
+
+        clearHiddenSections = function(parentObj) {
+            for(var i=0; i &lt; parentObj.length; i++){
+                parentObj[i].find('input[type=radio]').each(function() {
+                    this.checked = false;
+                });
+                parentObj[i].find('input[type=checkbox]').each(function() {
+                    this.checked = false;
+                });
+                parentObj[i].find('input[type=text]').each(function() {
+                    this.value = "";
+                });
+                parentObj[i].find('select').each(function() {
+                    this.selectedIndex =0;
+                });
+            }
+        }
+    </script>
+    <style>
+        .simple-table {
+            border: solid 1px #DDEEEE;
+            border-collapse: collapse;
+            border-spacing: 0;
+            font: normal 13px Arial, sans-serif;
+        }
+        .simple-table thead th {
+            background-color: #DDEFEF;
+            border: solid 1px #DDEEEE;
+            color: #336B6B;
+            padding: 10px;
+            text-align: left;
+            text-shadow: 1px 1px 1px #fff;
+        }
+        .simple-table td {
+            border: solid 1px #DDEEEE;
+            color: #333;
+            padding: 10px;
+            text-shadow: 1px 1px 1px #fff;
+        }
+    </style>
+
+    <div class="ke-form-header">
+        <table width="100%">
+            <tr>
+                <td>Date of tracing:
+                    <ifMode mode="ENTER">
+                        <script type="text/javascript">
+                            jq(function(){
+                                setValue("encounter-date.value", "");
+                            });
+                        </script>
+                    </ifMode>
+                    <ifMode mode="EDIT">
+                        <script type="text/javascript">
+                            jq(function(){
+
+                                var val = getValue('contact-status.value');
+                                var otherReasons = getField('missed-appointment-reasons.value');
+                                if(val == 1267) {
+                                    jq('#booking-date :input').prop('disabled', false);
+                                    jq('#missed-appointment').show();
+                                }else{
+                                    jq('#booking-date :input').prop('disabled', true);
+                                    jq('#missed-appointment').hide();
+                                }
+
+                                if (otherReasons.val() == 5622) {
+                                    jq('#tbl-other-reasons').show();
+                                } else {
+                                    jq('#tbl-other-reasons').hide();
+                                }
+                            });
+                        </script>
+                    </ifMode>
+                    <encounterDate id="encounter-date" showTime="false"/>
+                </td>
+                <td>Location:
+                    <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="ke-form-content">
+        <fieldset>
+            <legend>Tracing</legend>
+
+            <table class="simple-table">
+                <tr>
+                    <td>
+                        Date of missed appointment:
+                    </td>
+                    <td>
+                        <obs conceptId="164093AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="missed_appointment-date" allowFutureDates="true" required="true"/>
+                        &#160;&#160;&#160;&#160;&#160;&#160;
+                    </td>
+                </tr>
+                <tr>
+                <tr></tr><tr></tr>
+                <td>Type of tracing</td>
+                <td>
+                    <obs id="tracing_type" conceptId="a55f9516-ddb6-47ec-b10d-cb99d1d0bd41" answerConceptIds="1650AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164965,161642AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                         answerLabels="Client Called,Physical Tracing,Treatment Supporter" required="true" style="radio"/>
+                </td>
+                </tr>
+            </table>
+        </fieldset>
+
+        <fieldset>
+            <legend>Outcome</legend>
+
+            <table>
+                <tr>
+                    <td>Tracing Outcome</td>
+                    <td>
+                        <obs conceptId="160721AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1118AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabels="Contact, No Contact" style="radio" required="true" id="contact-status"/>
+                    </td>
+                    <td>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        Date promised to come :
+                        <obs conceptId="163526AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="booking-date" allowFutureDates="true"/>
+                    </td>
+
+
+                </tr>
+                <tr id="reasonForNotContact">
+                    <td >
+                        Reason not Contacted:
+                        <obs conceptId="166541AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="166538AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               165075,
+                                               160034AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               1302AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               1567AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               160415AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               1706AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="No locator information,
+                             Inaccurate locator information,
+                             Died,
+                             Calls not going through,
+                             Not picking calls,
+                             Migrated from reported location,
+                             Not found at home,
+                             Other"
+                             id="idNotContactReason"  style="dropdown"/></td>
+                </tr>
+                <td id="other-specify-no-contact">Specify :
+                    <obs conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                    &#160;&#160;&#160;
+                </td>
+            </table>
+        </fieldset>
+        <fieldset id="missed-appointment">
+            <legend>Missed appointment</legend>
+
+            <table class="simple-table">
+                <tr>
+                    <td>Reasons for missing appointment?</td>
+                    <td>
+                        <obs conceptId="1801AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="missed-appointment-reasons"
+                             answerConceptIds="165609,
+                                               165610AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               164407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               159367AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               162619AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               126240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               160583AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               162192AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               164349AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               1654AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Client has covid-19 infection ,
+                                           COVID-19 restrictions,
+                                           Client refilled drugs from another facility,
+                                           Client has enough drugs,
+                                           Client travelled,
+                                           Client could not get an off from work/school,
+                                           Client is sharing drugs with partner,
+                                           Client forgot clinic dates,
+                                           Client stopped medications,
+                                           Client sick at home/admitted,
+                                           Other"
+                             style="dropdown" />
+                    </td>
+                    <td>
+                        <table id="tbl-other-reasons">
+                            <tr>
+                                <td>  &#160;&#160;&#160; Specify :
+                                    <obs id="other-reasons" conceptId="163513AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="60"/>
+                                    &#160;&#160;&#160;
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset>
+            <legend>Tracing Numbering</legend>
+
+            <table class="simple-table">
+                <tr>
+                    <td>Please specify the attempt number<br/> since last missed appointment (i.e. 1, 2, 3)</td>
+                    <td>
+                        <obs conceptId="1639AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Was the final outcome reached?</td>
+                    <td>
+                        <obs conceptId="163725AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="final-outcome"
+                             answerConceptIds="1267AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,163339AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Yes,No" style="radio" required="true"/>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset id="final_outcome">
+            <legend>Final Outcome/True Status</legend>
+
+            <table class="simple-table">
+                <tr>
+                    <td>Outcome</td>
+                    <td><obs conceptId="160433AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="true-status"
+                             answerConceptIds="160432AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1693AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,160037AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5240AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,164435AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,142917AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" labelText=""
+                             answerLabels="Dead,Receiving ART from another clinic/Transferred,Still in care at CCC,Lost to follow up,Stopped treatment,Other - Please explain" answerSeparator="&lt;br /&gt;" style="radio"/>
+                        <obs id="true-status-other" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                    </td>
+                </tr>
+            </table>
+            <div id="discontinuation-msg" style="width: 100%; float: left; overflow: auto; text-align: left; padding: 5px"><span class="ke-flagtag">Complete the HIV Discontinuation form</span>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Provider Comments</legend>
+
+            <table>
+                <tr>
+                    <td>Comments</td>
+                    <td>
+                        <obs conceptId="160716AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="80"/>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+    </div>
+    <div class="ke-form-footer">
+        <submit/>
+    </div>
+
+</htmlform>

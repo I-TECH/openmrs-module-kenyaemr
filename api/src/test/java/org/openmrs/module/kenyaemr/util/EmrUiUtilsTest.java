@@ -1,17 +1,12 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.util;
 
 import org.junit.Assert;
@@ -44,7 +39,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 /**
  * Tests for {@link EmrUiUtils}
@@ -74,13 +73,13 @@ public class EmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 		DrugOrder dapsone = new DrugOrder();
 		dapsone.setConcept(Dictionary.getConcept(Dictionary.DAPSONE));
 		dapsone.setDose(100.0d);
-		dapsone.setUnits("mg");
-		dapsone.setFrequency("OD");
+		/*dapsone.setUnits("mg");
+		dapsone.setFrequency("OD");*/
 		DrugOrder stavudine = new DrugOrder();
 		stavudine.setConcept(Context.getConceptService().getConcept(84309));
 		stavudine.setDose(30.0d);
-		stavudine.setUnits("ml");
-		stavudine.setFrequency("BD");
+		/*stavudine.setUnits("ml");
+		stavudine.setFrequency("BD");*/
 
 		regimen = new RegimenOrder(new LinkedHashSet<DrugOrder>(Arrays.asList(dapsone, stavudine)));
 	}
@@ -178,10 +177,10 @@ public class EmrUiUtilsTest extends BaseModuleContextSensitiveTest {
 		Concept drug3 = Dictionary.getConcept("84309AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"); // D4T
 
 		DrugOrder order1 = TestUtils.saveDrugOrder(TestUtils.getPatient(6), drug1, t0, t2);
-		order1.setDiscontinuedReasonNonCoded("Testing");
+		//order1.setDiscontinuedReasonNonCoded("Testing");
 
 		DrugOrder order2 = TestUtils.saveDrugOrder(TestUtils.getPatient(6), drug2, t1, t3);
-		order2.setDiscontinuedReason(Dictionary.getConcept(Dictionary.DIED));
+		//order2.setDiscontinuedReason(Dictionary.getConcept(Dictionary.DIED));
 
 		TestUtils.saveDrugOrder(TestUtils.getPatient(6), drug3, t2, null);
 

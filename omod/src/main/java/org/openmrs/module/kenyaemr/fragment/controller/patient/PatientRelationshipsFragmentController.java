@@ -1,25 +1,26 @@
 /**
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
  *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
  */
-
 package org.openmrs.module.kenyaemr.fragment.controller.patient;
 
 import org.openmrs.Patient;
+import org.openmrs.PatientProgram;
 import org.openmrs.Person;
+import org.openmrs.Program;
+import org.openmrs.Provider;
 import org.openmrs.Relationship;
+import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.kenyaemr.EmrConstants;
+import org.openmrs.module.kenyaemr.metadata.HivMetadata;
 import org.openmrs.module.kenyaui.KenyaUiUtils;
+import org.openmrs.module.metadatadeploy.MetadataUtils;
 import org.openmrs.ui.framework.Link;
 import org.openmrs.ui.framework.SimpleObject;
 import org.openmrs.ui.framework.UiUtils;
@@ -29,6 +30,7 @@ import org.openmrs.ui.framework.fragment.FragmentModel;
 import org.openmrs.ui.framework.page.PageRequest;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +48,7 @@ public class PatientRelationshipsFragmentController {
 
 		// Get all relationships as simple objects
 		List<SimpleObject> relationships = new ArrayList<SimpleObject>();
+		String providerId = null;
 		for (Relationship relationship : Context.getPersonService().getRelationshipsByPerson(patient)) {
 			Person person = null;
 			String type = null;
@@ -58,6 +61,17 @@ public class PatientRelationshipsFragmentController {
 				person = relationship.getPersonA();
 				type = relationship.getRelationshipType().getaIsToB();
 			}
+
+			//Provide for case manager
+			if(type.equalsIgnoreCase("Case manager")){
+				List<Provider> provider = (List<Provider>) Context.getProviderService().getProvidersByPerson(person);
+				for (Provider p : provider) {
+					if (p.getId() != null) {
+						providerId = p.getId().toString();
+						break;
+					 }
+				  }
+				}
 
 			String genderCode = person.getGender().toLowerCase();
 			String linkUrl, linkIcon;
@@ -88,5 +102,7 @@ public class PatientRelationshipsFragmentController {
 
 		model.addAttribute("patient", patient);
 		model.addAttribute("relationships", relationships);
+		model.addAttribute("providerId", providerId);
 	}
+
 }

@@ -92,9 +92,11 @@
 									</td>
 									<td>
 										<div ng-if="request.hasDataSet">
-											<a href="#" ng-click="exportReportData(request.id, 'adx')">
+											<% if (adxConfigured){ %>
+											<a href="#" ng-click="viewAdxData(request.id)">
 												<img src="${ ui.resourceLink("kenyaui", "images/glyphs/csv.png") }" class="ke-glyph" /> ADX
 											</a>
+											<% } %>
 										</div>
 									</td>
 								</tr>

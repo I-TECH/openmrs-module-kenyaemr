@@ -1,0 +1,283 @@
+
+<!--
+  ~ The contents of this file are subject to the OpenMRS Public License
+  ~ Version 1.0 (the "License"); you may not use this file except in
+  ~ compliance with the License. You may obtain a copy of the License at
+  ~ http://license.openmrs.org
+  ~
+  ~ Software distributed under the License is distributed on an "AS IS"
+  ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing rights and limitations
+  ~ under the License.
+  ~
+  ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+-->
+<htmlform>
+
+    <script type="text/javascript">
+        var ctxPath = typeof openmrsContextPath === 'string' ? openmrsContextPath : OPENMRS_CONTEXT_PATH;
+        var patientId = <lookup expression="patient.patientId"/>;
+        jQuery(function () {
+
+            //Default location
+            includePatientsCccNumberIfExists();
+            jq('#upnError').hide();
+            jq("#upn-concept input[type=text]").blur(validatePatientIdentifiers);
+            jq('#hcw-cadre select').change(cadreSelected);
+            jq('#tbl-other-cadre').hide();
+            jq('#referral-to select').change(referralSelected);
+            jq('#tbl-this-facility').hide();
+            jq('#tbl-other-facility').hide();
+
+        });
+        //Checkbox to prepopulate default location
+        var defaultLocationChange = function () {
+            var val = jq(this).val();
+            var default_location = "<lookup expression="kenyaemr.location()" />";
+            if (jq(this).is(':checked')){
+                getField('facility.value').val(default_location);
+            }else{
+                getField('facility.value').val("");
+            }
+        };
+
+        function validatePatientIdentifiers() {
+            var upnEntered = jq('#upn-concept input[type=text]').val();
+            if(upnEntered == "") {
+                jq('#upnError').text("");
+                jq('#upnError').text("CCC Number should not be empty!");
+                jq('#upnError').show();
+                jq('#hiv-id input[type=text]').val("");
+                getField('upn-concept.value').val("");
+            }else if (!isNaN(upnEntered)) {
+                if ((/^[0-9]{10}$/.test(upnEntered) === false) &amp;&amp; (/^[0-9]{11}$/.test(upnEntered) === false)) {
+
+                    jq('#upnError').text("");
+                    jq('#upnError').text("Invalid CCC Number Format! Should be mfl-clinic number, each 5 digits");
+                    jq('#upnError').show();
+                    jq('#hiv-id input[type=text]').val("");
+                } else {
+                    jq.getJSON('/' + ctxPath + '/kenyaemr/emrUtils/identifierExists.action', {upn: upnEntered}, function (data) {
+
+                        if (data.upnExists === true) {
+                            jq('#upnError').text("");
+                            jq('#upnError').text("A patient with similar CCC already exists. Please correct before proceeding");
+                            jq('#upnError').show();
+                            jq('#hiv-id input[type=text]').focus();
+                        } else {
+                            jq('#upnError').text("");
+                            jq('#hiv-id input[type=text]').val(upnEntered);
+                        }
+                    });
+                }
+            } else {
+                jq('#hiv-id input[type=text]').val("");
+                getField('upn-concept.value').val("");
+            }
+        }
+
+        //CCC Number
+        function includePatientsCccNumberIfExists() {
+            var cccNumber;
+            jq.getJSON('/' + OPENMRS_CONTEXT_PATH + '/kenyaemr/emrUtils/getPatientUniquePatientNumber.action', {patientId: patientId}, function (data) {
+                if (data != null || data != "") {
+                    cccNumber = data;
+                    getField('upn-concept.value').val(cccNumber);
+                    getField('upn-concept.value').prop("readonly", true);
+                }
+            });
+        }
+
+        var cadreSelected = function () {
+            var val = jq(this).val();
+            // Specify other
+            if (val == 5622){
+                jq('#tbl-other-cadre').show();
+            }else{
+                jq('#tbl-other-cadre').hide();
+            }
+        }
+
+        var referralSelected = function () {
+            var val = jq(this).val();
+            var default_location = "<lookup expression="kenyaemr.location()" />";
+            if (val == 164407) {
+                jq('#tbl-other-facility').show();
+                jq('#tbl-this-facility').hide();
+                getField('this-facility.value').val("");
+            }if(val == 163266){
+                jq('#tbl-this-facility').show();
+                getField('this-facility.value').val(default_location);
+                jq('#tbl-other-facility').hide();
+                getField('other-facility.value').val("");
+            }
+        }
+
+        //Before Submit
+        beforeSubmit.push(function() {
+            var artStart = new Date(getValue('artStartDate.value')).getTime();
+            var linkageDate = new Date(getValue('linkageDate.value')).getTime();
+            	if (artStart &lt; linkageDate)  {
+					getField('artStartDate.error').html('ART start date should be after Date enrolled').show();
+                    return false;
+				}
+            return true;
+        });
+        //Clear hidden sections
+        clearHiddenSections = function(parentObj) {
+            parentObj.find('input[type=radio]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=checkbox]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=text]').each(function() {
+                jq(this).val("");
+            });
+            parentObj.find('select').each(function() {
+                this.selectedIndex =0;
+            });
+        }
+
+    </script>
+
+    <div class="ke-form-header">
+        <table style="width: 100%">
+            <tr>
+                <td align="left">Date:
+                    <encounterDate id="encounter-date" showTime="true"/>
+                </td>
+                <td align="right">Location:
+                    <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" type="autocomplete"/>
+                </td>
+                <td>
+                    <ifMode mode="EDIT">
+                        <script type="text/javascript">
+                            jq(function(){
+
+                                //Other Cadre
+                                var val = getField("hcw-cadre.value").val();
+                                if (val == 5622){
+                                    jq('#tbl-other-cadre').show();
+                                }else{
+                                    jq('#tbl-other-cadre').hide();
+                                }
+
+                                //facility referral
+                                var val = getField("referral-to.value").val();
+                                var default_location = "<lookup expression="kenyaemr.location()" />";
+                                if (val == 164407) {
+                                    jq('#tbl-other-facility').show();
+                                    jq('#tbl-this-facility').hide();
+                                    getField('this-facility.value').val("");
+                                }if(val == 163266){
+                                    jq('#tbl-this-facility').show();
+                                    jq('#tbl-other-facility').hide();
+                                    getField('other-facility.value').val("");
+                                    getField('this-facility.value').val(default_location);
+                                }
+                            });
+                        </script>
+                    </ifMode>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="ke-form-content">
+        <fieldset id="linkage">
+            <legend>Linkage to care</legend>
+            <table id="tbl-care-status">
+                <tr>
+                    <td>Referral to:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs id="referral-to" conceptId="160481AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="163266AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,
+                                               164407AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="dropdown" answerLabels="This health facility,Other health facility" />
+                    </td>
+                    <td>
+                        <div id="tbl-other-facility">
+
+                            &#160;&#160;&#160; Facility name :
+                            <obs id="other-facility" conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                            &#160;&#160;&#160;
+
+                        </div>
+                    </td> <td>
+                    <div id="tbl-this-facility">
+
+                        &#160;&#160;&#160; Name :
+                        <obs id="this-facility" conceptId="162724AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                        &#160;&#160;&#160;
+
+                    </div>
+                </td>
+                    <td>
+                        &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; CCC number:
+                    <td>
+                        <div style="display:none"> <span id="hiv-id"><patient id="upn" field="identifier" identifierTypeId="05ee9cf4-7242-4a17-b4d4-00f707265c8a" required="false"/></span> </div>
+
+                        <div> <obs class="upn" conceptId="162053" id="upn-concept" size ="20" required="true"/></div>
+                        <span id="upnError" class="error"></span>
+                    </td>
+                    </td>
+                </tr>
+                <td></td>
+            </table>
+            <table id="tbl-hts-provider">
+                <tr>
+                    <td><strong>Health worker handed to : </strong>&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs class="hcw-handedto" conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" required="true"
+                        />
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Cadre of health worker : </strong>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs id="hcw-cadre" conceptId="162577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="1577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1574AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1540AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5488AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabel="Nurse,Clinical Officer/Doctor,Community Health Worker,Employee,Adherence counsellor,Other"
+                             style="dropdown" required="true"
+                        />
+                    </td>
+                    <td>
+                        <table id="tbl-other-cadre">
+                            <tr>
+                                <td>  &#160;&#160;&#160; Specify :
+                                    <obs id="other-cadre" conceptId="160632" />
+                                    &#160;&#160;&#160;
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Date enrolled : </strong>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs id="linkageDate" class="linkage-date" conceptId="160555AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false" required="true" allowFutureDates="false"
+                        />
+                    </td>
+                </tr> <tr>
+                <td><strong>ART start date : </strong>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                    <obs id="artStartDate" class="art-date" conceptId="159599AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" showTime="false" allowFutureDates="false"
+                    />
+                </td>
+            </tr>
+            </table>
+        </fieldset>
+
+        <fieldset>
+            <legend>Remarks </legend>
+            <table id="tbl-remarks">
+                <tr>
+                    <td>Remarks: &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                        <obs class="remarks" conceptId="163042AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  rows="5" cols="80"
+                        />
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+    </div>
+    <div class="ke-form-footer">
+        <submit/>
+    </div>
+</htmlform>

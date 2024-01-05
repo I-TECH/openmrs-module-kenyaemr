@@ -1,9 +1,13 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public License,
+ * v. 2.0. If a copy of the MPL was not distributed with this file, You can
+ * obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed under
+ * the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+ *
+ * Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+ * graphic logo is a trademark of OpenMRS Inc.
+ */
 package org.openmrs.module.kenyaemr.calculation.library.tb;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.openmrs.Concept;
 import org.openmrs.Obs;
@@ -21,12 +25,20 @@ import org.openmrs.module.kenyaemr.Dictionary;
 import org.openmrs.module.kenyaemr.metadata.TbMetadata;
 import org.openmrs.module.metadatadeploy.MetadataUtils;
 
-public class MissingPyridoxineCalculation extends AbstractPatientCalculation implements PatientFlagCalculation{
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-	@Override
-	public String getFlagMessage() {
-		return "Missing Pyridoxine";
-	}
+/**
+ * Retired flag
+ */
+public class MissingPyridoxineCalculation extends AbstractPatientCalculation {
+
+//	@Override
+//	public String getFlagMessage() {
+//		return "Missing Pyridoxine";
+//	}
 	
 	@Override
 	public CalculationResultMap evaluate(Collection<Integer> cohort, Map<String, Object> parameterValues,
@@ -39,8 +51,8 @@ public class MissingPyridoxineCalculation extends AbstractPatientCalculation imp
 		Set<Integer> inTbProgram = Filters.inProgram(tbProgram, alive, context);
 		
 		Concept pyridoxine = Dictionary.getConcept(Dictionary.PYRIDOXINE);
-				
-		CalculationResultMap nutritionSupportObs = Calculations.allObs(Dictionary.getConcept(Dictionary.NUTRITIONAL_SUPPORT), inTbProgram, context); 	
+		Concept nutritionalSupport = Dictionary.getConcept(Dictionary.NUTRITIONAL_SUPPORT);
+		CalculationResultMap nutritionSupportObs = Calculations.allObs(nutritionalSupport, inTbProgram, context);
 		CalculationResultMap ret = new CalculationResultMap();
 		
 		for(Integer ptId: cohort){
@@ -65,7 +77,6 @@ public class MissingPyridoxineCalculation extends AbstractPatientCalculation imp
 			
 			ret.put(ptId, new BooleanResult(missingPyridoxine, this, context));
 		}
-
 		return ret;
 	}
 

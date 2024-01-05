@@ -1,0 +1,947 @@
+<!--
+        ~ The contents of this file are subject to the OpenMRS Public License
+        ~ Version 1.0 (the "License"); you may not use this file except in
+        ~ compliance with the License. You may obtain a copy of the License at
+        ~ http://license.openmrs.org
+        ~
+        ~ Software distributed under the License is distributed on an "AS IS"
+        ~ basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+        ~ License for the specific language governing rights and limitations
+        ~ under the License.
+        ~
+        ~ Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+        -->
+
+<htmlform>
+    <script type="text/javascript" src="../moduleResources/kenyaemr/scripts/moment.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            //Defaults
+            jq('#tbl-device-size').hide();
+            jq('#tbl-other-device-size').hide();
+            jq('#tbl-adverse-effects').hide();
+            jq('#tbl-conventional-surgical').hide();
+            jq('#tbl-device-circumcision').hide();
+            jq('#tbl-other-agent').hide();
+
+            jq('#event-description-pain').prop('disabled', true);
+            jq('#event-description-bleeding').prop('disabled', true);
+            jq('#event-description-anaesthetic').prop('disabled', true);
+            jq('#event-description-skin').prop('disabled', true);
+            jq('#event-description-damage').prop('disabled', true);
+            jq('#severity-pain select').prop('disabled', true);
+            jq('#severity-bleeding select').prop('disabled', true);
+            jq('#severity-anaesthetic select').prop('disabled', true);
+            jq('#severity-skin select').prop('disabled', true);
+            jq('#severity-damage select').prop('disabled', true);
+
+            jq('#event-description-pain').change(adverseEventPainSelected);
+            jq('#event-description-bleeding').change(adverseEventBleedingSelected);
+            jq('#event-description-anaesthetic').change(adverseEventAnaestheticSelected);
+            jq('#event-description-skin').change(adverseEventSkinSelected);
+            jq('#event-description-damage').change(adverseEventDamageSelected);
+
+            jq('#adverse-event-pain :input[type=checkbox]').change(onPainSelected);
+            jq('#adverse-event-bleeding :input[type=checkbox]').change(onBleedingSelected);
+            jq('#adverse-event-anaesthetic :input[type=checkbox]').change(onAnaestheticSelected);
+            jq('#adverse-event-skin :input[type=checkbox]').change(onSkinSelected);
+            jq('#adverse-event-damage :input[type=checkbox]').change(onDamageSelected);
+
+            //Check if conventional checked
+            jq("#circumcision-method :input[type=radio]").change(onMethodSelected);
+
+            //Check if any adverse events
+            jq("#adverse_events :input[type=radio]").change(onAdverseEventsSelected);
+
+            //check if shangring
+            jq("#device-name :input[type=radio]").change(onDeviceMethodSelected);
+
+            //check for other agent
+            jq("#other-agent :input[type=checkbox]").change(onAgentSelected);
+
+        }); // end doc ready
+
+        var onAgentSelected = function () {
+            var val = jq(this).val();
+            var otherChecked = jq("#other-agent input:checkbox:checked");
+
+            if(otherChecked.length == 1) {
+                jq('#tbl-other-agent').show();
+            } else {
+                jq('#tbl-other-agent').hide();
+            }
+        }
+
+         var onAdverseEventsSelected = function () {
+            getField('adverse_events.error').html('Adverse events should not be empty').hide();
+            var val = jq(this).val();
+            if(val == 1065 ) {
+                jq('#tbl-adverse-effects').show();
+            }
+            if(val == 1066 ) {
+                jq('#tbl-adverse-effects').hide();
+                getField('adverse-event-types.value').prop("selectedIndex", 0);
+                getField('severity-level.value').prop("selectedIndex", 0);
+                jq("#event-description option[value='none']").prop('selected', true);
+
+            }
+        }
+
+        var onMethodSelected = function () {
+            var val = jq(this).val();
+            if(val == 167119 ) {
+              jq('#tbl-conventional-surgical').show();
+              jq('#tbl-device-circumcision').hide();
+              clearHiddenSections(jq('#device-name'));
+              clearHiddenSections(jq('#device-name-specify'));
+              clearHiddenSections(jq('#device-size'));
+              clearHiddenSections(jq('#lot_number'));
+              getField('device_size.value').val("");
+            } else if(val == 167120) {
+              jq('#tbl-device-circumcision').show();
+              jq('#tbl-conventional-surgical').hide();
+              clearHiddenSections(jq('#conventional-specify'));
+              clearHiddenSections(jq('#conventional-method'));
+            };
+        }
+
+        var onDeviceMethodSelected = function () {
+            var val = jq(this).val();
+                if(val == 5622 ) {
+                    jq('#tbl-other-device-size').show();
+                    jq('#tbl-device-size').hide();
+                    clearHiddenSections(jq('#device_size'));
+                    clearHiddenSections(jq('#lot_number'));
+                } else if(val == 167124) {
+                    jq('#tbl-device-size').show();
+                    jq('#tbl-other-device-size').hide();
+                    clearHiddenSections(jq('#device-name-specify'));
+                }
+        }
+
+        // Adverse event pain selected
+        var adverseEventPainSelected = function () {
+            var val = jq(this).val();
+            if (val == "pain-moderate") {
+                getField('severity-pain.value').prop("selectedIndex", 0);
+            }
+            if (val == "pain-severe") {
+                getField('severity-pain.value').prop("selectedIndex", 1);
+            }
+            if (val == "pain-none") {
+                getField('severity-pain.value').prop("selectedIndex", 0);
+            }
+
+        }
+
+        // Adverse event bleeding selected
+        var adverseEventBleedingSelected = function () {
+            var val = jq(this).val();
+            if (val == "bleeding-mild") {
+                getField('severity-bleeding.value').prop("selectedIndex", 3);
+            }
+            if (val == "bleeding-moderate") {
+                getField('severity-bleeding.value').prop("selectedIndex", 2);
+            }
+            if (val == "bleeding-severe") {
+                getField('severity-bleeding.value').prop("selectedIndex", 1);
+            }
+            if (val == "bleeding-none") {
+                getField('severity-bleeding.value').prop("selectedIndex", 0);
+            }
+        }
+
+        // Adverse event anaesthetic selected
+        var adverseEventAnaestheticSelected = function () {
+            var val = jq(this).val();
+            if (val == "anaesthetic-mild") {
+                getField('severity-anaesthetic.value').prop("selectedIndex", 3);
+            }
+            if (val == "anaesthetic-moderate") {
+                getField('severity-anaesthetic.value').prop("selectedIndex", 2);
+            }
+            if (val == "anaesthetic-severe") {
+                getField('severity-anaesthetic.value').prop("selectedIndex", 1);
+            }
+            if (val == "anaesthetic-none") {
+                getField('severity-anaesthetic.value').prop("selectedIndex", 0);
+            }
+        }
+
+        // Adverse event skin selected
+        var adverseEventSkinSelected = function () {
+            var val = jq(this).val();
+            if (val == "skin-mild") {
+                getField('severity-skin.value').prop("selectedIndex", 3);
+            }
+            if (val == "skin-moderate") {
+                getField('severity-skin.value').prop("selectedIndex", 2);
+            }
+            if (val == "skin-severe") {
+                getField('severity-skin.value').prop("selectedIndex", 1);
+            }
+            if (val == "skin-none") {
+                getField('severity-skin.value').prop("selectedIndex", 0);
+            }
+        }
+
+        // Adverse event damage selected
+        var adverseEventDamageSelected = function () {
+            var val = jq(this).val();
+            if (val == "damage-mild") {
+                getField('severity-damage.value').prop("selectedIndex", 3);
+            }
+            if (val == "damage-moderate") {
+                getField('severity-damage.value').prop("selectedIndex", 2);
+            }
+            if (val == "damage-severe") {
+                getField('severity-damage.value').prop("selectedIndex", 1);
+            }
+            if (val == "damage-none") {
+                getField('severity-damage.value').prop("selectedIndex", 0);
+            }
+        }
+
+        var onPainSelected = function(){
+            var val = jq(this).val();
+            var painChecked = jq("#adverse-event-pain input:checkbox:checked");
+            if(val == 114403){
+                jq('#event-description-pain').prop('disabled', false);
+                jq('#severity-pain select').prop('disabled', false);
+                jq('#severity-pain').attr("style", "pointer-events:none;");
+            }else {
+                jq('#event-description-pain').prop('disabled', true);
+                jq('#severity-pain select').prop('disabled', true);
+            }
+        }
+
+        var onBleedingSelected = function(){
+            var val = jq(this).val();
+            var bleedingChecked = jq("#adverse-event-bleeding input:checkbox:checked");
+            if(val == 147241){
+                jq('#event-description-bleeding').prop('disabled', false);
+                jq('#severity-bleeding select').prop('disabled', false);
+                jq('#severity-bleeding').attr("style", "pointer-events:none;");
+            }else {
+                jq('#event-description-bleeding').prop('disabled', true);
+                jq('#severity-pain select').prop('disabled', true);
+            }
+
+        }
+
+        var onAnaestheticSelected = function(){
+            var val = jq(this).val();
+            var anaestheticChecked = jq("#adverse-event-anaesthetic input:checkbox:checked");
+            if(val == 135693){
+                jq('#event-description-anaesthetic').prop('disabled', false);
+                jq('#severity-anaesthetic select').prop('disabled', false);
+                jq('#severity-anaesthetic').attr("style", "pointer-events:none;");
+            }else {
+                jq('#event-description-anaesthetic').prop('disabled', true);
+                jq('#severity-anaesthetic select').prop('disabled', true);
+            }
+
+        }
+
+        var onSkinSelected = function(){
+            var val = jq(this).val();
+            var skinChecked = jq("#adverse-event-skin input:checkbox:checked");
+            if(val == 167126){
+                jq('#event-description-skin').prop('disabled', false);
+                jq('#severity-skin select').prop('disabled', false);
+                jq('#severity-skin').attr("style", "pointer-events:none;");
+            }else {
+                jq('#event-description-skin').prop('disabled', true);
+                jq('#severity-skin select').prop('disabled', true);
+            }
+
+        }
+
+        var onDamageSelected = function(){
+            var val = jq(this).val();
+            var damageChecked = jq("#adverse-event-damage input:checkbox:checked");
+            if(val == 156911){
+                jq('#event-description-damage').prop('disabled', false);
+                jq('#severity-damage select').prop('disabled', false);
+                jq('#severity-damage').attr("style", "pointer-events:none;");
+            }else {
+                jq('#event-description-damage').prop('disabled', true);
+                jq('#severity-damage select').prop('disabled', true);
+            }
+
+        }
+
+        //Clear hidden sections
+        clearHiddenSections = function(parentObj) {
+            parentObj.find('input[type=radio]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=checkbox]').each(function() {
+                this.checked = false;
+            });
+            parentObj.find('input[type=text]').each(function() {
+                jq(this).val("");
+            });
+            parentObj.find('select').each(function() {
+                this.selectedIndex =0;
+            });
+        }
+
+        //Before Submit
+        beforeSubmit.push(function() {
+
+            var circumcisionMethod = getValue('circumcision-method.value');
+            var deviceSize = getValue('device_size.value');
+
+            var conventionalVal = getValue('conventional-method.value');
+            var deviceVal = getValue('device-name.value');
+
+            var otherConventional = getValue('conventional-specify.value');
+            var otherDevice = getValue('device-name-specify.value');
+
+            var anaesthesiaVal = getValue('anaesthesia.value');
+            var agentVal = getValue('agents.value');
+
+            var adverseEventsVal = getValue('adverse_events.value');
+            var managementVal = getValue('severity_management.value');
+
+            var timeOfLastSlit = jq('#time_of_slit input[type=text]').val();
+            var timeOfPlacement = jq('#time_of_placement input[type=text]').val();
+            var theatreNumber = getValue('theatre_number.value');
+
+            var assistantClinician = getValue('assistant_clinician.value');
+            var assistantClinicianCadre = getValue('assistant_clinician_cadre.value');
+
+            var surgeonName = getValue('clinician.value');
+            var surgeonCadre = getValue('clinician_cadre.value');
+            var encounterDate = getValue('encounter-date.value');
+
+            if(circumcisionMethod == 167119 &amp;&amp; conventionalVal == 5622  &amp;&amp; otherConventional == ""){
+                getField('conventional-specify.error').html('Please specify other method').show();
+                return false;
+            } else {
+                getField('conventional-specify.error').html('Please specify other method').hide();
+            }
+
+            if(circumcisionMethod == 167120 &amp;&amp; deviceVal== 5622  &amp;&amp;  otherDevice == ""){
+                getField('device-name-specify.error').html('Please specify other method').show();
+                return false;
+            } else {
+                getField('device-name-specify.error').html('Please specify other method').hide();
+            }
+
+            if(circumcisionMethod == 167120  &amp;&amp; deviceVal == 167124 &amp;&amp; deviceSize == "") {
+                getField('device_size.error').html('Please specify the device size').show();
+                return false;
+            } else {
+                getField('device_size.error').html('Please specify the device size').hide();
+            }
+
+            // local or tropical
+            if(anaesthesiaVal == "") {
+                getField('anaesthesia.error').html('Please specify the anaesthesia used').show();
+                return false;
+            } else {
+                getField('anaesthesia.error').html('Please specify the anaesthesia used').hide();
+            }
+
+            if(agentVal == "") {
+                getField('agents.error').html('Please specify the agent used').show();
+                return false;
+            } else {
+                getField('agents.error').html('Please specify the agent used').hide();
+            }
+
+            // if adverse effects , fill management
+            if(adverseEventsVal == ""){
+                getField('adverse_events.error').html('Please specify if there were any adverse events').show();
+               return false;
+           } else {
+                getField('adverse_events.error').html('Please specify if there were any adverse events').hide();
+           }
+            var isTimeOfLastSlitInFutureDate = moment(moment(moment(timeOfLastSlit, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD')).isAfter(moment().format('YYYY-MM-DD'));
+            if (isTimeOfLastSlitInFutureDate) {
+                getField('time_of_slit.error').html('Time of last slit should not be in future').show();
+                return false;
+            } else {
+                getField('time_of_slit.error').html('Time of last slit should be not in future').hide();
+            }
+            var isTimeOfPlacementInFutureDate = moment(moment(moment(timeOfPlacement, 'DD-MMM-YYYY').toDate()).format('YYYY-MM-DD')).isAfter(moment().format('YYYY-MM-DD'));
+            if (isTimeOfPlacementInFutureDate) {
+                getField('time_of_placement.error').html('Time of placement should be not in future').show();
+                return false;
+            } else {
+                getField('time_of_placement.error').html('Time of placement should be not in future').hide();
+            }
+           if(timeOfLastSlit  &lt; timeOfPlacement){
+                getField('time_of_slit.error').html('Time of last slit should be after time of placement').show();
+                return false;
+           } else {
+                getField('time_of_slit.error').html('Time of last slit should be after time of placement').hide();
+           }
+
+           if(adverseEventsVal == 1065 &amp;&amp; managementVal == ""){
+                getField('severity_management.error').html('Please specify the management of adverse events').show();
+               return false;
+           } else {
+                getField('severity_management.error').html('Please specify the management of adverse events').hide();
+           }
+
+           if(surgeonName == ""){
+                getField('clinician.error').html('Please specify the name of the clinician').show();
+               return false;
+           } else {
+                getField('clinician.error').html('Please specify the name of the clinician').hide();
+           }
+
+           if(surgeonCadre == ""){
+                getField('clinician_cadre.error').html('Please specify the cadre of the clinician').show();
+               return false;
+           } else {
+                getField('clinician_cadre.error').html('Please specify the cadre of the clinician').hide();
+           }
+
+           // if time of last slit, theatre number mandatory
+            if(theatreNumber == ""){
+                getField('theatre_number.error').html('Please specify the theatre number').show();
+                return false;
+            } else {
+                getField('theatre_number.error').html('Please specify the theatre number').hide();
+            }
+
+            // if assistant clinician, assistant clinician cadre is mandatory
+            if(assistantClinician != "" &amp;&amp; assistantClinicianCadre == ""){
+                getField('assistant_clinician_cadre.error').html('Please specify the assistant clinician cadre').show();
+                return false;
+            } else {
+                getField('assistant_clinician_cadre.error').html('Please specify the assistant clinician cadre').hide();
+            }
+
+           return true;
+
+        });
+
+    </script>
+
+    <ifMode mode="EDIT">
+        <script type="text/javascript">
+            jq(function(){
+                var CONVENTIONAL = 167119;
+                var DEVICE = 167120;
+                var YES = 1065;
+                var CIRCUMCISION_METHOD  = getValue('circumcision-method.value');
+                var DEVICE_METHOD  = getValue('device-name.value');
+                var ADVERSE_EFFECT = getValue('adverse_events.value');
+                var otherChecked = jq("#other-agent input:checkbox:checked");
+
+                if(otherChecked.length == 1) {
+                    jq('#tbl-other-agent').show();
+                } else {
+                    jq('#tbl-other-agent').hide();
+                }
+
+                if(CIRCUMCISION_METHOD == 167119 ) {
+                  jq('#tbl-conventional-surgical').show();
+                  jq('#tbl-device-circumcision').hide();
+                } else if(CIRCUMCISION_METHOD == 167120) {
+                  jq('#tbl-device-circumcision').show();
+                  jq('#tbl-conventional-surgical').hide();
+                  if(DEVICE_METHOD == 167124) {
+                    jq('#tbl-device-size').show();
+                    jq('#tbl-other-device-size').hide();
+                  } else if(DEVICE_METHOD == 5622) {
+                    jq('#tbl-other-device-size').show();
+                    jq('#tbl-device-size').hide();
+                  }
+                };
+
+                if(ADVERSE_EFFECT == YES ) {
+                  jq('#tbl-adverse-effects').show();
+                }
+
+                //Check if conventional checked
+                jq("#circumcision-method :input[type=radio]").change(onMethodSelected);
+
+            });
+
+            var onMethodSelected = function () {
+                var val = jq(this).val();
+                if(val == 167119 ) {
+                  jq('#tbl-conventional-surgical').show();
+                  jq('#tbl-device-circumcision').hide();
+                  clearHiddenSections(jq('#device-name'));
+                  clearHiddenSections(jq('#device-name-specify'));
+                  clearHiddenSections(jq('#device-size'));
+                  clearHiddenSections(jq('#lot_number'));
+                  getField('device_size.value').val("");
+                } else if(val == 167120) {
+                  jq('#tbl-device-circumcision').show();
+                  jq('#tbl-conventional-surgical').hide();
+                  clearHiddenSections(jq('#conventional-specify'));
+                  clearHiddenSections(jq('#conventional-method'));
+                };
+            }
+
+            //Clear hidden sections
+            clearHiddenSections = function(parentObj) {
+                parentObj.find('input[type=radio]').each(function() {
+                    this.checked = false;
+                });
+                parentObj.find('input[type=checkbox]').each(function() {
+                    this.checked = false;
+                });
+                parentObj.find('input[type=text]').each(function() {
+                    jq(this).val("");
+                });
+                parentObj.find('select').each(function() {
+                    this.selectedIndex =0;
+                });
+            }
+
+        </script>
+    </ifMode>
+
+    <style type="text/css">
+        .simple-table {
+            border: solid 1px #DDEEEE;
+            border-collapse: collapse;
+            border-spacing: 0;
+            font: normal 13px Arial, sans-serif;
+            padding: 10px;
+        }
+
+        .simple-table thead th {
+            background-color: #DDEFEF;
+            border: solid 1px #DDEEEE;
+            color: #336B6B;
+            text-align: left;
+            text-shadow: 1px 1px 1px #fff;
+        }
+        .simple-table td {
+            border: solid 1px #DDEEEE;
+            color: #333;
+            padding: 10px;
+            text-shadow: 1px 1px 1px #fff;
+        }
+
+        .results {
+            font-weight: bold;
+            color: blue;
+        }
+
+        table.tb1 {
+			vertical-align: baseline;
+			text-align: left;
+			margin: 5px;
+		}
+
+		table.tb1 tr th, table.tb1 tr td {
+			border: 0;
+			padding: 8px;
+			border: 0
+
+		}
+    </style>
+
+    <div class="ke-form-header">
+        <table width="100%">
+            <tr>
+                <ifMode mode="ENTER">
+                </ifMode>
+                <td>Encounter date:
+                    <encounterDate id="encounter-date" showTime="true" />
+                </td>
+                <td>VMMC Procedure Provider:
+                    <encounterProvider default="currentUser" />
+                </td>
+                <td>Enrolled at:
+                    <encounterLocation default="GlobalProperty:kenyaemr.defaultLocation" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="ke-form-content">
+        <fieldset id="tbl-circumcision-method">
+            <legend>Method Of Circumcision</legend>
+
+            <table class ="simple-table">
+                <tr>
+                    <td> Method: <span style="color:red;"><strong>*</strong></span> </td>
+                    <td>
+                        <obs id="circumcision-method" conceptId="167118"
+                             answerConceptIds="167119,167120"
+                             answerLabels="Conventional Surgical,Device Circumcision"
+                             style="radio"
+                             answerSeparator="&lt;br /&gt;&lt;br /&gt;"/>
+                        <br/>
+                    </td>
+                    <td>
+                        <table id="tbl-conventional-surgical" class="tb1 simple-table">
+                            <tr>
+                                <td>
+                                    <obs id="conventional-method" conceptId="167119"
+                                         answerConceptIds="167121,
+                                                           167122,
+                                                           5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabels="Sleeve resection,Dorsal Slit,
+                                                       Other"
+                                         style="radio"/>
+                                    <br/>
+                                </td>
+
+                                <td> Specify: </td>
+                                <td>
+                                    <obs id="conventional-specify" conceptId="160632AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <table id="tbl-device-circumcision" class="tb1 simple-table">
+                            <tr>
+                                <td>
+                                    Device name:
+
+                                    <obs id="device-name" conceptId="167120"
+                                         answerConceptIds="167124,5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         answerLabels="Shangring,Other"
+                                         style="radio" />
+
+                                </td>
+
+                                <td>
+                                    <table id="tbl-other-device-size" class="tb1 simple-table">
+                                        <tr>
+                                            <td> Specify: </td>
+                                            <td>
+                                                <obs id="device-name-specify" conceptId="162169AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" size="50"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+
+                                <td>
+                                    <table id="tbl-device-size" class="tb1 simple-table">
+                                        <tr>
+                                            <td>Device size: </td>
+                                            <td><obs conceptId="163049AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"  id="device_size" /></td>
+
+                                            <td>Lot Number: </td>
+                                            <td><obs conceptId="164964"  id="lot_number" /></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+        </fieldset>
+
+        <fieldset id="tbl-circumcision-procedure">
+            <legend>Circumcision Procedure</legend>
+            <table width="80%" margin="0" class="simple-table">
+                <tr>
+                    <td> Anaesthesia used: Type: <span style="color:red;"><strong>*</strong></span>
+                        <obs conceptId="164254AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="161914AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162797AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerLabels="Local Anaesthesia,Topical Anaesthesia" id="anaesthesia" style="radio"  />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <table width="100%" margin="0" class="simple-table">
+                            <tr>
+                                <th>Agent</th>
+                                <th>Concentration(mg):</th>
+                                <th>Volume(ml):</th>
+                            </tr>
+
+                            <tr>
+                                <repeat>
+                                    <template>
+                                        <obsgroup groupingConceptId="161909AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+
+                            <tr>
+                                <td>
+                                    <obs conceptId="165139"
+                                         answerConceptIds="78849AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,72505AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,82514AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 103960AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, 104983AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                         style="dropdown" answerLabels="Lignocaine,Bupivacaine, Prilocaine,Lignocaine + Bupivacaine,Lignocaine + Prilocaine "
+                                         id="agents"  />
+                                </td>
+                                <td>
+                                    <obs conceptId="1444AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="concentration" />
+                                </td>
+
+                                <td>
+                                    <obs conceptId="166650AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="volume" />
+                                </td>
+                            </tr>
+                            </obsgroup>
+                            </template>
+                            <render n="1" concept=" " />
+                            <render n="2" concept=" " />
+                            <render n="3" concept=" " />
+                            <render n="4" concept=" " />
+                            <render n="5" concept=" " />
+                            </repeat>
+                            </tr>
+
+                        </table>
+
+                        <table>
+                            <tr>
+                                <td>
+                                    <obs id="other-agent" type="checkbox" conceptId="165139" answerConceptId="5622AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" answerLabel="Other Agent" />
+                                </td>
+                                <td>
+                                    <table >
+                                        <tr id="tbl-other-agent">
+                                            <td>  &#160;&#160;&#160; Specify :
+                                                <obs id="other-specify-agent" conceptId="163047AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+                                                &#160;&#160;&#160;
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Time of Placement(device) or first surgical cut(conventional surgical)[time in 24 hour clock:
+                        <obs conceptId="160715AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="time_of_placement" required="true" allowFutureDates="true" />
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Time of making the last slit(device) or time of wound closure (conventional surgical)[time in 24
+                        hour clock:
+                        <obs conceptId="167132" id="time_of_slit" required="true" allowFutureDates="true" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        Was there an Adverse Event during circumcision? <span style="color:red;"><strong>*</strong></span>
+                        <obs id="adverse_events" conceptId="162871AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             answerConceptIds="1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                             style="radio" />
+                    </td>
+
+                </tr>
+
+                <tr>
+                    <table width="100%" id="tbl-adverse-effects" class="simple-table">
+                        <tr>
+                            <td>Record any Adverse Events that occurred during Circumscision Procedure:</td>
+                            <td>
+                                <table>
+                                    <tr>
+                                        <th>Type of adverse event</th>
+                                        <th>Description of adverse event</th>
+                                        <th>Severity</th>
+                                    </tr>
+                                    <obsgroup groupingConceptId="121760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                        <tr>
+                                            <td> <obs conceptId="162875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                      answerConceptId="114403AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                      style="checbox" answerLabel="Pain"
+                                                      id="adverse-event-pain" />
+                                            </td>
+                                            <td>
+                                                <select name="event-description-pain" class="event-description-pain" id="event-description-pain">
+                                                    <option value="pain-none">Select</option>
+                                                    <option value="pain-severe">Pain that requires additional intervention(P1)</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <obs id="severity-pain" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptIds="1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     style="dropdown" answerLabels="Severe,Moderate,Mild" />
+                                            </td>
+                                        </tr>
+                                    </obsgroup>
+
+                                    <obsgroup groupingConceptId="121760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                        <tr>
+                                            <td>
+                                                <obs conceptId="162875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptId="147241AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     style="checbox" answerLabel="Bleeding"
+                                                     id="adverse-event-bleeding" />
+                                            </td>
+                                            <td>
+                                                <select name="event-description-bleeding" class="event-description-bleeding" id="event-description-bleeding">
+                                                    <option value="bleeding-none">Select</option>
+                                                    <option value="bleeding-mild">Bleeding that is easily controller(B1)</option>
+                                                    <option value="bleeding-moderate"> Bleeding that requires pressure dressing to control(B1)</option>
+                                                    <option value="bleeding-severe">Bleeding that requires transfusion or transfer to another facility(B1)</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <obs id="severity-bleeding" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptIds="1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     style="dropdown" answerLabels="Severe,Moderate,Mild" />
+                                            </td>
+                                        </tr>
+                                    </obsgroup>
+
+                                    <obsgroup groupingConceptId="121760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                        <tr>
+                                            <td>
+                                                <obs conceptId="162875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptId="135693AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     style="checbox" answerLabel="Anaesthetic Reaction"
+                                                     id="adverse-event-anaesthetic" />
+                                            </td>
+                                            <td>
+                                                <select name="event-description-anaesthetic" class="event-description-anaesthetic" id="event-description-anaesthetic">
+                                                    <option value="anaesthetic-none">Select</option>
+                                                    <option value="anaesthetic-moderate">Palpitations, vaso-vagal reaction or emesis(A1)</option>
+                                                    <option value="anaesthetic-severe">Anaphylactic shock or other reaction requiring transfer to another facility(A1)</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <obs id="severity-anaesthetic" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptIds="1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     style="dropdown" answerLabels="Severe,Moderate,Mild" />
+                                            </td>
+                                        </tr>
+                                    </obsgroup>
+
+                                    <obsgroup groupingConceptId="121760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                        <tr>
+                                            <td>
+                                                <obs conceptId="162875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptId="167126"
+                                                     style="checbox" answerLabel="Excessive skin removed"
+                                                     id="adverse-event-skin" />
+                                            </td>
+                                            <td>
+                                                <select name="event-description-skin" class="event-description-skin" id="event-description-skin">
+                                                    <option value="skin-none">Select</option>
+                                                    <option value="skin-mild">Adds time or material needs to the procedure, but does not result in any discemible(E1)</option>
+                                                    <option value="skin-moderate">Skin is tight, but additional operative work is not neccessary(E1)</option>
+                                                    <option value="skin-severe">Require re-operation of transfer to another facility to correct the problem(E1)</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <obs id="severity-skin" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptIds="1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     style="dropdown" answerLabels="Severe,Moderate,Mild" />
+                                            </td>
+
+                                        </tr>
+                                    </obsgroup>
+
+                                    <obsgroup groupingConceptId="121760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                        <tr>
+                                            <td>
+                                                <obs conceptId="162875AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptId="156911AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     style="checbox" answerLabel="Damage to the penis"
+                                                     id="adverse-event-damage" />
+                                            </td>
+                                            <td>
+                                                <select name="event-description-damage" class="event-description-damage" id="event-description-damage">
+                                                    <option value="damage-none">Select</option>
+                                                    <option value="damage-mild">Mild bruising or abrasion, not requiring treatment(D1)</option>
+                                                    <option value="damage-moderate">Bruising or abrasion of the glans of the shaft penis requiring pressure dressing(D1)</option>
+                                                    <option value="damage-severe">Part or all of the glans or shaft of the penis severed(D1)</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <obs id="severity-damage" conceptId="162760AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     answerConceptIds="1500AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1499AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1498AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                                     style="dropdown" answerLabels="Severe,Moderate,Mild" />
+                                            </td>
+                                        </tr>
+                                    </obsgroup>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Management of Adverse Events if any:  </td>
+
+                            <td> <obs conceptId="162749AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rows="3" cols="100" id="severity_management" /></td>
+                        </tr>
+
+                    </table>
+                </tr>
+
+            </table>
+        </fieldset>
+
+        <fieldset id="tbl-personnel-in-charge">
+            <legend>Personnel in charge</legend>
+            <table align="center" width="100%" class="tb1">
+                <table style="width: 70%;" border="0">
+                    <tr>
+                        <th align="left">Name of Clinician <span style="color:red;"><strong>*</strong></span></th>
+                        <th align="left">Cadre <span style="color:red;"><strong>*</strong></span></th>
+                    </tr>
+                    <repeat>
+                        <template>
+                            <obsgroup groupingConceptId="164919AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                <tr>
+                                    <td>
+                                        <obs conceptId="1473AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="clinician" required="true"  />
+                                    </td>
+                                    <td>
+                                        <obs conceptId="163556AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerConceptIds="162591AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162592AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabels="MO,CO,Nurse" id="clinician_cadre" style="radio" />
+                                    </td>
+                                </tr>
+                            </obsgroup>
+                        </template>
+                        <render n="1" concept="clinician"/>
+                    </repeat>
+                </table>
+                <table style="width: 68%;" border="0">
+                    <tr>
+                        <th align="left">Name of Assistant Clinician</th>
+                        <th align="left">Cadre</th>
+                    </tr>
+                    <repeat>
+                        <template>
+                            <obsgroup groupingConceptId="164524AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA">
+                                <tr>
+                                    <td>
+                                        <obs conceptId="164141AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" id="assistant_clinician"  />
+                                    </td>
+                                    <td>
+                                        <obs conceptId="166014AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerConceptIds="162591AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,162592AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA,1577AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                                             answerLabels="MO,CO,Nurse" id="assistant_clinician_cadre" style="radio" />
+                                    </td>
+                                </tr>
+                            </obsgroup>
+                        </template>
+                        <render n="1" concept="assistant"/>
+                    </repeat>
+                </table>
+                <table align="center" width="100%" class="tb1">
+                    <tr>
+                        <td>Theatre Register Number: <span style="color:red;"><strong>*</strong></span>
+                            <obs conceptId="167133" id="theatre_number" />
+                        </td>
+                    </tr>
+                </table>
+            </table>
+        </fieldset>
+
+    </div>
+
+    <div class="ke-form-footer">
+        <submit />
+    </div>
+
+</htmlform>
